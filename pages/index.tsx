@@ -249,7 +249,7 @@ export default function Home() {
                       <CardTitle className="text-xl">시스템 개발</CardTitle>
                       <CardDescription className="text-orange-600 font-medium">쌍용정보통신 (통신연구소/뉴미디어기술팀)</CardDescription>
                     </div>
-                    <Badge variant="secondary">2005.11 - 2012.06</Badge>
+                    <Badge variant="secondary">2005.5 - 2012.06</Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
