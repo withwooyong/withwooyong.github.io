@@ -181,7 +181,7 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div>
                       <CardTitle className="text-xl">Senior 엔지니어 & PM</CardTitle>
-                      <CardDescription className="text-green-600 font-medium">SK Broadband</CardDescription>
+                      <CardDescription className="text-green-600 font-medium">SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)</CardDescription>
                     </div>
                     <Badge variant="secondary">2017.04 - 2021.06</Badge>
                   </div>
