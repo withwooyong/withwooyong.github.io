@@ -1,0 +1,10 @@
+{
+  "collections": [
+    {
+      "name": "withwooyong-github-io",
+      "path": ".",
+      "pattern": "**/*.{md,mdx}",
+      "context": "허우용(withwooyong) GitHub Pages 포트폴리오 저장소. Next.js Pages Router, 한국어 UI. README·설정·pages 소스 문맥."
+    }
+  ]
+}
