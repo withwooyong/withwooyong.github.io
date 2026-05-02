@@ -2,14 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
 
 html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: "Inter", system-ui, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@layer utilities {
+  @media (prefers-reduced-motion: no-preference) {
+    .transition-interactive {
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+        transform, filter, backdrop-filter;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+  }
 }
 
 /* Custom scrollbar */
@@ -21,18 +79,25 @@ body {
   background: #f1f1f1;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
 
-/* Smooth animations */
-* {
-  transition: all 0.2s ease-in-out;
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* Custom gradient backgrounds */
@@ -42,4 +107,160 @@ body {
 
 .hero-gradient {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* --- 히어로: 은은한 배경 blob (transform / opacity만) --- */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-blob-float {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 0.35;
+    }
+    50% {
+      transform: translate(3%, -4%) scale(1.05);
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes hero-blob-float-alt {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 0.28;
+    }
+    50% {
+      transform: translate(-4%, 3%) scale(1.08);
+      opacity: 0.42;
+    }
+  }
+
+  .hero-blob {
+    animation: hero-blob-float 22s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+
+  .hero-blob--alt {
+    animation: hero-blob-float-alt 28s ease-in-out infinite;
+    animation-delay: -6s;
+    will-change: transform, opacity;
+  }
+
+  @keyframes hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-motion .hero-stagger-1 {
+    animation: hero-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
+  }
+  .hero-motion .hero-stagger-2 {
+    animation: hero-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  }
+  .hero-motion .hero-stagger-3 {
+    animation: hero-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  }
+  .hero-motion .hero-stagger-4 {
+    animation: hero-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
+  }
+  .hero-motion .hero-stagger-5 {
+    animation: hero-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.36s both;
+  }
+}
+
+/* --- 히어로: SVG 줄무늬(스트로크 dashoffset 흐름) --- */
+.hero-stripe-path {
+  stroke-dasharray: 0.4236540522651584 1.6946162090606336;
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-stripe-flow {
+    to {
+      /* dash 한 주기(점선 + 간격)만큼 이동 → 끊김 없는 루프 */
+      stroke-dashoffset: -2.118270261318792;
+    }
+  }
+
+  .hero-stripe-path {
+    animation: hero-stripe-flow 20s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-stripe-path {
+    animation: none;
+  }
+
+  .hero-blob,
+  .hero-blob--alt {
+    opacity: 0.25;
+    animation: none;
+  }
+
+  .hero-motion .hero-stagger-1,
+  .hero-motion .hero-stagger-2,
+  .hero-motion .hero-stagger-3,
+  .hero-motion .hero-stagger-4,
+  .hero-motion .hero-stagger-5 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* --- 섹션 등장 (IntersectionObserver와 함께) --- */
+@media (prefers-reduced-motion: no-preference) {
+  .section-reveal {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .section-reveal.section-reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- 네비 데스크톱 링크: 밑줄 확장 --- */
+@media (prefers-reduced-motion: no-preference) {
+  .portfolio-nav-link {
+    position: relative;
+  }
+
+  .portfolio-nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0.85;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.22s ease;
+  }
+
+  .portfolio-nav-link:hover::after,
+  .portfolio-nav-link:focus-visible::after {
+    transform: scaleX(1);
+  }
 }

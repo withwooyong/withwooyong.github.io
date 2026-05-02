@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -14,7 +15,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.545.0",
-    "next": "14.0.0",
+    "next": "^14.2.35",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^3.3.1"
@@ -25,7 +26,7 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.0.0",
+    "eslint-config-next": "^14.2.35",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
