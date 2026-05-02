@@ -3,6 +3,7 @@ import { PortfolioNav } from "@/components/portfolio-nav";
 import { SectionReveal } from "@/components/section-reveal";
 import { SiteHead } from "@/components/site-head";
 import { SystemDiagramCard } from "@/components/system-diagram-card";
+import { ThesisSummaryDialog } from "@/components/thesis-summary-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -477,7 +478,8 @@ export default function Home() {
                   <strong>논문:</strong> 시스템 통합 서비스를 위한 확장 가능한 NoSQL의 설계에 관한 연구
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center">
+              <CardContent className="flex flex-wrap items-center justify-center gap-3">
+                <ThesisSummaryDialog />
                 <Button asChild>
                   <a href="https://drive.google.com/file/d/1eAv426PXVEaCpMvQAvcUHkMUZ2WggM4j/view?usp=sharing" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
