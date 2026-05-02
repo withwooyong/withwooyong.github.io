@@ -77,8 +77,26 @@ export default function Home() {
           />
           <div className="relative z-10 max-w-7xl mx-auto">
             <div className={cn("text-center", isLoaded && "hero-motion")}>
-              <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden shadow-lg ring-2 ring-white/50 dark:ring-slate-600 transition-transform duration-300 hover:scale-[1.02] motion-reduce:hover:scale-100 hero-stagger-1">
-                <Image src="/images/Ted_yanadoo.png" alt="허우용 프로필 사진" width={128} height={128} className="w-full h-full object-cover" priority />
+              <div className="group mx-auto mb-6 h-32 w-32 [perspective:880px] hero-stagger-1">
+                <div className="relative h-full w-full overflow-hidden rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
+                  <div
+                    className={cn(
+                      "h-full w-full origin-center rounded-full [backface-visibility:hidden] [transform-style:preserve-3d]",
+                      "transform-gpu transition-transform duration-700 ease-out",
+                      "group-hover:[transform:rotateY(360deg)]",
+                      "motion-reduce:transition-none motion-reduce:group-hover:[transform:none]"
+                    )}
+                  >
+                    <Image
+                      src="/images/Ted_yanadoo.png"
+                      alt="허우용 프로필 사진"
+                      width={128}
+                      height={128}
+                      className="h-full w-full object-cover"
+                      priority
+                    />
+                  </div>
+                </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-slate-50 mb-4 hero-stagger-2">
                 안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
