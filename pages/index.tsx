@@ -77,24 +77,19 @@ export default function Home() {
           />
           <div className="relative z-10 max-w-7xl mx-auto">
             <div className={cn("text-center", isLoaded && "hero-motion")}>
-              <div className="group mx-auto mb-6 h-32 w-32 [perspective:880px] hero-stagger-1">
-                <div className="relative h-full w-full overflow-hidden rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
-                  <div
-                    className={cn(
-                      "h-full w-full origin-center rounded-full [backface-visibility:hidden] [transform-style:preserve-3d]",
-                      "transform-gpu transition-transform duration-700 ease-out",
-                      "group-hover:[transform:rotateY(360deg)]",
-                      "motion-reduce:transition-none motion-reduce:group-hover:[transform:none]"
-                    )}
-                  >
-                    <Image
-                      src="/images/Ted_yanadoo.png"
-                      alt="허우용 프로필 사진"
-                      width={128}
-                      height={128}
-                      className="h-full w-full object-cover"
-                      priority
-                    />
+              <div className="mx-auto mb-6 flex justify-center hero-stagger-1">
+                <div className="profile-coin-group h-32 w-32">
+                  <div className="relative h-full w-full rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
+                    <div className="profile-coin-face">
+                      <Image
+                        src="/images/Ted_yanadoo.png"
+                        alt="허우용 프로필 사진"
+                        width={128}
+                        height={128}
+                        className="h-full w-full object-cover"
+                        priority
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

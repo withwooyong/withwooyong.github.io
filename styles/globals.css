@@ -180,6 +180,21 @@ html {
   stroke-dashoffset: 0;
 }
 
+/* 히어로 프로필 동전: 레이아웃·3D 면(모션 설정과 무관) */
+.profile-coin-group {
+  perspective: 880px;
+}
+
+.profile-coin-face {
+  height: 100%;
+  width: 100%;
+  border-radius: 9999px;
+  overflow: hidden;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @keyframes hero-stripe-flow {
     to {
@@ -190,6 +205,20 @@ html {
 
   .hero-stripe-path {
     animation: hero-stripe-flow 20s linear infinite;
+  }
+
+  /* 동전처럼 Y축 회전 — transition 0→360deg 무변화 이슈 회피용 keyframes */
+  @keyframes profile-coin-spin-y {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+
+  .profile-coin-group:hover .profile-coin-face {
+    animation: profile-coin-spin-y 0.78s cubic-bezier(0.22, 0.61, 0.36, 1) both;
   }
 }
 
@@ -212,6 +241,10 @@ html {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .profile-coin-group:hover .profile-coin-face {
+    animation: none !important;
   }
 }
 
