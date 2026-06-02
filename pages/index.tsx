@@ -49,7 +49,7 @@ export default function Home() {
     <>
       <SiteHead
         title="허우용 - Agile Developer & Tech Lead"
-        description="허우용의 개발자 포트폴리오입니다. 야나두 개발실장, SK Broadband Senior 엔지니어, CJ Hellovision CMS PL 경험을 바탕으로 한 풀스택 개발자입니다."
+        description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 야나두 개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 풀스택 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
         path="/"
         jsonLd={personJsonLd}
       />
@@ -98,11 +98,15 @@ export default function Home() {
               </h1>
               <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 hero-stagger-3">Agile Developer & Tech Lead</p>
               <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
-                <strong>야나두 개발실장</strong>으로서 20~30명의 개발팀을 총괄하며,
+                20년 이상 경력의 엔지니어링 리더.
                 <br />
-                <strong>SK Broadband, CJ Hellovision</strong>에서 1000만 이상 유저를 보유한 서비스 개발 경험을 가지고 있습니다.
+                <strong>야나두 개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
                 <br />
-                N-Screen, OTT, STB, AI 서비스 등 다양한 도메인에서 풀스택 개발과 팀 리딩을 담당해왔습니다.
+                <strong>KT, CJ헬로비전, SK브로드밴드</strong>에서 1,000만+ 사용자 서비스 개발 및 플랫폼 구축 주도.
+                <br />
+                온프레미스(IDC)와 AWS 클라우드 환경 모두 경험한 풀스택 아키텍트.
+                <br />
+                AI·플랫폼·조직을 연결해 서비스 성장과 개발 생산성 향상을 이끌어온 기술 리더.
               </p>
               <div className="flex justify-center hero-stagger-5">
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
@@ -124,10 +128,13 @@ export default function Home() {
               <div>
                 <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">개발자로서의 철학</h3>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                  전반적인 IT 기술 트렌드를 따라가기 위해 노력하고 있으며, 특히 AI 활용 서비스에 대한 인사이트를 얻기 위해 다양한 노력을 기울이고 있습니다. Staff/PL/PM 등의 포지션에서 맡아온 개발업무가 다양해 특정기술에 대해 최고라고 자부할
-                  순 없지만 배우고자 하는 열정이 있고 다양한 개발 업무 경험을 토대로 맡은 업무이상을 해나갈 자세로 임하고 있습니다.
+                  &ldquo;매일의 꾸준한 노력이 성장을 만든다&rdquo;는 믿음으로 20년간 한 길을 걸어온 개발자입니다. 컴퓨터가 이해하는 코드는 누구나 짤 수 있지만, 좋은 개발자는 사람이 이해하는 코드를 쓴다고
+                  생각합니다. 단기적으로 동작하는 코드보다, 동료가 6개월 뒤에 읽어도 이해되는 코드와 설계를 우선해 왔고, 이 원칙이 결국 팀의 속도와 서비스의 안정성을 만든다고 믿습니다.
                 </p>
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">야나두의 경우 개발실장 보직을 겸하면서 다양한 챗봇 형태의 AI 기술 서비스를 개발하고 런칭하였습니다.</p>
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                  최근에는 AI를 개발과 일하는 방식 전반에 적극적으로 활용해 업무 효율을 극대화하고 있습니다. 코드 작성·리뷰, 문서화, 반복 업무를 AI로 자동화해 팀이 본질적인 문제 해결에 더 집중할 수 있는 환경을
+                  만들고 있으며, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭해 왔습니다.
+                </p>
               </div>
               <div className="grid grid-cols-1 gap-6">
                 <Card>
