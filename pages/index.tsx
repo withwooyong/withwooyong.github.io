@@ -1,5 +1,6 @@
 import { HeroStripeBackdrop } from "@/components/hero-stripe-backdrop";
 import { PortfolioNav } from "@/components/portfolio-nav";
+import { CoinFlipDeck } from "@/components/coin-flip-deck";
 import { SectionReveal } from "@/components/section-reveal";
 import { SiteHead } from "@/components/site-head";
 import { SystemDiagramCard } from "@/components/system-diagram-card";
@@ -136,8 +137,8 @@ export default function Home() {
                   만들고 있으며, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭해 왔습니다.
                 </p>
               </div>
-              <div className="grid grid-cols-1 gap-6">
-                <Card>
+              <CoinFlipDeck className="grid grid-cols-1 gap-6">
+                <Card className="coin-flip-card">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
                       <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -148,7 +149,7 @@ export default function Home() {
                     <p className="text-slate-600 dark:text-slate-300">야나두 개발실장 (2022.2 ~ 재직중)</p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="coin-flip-card">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
                       <Code className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -159,7 +160,7 @@ export default function Home() {
                     <p className="text-slate-600 dark:text-slate-300">AI 서비스, N-Screen, OTT, STB, CMS 개발</p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="coin-flip-card">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
                       <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -170,7 +171,7 @@ export default function Home() {
                     <p className="text-slate-600 dark:text-slate-300">20~30명 개발팀 총괄 경험</p>
                   </CardContent>
                 </Card>
-              </div>
+              </CoinFlipDeck>
             </div>
           </div>
           </SectionReveal>

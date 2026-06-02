@@ -271,6 +271,43 @@ html {
   }
 }
 
+/* --- 소개 카드 동전 회전(스크롤 진입 시 여러 바퀴 → 감속 정지, 호버 시 1바퀴) --- */
+@media (prefers-reduced-motion: no-preference) {
+  .coin-flip-deck {
+    perspective: 1200px;
+  }
+
+  .coin-flip-card {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* 한 바퀴 돌다 감속하며 정면(0deg)에서 멈춤 — 부드러운 감속 */
+  @keyframes coin-card-spin-in {
+    from {
+      transform: rotateY(360deg);
+    }
+    to {
+      transform: rotateY(0deg);
+    }
+  }
+
+  .coin-flip-active .coin-flip-card {
+    animation: coin-card-spin-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* 카드별 순차 시작(점수판 넘기듯 촤르륵) */
+  .coin-flip-active .coin-flip-card:nth-child(2) {
+    animation-delay: 0.18s;
+  }
+
+  .coin-flip-active .coin-flip-card:nth-child(3) {
+    animation-delay: 0.36s;
+  }
+
+}
+
 /* --- 네비 데스크톱 링크: 밑줄 확장 --- */
 @media (prefers-reduced-motion: no-preference) {
   .portfolio-nav-link {
