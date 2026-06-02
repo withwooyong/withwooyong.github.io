@@ -2,6 +2,17 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-06-02
+
+### 추가
+
+- 소개 카드 동전 회전: [`components/coin-flip-deck.tsx`](components/coin-flip-deck.tsx) — 스크롤 진입 시 현재 포지션/전문 분야/팀 규모 카드가 0.18s 간격으로 순차적으로 Y축 360° 한 바퀴 회전 후 감속 정지 (`prefers-reduced-motion: reduce` 시 비활성), [`styles/globals.css`](styles/globals.css) 키프레임 (`c94f3f6`)
+
+### 변경
+
+- [`pages/index.tsx`](pages/index.tsx) — 히어로 소개를 20년+ 엔지니어링 리더 관점으로 재작성(KT 추가, 온프레미스(IDC)/AWS 경험 명시), 개발자 철학을 코드 가독성 중심 메시지로 다듬고 AI 업무 효율 극대화 단락 추가, 메타 `description` 정비 (`7d05e2c`)
+- [`pages/en/index.tsx`](pages/en/index.tsx) — 영문 페이지를 한글 버전과 동일한 톤으로 갱신(소개·Highlights·메타 description) (`2b08b35`)
+
 ## 2026-05-01
 
 ### 추가
