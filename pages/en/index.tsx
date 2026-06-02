@@ -24,7 +24,7 @@ export default function EnglishHome() {
     <>
       <SiteHead
         title="Wooyong (Ted) Heo — Agile Developer & Tech Lead"
-        description="Summary portfolio: engineering leadership at Yanadoo; N-Screen, OTT, and AI platform experience (SK Broadband, CJ Hellovision). Full detail on the Korean page."
+        description="Summary portfolio of Wooyong (Ted) Heo: a 20+ year engineering leader and Head of Development at Yanadoo. Drove 10M+ user services and platform builds at KT, CJ Hellovision, and SK Broadband across on-prem (IDC) and AWS, and leverages AI to maximize engineering productivity. Full detail on the Korean page."
         path="/en/"
         jsonLd={personJsonLd}
       />
@@ -48,7 +48,7 @@ export default function EnglishHome() {
               <h1 className="text-3xl font-bold tracking-tight">Wooyong (Ted) Heo</h1>
               <p className="text-lg text-slate-600 dark:text-slate-300 mt-1">Agile Developer & Tech Lead</p>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-                Head of Development at Yanadoo (commerce & education). Previously Senior Engineer / PM at SK Broadband and CMS part lead at CJ Hellovision (TVING). Focus areas: AI services, N-Screen, OTT, and platform engineering.
+                A 20+ year engineering leader heading a ~30-person organization at Yanadoo (education & commerce). Drove 10M+ user services and platform builds at KT, CJ Hellovision, and SK Broadband — a full-stack architect across both on-prem (IDC) and AWS. I connect AI, platforms, and people to grow services and engineering productivity.
               </p>
             </div>
           </div>
@@ -60,9 +60,10 @@ export default function EnglishHome() {
             </CardHeader>
             <CardContent>
               <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300 text-sm">
-                <li>Leads a 20–30 person engineering organization across product, mobile, backend, and operations.</li>
-                <li>Shipped multiple AI chatbot products in education and commerce domains.</li>
-                <li>Large-scale TV / OTT backend integrations (search, recommendations, CMS, media pipelines).</li>
+                <li>Leads a ~30-person engineering organization across product, mobile, backend, and operations.</li>
+                <li>Believes great engineers write code people understand — code a teammate can still read six months later — which is what builds team velocity and service stability.</li>
+                <li>Uses AI across coding, review, documentation, and repetitive work to maximize productivity, and has shipped multiple AI chatbot products in education and commerce.</li>
+                <li>Large-scale TV / OTT backend integrations (search, recommendations, CMS, media pipelines) for 10M+ user services.</li>
               </ul>
             </CardContent>
           </Card>
