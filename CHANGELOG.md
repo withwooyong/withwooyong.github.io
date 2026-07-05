@@ -2,6 +2,18 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-07-05
+
+### 추가
+
+- 프로덕트 리더십 요약 페이지 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) — 공개 라우트 `/product-lead/`. 핵심 요약 4·대표 여정 3(맥락→접근→임팩트)·플랫폼 프로덕트 리드 요구 역량 매핑 표. 정성 서술 기반이며 정량 지표는 실측치 확보 후 보강 예정 (`b9b88a6`)
+- 홈 `#product` "프로덕트 리더십" 요약 섹션 + 히어로 보조 CTA(`플랫폼 프로덕트 리더로 보기`) + 내비 앵커 [`pages/index.tsx`](pages/index.tsx), [`data/portfolio.ts`](data/portfolio.ts) (`b9b88a6`)
+- [`public/sitemap.xml`](public/sitemap.xml) — `/product-lead/` 등록(공개 색인) (`b9b88a6`)
+
+### 변경
+
+- 회사 표기 정비: `야나두` → **(주)야나두 a kakao company (구 카카오키즈)**, 직책을 **커머스개발실장**으로 [`pages/index.tsx`](pages/index.tsx)·[`pages/en/index.tsx`](pages/en/index.tsx)의 JSON-LD·메타 description·히어로·경력 카드에 반영. 서비스/제품명("야나두 AI 서비스", "야나두 앱")은 유지 (`b9b88a6`)
+
 ## 2026-06-02
 
 ### 추가
