@@ -5,6 +5,7 @@ export type NavItem = { href: string; label: string };
 
 export const navItems: NavItem[] = [
   { href: "#about", label: "소개" },
+  { href: "#product", label: "프로덕트 리더십" },
   { href: "#experience", label: "경력" },
   { href: "#projects", label: "프로젝트" },
   { href: "#systems", label: "시스템 구성" },

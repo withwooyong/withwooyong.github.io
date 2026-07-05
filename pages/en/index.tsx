@@ -17,14 +17,14 @@ export default function EnglishHome() {
     image: absoluteUrl("/images/Ted_yanadoo.png"),
     sameAs: ["https://github.com/withwooyong"],
     jobTitle: "Agile Developer & Tech Lead",
-    worksFor: { "@type": "Organization", name: "Yanadoo" },
+    worksFor: { "@type": "Organization", name: "Yanadoo Co., Ltd. (a kakao company, formerly Kakao Kids)" },
   };
 
   return (
     <>
       <SiteHead
         title="Wooyong (Ted) Heo — Agile Developer & Tech Lead"
-        description="Summary portfolio of Wooyong (Ted) Heo: a 20+ year engineering leader and Head of Development at Yanadoo. Drove 10M+ user services and platform builds at KT, CJ Hellovision, and SK Broadband across on-prem (IDC) and AWS, and leverages AI to maximize engineering productivity. Full detail on the Korean page."
+        description="Summary portfolio of Wooyong (Ted) Heo: a 20+ year engineering leader and Head of Commerce Development at Yanadoo (a kakao company, formerly Kakao Kids). Drove 10M+ user services and platform builds at KT, CJ Hellovision, and SK Broadband across on-prem (IDC) and AWS, and leverages AI to maximize engineering productivity. Full detail on the Korean page."
         path="/en/"
         jsonLd={personJsonLd}
       />
@@ -48,7 +48,7 @@ export default function EnglishHome() {
               <h1 className="text-3xl font-bold tracking-tight">Wooyong (Ted) Heo</h1>
               <p className="text-lg text-slate-600 dark:text-slate-300 mt-1">Agile Developer & Tech Lead</p>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-                A 20+ year engineering leader heading a ~30-person organization at Yanadoo (education & commerce). Drove 10M+ user services and platform builds at KT, CJ Hellovision, and SK Broadband — a full-stack architect across both on-prem (IDC) and AWS. I connect AI, platforms, and people to grow services and engineering productivity.
+                A 20+ year engineering leader and Head of Commerce Development at Yanadoo (a kakao company, formerly Kakao Kids), leading a ~30-person organization (education & commerce). Drove 10M+ user services and platform builds at KT, CJ Hellovision, and SK Broadband — a full-stack architect across both on-prem (IDC) and AWS. I connect AI, platforms, and people to grow services and engineering productivity.
               </p>
             </div>
           </div>

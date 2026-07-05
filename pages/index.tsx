@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { navItems, skillCategories, systemDiagrams, writingLinks } from "@/data/portfolio";
 import { absoluteUrl } from "@/lib/site";
-import { Award, Bot, Code, Database, ExternalLink, Github, Mail, Phone, Users, Wrench } from "lucide-react";
+import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Phone, Users, Wrench } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +40,7 @@ export default function Home() {
       image: absoluteUrl("/images/Ted_yanadoo.png"),
       sameAs: ["https://github.com/withwooyong"],
       jobTitle: "Agile Developer & Tech Lead",
-      worksFor: { "@type": "Organization", name: "야나두" },
+      worksFor: { "@type": "Organization", name: "(주)야나두 a kakao company (구 카카오키즈)" },
     }),
     []
   );
@@ -50,7 +51,7 @@ export default function Home() {
     <>
       <SiteHead
         title="허우용 - Agile Developer & Tech Lead"
-        description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 야나두 개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 풀스택 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
+        description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 (주)야나두(a kakao company, 구 카카오키즈) 커머스개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 풀스택 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
         path="/"
         jsonLd={personJsonLd}
       />
@@ -101,7 +102,7 @@ export default function Home() {
               <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
                 20년 이상 경력의 엔지니어링 리더.
                 <br />
-                <strong>야나두 개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
+                <strong>(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
                 <br />
                 <strong>KT, CJ헬로비전, SK브로드밴드</strong>에서 1,000만+ 사용자 서비스 개발 및 플랫폼 구축 주도.
                 <br />
@@ -109,12 +110,18 @@ export default function Home() {
                 <br />
                 AI·플랫폼·조직을 연결해 서비스 성장과 개발 생산성 향상을 이끌어온 기술 리더.
               </p>
-              <div className="flex justify-center hero-stagger-5">
+              <div className="flex flex-wrap justify-center gap-3 hero-stagger-5">
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
                   <a href="https://www.notion.so/282845b3742d8060bff8cd6f0012ef63?source=copy_link" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
                     경력기술서 보기
                   </a>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
+                  <Link href="/product-lead/">
+                    플랫폼 프로덕트 리더로 보기
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -146,7 +153,7 @@ export default function Home() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">야나두 개발실장 (2022.2 ~ 재직중)</p>
+                    <p className="text-slate-600 dark:text-slate-300">(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장 (2022.2 ~ 재직중)</p>
                   </CardContent>
                 </Card>
                 <Card className="coin-flip-card">
@@ -177,6 +184,42 @@ export default function Home() {
           </SectionReveal>
         </section>
 
+        <section id="product" className="py-16 relative z-10">
+          <SectionReveal>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="relative overflow-hidden rounded-3xl border border-blue-100/80 dark:border-slate-700/70 bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-8 md:p-12 shadow-sm">
+                <div className="max-w-3xl mx-auto text-center">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3">플랫폼 · 프로덕트 리더십</p>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 mb-4">개발 리더를 넘어, 제품을 이끄는 리더</h2>
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                    OTT·커머스 플랫폼의 코어 엔진 설계부터 CMS 재구축·현대화, AI, 그리고 조직까지 — 20년의 경험을 제품 관점으로 정리한 한 장 요약입니다.
+                  </p>
+                  <ul className="flex flex-wrap justify-center gap-2 mb-8">
+                    {["콘텐츠 코어 엔진", "CMS 재구축·현대화", "커머스 + AI", "크로스펑셔널 조직"].map((chip) => (
+                      <li
+                        key={chip}
+                        className="rounded-full border border-blue-200/80 dark:border-slate-600 bg-white/70 dark:bg-slate-800/70 px-4 py-1.5 text-sm text-slate-700 dark:text-slate-200"
+                      >
+                        {chip}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
+                  >
+                    <Link href="/product-lead/">
+                      플랫폼 프로덕트 리더로 보기
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </SectionReveal>
+        </section>
+
         <section id="experience" className="py-16 bg-gradient-to-r from-slate-50/80 to-blue-50/80 dark:from-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm relative z-10">
           <SectionReveal>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -186,8 +229,8 @@ export default function Home() {
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div>
-                      <CardTitle className="text-xl">개발실장</CardTitle>
-                      <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">야나두 (커머스개발실)</CardDescription>
+                      <CardTitle className="text-xl">커머스개발실장</CardTitle>
+                      <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">(주)야나두 a kakao company (구 카카오키즈)</CardDescription>
                     </div>
                     <Badge variant="secondary">2022.02 - 재직중</Badge>
                   </div>
