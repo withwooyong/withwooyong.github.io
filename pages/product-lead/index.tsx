@@ -1,3 +1,4 @@
+import { SectionReveal } from "@/components/section-reveal";
 import { SiteHead } from "@/components/site-head";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
@@ -38,18 +39,20 @@ const summaryCards = [
   },
 ];
 
-/** 대표 여정 — 각 단계를 맥락 → 역할 → 접근 → 임팩트(정성)로 서술 */
+/** 대표 여정 — 최신 경력부터 역순, 각 단계를 맥락 → 역할 → 접근 → 임팩트(정성)로 서술 */
 const journey = [
   {
-    period: "2012 – 2017",
-    org: "CJ 헬로비전 (TVING 서비스개발팀)",
-    role: "N-Screen(Web·TV·Mobile) CMS 개발 파트 리드",
-    context: "콘텐츠가 여러 화면으로 흐르는 OTT의 초기 — 통합 CMS와 콘텐츠 파이프라인이 필요했던 시기.",
-    approach: "CMS·검색·랭킹 추천·이미지·미디어 트랜스코딩과 N-Screen 통합 API를 설계·개발하며 콘텐츠 코어 엔진을 세움.",
-    impact: "여러 디바이스로 일관되게 콘텐츠가 배급되는 코어 플랫폼을 팀과 함께 구축 — 오늘의 CMS 재구축을 '내부에서 겪어 본' 관점.",
+    period: "2022.02 - 재직중",
+    duration: "4년 6개월",
+    org: "(주)야나두 a kakao company (구 카카오키즈)",
+    role: "커머스개발실장",
+    context: "교육·커머스 도메인에서 제품 성장과 AI 전환을 동시에 요구받는 국면.",
+    approach: "기획~데브옵스 전 직군을 총괄하며 교육·커머스 서비스를 제품 단위로 운영하고, 다양한 챗봇형 AI 서비스를 기획·런칭.",
+    impact: "콘텐츠·커머스·AI·조직을 연결해 제품을 성장시키는 프로덕트 리더십으로 확장 — 메타데이터·검색 경험을 AI 자동화로 잇는 기반.",
   },
   {
-    period: "2017 – 2021",
+    period: "2017.04 - 2021.06",
+    duration: "4년 3개월",
     org: "SK 브로드밴드 (B tv 백엔드 · 미디어클라우드)",
     role: "B tv 백엔드 개발 매니저 / PM",
     context: "대규모 트래픽의 IPTV·OTT를 모듈화된 플랫폼으로 진화시켜야 했던 단계.",
@@ -57,12 +60,13 @@ const journey = [
     impact: "레거시를 모듈화·MSA로 재구축하는 제품·아키텍처 관점을 확립 — 확장성과 유연성을 플랫폼 거버넌스로 다루는 경험.",
   },
   {
-    period: "2022 – 현재",
-    org: "(주)야나두 a kakao company (구 카카오키즈)",
-    role: "커머스개발실장",
-    context: "교육·커머스 도메인에서 제품 성장과 AI 전환을 동시에 요구받는 국면.",
-    approach: "기획~데브옵스 전 직군을 총괄하며 교육·커머스 서비스를 제품 단위로 운영하고, 다양한 챗봇형 AI 서비스를 기획·런칭.",
-    impact: "콘텐츠·커머스·AI·조직을 연결해 제품을 성장시키는 프로덕트 리더십으로 확장 — 메타데이터·검색 경험을 AI 자동화로 잇는 기반.",
+    period: "2012.06 - 2017.04",
+    duration: "4년 11개월",
+    org: "CJ 헬로비전 (TVING 서비스개발팀)",
+    role: "N-Screen(Web·TV·Mobile) CMS 개발 파트 리드",
+    context: "콘텐츠가 여러 화면으로 흐르는 OTT의 초기 — 통합 CMS와 콘텐츠 파이프라인이 필요했던 시기.",
+    approach: "CMS·검색·랭킹 추천·이미지·미디어 트랜스코딩과 N-Screen 통합 API를 설계·개발하며 콘텐츠 코어 엔진을 세움.",
+    impact: "여러 디바이스로 일관되게 콘텐츠가 배급되는 코어 플랫폼을 팀과 함께 구축 — 오늘의 CMS 재구축을 '내부에서 겪어 본' 관점.",
   },
 ];
 
@@ -117,9 +121,14 @@ export default function ProductLead() {
 
         <main id="main" className="max-w-4xl mx-auto px-4 py-12 space-y-14">
           {/* 헤더 / 포지셔닝 */}
+          <SectionReveal>
           <section className="flex flex-col sm:flex-row items-center gap-8">
-            <div className="w-28 h-28 rounded-full overflow-hidden shadow-lg ring-2 ring-white/50 dark:ring-slate-600 shrink-0">
-              <Image src="/images/Ted_yanadoo.png" alt="허우용 프로필 사진" width={112} height={112} className="w-full h-full object-cover" priority />
+            <div className="profile-coin-group w-28 h-28 shrink-0">
+              <div className="relative h-full w-full rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
+                <div className="profile-coin-face">
+                  <Image src="/images/Ted_yanadoo.png" alt="허우용 프로필 사진" width={112} height={112} className="w-full h-full object-cover" priority />
+                </div>
+              </div>
             </div>
             <div className="text-center sm:text-left">
               <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">For Platform / Product Leadership</p>
@@ -132,13 +141,14 @@ export default function ProductLead() {
               </p>
             </div>
           </section>
+          </SectionReveal>
 
           {/* CTA */}
           <div className="flex flex-wrap gap-3">
-            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
               <Link href="/">전체 포트폴리오 보기</Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
               <a href={NOTION_RESUME_URL} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4 mr-2" />
                 경력기술서 (Notion)
@@ -147,11 +157,12 @@ export default function ProductLead() {
           </div>
 
           {/* 핵심 요약 */}
+          <SectionReveal>
           <section className="space-y-6">
             <h2 className="text-2xl font-bold">핵심 요약</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {summaryCards.map(({ Icon, iconClassName, title, body }) => (
-                <Card key={title}>
+                <Card key={title} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Icon className={`h-5 w-5 ${iconClassName}`} />
@@ -165,21 +176,26 @@ export default function ProductLead() {
               ))}
             </div>
           </section>
+          </SectionReveal>
 
           {/* 대표 여정 */}
+          <SectionReveal>
           <section className="space-y-6">
             <h2 className="text-2xl font-bold">대표 여정</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">각 단계를 맥락 → 역할 → 접근 → 임팩트 순서로 정리했습니다.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">최신 경력부터 역순으로, 각 단계를 맥락 → 역할 → 접근 → 임팩트 순서로 정리했습니다.</p>
             <div className="space-y-4">
               {journey.map((j) => (
-                <Card key={j.period}>
+                <Card key={j.period} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                       <div>
                         <CardTitle className="text-lg">{j.role}</CardTitle>
                         <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">{j.org}</CardDescription>
                       </div>
-                      <Badge variant="secondary" className="w-fit">{j.period}</Badge>
+                      <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                        <Badge variant="secondary" className="w-fit">{j.period}</Badge>
+                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{j.duration}</span>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2 text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -191,11 +207,13 @@ export default function ProductLead() {
               ))}
             </div>
           </section>
+          </SectionReveal>
 
           {/* 역량 매핑 */}
+          <SectionReveal>
           <section className="space-y-6">
             <h2 className="text-2xl font-bold">플랫폼 프로덕트 리드 요구 역량 매핑</h2>
-            <Card>
+            <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
@@ -221,8 +239,10 @@ export default function ProductLead() {
               </CardContent>
             </Card>
           </section>
+          </SectionReveal>
 
           {/* 연결 */}
+          <SectionReveal>
           <section className="space-y-4">
             <h2 className="text-2xl font-bold">더 보기</h2>
             <div className="flex flex-wrap gap-3">
@@ -256,6 +276,7 @@ export default function ProductLead() {
               콘텐츠·플랫폼·AI를 잇는 프로덕트 리더십 요약 페이지입니다.
             </p>
           </section>
+          </SectionReveal>
         </main>
       </div>
     </>
