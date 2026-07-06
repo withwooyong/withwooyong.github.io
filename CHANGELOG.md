@@ -2,6 +2,18 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-07-06
+
+### 추가
+
+- 경력 카드에 **근속기간(연·개월)** 표시 — 날짜(뱃지)와 분리해 파란색으로 강조, 스캔 시 재직 기간이 바로 읽히도록 함 [`pages/index.tsx`](pages/index.tsx). 소개 "현재 포지션" 카드도 동일 표기로 통일 (`b370439`)
+- 히어로 인사말을 **macOS "hello" 손글씨 스타일**로 변경 — Nanum Pen Script(Google Fonts, [`pages/_document.tsx`](pages/_document.tsx)) + 왼→오 획이 그려지는 손글씨 리빌 애니메이션 [`styles/globals.css`](styles/globals.css), `prefers-reduced-motion` 존중 (`b370439`)
+
+### 변경
+
+- 쌍용정보통신 재직 시작을 **정식 채용일 기준**으로 정정: `2005.05` → `2005.11 - 2012.06 (6년 8개월)` [`pages/index.tsx`](pages/index.tsx) (`b370439`)
+- 프로덕트 리더십 페이지 결제·정산·구독 역량 문구를 총괄 기준 정식 문구로 교체(플레이스홀더 제거) [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`b370439`)
+
 ## 2026-07-05
 
 ### 추가
