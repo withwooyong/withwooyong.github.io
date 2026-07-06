@@ -13,6 +13,7 @@
 
 - 쌍용정보통신 재직 시작을 **정식 채용일 기준**으로 정정: `2005.05` → `2005.11 - 2012.06 (6년 8개월)` [`pages/index.tsx`](pages/index.tsx) (`b370439`)
 - 프로덕트 리더십 페이지 결제·정산·구독 역량 문구를 총괄 기준 정식 문구로 교체(플레이스홀더 제거) [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`b370439`)
+- SKB 경력을 **차세대 CMS(NCMS) 재구축 발주사 PM**(MSA 설계·검토·오픈 조율) 역할로 표현 정확화, CJ TVING 임팩트 `처음부터 구축`→`팀과 함께 구축`, 대표 여정 부제의 `정량 지표 보강 예정` 문구 제거 [`pages/index.tsx`](pages/index.tsx), [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`431f3c0`)
 
 ## 2026-07-05
 
