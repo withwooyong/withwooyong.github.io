@@ -70,7 +70,7 @@ const journey = [
 const capabilityMap: { need: string; evidence: string; confirm?: boolean }[] = [
   { need: "콘텐츠·플랫폼 코어 엔진 로드맵", evidence: "OTT·N-Screen의 CMS·검색·편성·통합 API를 설계·운영 (CJ헬로비전, SKB)" },
   { need: "대규모 CMS 재구축·현대화", evidence: "TVING CMS 원조 구축 + SKB New CMS의 MSA 재설계 참여" },
-  { need: "결제·정산 시스템 현대화", evidence: "야나두 커머스 도메인 — 결제·정산·구독 실경험 확인 후 보강 예정", confirm: true },
+  { need: "커머스 결제·정산·구독 도메인", evidence: "야나두 교육·커머스 플랫폼 총괄 — 결제·정산·구독 등 커머스 핵심 도메인 서비스 개발 관리" },
   { need: "플랫폼 거버넌스·요구사항 모듈화", evidence: "MSA 설계, 통합 이미지/API 플랫폼, 확장 가능한 DB 설계 연구(석사 논문)" },
   { need: "MSA · API 설계 · 클라우드", evidence: "Spring Boot 기반 API·MSA, 온프레미스(IDC)와 AWS 모두 운영" },
   { need: "백오피스·내부 운영 UX 고도화", evidence: "CMS·편성·백오피스 운영 도구 개발을 제품 단위로 총괄" },

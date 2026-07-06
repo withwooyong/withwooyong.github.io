@@ -95,8 +95,10 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-slate-50 mb-4 hero-stagger-2">
-                안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
+              <h1 className="hero-hello text-6xl md:text-8xl text-slate-900 dark:text-slate-50 mb-4 hero-stagger-2">
+                <span className="hero-hello-write">
+                  안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
+                </span>
               </h1>
               <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 hero-stagger-3">Agile Developer & Tech Lead</p>
               <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
@@ -153,7 +155,7 @@ export default function Home() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장 (2022.2 ~ 재직중)</p>
+                    <p className="text-slate-600 dark:text-slate-300">(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장 (2022.02 ~ 재직중 · 4년 6개월)</p>
                   </CardContent>
                 </Card>
                 <Card className="coin-flip-card">
@@ -232,7 +234,10 @@ export default function Home() {
                       <CardTitle className="text-xl">커머스개발실장</CardTitle>
                       <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">(주)야나두 a kakao company (구 카카오키즈)</CardDescription>
                     </div>
-                    <Badge variant="secondary">2022.02 - 재직중</Badge>
+                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                      <Badge variant="secondary">2022.02 - 재직중</Badge>
+                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 6개월</span>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -261,7 +266,10 @@ export default function Home() {
                       <CardTitle className="text-xl">Senior 엔지니어 & PM</CardTitle>
                       <CardDescription className="text-green-600 dark:text-green-400 font-medium">SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)</CardDescription>
                     </div>
-                    <Badge variant="secondary">2017.04 - 2021.06</Badge>
+                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                      <Badge variant="secondary">2017.04 - 2021.06</Badge>
+                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 3개월</span>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -294,7 +302,10 @@ export default function Home() {
                       <CardTitle className="text-xl">CMS 개발 파트 리드</CardTitle>
                       <CardDescription className="text-purple-600 dark:text-purple-400 font-medium">CJ Hellovision (TVING 서비스개발팀)</CardDescription>
                     </div>
-                    <Badge variant="secondary">2012.06 - 2017.04</Badge>
+                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                      <Badge variant="secondary">2012.06 - 2017.04</Badge>
+                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 11개월</span>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -327,7 +338,10 @@ export default function Home() {
                       <CardTitle className="text-xl">시스템 개발</CardTitle>
                       <CardDescription className="text-orange-600 dark:text-orange-400 font-medium">쌍용정보통신 (통신연구소/뉴미디어기술팀)</CardDescription>
                     </div>
-                    <Badge variant="secondary">2005.5 - 2012.06</Badge>
+                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                      <Badge variant="secondary">2005.11 - 2012.06</Badge>
+                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">6년 8개월</span>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
