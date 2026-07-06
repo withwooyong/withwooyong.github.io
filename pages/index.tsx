@@ -289,7 +289,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-start">
                       <span className="text-green-500 dark:text-green-400 mr-2">•</span>
-                      New CMS 프로젝트 MSA 구축 설계 참여
+                      차세대 CMS(NCMS) 재구축 발주사 PM — MSA 설계·검토 및 오픈 조율
                     </li>
                   </ul>
                 </CardContent>

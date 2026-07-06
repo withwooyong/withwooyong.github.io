@@ -46,14 +46,14 @@ const journey = [
     role: "N-Screen(Web·TV·Mobile) CMS 개발 파트 리드",
     context: "콘텐츠가 여러 화면으로 흐르는 OTT의 초기 — 통합 CMS와 콘텐츠 파이프라인이 필요했던 시기.",
     approach: "CMS·검색·랭킹 추천·이미지·미디어 트랜스코딩과 N-Screen 통합 API를 설계·개발하며 콘텐츠 코어 엔진을 세움.",
-    impact: "여러 디바이스로 일관되게 콘텐츠가 배급되는 코어 플랫폼을 처음부터 구축 — 오늘의 CMS 재구축을 '내부에서 겪어 본' 관점.",
+    impact: "여러 디바이스로 일관되게 콘텐츠가 배급되는 코어 플랫폼을 팀과 함께 구축 — 오늘의 CMS 재구축을 '내부에서 겪어 본' 관점.",
   },
   {
     period: "2017 – 2021",
     org: "SK 브로드밴드 (B tv 백엔드 · 미디어클라우드)",
     role: "B tv 백엔드 개발 매니저 / PM",
     context: "대규모 트래픽의 IPTV·OTT를 모듈화된 플랫폼으로 진화시켜야 했던 단계.",
-    approach: "New CMS의 MSA 구축 설계에 참여하고, 검색·딥메타·개인화, 통합 이미지 플랫폼, EPG/VOD 편성 플랫폼을 리딩.",
+    approach: "차세대 CMS(NCMS) 재구축의 발주사 PM으로 MSA 설계·검토를 진행하고, 검색·딥메타·개인화, 통합 이미지 플랫폼, EPG/VOD 편성 플랫폼을 리딩.",
     impact: "레거시를 모듈화·MSA로 재구축하는 제품·아키텍처 관점을 확립 — 확장성과 유연성을 플랫폼 거버넌스로 다루는 경험.",
   },
   {
@@ -69,7 +69,7 @@ const journey = [
 /** 플랫폼 프로덕트 리드 요구 역량 ↔ 근거 매핑 */
 const capabilityMap: { need: string; evidence: string; confirm?: boolean }[] = [
   { need: "콘텐츠·플랫폼 코어 엔진 로드맵", evidence: "OTT·N-Screen의 CMS·검색·편성·통합 API를 설계·운영 (CJ헬로비전, SKB)" },
-  { need: "대규모 CMS 재구축·현대화", evidence: "TVING CMS 원조 구축 + SKB New CMS의 MSA 재설계 참여" },
+  { need: "대규모 CMS 재구축·현대화", evidence: "TVING CMS 원조 구축 + SKB 차세대 CMS(NCMS) 재구축 발주사 PM(MSA 설계·검토)" },
   { need: "커머스 결제·정산·구독 도메인", evidence: "야나두 교육·커머스 플랫폼 총괄 — 결제·정산·구독 등 커머스 핵심 도메인 서비스 개발 관리" },
   { need: "플랫폼 거버넌스·요구사항 모듈화", evidence: "MSA 설계, 통합 이미지/API 플랫폼, 확장 가능한 DB 설계 연구(석사 논문)" },
   { need: "MSA · API 설계 · 클라우드", evidence: "Spring Boot 기반 API·MSA, 온프레미스(IDC)와 AWS 모두 운영" },
@@ -169,7 +169,7 @@ export default function ProductLead() {
           {/* 대표 여정 */}
           <section className="space-y-6">
             <h2 className="text-2xl font-bold">대표 여정</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">각 단계를 맥락 → 역할 → 접근 → 임팩트 순서로 정리했습니다. (정량 지표는 실측치 확보 후 보강 예정)</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">각 단계를 맥락 → 역할 → 접근 → 임팩트 순서로 정리했습니다.</p>
             <div className="space-y-4">
               {journey.map((j) => (
                 <Card key={j.period}>
