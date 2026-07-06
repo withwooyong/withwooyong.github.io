@@ -1,3 +1,5 @@
+import { CoinFlipDeck } from "@/components/coin-flip-deck";
+import { HeroStripeBackdrop } from "@/components/hero-stripe-backdrop";
 import { SectionReveal } from "@/components/section-reveal";
 import { SiteHead } from "@/components/site-head";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -117,9 +119,23 @@ export default function ProductLead() {
 
       <div
         lang="ko"
-        className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-900 dark:text-slate-100"
+        className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden text-slate-900 dark:text-slate-100"
       >
-        <header className="border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/85 backdrop-blur-md">
+        <div className="absolute inset-0 opacity-30 dark:opacity-20">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-cyan-500/10" />
+        <HeroStripeBackdrop />
+        <div
+          className="pointer-events-none absolute -top-28 left-[8%] z-[1] w-[min(480px,85vw)] h-[min(480px,85vw)] rounded-full bg-blue-400/30 dark:bg-blue-500/20 blur-3xl hero-blob"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute top-8 right-[-5%] z-[1] w-[min(420px,75vw)] h-[min(420px,75vw)] rounded-full bg-purple-400/25 dark:bg-purple-500/15 blur-3xl hero-blob--alt"
+          aria-hidden
+        />
+
+        <header className="relative z-10 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/85 backdrop-blur-md">
           <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
             <Link href="/" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline" hrefLang="ko">
               ← 전체 포트폴리오
@@ -128,7 +144,7 @@ export default function ProductLead() {
           </div>
         </header>
 
-        <main id="main" className="max-w-4xl mx-auto px-4 py-12 space-y-14">
+        <main id="main" className="relative z-10 max-w-4xl mx-auto px-4 py-12 space-y-14">
           {/* 헤더 / 포지셔닝 */}
           <SectionReveal>
           <section className="flex flex-col sm:flex-row items-center gap-8">
@@ -141,7 +157,12 @@ export default function ProductLead() {
             </div>
             <div className="text-center sm:text-left">
               <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">For Platform / Product Leadership</p>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">허우용 · 플랫폼 프로덕트 리더</h1>
+              <h1 className="hero-hello text-5xl md:text-6xl text-slate-900 dark:text-slate-50">
+                <span className="hero-hello-write">
+                  안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
+                </span>
+              </h1>
+              <p className="text-xl md:text-2xl font-bold tracking-tight mt-2">플랫폼 프로덕트 리더</p>
               <p className="text-lg text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
                 20년간 OTT·커머스 플랫폼의 코어를 설계하고, 조직과 함께 제품으로 완성해 온 리더.
               </p>
@@ -169,9 +190,9 @@ export default function ProductLead() {
           <SectionReveal>
           <section className="space-y-6">
             <h2 className="text-2xl font-bold">핵심 요약</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <CoinFlipDeck className="grid sm:grid-cols-2 gap-4">
               {summaryCards.map(({ Icon, iconClassName, title, body }) => (
-                <Card key={title} className="hover:shadow-lg transition-shadow">
+                <Card key={title} className="coin-flip-card hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Icon className={`h-5 w-5 ${iconClassName}`} />
@@ -183,7 +204,7 @@ export default function ProductLead() {
                   </CardContent>
                 </Card>
               ))}
-            </div>
+            </CoinFlipDeck>
           </section>
           </SectionReveal>
 

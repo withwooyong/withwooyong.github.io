@@ -306,6 +306,10 @@ html {
     animation-delay: 0.36s;
   }
 
+  .coin-flip-active .coin-flip-card:nth-child(4) {
+    animation-delay: 0.54s;
+  }
+
 }
 
 /* --- 네비 데스크톱 링크: 밑줄 확장 --- */
