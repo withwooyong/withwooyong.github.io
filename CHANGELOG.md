@@ -7,6 +7,7 @@
 ### 추가
 
 - 프로덕트 리더십 대표 여정에 **쌍용정보통신(통신연구소/뉴미디어기술팀, 2005.11 - 2012.06 · 6년 8개월)** 경력 추가 — KT ISM·KT QOOK TV A-MOC를 "20년 OTT·플랫폼 여정의 출발점"으로 서술해 페이지 곳곳의 "20년" 표현과 정합 확보 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`77558bb`)
+- `/product-lead/`에 메인과 동일한 **배경 효과**(도트 패턴·그라데이션 워시·블롭 2개·SVG 스트라이프 `HeroStripeBackdrop`)와 핵심 요약 4카드 **동전 회전**(`CoinFlipDeck`, 4번째 카드 딜레이 0.54s를 [`styles/globals.css`](styles/globals.css)에 추가), h1 **손글씨 인사말**("안녕하세요, 허우용입니다" 리빌) 적용 — 기존 타이틀 "플랫폼 프로덕트 리더"는 부제로 이동 (`fa6f660`)
 
 ### 변경
 

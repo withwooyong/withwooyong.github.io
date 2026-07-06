@@ -17,7 +17,8 @@
 3. **경력 근속기간 표시** — 경력 카드마다 날짜(뱃지)와 분리해 근속기간(연·개월)을 파란색으로 강조. 근속 계산은 **입·퇴사월 포함(LinkedIn 방식)**. 쌍용정보통신은 **정식 채용일(2005.11)** 기준(6년 8개월).
 4. **경력 표현 정확화** — SKB의 "New CMS"는 **차세대 CMS(NCMS) 재구축의 '발주사(고객사) PM'**(MSA 설계·검토·오픈 조율)으로 표기. CJ TVING CMS 임팩트는 "팀과 함께 구축". 이 표현 기준을 유지할 것(과장 표현으로 회귀 금지).
 5. **(이번 세션) 대표 여정 정비** — [`/product-lead/`](pages/product-lead/index.tsx)의 대표 여정을 **최신 경력부터 역순 정렬**하고, 기간을 **월 단위 + 근속기간**(메인 경력 카드와 동일 값·레이아웃)으로 통일. **쌍용정보통신(2005.11 - 2012.06 · 6년 8개월)** 을 "20년 여정의 출발점"으로 추가해 4단계 여정 완성(엔지니어 → 파트 리드 → PM → 실장 성장 서사).
-6. **(이번 세션) `/product-lead/` CSS 효과** — 메인 페이지의 기존 효과를 그대로 재사용: 전 섹션 `SectionReveal` 스크롤 등장, 카드 `hover:shadow-lg`, CTA 버튼 hover 리프트, 프로필 사진 동전 회전(`profile-coin-group/-face`). **신규 CSS는 추가하지 않음** — 모든 애니메이션은 [`styles/globals.css`](styles/globals.css)에 이미 정의돼 있고 `prefers-reduced-motion` 대응 포함.
+6. **(이번 세션) `/product-lead/` CSS 효과** — 메인 페이지의 기존 효과를 그대로 재사용: 전 섹션 `SectionReveal` 스크롤 등장, 카드 `hover:shadow-lg`, CTA 버튼 hover 리프트, 프로필 사진 동전 회전(`profile-coin-group/-face`). 이어서 **배경 효과**(도트 패턴·그라데이션 워시·블롭 2개·`HeroStripeBackdrop` 스트라이프 — 페이지 최상위 래퍼에 배치, `overflow-hidden`으로 클리핑, 콘텐츠는 `z-10`)와 핵심 요약 4카드 **동전 회전**(`CoinFlipDeck`), h1 **손글씨 인사말** 적용. 신규 CSS는 [`styles/globals.css`](styles/globals.css)의 `coin-flip-card:nth-child(4)` 딜레이(0.54s) 3줄뿐 — 카드 수가 더 늘면 nth-child 딜레이도 추가해야 함. 모든 애니메이션은 `prefers-reduced-motion` 대응 포함.
+7. **(이번 세션) h1 변경 주의** — `/product-lead/`의 h1이 `허우용 · 플랫폼 프로덕트 리더` → **"안녕하세요, 허우용입니다"**(손글씨)로 바뀌고 기존 타이틀은 부제(`<p>`)로 내려갔다. 메인 페이지 h1과 동일 문구가 되었으므로, SEO 관점에서 페이지별 h1 차별화가 필요하다고 판단되면 부제와 역할을 되돌리는 선택지가 있다(`<title>`·메타 description·JSON-LD는 기존 유지).
 
 > **다음 담당자 필독 — 열려 있는 항목:**
 > - **근속기간 하드코딩 이중화.** 근무기간·근속기간 문자열이 이제 [`pages/index.tsx`](pages/index.tsx)와 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) **두 곳에 중복**돼 있다. 기간 갱신 시 반드시 두 파일을 함께 수정할 것. 장기적으로는 공용 데이터 파일([`data/portfolio.ts`](data/portfolio.ts))로 추출 권장.
@@ -67,7 +68,7 @@ npm run build   # 산출물 ./out (이번 세션 빌드 통과: 5/5 정적 페�
 1. **경력 데이터 공용화** — 근무기간·근속기간이 두 페이지에 중복된 상태를 [`data/portfolio.ts`](data/portfolio.ts) 추출로 해소.
 2. **결제·정산·구독 근거 보강** — 사용자 제공 자료로 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) 역량 행 구체화.
 3. **정량 지표 실측치 확보 → 1-pager `before → after` 보강**(위 산출법). 재직 중 접근 가능한 지표는 지금 캡처 권장.
-4. 배포 후 `/product-lead/` **실화면 확인** — 여정 역순·근속기간 표시·SectionReveal/동전 회전 동작.
+4. 배포 후 `/product-lead/` **실화면 확인** — 여정 역순·근속기간 표시·SectionReveal/카드 동전 회전·배경(블롭/스트라이프)·손글씨 인사말 동작, 모바일 가로 스크롤 없음 확인.
 5. (선택) 재직중 근속 자동 계산 전환, 주기적 **`npm audit`** 및 Next 패치 노트 확인.
 
 ---
@@ -78,6 +79,8 @@ npm run build   # 산출물 ./out (이번 세션 빌드 통과: 5/5 정적 페�
 
 - `9a11609` content: 프로덕트 리더십 대표 여정 최신순 정렬·근속기간 표시·메인 페이지 CSS 효과 적용
 - `77558bb` content: 프로덕트 리더십 대표 여정에 쌍용정보통신 경력 추가
+- `9a82467` docs: 세션 인수인계 갱신(대표 여정 역순·근속기간·CSS 효과·쌍용 경력 추가) — 여기까지 **푸시·배포 완료**
+- `fa6f660` feat: 프로덕트 리더십 페이지에 배경 효과·카드 동전 회전·손글씨 인사말 적용
 - `docs: 세션 인수인계 갱신` — 본 HANDOFF·CHANGELOG 갱신 커밋(이 문서를 포함하는 후속 커밋)
 
 (직전 커밋: `c045df6`/`431f3c0` SKB 발주사 PM 표현 정확화 · `d0d48d8`/`b370439` 근속기간·히어로 손글씨)
