@@ -9,6 +9,11 @@
 - 프로덕트 리더십 대표 여정에 **쌍용정보통신(통신연구소/뉴미디어기술팀, 2005.11 - 2012.06 · 6년 8개월)** 경력 추가 — KT ISM·KT QOOK TV A-MOC를 "20년 OTT·플랫폼 여정의 출발점"으로 서술해 페이지 곳곳의 "20년" 표현과 정합 확보 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`77558bb`)
 - `/product-lead/`에 메인과 동일한 **배경 효과**(도트 패턴·그라데이션 워시·블롭 2개·SVG 스트라이프 `HeroStripeBackdrop`)와 핵심 요약 4카드 **동전 회전**(`CoinFlipDeck`, 4번째 카드 딜레이 0.54s를 [`styles/globals.css`](styles/globals.css)에 추가), h1 **손글씨 인사말**("안녕하세요, 허우용입니다" 리빌) 적용 — 기존 타이틀 "플랫폼 프로덕트 리더"는 부제로 이동 (`fa6f660`)
 
+### 변경
+
+- 소개의 "개발자로서의 철학"을 **"Tech Lead로서의 철학"** 으로 재작성 — 팀의 코드 표준 → 기획·UI/UX 제품 관점(신규 단락) → 위임·성장·AI의 3단락 구성. 기존 시그니처 메시지(6개월 뒤에도 읽히는 코드, AI 활용)는 리더 관점으로 승격해 유지 [`pages/index.tsx`](pages/index.tsx) (`ad35823`, `3ffdaab`)
+- 프로덕트 리더십 대표 여정의 **팀명을 메인 경력 카드 기준으로 통일** — SKB `(B tv 백엔드 · 미디어클라우드)` → `SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)`, `CJ 헬로비전` → `CJ Hellovision` [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`ad35823`)
+
 ### 수정
 
 - `/product-lead/` **모바일 반응형 정비** — 역량 매핑 표의 요구 역량 열 `whitespace-nowrap`을 `md:` 이상으로 한정해 모바일에서 근거 열이 짓눌리던 문제 해결, h1 손글씨 인사말에 `break-keep`을 적용해 좁은 화면에서 어절 단위 줄바꿈. 320/390/1280px 실화면 검증 완료 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`cab2203`)
