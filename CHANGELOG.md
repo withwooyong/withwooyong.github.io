@@ -17,6 +17,8 @@
 ### 수정
 
 - `/product-lead/` **모바일 반응형 정비** — 역량 매핑 표의 요구 역량 열 `whitespace-nowrap`을 `md:` 이상으로 한정해 모바일에서 근거 열이 짓눌리던 문제 해결, h1 손글씨 인사말에 `break-keep`을 적용해 좁은 화면에서 어절 단위 줄바꿈. 320/390/1280px 실화면 검증 완료 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`cab2203`)
+- **모바일 타이포그래피 최적화**(iPhone 12 Pro/14 Pro Max 실화면 검증) — ① 전역 `word-break: keep-all` + `overflow-wrap: break-word`로 사이트 전체 한글 어절 단위 줄바꿈 [`styles/globals.css`](styles/globals.css) ② 메인 손글씨 h1 모바일 크기 60px→48px(`text-5xl sm:text-6xl md:text-8xl`)로 한 줄 유지 ③ 히어로 소개 문단의 강제 `<br/>`을 모바일에서 숨겨 자연스러운 문단 흐름(640px+ 기존 유지) ④ `/product-lead/` CTA 버튼 모바일 가운데 정렬 (`1343171`)
+- 경력·대표 여정 카드의 **재직 년월 배지와 근속기간을 같은 줄에 배치**(세로 쌓임 제거) — 메인 4곳·프로덕트 리더십 4곳 [`pages/index.tsx`](pages/index.tsx), [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) (`f6af9c7`)
 
 ### 변경
 

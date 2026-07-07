@@ -21,6 +21,7 @@
 7. **(이번 세션) h1 변경 주의** — `/product-lead/`의 h1이 `허우용 · 플랫폼 프로덕트 리더` → **"안녕하세요, 허우용입니다"**(손글씨)로 바뀌고 기존 타이틀은 부제(`<p>`)로 내려갔다. 메인 페이지 h1과 동일 문구가 되었으므로, SEO 관점에서 페이지별 h1 차별화가 필요하다고 판단되면 부제와 역할을 되돌리는 선택지가 있다(`<title>`·메타 description·JSON-LD는 기존 유지).
 8. **(이번 세션) 모바일 반응형 정비** — 배포 페이지를 Playwright로 320/390px 실화면 검증. 역량 매핑 표의 요구 역량 열 `whitespace-nowrap`이 모바일에서 근거 열을 짓누르던 문제를 `md:whitespace-nowrap`으로 해결(데스크톱 레이아웃 불변), h1에 `break-keep` 적용으로 어절 단위 줄바꿈. **교훈: `w-full` 표에서 한 열만 nowrap이면 모바일에서 나머지 열이 붕괴한다 — 표 추가 시 nowrap은 `md:` 이상으로 한정할 것.** 가로 스크롤 없음·전 섹션 정상 렌더 확인(배경 장식은 `overflow-hidden` 클리핑 정상).
 9. **(이번 세션) Tech Lead 철학 & 팀명 통일** — 소개 섹션 제목·내용을 "Tech Lead로서의 철학"으로 재작성(팀의 코드 표준 → 기획·UI/UX 제품 관점 → 위임·성장·AI 3단락). 프로덕트 리더십 대표 여정의 팀명을 메인 경력 카드 기준으로 통일(SKB `AI 서비스 개발스쿼드/미디어클라우드스쿼드`, `CJ Hellovision`). **팀명·직함·근속기간 등 사실 정보의 기준은 항상 메인 페이지([`pages/index.tsx`](pages/index.tsx)) 경력 카드** — 다른 페이지가 어긋나면 메인 쪽으로 맞출 것.
+10. **(이번 세션) 모바일 타이포그래피 최적화** — 사이트 전역에 `word-break: keep-all` + `overflow-wrap: break-word` 적용([`styles/globals.css`](styles/globals.css) `body`) — 한글 글자 단위 찢김이 사라졌으므로 **개별 요소에 `break-keep`을 또 붙일 필요 없음**. 메인 손글씨 h1은 모바일 48px(`text-5xl sm:text-6xl md:text-8xl`)로 한 줄 유지, 히어로 소개 문단의 `<br/>`은 `hidden sm:inline`+명시적 `{" "}` 공백(JSX는 요소 사이 줄바꿈 공백을 제거하므로 공백 필수). 경력 카드 배지·근속기간은 가로 한 줄(`flex items-center gap-2`). iPhone 12 Pro(390)/14 Pro Max(430)/320/1280px 실화면 검증 완료.
 
 > **다음 담당자 필독 — 열려 있는 항목:**
 > - **근속기간 하드코딩 이중화.** 근무기간·근속기간 문자열이 이제 [`pages/index.tsx`](pages/index.tsx)와 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) **두 곳에 중복**돼 있다. 기간 갱신 시 반드시 두 파일을 함께 수정할 것. 장기적으로는 공용 데이터 파일([`data/portfolio.ts`](data/portfolio.ts))로 추출 권장.
@@ -85,9 +86,12 @@ npm run build   # 산출물 ./out (이번 세션 빌드 통과: 5/5 정적 페�
 - `fa6f660` feat: 프로덕트 리더십 페이지에 배경 효과·카드 동전 회전·손글씨 인사말 적용
 - `955a0a0` docs: 세션 인수인계 갱신(배경 효과·카드 동전 회전·손글씨 인사말)
 - `cab2203` fix: 프로덕트 리더십 페이지 모바일 반응형 정비(역량 표 줄바꿈·h1 어절 단위 줄바꿈)
-- `4e0cf0a` docs: 세션 인수인계 갱신(모바일 반응형 정비·실화면 검증 완료) — 여기까지 **푸시·배포 완료**
+- `4e0cf0a` docs: 세션 인수인계 갱신(모바일 반응형 정비·실화면 검증 완료)
 - `ad35823` content: Tech Lead 철학으로 소개 재작성 및 프로덕트 리더십 팀명 메인 기준 통일
 - `3ffdaab` content: Tech Lead 철학에 기획·UI/UX 제품 관점 단락 추가
+- `b756514` docs: 세션 인수인계 갱신(Tech Lead 철학·팀명 통일) — 여기까지 **푸시·배포 완료**
+- `1343171` fix: 모바일 타이포그래피 최적화(전역 keep-all·손글씨 크기·히어로 문단 흐름·CTA 가운데 정렬)
+- `f6af9c7` style: 경력 카드 재직 년월과 근속기간을 같은 줄에 배치
 - `docs: 세션 인수인계 갱신` — 본 HANDOFF·CHANGELOG 갱신 커밋(이 문서를 포함하는 후속 커밋)
 
 (직전 커밋: `c045df6`/`431f3c0` SKB 발주사 PM 표현 정확화 · `d0d48d8`/`b370439` 근속기간·히어로 손글씨)
