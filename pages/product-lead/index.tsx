@@ -25,7 +25,7 @@ const summaryCards = [
     Icon: Search,
     iconClassName: "text-indigo-600 dark:text-indigo-400",
     title: "CMS 재구축·현대화",
-    body: "TVING CMS를 처음 구축한 파트 리드이자, 차세대 CMS(NCMS) 재구축의 발주사 PM — 원조 구축과 현대화 양쪽을 모두 경험.",
+    body: "TVING CMS를 구축한 파트 리드이자, 차세대 CMS(NCMS) 재구축의 발주사 PM — 원조 구축과 현대화 양쪽을 모두 경험.",
   },
   {
     Icon: ShoppingCart,
@@ -69,7 +69,7 @@ const journey = [
     org: "CJ Hellovision (TVING 서비스개발팀)",
     role: "N-Screen(Web·TV·Mobile) CMS 개발 파트 리드",
     context: "콘텐츠가 여러 화면으로 흐르는 OTT의 초기 — 통합 CMS와 콘텐츠 파이프라인이 필요했던 시기.",
-    roleDetail: "TVING CMS를 처음 구축한 개발 파트 리드 — 콘텐츠 파이프라인의 설계·개발과 파트 리딩을 함께 담당.",
+    roleDetail: "TVING CMS를 구축한 개발 파트 리드 — 콘텐츠 파이프라인의 설계·개발과 파트 리딩을 함께 담당.",
     approach: "CMS·검색·랭킹 추천·이미지·미디어 트랜스코딩과 N-Screen 통합 API를 설계·개발하며 콘텐츠 코어 엔진을 세움.",
     impact: "여러 디바이스로 일관되게 콘텐츠가 배급되는 코어 플랫폼을 팀과 함께 구축 — 오늘의 CMS 재구축을 '내부에서 겪어 본' 관점.",
   },
@@ -116,7 +116,7 @@ export default function ProductLead() {
     <>
       <SiteHead
         title="허우용 — 플랫폼 프로덕트 리더"
-        description="20년간 OTT·커머스 플랫폼의 코어를 설계하고 조직과 함께 제품으로 완성해 온 리더. TVING CMS를 처음 구축한 개발 리드에서, 커머스·AI 플랫폼을 총괄하는 프로덕트 리더로. CMS 재구축·플랫폼 거버넌스·AI 메타데이터 관점의 요약 한 장."
+        description="20년간 OTT·커머스 플랫폼의 코어를 설계하고 조직과 함께 제품으로 완성해 온 리더. TVING CMS를 구축한 개발 리드에서, 커머스·AI 플랫폼을 총괄하는 프로덕트 리더로. CMS 재구축·플랫폼 거버넌스·AI 메타데이터 관점의 요약 한 장."
         path="/product-lead/"
         jsonLd={personJsonLd}
       />
@@ -171,7 +171,7 @@ export default function ProductLead() {
                 20년간 OTT·커머스 플랫폼의 코어를 설계하고, 조직과 함께 제품으로 완성해 온 리더.
               </p>
               <p className="text-base text-blue-700 dark:text-blue-300 font-medium mt-2">
-                TVING CMS를 처음 만든 개발 리드에서, 커머스·AI 플랫폼을 총괄하는 프로덕트 리더로.
+                TVING CMS를 만든 개발 리드에서, 커머스·AI 플랫폼을 총괄하는 프로덕트 리더로.
               </p>
             </div>
           </section>
