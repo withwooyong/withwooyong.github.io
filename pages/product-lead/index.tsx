@@ -49,7 +49,8 @@ const journey = [
     org: "(주)야나두 a kakao company (구 카카오키즈)",
     role: "커머스개발실장",
     context: "교육·커머스 도메인에서 제품 성장과 AI 전환을 동시에 요구받는 국면.",
-    approach: "기획~데브옵스 전 직군을 총괄하며 교육·커머스 서비스를 제품 단위로 운영하고, 다양한 챗봇형 AI 서비스를 기획·런칭.",
+    roleDetail: "기획·UI/UX·프론트·백엔드·앱·데브옵스 전 직군 20~30명을 총괄하며, 제품과 기술 의사결정을 함께 책임지는 개발 총괄.",
+    approach: "교육·커머스 서비스를 제품 단위로 운영하고, 다양한 챗봇형 AI 서비스를 직접 기획·런칭.",
     impact: "콘텐츠·커머스·AI·조직을 연결해 제품을 성장시키는 프로덕트 리더십으로 확장 — 메타데이터·검색 경험을 AI 자동화로 잇는 기반.",
   },
   {
@@ -58,7 +59,8 @@ const journey = [
     org: "SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)",
     role: "B tv 백엔드 개발 매니저 / PM",
     context: "대규모 트래픽의 IPTV·OTT를 모듈화된 플랫폼으로 진화시켜야 했던 단계.",
-    approach: "차세대 CMS(NCMS) 재구축의 발주사 PM으로 MSA 설계·검토를 진행하고, 검색·딥메타·개인화, 통합 이미지 플랫폼, EPG/VOD 편성 플랫폼을 리딩.",
+    roleDetail: "차세대 CMS(NCMS) 재구축의 발주사 PM이자, B tv 미디어 플랫폼 백엔드를 리딩한 개발 매니저.",
+    approach: "레거시 CMS를 MSA로 재구축하는 설계·검토를 진행하고, 검색·딥메타·개인화, 통합 이미지 플랫폼, EPG/VOD 편성 플랫폼을 리딩.",
     impact: "레거시를 모듈화·MSA로 재구축하는 제품·아키텍처 관점을 확립 — 확장성과 유연성을 플랫폼 거버넌스로 다루는 경험.",
   },
   {
@@ -67,6 +69,7 @@ const journey = [
     org: "CJ Hellovision (TVING 서비스개발팀)",
     role: "N-Screen(Web·TV·Mobile) CMS 개발 파트 리드",
     context: "콘텐츠가 여러 화면으로 흐르는 OTT의 초기 — 통합 CMS와 콘텐츠 파이프라인이 필요했던 시기.",
+    roleDetail: "TVING CMS를 처음 구축한 개발 파트 리드 — 콘텐츠 파이프라인의 설계·개발과 파트 리딩을 함께 담당.",
     approach: "CMS·검색·랭킹 추천·이미지·미디어 트랜스코딩과 N-Screen 통합 API를 설계·개발하며 콘텐츠 코어 엔진을 세움.",
     impact: "여러 디바이스로 일관되게 콘텐츠가 배급되는 코어 플랫폼을 팀과 함께 구축 — 오늘의 CMS 재구축을 '내부에서 겪어 본' 관점.",
   },
@@ -76,7 +79,8 @@ const journey = [
     org: "쌍용정보통신 (통신연구소/뉴미디어기술팀)",
     role: "시스템 개발 엔지니어",
     context: "IPTV가 태동하던 시기 — 통신 인프라 위에 뉴미디어 플랫폼의 기초가 놓이던 단계.",
-    approach: "KT 가입자계 통합보안 관제시스템(ISM)과 KT QOOK TV A-MOC 플랫폼을 개발하며 대규모 통신·미디어 시스템의 기본기를 다짐.",
+    roleDetail: "통신연구소·뉴미디어기술팀 소속 시스템 개발 엔지니어 — 대규모 통신·미디어 시스템 개발 실무를 담당.",
+    approach: "KT 가입자계 통합보안 관제시스템(ISM)과 KT QOOK TV A-MOC 플랫폼을 개발하며 대규모 시스템의 기본기를 다짐.",
     impact: "20년 OTT·플랫폼 여정의 출발점 — KT QOOK TV에서 미디어 플랫폼 도메인에 첫발을 딛고, 대규모 시스템을 다루는 엔지니어링 기반을 확보.",
   },
 ];
@@ -230,6 +234,7 @@ export default function ProductLead() {
                   </CardHeader>
                   <CardContent className="space-y-2 text-slate-600 dark:text-slate-300 leading-relaxed">
                     <p><span className="font-semibold text-slate-800 dark:text-slate-200">맥락 · </span>{j.context}</p>
+                    <p><span className="font-semibold text-slate-800 dark:text-slate-200">역할 · </span>{j.roleDetail}</p>
                     <p><span className="font-semibold text-slate-800 dark:text-slate-200">접근 · </span>{j.approach}</p>
                     <p><span className="font-semibold text-slate-800 dark:text-slate-200">임팩트 · </span>{j.impact}</p>
                   </CardContent>
