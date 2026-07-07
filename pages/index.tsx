@@ -238,7 +238,7 @@ export default function Home() {
                       <CardTitle className="text-xl">커머스개발실장</CardTitle>
                       <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">(주)야나두 a kakao company (구 카카오키즈)</CardDescription>
                     </div>
-                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Badge variant="secondary">2022.02 - 재직중</Badge>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 6개월</span>
                     </div>
@@ -270,7 +270,7 @@ export default function Home() {
                       <CardTitle className="text-xl">Senior 엔지니어 & PM</CardTitle>
                       <CardDescription className="text-green-600 dark:text-green-400 font-medium">SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)</CardDescription>
                     </div>
-                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Badge variant="secondary">2017.04 - 2021.06</Badge>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 3개월</span>
                     </div>
@@ -306,7 +306,7 @@ export default function Home() {
                       <CardTitle className="text-xl">CMS 개발 파트 리드</CardTitle>
                       <CardDescription className="text-purple-600 dark:text-purple-400 font-medium">CJ Hellovision (TVING 서비스개발팀)</CardDescription>
                     </div>
-                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Badge variant="secondary">2012.06 - 2017.04</Badge>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 11개월</span>
                     </div>
@@ -342,7 +342,7 @@ export default function Home() {
                       <CardTitle className="text-xl">시스템 개발</CardTitle>
                       <CardDescription className="text-orange-600 dark:text-orange-400 font-medium">쌍용정보통신 (통신연구소/뉴미디어기술팀)</CardDescription>
                     </div>
-                    <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Badge variant="secondary">2005.11 - 2012.06</Badge>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">6년 8개월</span>
                     </div>

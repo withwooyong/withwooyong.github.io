@@ -222,7 +222,7 @@ export default function ProductLead() {
                         <CardTitle className="text-lg">{j.role}</CardTitle>
                         <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">{j.org}</CardDescription>
                       </div>
-                      <div className="flex flex-col items-start md:items-end gap-1 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         <Badge variant="secondary" className="w-fit">{j.period}</Badge>
                         <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{j.duration}</span>
                       </div>
