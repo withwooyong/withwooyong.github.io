@@ -25,7 +25,7 @@ const summaryCards = [
     Icon: Search,
     iconClassName: "text-indigo-600 dark:text-indigo-400",
     title: "CMS 재구축·현대화",
-    body: "TVING CMS를 처음 구축한 파트 리드이자, 레거시 CMS를 MSA 기반으로 재설계한 경험 — 원조 구축과 현대화 양쪽을 모두 통과.",
+    body: "TVING CMS를 처음 구축한 파트 리드이자, 차세대 CMS(NCMS) 재구축의 발주사 PM — 원조 구축과 현대화 양쪽을 모두 경험.",
   },
   {
     Icon: ShoppingCart,
