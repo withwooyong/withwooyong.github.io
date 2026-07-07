@@ -55,7 +55,7 @@ const journey = [
   {
     period: "2017.04 - 2021.06",
     duration: "4년 3개월",
-    org: "SK 브로드밴드 (B tv 백엔드 · 미디어클라우드)",
+    org: "SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)",
     role: "B tv 백엔드 개발 매니저 / PM",
     context: "대규모 트래픽의 IPTV·OTT를 모듈화된 플랫폼으로 진화시켜야 했던 단계.",
     approach: "차세대 CMS(NCMS) 재구축의 발주사 PM으로 MSA 설계·검토를 진행하고, 검색·딥메타·개인화, 통합 이미지 플랫폼, EPG/VOD 편성 플랫폼을 리딩.",
@@ -64,7 +64,7 @@ const journey = [
   {
     period: "2012.06 - 2017.04",
     duration: "4년 11개월",
-    org: "CJ 헬로비전 (TVING 서비스개발팀)",
+    org: "CJ Hellovision (TVING 서비스개발팀)",
     role: "N-Screen(Web·TV·Mobile) CMS 개발 파트 리드",
     context: "콘텐츠가 여러 화면으로 흐르는 OTT의 초기 — 통합 CMS와 콘텐츠 파이프라인이 필요했던 시기.",
     approach: "CMS·검색·랭킹 추천·이미지·미디어 트랜스코딩과 N-Screen 통합 API를 설계·개발하며 콘텐츠 코어 엔진을 세움.",

@@ -136,14 +136,14 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">소개</h2>
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">개발자로서의 철학</h3>
+                <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">Tech Lead로서의 철학</h3>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                  &ldquo;매일의 꾸준한 노력이 성장을 만든다&rdquo;는 믿음으로 20년간 한 길을 걸어온 개발자입니다. 컴퓨터가 이해하는 코드는 누구나 짤 수 있지만, 좋은 개발자는 사람이 이해하는 코드를 쓴다고
-                  생각합니다. 단기적으로 동작하는 코드보다, 동료가 6개월 뒤에 읽어도 이해되는 코드와 설계를 우선해 왔고, 이 원칙이 결국 팀의 속도와 서비스의 안정성을 만든다고 믿습니다.
+                  좋은 Tech Lead는 뛰어난 코드를 직접 쓰는 사람이 아니라, 팀 전체가 좋은 코드를 쓸 수 있는 기준과 환경을 만드는 사람이라고 생각합니다. 20년간 개발과 리딩을 함께 해 오며, 동료가 6개월 뒤에
+                  읽어도 이해되는 코드와 설계를 팀의 표준으로 세워 왔습니다. 이 원칙이 결국 팀의 속도와 서비스의 안정성을 만든다고 믿습니다.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  최근에는 AI를 개발과 일하는 방식 전반에 적극적으로 활용해 업무 효율을 극대화하고 있습니다. 코드 작성·리뷰, 문서화, 반복 업무를 AI로 자동화해 팀이 본질적인 문제 해결에 더 집중할 수 있는 환경을
-                  만들고 있으며, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭해 왔습니다.
+                  기술적 결정은 팀이 감당할 수 있는 복잡도 안에서 내리고, 위임과 코드 리뷰를 통해 동료의 성장이 곧 조직의 성장이 되도록 이끕니다. 최근에는 코드 작성·리뷰, 문서화, 반복 업무에 AI를 도입해 팀이
+                  본질적인 문제 해결에 집중할 수 있는 환경을 만들고 있으며, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭해 왔습니다.
                 </p>
               </div>
               <CoinFlipDeck className="grid grid-cols-1 gap-6">
