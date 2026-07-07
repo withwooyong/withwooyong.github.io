@@ -95,7 +95,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <h1 className="hero-hello text-6xl md:text-8xl text-slate-900 dark:text-slate-50 mb-4 hero-stagger-2">
+              <h1 className="hero-hello text-5xl sm:text-6xl md:text-8xl text-slate-900 dark:text-slate-50 mb-4 hero-stagger-2">
                 <span className="hero-hello-write">
                   안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
                 </span>
@@ -103,13 +103,13 @@ export default function Home() {
               <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 hero-stagger-3">Agile Developer & Tech Lead</p>
               <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
                 20년 이상 경력의 엔지니어링 리더.
-                <br />
+                <br className="hidden sm:inline" />{" "}
                 <strong>(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
-                <br />
+                <br className="hidden sm:inline" />{" "}
                 <strong>KT, CJ헬로비전, SK브로드밴드</strong>에서 1,000만+ 사용자 서비스 개발 및 플랫폼 구축 주도.
-                <br />
+                <br className="hidden sm:inline" />{" "}
                 온프레미스(IDC)와 AWS 클라우드 환경 모두 경험한 풀스택 아키텍트.
-                <br />
+                <br className="hidden sm:inline" />{" "}
                 AI·플랫폼·조직을 연결해 서비스 성장과 개발 생산성 향상을 이끌어온 기술 리더.
               </p>
               <div className="flex flex-wrap justify-center gap-3 hero-stagger-5">

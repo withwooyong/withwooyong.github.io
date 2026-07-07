@@ -53,6 +53,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 한글 타이포그래피: 어절 단위 줄바꿈(글자 단위 찢김 방지), 넘칠 때만 단어 내 줄바꿈 허용 */
+body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

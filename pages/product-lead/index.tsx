@@ -174,7 +174,7 @@ export default function ProductLead() {
           </SectionReveal>
 
           {/* CTA */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-3">
             <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
               <Link href="/">전체 포트폴리오 보기</Link>
             </Button>
