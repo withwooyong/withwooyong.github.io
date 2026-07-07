@@ -157,7 +157,7 @@ export default function ProductLead() {
             </div>
             <div className="text-center sm:text-left">
               <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">For Platform / Product Leadership</p>
-              <h1 className="hero-hello text-5xl md:text-6xl text-slate-900 dark:text-slate-50">
+              <h1 className="hero-hello break-keep text-5xl md:text-6xl text-slate-900 dark:text-slate-50">
                 <span className="hero-hello-write">
                   안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
                 </span>
@@ -249,14 +249,14 @@ export default function ProductLead() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 dark:border-slate-700 text-left">
-                        <th className="px-4 py-3 font-semibold whitespace-nowrap">요구 역량</th>
+                        <th className="px-4 py-3 font-semibold md:whitespace-nowrap">요구 역량</th>
                         <th className="px-4 py-3 font-semibold">근거</th>
                       </tr>
                     </thead>
                     <tbody>
                       {capabilityMap.map(({ need, evidence, confirm }) => (
                         <tr key={need} className="border-b border-slate-100 dark:border-slate-800 last:border-0 align-top">
-                          <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                          <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200 break-keep md:whitespace-nowrap">
                             {need}
                             {confirm ? <span className="ml-2 text-xs text-amber-600 dark:text-amber-400">(확인 필요)</span> : null}
                           </td>
