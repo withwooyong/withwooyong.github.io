@@ -120,7 +120,7 @@ export default function Home() {
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
-                  <Link href="/product-lead/">
+                  <Link href="/product-lead-v2/">
                     플랫폼 프로덕트 리더로 보기
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Link>
@@ -215,7 +215,7 @@ export default function Home() {
                     size="lg"
                     className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
                   >
-                    <Link href="/product-lead/">
+                    <Link href="/product-lead-v2/">
                       플랫폼 프로덕트 리더로 보기
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Link>
