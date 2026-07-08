@@ -6,7 +6,11 @@
 
 ### 추가
 
-- **프로덕트 리더십 v2 시안 페이지** [`pages/product-lead-v2/index.tsx`](pages/product-lead-v2/index.tsx) (공개 라우트 `/product-lead-v2/`, 다른 세션에서 작성) — `/product-lead/`와 동일한 레이아웃·효과에 문구만 재구성한 A/B 시안. 핵심 차이: ① 히어로·핵심 요약을 **"차세대 CMS(NCMS) 재구축 발주 PM 완주"** 중심으로 재배치(재구축 경험을 앞세우고 TVING은 "그 도메인의 1세대"로 후치) ② "원조 구축" → **"1세대 구축/설계"** ③ "발주사 PM" → **"발주 PM"** 표기 ④ CJ 여정 임팩트를 "재구축 판단의 출발점"으로 연결 ⑤ SEO description에 "20~30인 조직 총괄" 명시. sitemap 미등록(시안) (`5421a9c`)
+- **프로덕트 리더십 v2 시안 페이지** [`pages/product-lead-v2/index.tsx`](pages/product-lead-v2/index.tsx) (공개 라우트 `/product-lead-v2/`, 다른 세션에서 작성) — `/product-lead/`와 동일한 레이아웃·효과에 문구만 재구성한 A/B 시안. 핵심 차이: ① 히어로·핵심 요약을 **"차세대 CMS(NCMS) 재구축 발주 PM 완주"** 중심으로 재배치(재구축 경험을 앞세우고 TVING은 "그 도메인의 1세대"로 후치) ② "원조 구축" → **"1세대 구축/설계"** ③ "발주사 PM" → **"발주 PM"** 표기 ④ CJ 여정 임팩트를 "재구축 판단의 출발점"으로 연결 ⑤ SEO description에 "20~30인 조직 총괄" 명시 (`5421a9c`)
+
+### 변경
+
+- **프로덕트 리더십 진입 링크를 모두 `/product-lead-v2/`로 교체** — 히어로 보조 CTA·`#product` 섹션 CTA [`pages/index.tsx`](pages/index.tsx), sitemap 등록도 v1→v2 교체(`lastmod` 2026-07-08) [`public/sitemap.xml`](public/sitemap.xml). v1(`/product-lead/`)은 직접 URL로만 접근 가능하며 자기 canonical을 유지한 채 남아 있음 — 시안 확정 시 정리 필요 (`6524b1e`)
 
 ## 2026-07-07
 

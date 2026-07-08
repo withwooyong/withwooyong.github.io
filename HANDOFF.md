@@ -23,7 +23,8 @@
 9. **Tech Lead 철학 & 팀명 통일** — 소개 섹션을 "Tech Lead로서의 철학"으로 재작성(팀의 코드 표준 → 기획·UI/UX 제품 관점 → 위임·성장·AI 3단락). 대표 여정 팀명을 메인 경력 카드 기준으로 통일(SKB `AI 서비스 개발스쿼드/미디어클라우드스쿼드`, `CJ Hellovision`). **팀명·직함·근속기간 등 사실 정보의 기준은 항상 메인 페이지([`pages/index.tsx`](pages/index.tsx)) 경력 카드** — 다른 페이지가 어긋나면 메인 쪽으로 맞출 것.
 10. **대표 여정 역할 서술 추가** — 대표 여정 카드가 안내 문구("맥락 → 역할 → 접근 → 임팩트")와 달리 역할 줄 없이 3줄만 렌더링되던 것을 수정. 각 항목에 `roleDetail` 필드를 추가해 4단 구조 완성. **`role`(직함)은 카드 제목, `roleDetail`(책임 범위 서술)은 본문 역할 줄** — 두 필드의 용도를 혼동하지 말 것. 역할 줄로 옮긴 내용(전 직군 총괄, 발주사 PM)은 `approach` 문장에서 덜어내 중복 제거함.
 11. **"처음" 표현 제거** — 사용자가 직접 `/product-lead/`의 "TVING CMS를 **처음** 구축한/만든"에서 "처음"을 제거(핵심 요약 CMS 카드·대표 여정 roleDetail·SEO description·히어로 문단 4곳). 항목 4의 "과장 표현 회귀 금지" 정책의 연장 — **앞으로 "처음 구축/만든" 표현을 다시 쓰지 말 것.** 단, "원조 구축"(핵심 요약 카드·역량 매핑 표)은 사용자가 의도적으로 유지한 표현이므로 건드리지 않는다.
-12. **(이번 세션) 프로덕트 리더십 v2 시안 페이지** — 다른 세션에서 작성된 [`pages/product-lead-v2/index.tsx`](pages/product-lead-v2/index.tsx)(공개 라우트 `/product-lead-v2/`)를 빌드 검증 후 반영. `/product-lead/`와 레이아웃·효과는 동일하고 **문구만 재구성한 A/B 시안**: NCMS 재구축 **발주 PM 완주**를 앞세우고 TVING을 "그 도메인의 **1세대**"로 후치, "원조 구축"→"1세대 구축/설계", **"발주사 PM"→"발주 PM"** 표기, CJ 임팩트를 "재구축 판단의 출발점"으로 연결. **주의:** ① v1·v2가 같은 `<title>`을 쓰고 각자 자기 자신을 canonical로 선언하므로 **중복 콘텐츠 상태** — v2는 sitemap 미등록이지만 색인될 수 있음. 시안 확정 시 v1에 반영 후 v2 제거(또는 canonical을 v1로 지정) 권장. ② v2의 "발주 PM"·"1세대" 표기는 항목 4의 "발주사(고객사) PM" 표기 규칙과 다른 **시안 단계의 실험** — 확정 전까지 v1 쪽 규칙이 기준. ③ v2 CJ 임팩트의 "OTT CMS 도메인을 **처음 다룬**"은 금지 표현("처음 구축한/만든" — 제품을 처음 만들었다는 주장)과 달리 본인 경험 서술이라 정책 위반 아님.
+12. **(이번 세션) 프로덕트 리더십 v2 시안 페이지** — 다른 세션에서 작성된 [`pages/product-lead-v2/index.tsx`](pages/product-lead-v2/index.tsx)(공개 라우트 `/product-lead-v2/`)를 빌드 검증 후 반영. `/product-lead/`와 레이아웃·효과는 동일하고 **문구만 재구성한 A/B 시안**: NCMS 재구축 **발주 PM 완주**를 앞세우고 TVING을 "그 도메인의 **1세대**"로 후치, "원조 구축"→"1세대 구축/설계", **"발주사 PM"→"발주 PM"** 표기, CJ 임팩트를 "재구축 판단의 출발점"으로 연결. **주의:** ① v1·v2가 같은 `<title>`을 쓰고 각자 자기 자신을 canonical로 선언하므로 **중복 콘텐츠 상태**. 시안 확정 시 확정안을 v1 경로에 반영하고 v2 제거(또는 canonical 단일화) 권장. ② v2의 "발주 PM"·"1세대" 표기는 항목 4의 "발주사(고객사) PM" 표기 규칙과 다른 **시안 단계의 실험** — 아직 어느 쪽으로도 확정되지 않음. ③ v2 CJ 임팩트의 "OTT CMS 도메인을 **처음 다룬**"은 금지 표현("처음 구축한/만든" — 제품을 처음 만들었다는 주장)과 달리 본인 경험 서술이라 정책 위반 아님.
+13. **(이번 세션) 진입 링크 v2 교체** — 사이트 내 프로덕트 리더십 진입점을 모두 `/product-lead-v2/`로 전환: 히어로 보조 CTA·`#product` 섹션 CTA([`pages/index.tsx`](pages/index.tsx))와 **sitemap 등록**(v1→v2, `lastmod` 2026-07-08). 이제 **v2가 사실상 대표 페이지**이고, v1은 직접 URL로만 접근 가능(진입 링크 없음, 자기 canonical 유지). v1 페이지의 `path`·JSON-LD `url` 자기 참조는 링크가 아니므로 건드리지 않았다.
 
 > **다음 담당자 필독 — 열려 있는 항목:**
 > - **근속기간 하드코딩 이중화.** 근무기간·근속기간 문자열이 [`pages/index.tsx`](pages/index.tsx)와 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) **두 곳에 중복**돼 있다. 기간 갱신 시 반드시 두 파일을 함께 수정할 것. 장기적으로는 공용 데이터 파일([`data/portfolio.ts`](data/portfolio.ts))로 추출 권장.
@@ -55,15 +56,15 @@ npm run build   # 산출물 ./out (이번 세션 빌드 통과: 6/6 정적 페�
 | 경로 | 설명 |
 |------|------|
 | [`pages/index.tsx`](pages/index.tsx) | 한국어 메인(히어로 hello·`#product` 요약·경력 근속기간 등) |
-| [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) | **프로덕트 리더십 1-pager(공개 라우트 `/product-lead/`)** — 대표 여정 4단계 역순(맥락→역할→접근→임팩트)·근속기간·SectionReveal 등 CSS 효과 |
-| [`pages/product-lead-v2/index.tsx`](pages/product-lead-v2/index.tsx) | **v2 문구 시안(공개 라우트 `/product-lead-v2/`)** — NCMS 발주 PM 완주 중심 재구성. sitemap 미등록. 확정 시 v1 반영 후 제거 예정 |
+| [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) | 프로덕트 리더십 1-pager **v1**(`/product-lead/`) — 현재 **진입 링크 없음**(직접 URL로만 접근). 시안 확정 시 정리 대상 |
+| [`pages/product-lead-v2/index.tsx`](pages/product-lead-v2/index.tsx) | **프로덕트 리더십 v2(현재 대표, `/product-lead-v2/`)** — NCMS 발주 PM 완주 중심 재구성. 홈 CTA 2곳·sitemap이 이쪽을 가리킴 |
 | [`pages/en/index.tsx`](pages/en/index.tsx) | 영문 요약 |
 | [`pages/_document.tsx`](pages/_document.tsx) | `lang="ko"` + **Nanum Pen Script Google Fonts 링크** |
 | [`pages/_app.tsx`](pages/_app.tsx) | `next/font` Inter |
 | [`data/portfolio.ts`](data/portfolio.ts) | 네비(#product 앵커 포함)·시스템 다이어그램·스킬·글 링크 |
 | [`components/`](components/) | `site-head`, `portfolio-nav`, `theme-toggle`, `section-reveal`, `system-diagram-card`, `coin-flip-deck`, `hero-stripe-backdrop`, `thesis-summary-dialog`, `ui/*` |
 | [`styles/globals.css`](styles/globals.css) | 테마 변수·모션·키프레임(`hero-hello*`·`profile-coin-*`·`section-reveal` 포함) |
-| [`public/sitemap.xml`](public/sitemap.xml) | `/`, `/en/`, `/product-lead/` 등록 |
+| [`public/sitemap.xml`](public/sitemap.xml) | `/`, `/en/`, `/product-lead-v2/` 등록(v1은 제외됨) |
 | [`lib/site.ts`](lib/site.ts) | 절대 URL |
 | [`CLAUDE.md`](CLAUDE.md) | 에이전트용 저장소 메모 |
 
@@ -71,7 +72,7 @@ npm run build   # 산출물 ./out (이번 세션 빌드 통과: 6/6 정적 페�
 
 ## 4. 권장 후속 작업
 
-0. **v1/v2 시안 비교·확정** — `/product-lead/`(원본)와 `/product-lead-v2/`(NCMS 발주 PM 완주 중심)를 비교해 문구 방향 확정. 확정안을 v1에 반영하고 **v2 라우트는 제거**(중복 콘텐츠·표기 이원화 해소). "발주 PM" vs "발주사 PM", "1세대" vs "원조" 표기도 이때 하나로 통일.
+0. **v1/v2 시안 확정·정리** — 진입 링크·sitemap은 이미 v2로 전환됨. 방향이 확정되면 **확정 문구를 v1 경로(`/product-lead/`)로 되돌려 단일화하거나 v1을 제거**해 중복 콘텐츠 상태를 해소할 것(링크·sitemap도 그에 맞춰 재조정). "발주 PM" vs "발주사 PM", "1세대" vs "원조" 표기도 이때 하나로 통일.
 1. **경력 데이터 공용화** — 근무기간·근속기간이 두 페이지에 중복된 상태를 [`data/portfolio.ts`](data/portfolio.ts) 추출로 해소.
 2. **결제·정산·구독 근거 보강** — 사용자 제공 자료로 [`pages/product-lead/index.tsx`](pages/product-lead/index.tsx) 역량 행 구체화.
 3. **정량 지표 실측치 확보 → 1-pager `before → after` 보강**(위 산출법). 재직 중 접근 가능한 지표는 지금 캡처 권장.
@@ -85,6 +86,8 @@ npm run build   # 산출물 ./out (이번 세션 빌드 통과: 6/6 정적 페�
 이 HANDOFF 작성 시점 기준 **워킹 트리는 깨끗**하다. 이번 세션(2026-07-08) 커밋:
 
 - `5421a9c` feat: 프로덕트 리더십 v2 시안 페이지 추가(NCMS 발주 PM 완주 중심 문구 재구성) — 페이지 자체는 다른 세션에서 작성, 이 세션에서 빌드 검증(6/6) 후 커밋
+- `6f7811a` docs: 세션 인수인계 갱신(프로덕트 리더십 v2 시안 페이지 추가·빌드 검증) — 여기까지 **푸시·배포 완료**
+- `6524b1e` content: 프로덕트 리더십 진입 링크를 /product-lead-v2/로 교체(히어로·#product CTA·sitemap) — 빌드 검증(6/6) 완료
 - `docs: 세션 인수인계 갱신` — 본 HANDOFF·CHANGELOG 갱신 커밋(이 문서를 포함하는 후속 커밋)
 
 (직전 세션 2026-07-07: `07beac5` 역할 서술 추가 · `ece6b85` '처음' 표현 제거 · `dfb4777` 인수인계 갱신 — 모두 푸시·배포 완료)
