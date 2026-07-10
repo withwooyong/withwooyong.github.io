@@ -7,9 +7,18 @@ type SiteHeadProps = {
   path?: string;
   ogImagePath?: string;
   jsonLd?: Record<string, unknown>;
+  /** 검색엔진 색인에서 제외한다. URL을 아는 사람만 보는 비공개 페이지에 쓴다. */
+  noindex?: boolean;
 };
 
-export function SiteHead({ title, description, path = "/", ogImagePath = "/images/Ted_yanadoo.png", jsonLd }: SiteHeadProps) {
+export function SiteHead({
+  title,
+  description,
+  path = "/",
+  ogImagePath = "/images/Ted_yanadoo.png",
+  jsonLd,
+  noindex = false,
+}: SiteHeadProps) {
   const canonical = absoluteUrl(path.endsWith("/") ? path : `${path}/`);
   const ogImage = absoluteUrl(ogImagePath);
 
@@ -20,6 +29,7 @@ export function SiteHead({ title, description, path = "/", ogImagePath = "/image
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link rel="canonical" href={canonical} />
+      {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
 
       <meta property="og:type" content="website" />
       <meta property="og:title" content={title} />
