@@ -7,8 +7,15 @@ import type { FlowSpec } from "./types";
 import { useInView } from "./use-in-view";
 import { validateFlowSpec } from "./validate";
 
-/** 이보다 좁으면 세로 1열 레이아웃을 쓴다 */
-const STACK_BREAKPOINT = 640;
+/**
+ * 컨테이너 폭이 원본 폭의 이 비율보다 좁아지면 좁은 화면용 레이아웃으로 바꾼다.
+ *
+ * 고정 픽셀 임계값을 쓰지 않는 이유: 스펙마다 원본 폭이 다르므로(1200, 1400 …)
+ * 고정값이면 어떤 스펙에서는 너무 이르게, 어떤 스펙에서는 너무 늦게 전환된다.
+ * 비율로 두면 축소율이 이 값 아래로 떨어져 글자가 뭉개지기 직전에 항상 전환된다.
+ * 0.7 = 12px 라벨이 약 8.4px까지는 버티고 그보다 작아지면 재배치.
+ */
+const STACK_RATIO = 0.7;
 
 export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: string }) {
   const { ref, inView } = useInView<HTMLDivElement>();
@@ -36,7 +43,12 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
 
   // 호버 상태가 자주 바뀌므로, 폭/원본 스펙이 그대로일 때 재계산되지 않도록 메모이즈한다.
   const activeSpec = useMemo(() => {
-    if (containerWidth !== null && containerWidth < STACK_BREAKPOINT) {
+    // 두 가지 이유로 재배치가 필요하다.
+    //  (1) 컨테이너가 minWidth보다 좁으면 가로 스크롤이 생긴다 → 스크롤은 금지
+    //  (2) minWidth가 없어도 축소율이 STACK_RATIO 아래로 떨어지면 글자가 뭉개진다
+    // 둘 중 먼저 걸리는 쪽(= 더 큰 임계값)을 기준으로 삼는다.
+    const stackThreshold = Math.max(spec.minWidth ?? 0, spec.viewBox.w * STACK_RATIO);
+    if (containerWidth !== null && containerWidth < stackThreshold) {
       const stacked = toStackedSpec(spec, containerWidth);
       // 빌드 타임 검증기는 원본(가로) 스펙만 검사한다. 재배치 결과는 클라이언트에서만
       // 만들어지므로, 좌표가 viewBox를 벗어나도 빌드가 잡아주지 못한다.

@@ -16,6 +16,16 @@ const GAP_Y = 26;
 const NODE_H_WITH_SUB = 52;
 /** sub 라벨이 없는 노드의 높이 */
 const NODE_H = 44;
+/**
+ * 2열로 배치하는 최소 컨테이너 폭.
+ *
+ * 이 값은 화면 폭이 아니라 카드 안쪽 컨테이너 폭이다.
+ * 컨테이너 폭 = 화면 폭 - 섹션 좌우 패딩 - 카드 좌우 패딩.
+ * 실기기 기준: 360px 화면 → 컨테이너 약 296px, 375px → 약 311px, 393px → 약 329px.
+ * 따라서 임계값을 340 같은 화면 폭 감각으로 잡으면 대부분의 폰에서 1열로 떨어진다.
+ * 290으로 두어 360px 이상 기기는 전부 2열, 320px 초소형 기기만 1열로 폴백한다.
+ */
+const TWO_COL_MIN_WIDTH = 290;
 /** 우회 통로에서 엣지끼리 겹치지 않도록 나눠 쓰는 트랙 수 */
 const BYPASS_TRACKS = 4;
 /** 우회 트랙 사이 간격 */
@@ -41,7 +51,7 @@ type Group = {
 export function toStackedSpec(spec: FlowSpec, width: number): FlowSpec {
   const groups = buildGroups(spec);
 
-  const cols = width >= 340 ? 2 : 1;
+  const cols = width >= TWO_COL_MIN_WIDTH ? 2 : 1;
   const nodeW = (width - MARGIN_LEFT - MARGIN_RIGHT - COL_GAP * (cols - 1)) / cols;
 
   const newLanes: FlowLane[] = [];

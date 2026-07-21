@@ -18,7 +18,9 @@ export function SystemDiagramCard({ item }: { item: DiagramItem }) {
 
   return (
     <Card className="dark:border-slate-700">
-      <CardHeader className="flex flex-col items-start gap-4 space-y-0 sm:flex-row sm:justify-between">
+      {/* 모바일에서는 좌우 패딩을 24px→16px로 줄여 다이어그램이 쓸 폭을 16px 더 확보한다.
+          이 16px이 360px 기기에서 1열/2열을 가르는 차이가 된다. */}
+      <CardHeader className="flex flex-col items-start gap-4 space-y-0 p-4 sm:flex-row sm:justify-between sm:p-6">
         <div>
           <CardTitle className="text-slate-900 dark:text-slate-100">{item.title}</CardTitle>
           <CardDescription className="mt-1">{item.summary}</CardDescription>
@@ -27,7 +29,7 @@ export function SystemDiagramCard({ item }: { item: DiagramItem }) {
           {item.role}
         </Badge>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
         <FlowDiagram spec={spec} />
 
         <div className="mt-4 flex flex-wrap gap-2">
