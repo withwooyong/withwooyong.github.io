@@ -46,6 +46,15 @@ export const diagramGroups: DiagramGroup[] = [
         summary:
           "학습자가 아는 100단어로 시작해 3,000단어까지 확장하는 AI 영어 학습 서비스입니다. 60초 단어 테스트와 AI 커리큘럼으로 시작해 AI 튜터·여행영어·원어민톡의 실시간 회화까지 이어집니다.",
       },
+      {
+        specId: "yanadoo-platform",
+        title: "야나두 전체 시스템",
+        role: "커머스개발실장 · 총괄",
+        summary:
+          "교육과 커머스를 아우르는 야나두 전체 플랫폼입니다. FRONT / API·어드민 / BACKEND+INFRA 계층으로 나뉘며, 결제·영상·B2B·광고 외부 연동을 포함합니다.",
+        originalSrc: "/images/yanadoo_all.png",
+        originalAlt: "야나두 전체 시스템 원본 자료",
+      },
     ],
   },
   {
