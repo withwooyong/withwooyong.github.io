@@ -65,9 +65,11 @@ export function assertFlowSpecs(specs: FlowSpec[]): void {
 export function assertSpecIdsResolve(specIds: string[], available: Record<string, unknown>): void {
   const errors = specIds
     .filter((specId) => !(specId in available))
-    .map((specId) => `[${specId}] flowSpecs에 해당 id가 없습니다`);
+    .map((specId) => `[${specId}] 이 id를 가진 FlowSpec이 등록되어 있지 않습니다`);
 
   if (errors.length > 0) {
-    throw new Error(`잘못된 FlowSpec이 있습니다:\n${errors.join("\n")}`);
+    throw new Error(
+      `참조할 수 없는 specId가 있습니다. data/portfolio.ts의 specId 오타이거나 data/diagrams/index.ts의 allSpecs 등록 누락입니다:\n${errors.join("\n")}`,
+    );
   }
 }
