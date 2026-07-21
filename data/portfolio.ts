@@ -39,6 +39,15 @@ export const diagramGroups: DiagramGroup[] = [
     period: "2017.04 - 2021.06",
     items: [
       {
+        specId: "skb-btv",
+        title: "B tv N-Screen 서비스",
+        role: "설계 · 개발 담당",
+        summary:
+          "STB 1,000만 User 기준으로 설계·개발한 B tv N-Screen 서비스입니다. NaviLog 기반 텍스트·음성 검색 추천, 통합 이미지 플랫폼, NUGU 음성 AI 연계, 영상 인식 시스템을 담당했습니다.",
+        originalSrc: "/images/BTV.png",
+        originalAlt: "B tv N-Screen 서비스 원본 자료",
+      },
+      {
         specId: "skb-architecture",
         title: "SK Broadband 시스템 아키텍처",
         role: "설계 · 개발 담당",

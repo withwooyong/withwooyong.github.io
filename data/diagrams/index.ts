@@ -1,10 +1,16 @@
 import { assertFlowSpecs, assertSpecIdsResolve, type FlowSpec } from "@/components/flow-diagram";
 import { diagramGroups } from "@/data/portfolio";
 import { skbArchitectureSpec } from "./skb-architecture";
+import { skbBtvSpec } from "./skb-btv";
 import { skbFlowSearchSpec } from "./skb-flow-search";
 import { skbFlowServingSpec } from "./skb-flow-serving";
 
-const allSpecs: FlowSpec[] = [skbArchitectureSpec, skbFlowSearchSpec, skbFlowServingSpec];
+const allSpecs: FlowSpec[] = [
+  skbBtvSpec,
+  skbArchitectureSpec,
+  skbFlowSearchSpec,
+  skbFlowServingSpec,
+];
 
 // 모듈 로드 시점에 검증한다. 문제가 있으면 npm run build가 실패한다.
 assertFlowSpecs(allSpecs);
@@ -21,4 +27,4 @@ assertSpecIdsResolve(
   flowSpecs,
 );
 
-export { skbArchitectureSpec, skbFlowSearchSpec, skbFlowServingSpec };
+export { skbArchitectureSpec, skbBtvSpec, skbFlowSearchSpec, skbFlowServingSpec };
