@@ -1,4 +1,5 @@
 export { FlowDiagram } from "./flow-diagram";
+export { toStackedSpec } from "./stacked-layout";
 export { validateFlowSpec, assertFlowSpecs, assertSpecIdsResolve } from "./validate";
 export type {
   FlowEdge,

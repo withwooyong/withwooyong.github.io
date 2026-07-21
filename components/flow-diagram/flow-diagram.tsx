@@ -1,36 +1,68 @@
 import { cn } from "@/lib/utils";
-import { useId, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useId, useMemo, useState, type CSSProperties } from "react";
 import { edgePath } from "./geometry";
 import { ArrowMarkers, EDGE_COLOR_VAR, FlowLegend, LaneBand, NodeShape, markerId } from "./primitives";
+import { toStackedSpec } from "./stacked-layout";
 import type { FlowSpec } from "./types";
 import { useInView } from "./use-in-view";
+
+/** 이보다 좁으면 세로 1열 레이아웃을 쓴다 */
+const STACK_BREAKPOINT = 640;
 
 export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: string }) {
   const { ref, inView } = useInView<HTMLDivElement>();
   const [hovered, setHovered] = useState<string | null>(null);
+
+  // 서버 렌더(및 마운트 직후 첫 렌더)는 항상 null로 두어 원본 스펙을 쓴다.
+  // 하이드레이션 불일치를 막기 위해 폭 측정은 마운트 이후에만 반영한다.
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof ResizeObserver === "undefined") {
+      // 정적 export + 구형 브라우저 안전장치: 미지원이면 원본(가로) 레이아웃 유지
+      return;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setContainerWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  // 호버 상태가 자주 바뀌므로, 폭/원본 스펙이 그대로일 때 재계산되지 않도록 메모이즈한다.
+  const activeSpec = useMemo(() => {
+    if (containerWidth !== null && containerWidth < STACK_BREAKPOINT) {
+      return toStackedSpec(spec, containerWidth);
+    }
+    return spec;
+  }, [spec, containerWidth]);
 
   // 같은 FlowSpec이 카드 + 다이얼로그(포털)로 동시에 두 번 렌더될 수 있으므로,
   // useId()로 인스턴스별 고유 접두어를 만들어 title/desc/marker id 충돌을 막는다.
   // useId()가 반환하는 ":" 는 id 속성으로는 유효하지만 혹시 모를 CSS 선택자 사용을
   // 고려해 하이픈으로 치환해둔다(디버깅 편의를 위해 spec.id는 그대로 포함).
   const rawInstanceId = useId();
-  const idPrefix = `${spec.id}-${rawInstanceId.replace(/:/g, "-")}`;
+  const idPrefix = `${activeSpec.id}-${rawInstanceId.replace(/:/g, "-")}`;
 
   const nodeById = useMemo(
-    () => new Map(spec.nodes.map((node) => [node.id, node])),
-    [spec.nodes],
+    () => new Map(activeSpec.nodes.map((node) => [node.id, node])),
+    [activeSpec.nodes],
   );
 
   const edges = useMemo(
     () =>
-      spec.edges.flatMap((edge) => {
+      activeSpec.edges.flatMap((edge) => {
         const from = nodeById.get(edge.from);
         const to = nodeById.get(edge.to);
         // 검증기가 빌드 타임에 막지만 런타임 안전장치를 둔다
         if (!from || !to) return [];
         return [{ edge, d: edgePath(from, to, edge.waypoints) }];
       }),
-    [spec.edges, nodeById],
+    [activeSpec.edges, nodeById],
   );
 
   const isEdgeActive = (from: string, to: string) =>
@@ -40,23 +72,23 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
     <div
       ref={ref}
       data-flow-animate={inView ? "on" : "off"}
-      className={cn("w-full", spec.minWidth ? "overflow-x-auto" : null, className)}
+      className={cn("w-full", activeSpec.minWidth ? "overflow-x-auto" : null, className)}
     >
       <svg
-        viewBox={`0 0 ${spec.viewBox.w} ${spec.viewBox.h}`}
+        viewBox={`0 0 ${activeSpec.viewBox.w} ${activeSpec.viewBox.h}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-labelledby={`${idPrefix}-title ${idPrefix}-desc`}
         className="h-auto w-full"
-        style={spec.minWidth ? { minWidth: spec.minWidth } : undefined}
+        style={activeSpec.minWidth ? { minWidth: activeSpec.minWidth } : undefined}
       >
-        <title id={`${idPrefix}-title`}>{spec.title}</title>
-        <desc id={`${idPrefix}-desc`}>{spec.desc}</desc>
+        <title id={`${idPrefix}-title`}>{activeSpec.title}</title>
+        <desc id={`${idPrefix}-desc`}>{activeSpec.desc}</desc>
 
         <ArrowMarkers idPrefix={idPrefix} />
 
-        {spec.lanes?.map((lane) => (
-          <LaneBand key={lane.id} lane={lane} width={spec.viewBox.w} />
+        {activeSpec.lanes?.map((lane) => (
+          <LaneBand key={lane.id} lane={lane} width={activeSpec.viewBox.w} />
         ))}
 
         {edges.map(({ edge, d }, index) => {
@@ -98,17 +130,17 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
           );
         })}
 
-        {spec.nodes.map((node) => (
+        {activeSpec.nodes.map((node) => (
           <NodeShape
             key={node.id}
             node={node}
-            dimmed={hovered !== null && !isNodeActive(node.id, hovered, spec)}
+            dimmed={hovered !== null && !isNodeActive(node.id, hovered, activeSpec)}
             onHoverChange={setHovered}
           />
         ))}
       </svg>
 
-      {spec.legend ? <FlowLegend items={spec.legend} /> : null}
+      {activeSpec.legend ? <FlowLegend items={activeSpec.legend} /> : null}
     </div>
   );
 }

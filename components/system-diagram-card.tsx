@@ -18,7 +18,7 @@ export function SystemDiagramCard({ item }: { item: DiagramItem }) {
 
   return (
     <Card className="dark:border-slate-700">
-      <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
+      <CardHeader className="flex flex-col items-start gap-4 space-y-0 sm:flex-row sm:justify-between">
         <div>
           <CardTitle className="text-slate-900 dark:text-slate-100">{item.title}</CardTitle>
           <CardDescription className="mt-1">{item.summary}</CardDescription>
