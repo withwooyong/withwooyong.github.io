@@ -109,6 +109,22 @@ export const diagramGroups: DiagramGroup[] = [
       },
     ],
   },
+  {
+    id: "cjhv",
+    company: "CJ헬로비전",
+    period: "2012.06 - 2017.04",
+    items: [
+      {
+        specId: "tving-nscreen",
+        title: "TVING N-Screen Service",
+        role: "설계 · 개발 담당",
+        summary:
+          "TVING N-Screen 서비스의 CMS를 설계·개발하고 통합 API를 구축했습니다. 검색 시스템 연동 API와 화면, 실시간 EPG(채널 편성) 연동, 이미지 서버를 담당했습니다.",
+        originalSrc: "/images/TVING.png",
+        originalAlt: "TVING N-Screen 서비스 화면",
+      },
+    ],
+  },
 ];
 
 export type WritingLink = { label: string; href: string; description?: string };
