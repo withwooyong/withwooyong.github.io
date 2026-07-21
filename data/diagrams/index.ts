@@ -4,6 +4,8 @@ import { skbArchitectureSpec } from "./skb-architecture";
 import { skbBtvSpec } from "./skb-btv";
 import { skbFlowSearchSpec } from "./skb-flow-search";
 import { skbFlowServingSpec } from "./skb-flow-serving";
+import { ssangyongAmocSpec } from "./ssangyong-amoc";
+import { ssangyongNmsSpec } from "./ssangyong-nms";
 import { tvingNscreenSpec } from "./tving-nscreen";
 import { yanadooAiSpec } from "./yanadoo-ai";
 import { yanadooAppSpec } from "./yanadoo-app";
@@ -18,6 +20,8 @@ const allSpecs: FlowSpec[] = [
   skbFlowSearchSpec,
   skbFlowServingSpec,
   tvingNscreenSpec,
+  ssangyongAmocSpec,
+  ssangyongNmsSpec,
 ];
 
 // 모듈 로드 시점에 검증한다. 문제가 있으면 npm run build가 실패한다.
@@ -40,6 +44,8 @@ export {
   skbBtvSpec,
   skbFlowSearchSpec,
   skbFlowServingSpec,
+  ssangyongAmocSpec,
+  ssangyongNmsSpec,
   tvingNscreenSpec,
   yanadooAiSpec,
   yanadooAppSpec,

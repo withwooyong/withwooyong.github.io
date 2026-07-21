@@ -125,6 +125,27 @@ export const diagramGroups: DiagramGroup[] = [
       },
     ],
   },
+  {
+    id: "ssangyong",
+    company: "쌍용정보통신",
+    period: "2005.11 - 2012.06",
+    items: [
+      {
+        specId: "ssangyong-amoc",
+        title: "KT QOOK TV A-MOC 플랫폼",
+        role: "참여 개발",
+        summary:
+          "KT QOOK TV A-MOC 플랫폼 개발 프로젝트에 참여했습니다. STB와 헤드엔드 설비 상태를 수집해 관제 대시보드와 장애 알람으로 연결하는 구조입니다.",
+      },
+      {
+        specId: "ssangyong-nms",
+        title: "KT 가입자계 통합보안관리시스템 (ISM)",
+        role: "설계 · 개발 담당",
+        summary:
+          "에이전트와 네트워크 장비에서 수집한 이벤트를 상관분석해 통합 관제 화면과 경보로 연결하는 시스템을 개발했습니다.",
+      },
+    ],
+  },
 ];
 
 export type WritingLink = { label: string; href: string; description?: string };
