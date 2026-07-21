@@ -79,7 +79,7 @@ export function toStackedSpec(spec: FlowSpec, width: number): FlowSpec {
   let bypassCount = 0;
   const newEdges: FlowEdge[] = spec.edges.map((edge) => {
     const trackX = width - BYPASS_TRACK_EDGE - (bypassCount % BYPASS_TRACKS) * BYPASS_TRACK_GAP;
-    const { edge: builtEdge, isBypass } = buildEdge(edge, orderIndex, nodeById, trackX);
+    const { edge: builtEdge, isBypass } = buildEdge(edge, orderIndex, nodeById, trackX, cols);
     if (isBypass) bypassCount += 1;
     return builtEdge;
   });
@@ -101,6 +101,7 @@ function buildEdge(
   orderIndex: Map<string, number>,
   nodeById: Map<string, FlowNode>,
   trackX: number,
+  cols: number,
 ): { edge: FlowEdge; isBypass: boolean } {
   const base: FlowEdge = {
     from: edge.from,
@@ -121,7 +122,16 @@ function buildEdge(
     return { edge: base, isBypass: false };
   }
 
-  const adjacent = Math.abs(fromIndex - toIndex) === 1;
+  // 인접 판정. 2열 배치에서는 "순번 차이 1"이 같은 행의 좌우 이웃(또는 행 끝↔다음 행 시작)을,
+  // "순번 차이 cols"가 바로 아래 칸을 뜻한다. 후자를 빠뜨리면 세로로 딱 붙은 두 노드가
+  // 오른쪽 통로까지 크게 우회한다.
+  //
+  // 단 순번 차이만으로 "바로 아래"를 판정하면 안 된다. 앞선 레인의 노드 수가 홀수면
+  // 다음 레인의 열 정렬이 어긋나, 서로 다른 열인데도 차이가 우연히 cols가 되는 경우가 있다.
+  // 그래서 실제 x 좌표가 같은지(같은 열인지)까지 확인한다.
+  const indexDiff = Math.abs(fromIndex - toIndex);
+  const sameColumn = fromNode.x === toNode.x;
+  const adjacent = indexDiff === 1 || (indexDiff === cols && sameColumn);
   if (adjacent) return { edge: base, isBypass: false };
 
   const waypoints: Point[] = [

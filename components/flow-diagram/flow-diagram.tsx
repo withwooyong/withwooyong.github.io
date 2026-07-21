@@ -5,6 +5,7 @@ import { ArrowMarkers, EDGE_COLOR_VAR, FlowLegend, LaneBand, NodeShape, markerId
 import { toStackedSpec } from "./stacked-layout";
 import type { FlowSpec } from "./types";
 import { useInView } from "./use-in-view";
+import { validateFlowSpec } from "./validate";
 
 /** 이보다 좁으면 세로 1열 레이아웃을 쓴다 */
 const STACK_BREAKPOINT = 640;
@@ -36,7 +37,17 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
   // 호버 상태가 자주 바뀌므로, 폭/원본 스펙이 그대로일 때 재계산되지 않도록 메모이즈한다.
   const activeSpec = useMemo(() => {
     if (containerWidth !== null && containerWidth < STACK_BREAKPOINT) {
-      return toStackedSpec(spec, containerWidth);
+      const stacked = toStackedSpec(spec, containerWidth);
+      // 빌드 타임 검증기는 원본(가로) 스펙만 검사한다. 재배치 결과는 클라이언트에서만
+      // 만들어지므로, 좌표가 viewBox를 벗어나도 빌드가 잡아주지 못한다.
+      // 개발 중에만이라도 시끄럽게 알린다.
+      if (process.env.NODE_ENV !== "production") {
+        const errors = validateFlowSpec(stacked);
+        if (errors.length > 0) {
+          console.error(`[FlowDiagram] 모바일 재배치 결과가 유효하지 않습니다:\n${errors.join("\n")}`);
+        }
+      }
+      return stacked;
     }
     return spec;
   }, [spec, containerWidth]);
