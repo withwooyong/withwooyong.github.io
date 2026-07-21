@@ -127,11 +127,14 @@ function buildEdge(
   trackX: number,
   cols: number,
 ): { edge: FlowEdge; isBypass: boolean } {
+  // 엣지 라벨은 좁은 화면에서 의도적으로 버린다.
+  // 노드가 열 전체 폭을 차지하므로 라벨을 놓을 여백이 구조적으로 없고,
+  // 그대로 두면 노드 위에 겹쳐 글자가 잘린다("Collection" -> "collectio").
+  // 흐름의 방향은 화살촉이, 종류는 색과 범례가 계속 전달한다.
   const base: FlowEdge = {
     from: edge.from,
     to: edge.to,
     kind: edge.kind,
-    label: edge.label,
     bidirectional: edge.bidirectional,
     animated: edge.animated,
   };
