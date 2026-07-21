@@ -118,8 +118,12 @@ function buildGroups(spec: FlowSpec): Group[] {
   const groups: Group[] = [];
 
   for (const lane of sortedLanes) {
+    // 이미 앞선 레인에 배정된 노드는 제외한다.
+    // 레인 y 범위가 서로 겹치면 한 노드가 두 레인에 중복 배치되어
+    // React key 중복과 nodeById 덮어쓰기로 엣지 연결이 깨진다.
     const laneNodes = spec.nodes.filter(
-      (node) => node.y >= lane.y && node.y + node.h <= lane.y + lane.h,
+      (node) =>
+        !assigned.has(node.id) && node.y >= lane.y && node.y + node.h <= lane.y + lane.h,
     );
     for (const node of laneNodes) assigned.add(node.id);
     groups.push({ lane, nodes: topoSortNodes(laneNodes, spec.edges) });
