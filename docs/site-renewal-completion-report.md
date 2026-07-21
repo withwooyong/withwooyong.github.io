@@ -51,7 +51,7 @@
 
 | 항목 | 상태 | 비고 |
 |------|------|------|
-| 시스템 다이어그램 데이터화 | 완료 | [`data/portfolio.ts`](../data/portfolio.ts) `systemDiagrams` + 공통 카드 컴포넌트 |
+| 시스템 다이어그램 데이터화 | 완료 | [`data/portfolio.ts`](../data/portfolio.ts) `diagramGroups`(회사별 그룹 + `DiagramItem`) + 공통 카드 컴포넌트. 2026-07-21 흐름도 전환으로 기존 `systemDiagrams` 배열에서 이름·구조가 바뀌었고, 도식 자체는 [`data/diagrams/`](../data/diagrams/)의 `FlowSpec` 10개로 분리됨 |
 | 네비·스킬·글 링크 데이터 | 완료 | 동일 모듈 `navItems`, `skillCategories`, `writingLinks` |
 | 학력 `id` | 완료 | `id="education"`, 네비에「학력」추가, `scroll-mt-20` |
 | 문서 `lang` | 완료 | [`pages/_document.tsx`](../pages/_document.tsx) `lang="ko"` — 영문 페이지는 루트에 `lang="en"` 래퍼 |
@@ -72,7 +72,8 @@
 | 경로 | 역할 |
 |------|------|
 | `lib/site.ts` | 프로덕션 오리진·절대 URL |
-| `data/portfolio.ts` | 네비, 시스템 다이어그램, 스킬, 글 링크 |
+| `data/portfolio.ts` | 네비, 시스템 구성도 그룹(`diagramGroups`), 스킬, 글 링크 |
+| `data/diagrams/` | 흐름도 스펙(`FlowSpec`) 10개 + 레지스트리·빌드 타임 검증 |
 | `components/site-head.tsx` | 메타·canonical·OG·Twitter·JSON-LD |
 | `components/portfolio-nav.tsx` | 스킵 링크, 반응형 메뉴, EN 링크, 테마 토글 |
 | `components/theme-toggle.tsx` | 라이트/다크 전환 |
