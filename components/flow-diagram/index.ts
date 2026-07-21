@@ -1,5 +1,5 @@
 export { FlowDiagram } from "./flow-diagram";
-export { validateFlowSpec, assertFlowSpecs } from "./validate";
+export { validateFlowSpec, assertFlowSpecs, assertSpecIdsResolve } from "./validate";
 export type {
   FlowEdge,
   FlowEdgeKind,

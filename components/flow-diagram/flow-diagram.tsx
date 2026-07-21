@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useId, useMemo, useState, type CSSProperties } from "react";
 import { edgePath } from "./geometry";
 import { ArrowMarkers, EDGE_COLOR_VAR, FlowLegend, LaneBand, NodeShape, markerId } from "./primitives";
 import type { FlowSpec } from "./types";
@@ -8,6 +8,13 @@ import { useInView } from "./use-in-view";
 export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: string }) {
   const { ref, inView } = useInView<HTMLDivElement>();
   const [hovered, setHovered] = useState<string | null>(null);
+
+  // 같은 FlowSpec이 카드 + 다이얼로그(포털)로 동시에 두 번 렌더될 수 있으므로,
+  // useId()로 인스턴스별 고유 접두어를 만들어 title/desc/marker id 충돌을 막는다.
+  // useId()가 반환하는 ":" 는 id 속성으로는 유효하지만 혹시 모를 CSS 선택자 사용을
+  // 고려해 하이픈으로 치환해둔다(디버깅 편의를 위해 spec.id는 그대로 포함).
+  const rawInstanceId = useId();
+  const idPrefix = `${spec.id}-${rawInstanceId.replace(/:/g, "-")}`;
 
   const nodeById = useMemo(
     () => new Map(spec.nodes.map((node) => [node.id, node])),
@@ -39,14 +46,14 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
         viewBox={`0 0 ${spec.viewBox.w} ${spec.viewBox.h}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-labelledby={`${spec.id}-title ${spec.id}-desc`}
+        aria-labelledby={`${idPrefix}-title ${idPrefix}-desc`}
         className="h-auto w-full"
         style={spec.minWidth ? { minWidth: spec.minWidth } : undefined}
       >
-        <title id={`${spec.id}-title`}>{spec.title}</title>
-        <desc id={`${spec.id}-desc`}>{spec.desc}</desc>
+        <title id={`${idPrefix}-title`}>{spec.title}</title>
+        <desc id={`${idPrefix}-desc`}>{spec.desc}</desc>
 
-        <ArrowMarkers specId={spec.id} />
+        <ArrowMarkers idPrefix={idPrefix} />
 
         {spec.lanes?.map((lane) => (
           <LaneBand key={lane.id} lane={lane} width={spec.viewBox.w} />
@@ -63,9 +70,9 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
                 className="flow-edge"
                 d={d}
                 stroke={color}
-                markerEnd={`url(#${markerId(spec.id, edge.kind)})`}
+                markerEnd={`url(#${markerId(idPrefix, edge.kind)})`}
                 markerStart={
-                  edge.bidirectional ? `url(#${markerId(spec.id, edge.kind)})` : undefined
+                  edge.bidirectional ? `url(#${markerId(idPrefix, edge.kind)})` : undefined
                 }
               />
               {animated ? (

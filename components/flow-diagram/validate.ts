@@ -56,3 +56,18 @@ export function assertFlowSpecs(specs: FlowSpec[]): void {
     throw new Error(`잘못된 FlowSpec이 있습니다:\n${errors.join("\n")}`);
   }
 }
+
+/**
+ * data/portfolio.ts의 diagramGroups가 참조하는 specId들이 실제로
+ * flowSpecs(또는 다른 available 맵)에 존재하는지 빌드 타임에 검증한다.
+ * 존재하지 않는 id가 있으면 전부 모아 한 번에 throw 한다.
+ */
+export function assertSpecIdsResolve(specIds: string[], available: Record<string, unknown>): void {
+  const errors = specIds
+    .filter((specId) => !(specId in available))
+    .map((specId) => `[${specId}] flowSpecs에 해당 id가 없습니다`);
+
+  if (errors.length > 0) {
+    throw new Error(`잘못된 FlowSpec이 있습니다:\n${errors.join("\n")}`);
+  }
+}

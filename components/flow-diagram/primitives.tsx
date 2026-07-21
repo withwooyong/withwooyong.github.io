@@ -10,18 +10,22 @@ export const EDGE_COLOR_VAR: Record<FlowEdgeKind, string> = {
 
 const EDGE_KINDS: FlowEdgeKind[] = ["request", "data", "external", "async"];
 
-export function markerId(specId: string, kind: FlowEdgeKind): string {
-  return `${specId}-arrow-${kind}`;
+export function markerId(idPrefix: string, kind: FlowEdgeKind): string {
+  return `${idPrefix}-arrow-${kind}`;
 }
 
-/** 엣지 종류별 화살촉 마커. 같은 페이지에 여러 다이어그램이 있으므로 specId로 유일화한다 */
-export function ArrowMarkers({ specId }: { specId: string }) {
+/**
+ * 엣지 종류별 화살촉 마커.
+ * 같은 페이지에 같은 스펙의 인스턴스가 여러 개(카드 + 다이얼로그) 뜰 수 있으므로
+ * 호출부에서 인스턴스별로 유일한 idPrefix를 넘겨야 한다
+ */
+export function ArrowMarkers({ idPrefix }: { idPrefix: string }) {
   return (
     <defs>
       {EDGE_KINDS.map((kind) => (
         <marker
           key={kind}
-          id={markerId(specId, kind)}
+          id={markerId(idPrefix, kind)}
           viewBox="0 0 10 10"
           refX="9"
           refY="5"
