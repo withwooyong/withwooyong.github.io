@@ -373,3 +373,111 @@ body {
     animation-delay: 0.2s;
   }
 }
+
+/* ---------- 시스템 구성도 흐름 애니메이션 ---------- */
+
+:root {
+  --flow-request: #2563eb;   /* blue-600 */
+  --flow-data: #059669;      /* emerald-600 */
+  --flow-external: #d97706;  /* amber-600 */
+  --flow-async: #7c3aed;     /* violet-600 */
+
+  --flow-node-bg: #ffffff;
+  --flow-node-border: #cbd5e1;   /* slate-300 */
+  --flow-node-fg: #0f172a;       /* slate-900 */
+  --flow-node-sub: #64748b;      /* slate-500 */
+  --flow-accent-bg: #eff6ff;     /* blue-50 */
+  --flow-accent-border: #3b82f6; /* blue-500 */
+  --flow-lane-bg: #f1f5f9;       /* slate-100 */
+  --flow-lane-fg: #475569;       /* slate-600 */
+}
+
+.dark {
+  --flow-request: #60a5fa;   /* blue-400 */
+  --flow-data: #34d399;      /* emerald-400 */
+  --flow-external: #fbbf24;  /* amber-400 */
+  --flow-async: #a78bfa;     /* violet-400 */
+
+  --flow-node-bg: #1e293b;       /* slate-800 */
+  --flow-node-border: #475569;   /* slate-600 */
+  --flow-node-fg: #f1f5f9;       /* slate-100 */
+  --flow-node-sub: #94a3b8;      /* slate-400 */
+  --flow-accent-bg: #1e3a5f;
+  --flow-accent-border: #60a5fa; /* blue-400 */
+  --flow-lane-bg: #0f172a;       /* slate-900 */
+  --flow-lane-fg: #94a3b8;       /* slate-400 */
+}
+
+.flow-edge {
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 6 10;
+  transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+/* 뷰포트에 들어온 다이어그램만 애니메이션한다 */
+[data-flow-animate="on"] .flow-edge {
+  animation: flow-dash 1.4s linear infinite;
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+/* 클릭/호버 판정을 넓히기 위한 투명 두꺼운 선 */
+.flow-edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+}
+
+.flow-packet {
+  r: 3.5;
+  offset-path: var(--flow-path);
+  offset-distance: 0%;
+  offset-rotate: 0deg;
+  transition: opacity 0.2s ease;
+}
+
+[data-flow-animate="on"] .flow-packet {
+  animation: flow-move 2.6s linear infinite;
+}
+
+@keyframes flow-move {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.flow-node {
+  transition: opacity 0.2s ease;
+}
+
+/* 호버 시 관련 없는 요소를 흐리게 */
+.flow-dim {
+  opacity: 0.15;
+}
+
+.flow-lane {
+  fill: var(--flow-lane-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-flow-animate="on"] .flow-edge,
+  [data-flow-animate="on"] .flow-packet {
+    animation: none;
+  }
+  .flow-edge {
+    stroke-dasharray: none;
+  }
+  .flow-packet {
+    display: none;
+  }
+}
