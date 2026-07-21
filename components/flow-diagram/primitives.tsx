@@ -44,7 +44,7 @@ export function ArrowMarkers({ idPrefix }: { idPrefix: string }) {
 export function LaneBand({ lane, width }: { lane: FlowLane; width: number }) {
   return (
     <g className="flow-lane-group" aria-hidden>
-      <rect className="flow-lane" x={0} y={lane.y} width={width} height={lane.h} rx={8} />
+      <rect className="flow-lane" x={0} y={lane.y} width={lane.w ?? width} height={lane.h} rx={8} />
       <text
         x={12}
         y={lane.y + 18}

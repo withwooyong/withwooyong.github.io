@@ -38,6 +38,12 @@ export type FlowLane = {
   label: string;
   y: number;
   h: number;
+  /**
+   * 띠의 가로 폭. 생략하면 viewBox 전체 폭을 쓴다.
+   * 좁은 화면 재배치에서는 오른쪽에 엣지 우회 통로가 있으므로,
+   * 띠가 통로까지 덮어 선과 겹치지 않도록 좁혀 지정한다.
+   */
+  w?: number;
 };
 
 export type FlowSpec = {

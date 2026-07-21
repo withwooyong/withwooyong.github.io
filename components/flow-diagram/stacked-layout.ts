@@ -4,18 +4,24 @@ import type { FlowEdge, FlowLane, FlowNode, FlowSpec, Point } from "./types";
 const MARGIN_LEFT = 16;
 /** 오른쪽 여백. 비인접 엣지가 우회하는 통로로도 쓰인다 */
 const MARGIN_RIGHT = 28;
-/** 2열일 때 열 사이 간격 */
-const COL_GAP = 10;
+/**
+ * 2열일 때 열 사이 간격.
+ * 좌우 인접 노드를 잇는 화살표가 이 틈에 그려진다.
+ * 양쪽 앵커 여백(6px씩)을 빼면 실제 선 길이가 되므로 너무 좁으면 화살촉이 점처럼 뭉갠다.
+ */
+const COL_GAP = 26;
 /** 첫 밴드/노드 위의 상단 여백, 그리고 마지막 노드 아래의 하단 여백 */
 const EDGE_MARGIN_Y = 16;
 /** 레인 라벨 띠 높이 */
 const LANE_BAND_H = 28;
-/** 행 사이 세로 간격 */
-const GAP_Y = 26;
+/** 레인 라벨 띠와 그 아래 첫 노드 사이 여백 */
+const LANE_BAND_GAP = 12;
+/** 행 사이 세로 간격. 위아래 노드를 잇는 화살표가 이 틈에 그려진다 */
+const GAP_Y = 30;
 /** sub 라벨이 있는 노드의 높이 */
-const NODE_H_WITH_SUB = 52;
+const NODE_H_WITH_SUB = 46;
 /** sub 라벨이 없는 노드의 높이 */
-const NODE_H = 44;
+const NODE_H = 40;
 /**
  * 2열로 배치하는 최소 컨테이너 폭.
  *
@@ -61,8 +67,16 @@ export function toStackedSpec(spec: FlowSpec, width: number): FlowSpec {
 
   for (const group of groups) {
     if (group.lane) {
-      newLanes.push({ id: group.lane.id, label: group.lane.label, y: cursorY, h: LANE_BAND_H });
-      cursorY += LANE_BAND_H;
+      // 띠가 오른쪽 우회 통로를 덮으면 통로를 지나는 엣지와 겹쳐 보인다.
+      // 노드 오른쪽 끝까지만 그린다.
+      newLanes.push({
+        id: group.lane.id,
+        label: group.lane.label,
+        y: cursorY,
+        h: LANE_BAND_H,
+        w: width - MARGIN_RIGHT,
+      });
+      cursorY += LANE_BAND_H + LANE_BAND_GAP;
     }
 
     for (let i = 0; i < group.nodes.length; i += cols) {
