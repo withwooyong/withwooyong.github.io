@@ -2,6 +2,30 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-07-21
+
+> 작업 브랜치 `feat/system-diagram-animation` — **main 미병합 · 미배포**. 시스템 구성도 섹션의 정지 PNG를 데이터 흐름이 애니메이션되는 인라인 SVG로 교체하는 작업. 10개 다이어그램 중 **1개(SKB 로그 기반 추천·검색)만 완료**되어 화면에 노출된 상태이며, 나머지 9개는 다음 세션 예정.
+
+### 추가
+
+- **흐름도 렌더링 파이프라인** [`components/flow-diagram/`](components/flow-diagram/) — 순수 데이터(`FlowSpec`)를 받아 SVG 다이어그램을 그리는 컴포넌트 묶음. 타입·기하 계산·스펙 검증기(`9661d33`), 뷰포트 감지 훅(`307b362`), SVG 프리미티브(노드 5종·화살촉 마커·계층 띠·범례, `0a16d1c`), 렌더러(`db0e674`). 자동 레이아웃 엔진 없이 좌표를 데이터에 직접 명시하는 방식이며 신규 npm 의존성 0개
+- **CSS 흐름 애니메이션** [`styles/globals.css`](styles/globals.css) — 엣지 종류별 색 토큰(요청/데이터/외부/비동기, 라이트·다크 각각)과 `stroke-dashoffset`·`offset-path` 키프레임. `prefers-reduced-motion: reduce`에서 전면 정지, 뷰포트 밖 다이어그램은 `data-flow-animate`로 애니메이션 차단 (`e54e0b5`)
+- **SKB 로그 기반 추천·검색 흐름도** [`data/diagrams/skb-flow-search.ts`](data/diagrams/skb-flow-search.ts) — 4계층 19노드 19엣지. 로그 수집(FileBeat→Logstash→Kafka→ES) / 분석(Python·Sanic) / 서빙 / 텍스트·NUGU 음성 검색 (`a1cefc9`)
+- **모바일 전용 2열 재배치** [`components/flow-diagram/stacked-layout.ts`](components/flow-diagram/stacked-layout.ts) — 좁은 화면에서 위상 정렬로 노드 순서를 정하고 계층별 2열로 접어 가로 스크롤을 없앤다. 비인접 엣지는 오른쪽 통로 4트랙으로 분산 (`0e16ac6`)
+- **빌드 타임 스펙 검증** — 엣지가 없는 노드를 가리키거나 좌표가 viewBox를 벗어나면 `npm run build`가 실패한다. `DiagramItem.specId`가 실제 스펙으로 해석되는지도 함께 검사해, 오타로 카드가 조용히 사라지는 것을 막는다 (`04c2af8`, `a95fa12`)
+
+### 변경
+
+- **시스템 구성도 섹션 구조 개편** [`pages/index.tsx`](pages/index.tsx), [`data/portfolio.ts`](data/portfolio.ts), [`components/system-diagram-card.tsx`](components/system-diagram-card.tsx) — 3열 PNG 카드 그리드를 회사별 그룹 + 세로 스택으로 교체. 재직 기간은 `DiagramGroup.period` 단일 출처에서 가져오며, 확대 보기에 `[흐름도] / [원본 자료]` 전환 탭을 추가(원본 PNG가 없는 신규 도식은 탭 숨김). 경력 타임라인 카드(`Career.png`)는 상단 경력 섹션과 중복되어 제거 (`6f3579c`)
+- **모바일 전환 기준을 컨테이너 폭 실측 기반으로 교정** — 전환 판단은 화면 폭이 아니라 카드 안쪽 컨테이너 폭(`화면 폭 − 80px`)에서 걸린다. 2열 임계값 290px, 전환 기준 `max(minWidth, viewBox.w × 0.7)`. 360·375·393·430px 실기기가 전부 2열로 들어오며, 768px 태블릿도 축소 대신 재배치된다 (`f380864`, `1c6ce07`)
+
+### 수정
+
+- **다이얼로그를 열면 SVG DOM id가 중복**되던 문제 — 카드와 다이얼로그가 같은 스펙을 동시에 렌더해 `<title>`/`<desc>`/마커 id가 겹쳤다. `useId()`로 인스턴스별 접두어를 생성해 분리 (`04c2af8`)
+- **2열 배치에서 바로 아래 칸 연결이 우회선으로 빠지던 문제** — 순번 차이만으로 판정하면 앞선 계층의 노드 수가 홀수일 때 다른 열을 같은 열로 오인한다. 실제 `x` 좌표 일치까지 확인하도록 수정, 우회 엣지 7→5개 (`27b6651`)
+- 계층 y 범위가 겹칠 때 노드가 두 계층에 중복 배치되던 문제 (`17263fd`)
+- 타원 노드에서 대각선 화살표가 도형에서 떨어져 보이던 문제(사각형 기준 앵커 계산), 긴 한글 라벨이 노드를 넘치던 문제, 노드마다 생기던 불필요한 탭 스톱 등 프리미티브 지적 5건 (`2707934`)
+
 ## 2026-07-08
 
 ### 추가
