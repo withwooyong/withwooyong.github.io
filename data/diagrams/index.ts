@@ -4,8 +4,10 @@ import { skbArchitectureSpec } from "./skb-architecture";
 import { skbBtvSpec } from "./skb-btv";
 import { skbFlowSearchSpec } from "./skb-flow-search";
 import { skbFlowServingSpec } from "./skb-flow-serving";
+import { yanadooAiSpec } from "./yanadoo-ai";
 
 const allSpecs: FlowSpec[] = [
+  yanadooAiSpec,
   skbBtvSpec,
   skbArchitectureSpec,
   skbFlowSearchSpec,
@@ -27,4 +29,10 @@ assertSpecIdsResolve(
   flowSpecs,
 );
 
-export { skbArchitectureSpec, skbBtvSpec, skbFlowSearchSpec, skbFlowServingSpec };
+export {
+  skbArchitectureSpec,
+  skbBtvSpec,
+  skbFlowSearchSpec,
+  skbFlowServingSpec,
+  yanadooAiSpec,
+};

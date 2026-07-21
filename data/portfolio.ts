@@ -34,6 +34,21 @@ export type DiagramGroup = {
 
 export const diagramGroups: DiagramGroup[] = [
   {
+    id: "yanadoo",
+    // 회사 라벨 표기는 사이트 전체와 동일하게 맞춘다(pages/index.tsx 참고)
+    company: "(주)야나두 a kakao company (구 카카오키즈)",
+    period: "2022.02 - 재직중",
+    items: [
+      {
+        specId: "yanadoo-ai",
+        title: "야나두 AI 서비스",
+        role: "설계 · 개발 담당",
+        summary:
+          "학습자가 아는 100단어로 시작해 3,000단어까지 확장하는 AI 영어 학습 서비스입니다. 60초 단어 테스트와 AI 커리큘럼으로 시작해 AI 튜터·여행영어·원어민톡의 실시간 회화까지 이어집니다.",
+      },
+    ],
+  },
+  {
     id: "skb",
     company: "SK브로드밴드",
     period: "2017.04 - 2021.06",
