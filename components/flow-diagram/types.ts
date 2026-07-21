@@ -9,7 +9,7 @@ export type FlowEdgeKind = "request" | "data" | "external" | "async";
 export type FlowNode = {
   id: string;
   label: string;
-  /** 보조 라벨(기술 스택 등). 2줄까지 렌더된다 */
+  /** 보조 라벨(기술 스택 등). SVG <text> 한 줄로 렌더되며 줄바꿈은 지원하지 않는다 */
   sub?: string;
   shape: FlowNodeShape;
   x: number;

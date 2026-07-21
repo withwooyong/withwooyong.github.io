@@ -10,8 +10,8 @@ export const EDGE_COLOR_VAR: Record<FlowEdgeKind, string> = {
 
 const EDGE_KINDS: FlowEdgeKind[] = ["request", "data", "external", "async"];
 
-export function markerId(specId: string, kind: FlowEdgeKind, reversed = false): string {
-  return `${specId}-arrow-${kind}${reversed ? "-rev" : ""}`;
+export function markerId(specId: string, kind: FlowEdgeKind): string {
+  return `${specId}-arrow-${kind}`;
 }
 
 /** 엣지 종류별 화살촉 마커. 같은 페이지에 여러 다이어그램이 있으므로 specId로 유일화한다 */
@@ -60,32 +60,54 @@ type NodeShapeProps = {
   onHoverChange: (id: string | null) => void;
 };
 
+/**
+ * 문자열의 대략적인 렌더 폭을 추정한다.
+ * 한글/CJK 글자는 폭이 넓어 fontSize의 약 1.0배, 그 외(영문·숫자 등)는 약 0.55배로 어림한다.
+ */
+function estimateTextWidth(text: string, fontSize: number): number {
+  let width = 0;
+  for (const ch of text) {
+    const isCjk = /[ㄱ-ㆎ가-힣一-鿿]/.test(ch);
+    width += (isCjk ? 1.0 : 0.55) * fontSize;
+  }
+  return width;
+}
+
 export function NodeShape({ node, dimmed, onHoverChange }: NodeShapeProps) {
   const fill = node.accent ? "var(--flow-accent-bg)" : "var(--flow-node-bg)";
   const stroke = node.accent ? "var(--flow-accent-border)" : "var(--flow-node-border)";
   const strokeWidth = node.accent ? 2 : 1.25;
   const cx = node.x + node.w / 2;
+  const innerWidth = node.w - 12;
+
+  const labelFontSize = 12;
+  const labelFit =
+    estimateTextWidth(node.label, labelFontSize) > innerWidth
+      ? { textLength: innerWidth, lengthAdjust: "spacingAndGlyphs" as const }
+      : {};
+
+  const subFontSize = 10;
+  const subFit =
+    node.sub && estimateTextWidth(node.sub, subFontSize) > innerWidth
+      ? { textLength: innerWidth, lengthAdjust: "spacingAndGlyphs" as const }
+      : {};
 
   return (
     <g
       className={cn("flow-node", dimmed && "flow-dim")}
       onMouseEnter={() => onHoverChange(node.id)}
       onMouseLeave={() => onHoverChange(null)}
-      onFocus={() => onHoverChange(node.id)}
-      onBlur={() => onHoverChange(null)}
-      tabIndex={0}
-      role="group"
-      aria-label={node.sub ? `${node.label} (${node.sub})` : node.label}
     >
       {renderShape(node, fill, stroke, strokeWidth)}
       <text
         x={cx}
         y={node.sub ? node.y + node.h / 2 - 2 : node.y + node.h / 2 + 4}
         textAnchor="middle"
-        fontSize={12}
+        fontSize={labelFontSize}
         fontWeight={600}
         fill="var(--flow-node-fg)"
         pointerEvents="none"
+        {...labelFit}
       >
         {node.label}
       </text>
@@ -94,9 +116,10 @@ export function NodeShape({ node, dimmed, onHoverChange }: NodeShapeProps) {
           x={cx}
           y={node.y + node.h / 2 + 13}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={subFontSize}
           fill="var(--flow-node-sub)"
           pointerEvents="none"
+          {...subFit}
         >
           {node.sub}
         </text>

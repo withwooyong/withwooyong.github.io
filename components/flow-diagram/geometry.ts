@@ -17,6 +17,14 @@ function anchor(node: FlowNode, toward: Point): Point {
   const dy = toward.y - c.y;
   if (dx === 0 && dy === 0) return c;
 
+  if (node.shape === "circle") {
+    // 원(타원) 노드는 내접 타원 경계와의 교점을 구한다: t = 1 / sqrt((dx/rx)^2 + (dy/ry)^2)
+    const rx = node.w / 2 + ANCHOR_GAP;
+    const ry = node.h / 2 + ANCHOR_GAP;
+    const t = 1 / Math.sqrt((dx / rx) ** 2 + (dy / ry) ** 2);
+    return { x: c.x + dx * t, y: c.y + dy * t };
+  }
+
   const halfW = node.w / 2 + ANCHOR_GAP;
   const halfH = node.h / 2 + ANCHOR_GAP;
   const scaleX = dx === 0 ? Number.POSITIVE_INFINITY : halfW / Math.abs(dx);
