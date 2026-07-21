@@ -1267,6 +1267,47 @@ git commit -m "feat: 시스템 구성도 섹션을 회사별 흐름도 카드 �
 
 ---
 
+### Task 7B: 모바일 세로 재배치 (파일럿 검수 중 추가)
+
+파일럿 검수에서 "모바일 가로 스크롤을 없애 달라"는 요청이 나왔다. 단순 축소는 12px 글자를 4px로 만들어 판독이 불가능하므로, 좁은 화면에서는 **레이아웃 자체를 세로로 바꾼다**.
+
+함께 발견된 문제: 카드 헤더가 좁은 화면에서도 제목·설명 블록과 역할 배지를 좌우로 배치해, 설명 문구가 좁은 칼럼에 갇혀 과도하게 줄바꿈된다. 모바일에서는 세로로 쌓아야 한다.
+
+**Files:**
+- Create: `components/flow-diagram/stacked-layout.ts`
+- Modify: `components/flow-diagram/flow-diagram.tsx`
+- Modify: `components/flow-diagram/index.ts`
+- Modify: `components/system-diagram-card.tsx` (헤더 반응형)
+
+**Interfaces:**
+- Consumes: `FlowSpec`, `FlowNode`, `FlowEdge`, `FlowLane` (Task 1)
+- Produces: `toStackedSpec(spec: FlowSpec, width: number): FlowSpec`
+
+**동작 규칙**
+
+1. 노드 순서는 **엣지 방향 기준 위상 정렬**로 정한다. 파이프라인 다이어그램은 대부분 선형이므로, 위상 순서로 세우면 엣지 대부분이 인접 노드끼리 연결되어 선이 짧아진다. 사이클이 있으면 남은 노드를 원래 `(y, x)` 순서로 이어 붙인다.
+2. 레인이 있으면 레인 순서를 우선하고, 레인 내부에서만 위상 정렬한다. 레인은 세로로 쌓고 각 레인 위에 라벨 띠를 둔다.
+3. 노드는 1열로 배치한다. 폭은 `width - 32`, 높이는 `sub`가 있으면 52 아니면 44, 세로 간격은 26으로 한다.
+4. 원본의 `waypoints`는 버린다. 대신 **인접하지 않은 노드를 잇는 엣지**는 노드 열 오른쪽(`x = 노드 우변 + 12`)으로 우회하는 경유점 2개를 자동 생성해 다른 노드를 관통하지 않게 한다.
+5. `viewBox`는 `{ w: width, h: 계산된 총 높이 }`로 만들고 `minWidth`는 제거한다(가로 스크롤 금지).
+6. `legend`, `title`, `desc`, 노드 `label`/`sub`/`accent`/`shape`, 엣지 `kind`/`label`/`bidirectional`은 원본을 그대로 보존한다.
+
+**전환 조건**
+
+`FlowDiagram`이 컨테이너 실제 폭을 측정해 **640px 미만이면** 세로 스펙을 사용한다. 서버 렌더 시에는 항상 원본(가로) 스펙을 쓰고, 마운트 후 측정 결과에 따라 교체한다 — 초기 렌더가 서버와 동일해야 하이드레이션이 깨지지 않는다.
+
+확대 다이얼로그 안에서는 다이얼로그 자체가 넓으므로 같은 규칙이 자연스럽게 적용된다(좁으면 세로, 넓으면 가로).
+
+- [ ] **Step 1: `toStackedSpec` 작성**
+- [ ] **Step 2: `FlowDiagram`에 폭 측정과 스펙 교체 연결**
+- [ ] **Step 3: 배럴 익스포트에 `toStackedSpec` 추가**
+- [ ] **Step 4: `npx tsc --noEmit`, `npm run build` 통과 확인**
+- [ ] **Step 5: 생성된 `out/index.html`에 원본(가로) 스펙이 프리렌더되었는지 확인** — 서버 렌더는 가로가 정답이다
+- [ ] **Step 6: 커밋**
+- [ ] **Step 7: 사용자 모바일 검수 (게이트)**
+
+---
+
 ### Task 8: SKB 서비스 플로우 2 — 서빙 API · 영상 메타 · 이미지 플랫폼
 
 원본: `public/images/SKB_flow2.png`
