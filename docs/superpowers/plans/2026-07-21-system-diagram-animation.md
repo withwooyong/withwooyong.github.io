@@ -1380,6 +1380,11 @@ git commit -m "feat: 시스템 구성도 섹션을 회사별 흐름도 카드 �
 
 `data/diagrams/skb-flow-serving.ts`를 만든다. `viewBox: { w: 1200, h: 600 }`, `minWidth: 900`, 레인 3개로 구성한다.
 
+> **[실행 중 수정] viewBox는 600 → 700, 레인 높이는 200/216/200으로 확대했다.**
+> 이 다이어그램은 트랙마다 2행(주 흐름 + RDBMS)이 필요한데, `LaneBand`가 레인 상단 30px을 라벨로 쓰고(`primitives.tsx:50`) 실린더 노드가 62px이라 계획서의 170px 레인에는 2행이 들어가지 않는다.
+> 또한 `stacked-layout.ts:185`는 노드가 레인 y 범위에 **완전히 포함될 때만** 그 레인에 배정하므로, 레인을 넘치는 노드는 모바일에서 조용히 사라진다(빌드 검증기는 viewBox 이탈만 잡는다). 남은 스펙 작성 시에도 이 조건을 먼저 만족시킬 것.
+> 레인 y 범위: serving 12~212, meta 232~448, image 468~668. 하단 684는 이미지 HUB 우회선 통로다.
+
 **레인과 노드 (원본 자료 기준):**
 
 | 레인 | 노드 (좌→우) |
@@ -1391,6 +1396,9 @@ git commit -m "feat: 시스템 구성도 섹션을 회사별 흐름도 카드 �
 **엣지:** 각 레인에서 클라이언트 → 게이트웨이 → 캐시 → 저장소는 `request`/`data`로 좌→우 연결하고, `CMS 운영 ↔ 저장소`는 `bidirectional: true`, `GPU (SKT)`와 `Contents HUB` 연결은 `external`, `RDBMS ← CMS 운영`은 `data`로 잇는다. 이미지 레인은 `이미지 HUB → Nginx`로 되돌아오는 `data` 엣지를 `waypoints`로 아래를 크게 돌아 연결한다.
 
 노드 크기·간격은 Task 6의 좌표 규칙(표준 `w:130 h:46`, 가로 170px, 세로 90px)을 따른다.
+
+> **[실행 중 발견] `bidirectional: true` 엣지의 `from`/`to` 방향은 데스크톱 렌더링에 영향이 없지만 모바일 순서를 바꾼다.**
+> `toStackedSpec`이 `topoSortNodes`로 레인 내 순서를 정하기 때문에, 되돌아오는 엣지를 `from`으로 쓰면 그 노드가 진입 간선 없는 소스로 판정돼 레인 맨 앞으로 튀어나온다. 실제로 `meta-ops → gpu-skt`와 `hub-image → nginx`가 그랬고, 둘 다 방향을 뒤집어 해결했다. 남은 스펙에서도 **역방향·되돌아오는 엣지는 흐름 순서대로 from/to를 적을 것.**
 
 - [ ] **Step 2: 레지스트리에 등록**
 

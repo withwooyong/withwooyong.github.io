@@ -47,6 +47,15 @@ export const diagramGroups: DiagramGroup[] = [
         originalSrc: "/images/SKB_flow1.png",
         originalAlt: "SKB 서비스 플로우 1 원본 자료",
       },
+      {
+        specId: "skb-flow-serving",
+        title: "서빙 API · 영상물 메타 · 통합 이미지 플랫폼",
+        role: "설계 · 개발 담당",
+        summary:
+          "NCMS 프로젝트 후속으로 서빙 API와 CMS 운영 시스템을 개발했습니다. SKT GPU 연동 영상물 딥메타 추출 서비스와 Nginx 캐시 기반 통합 이미지 서빙 플랫폼을 구축했습니다.",
+        originalSrc: "/images/SKB_flow2.png",
+        originalAlt: "SKB 서비스 플로우 2 원본 자료",
+      },
     ],
   },
 ];
