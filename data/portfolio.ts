@@ -39,6 +39,15 @@ export const diagramGroups: DiagramGroup[] = [
     period: "2017.04 - 2021.06",
     items: [
       {
+        specId: "skb-architecture",
+        title: "SK Broadband 시스템 아키텍처",
+        role: "설계 · 개발 담당",
+        summary:
+          "재직 당시 담당했던 서비스들의 전체 시스템 구조입니다. API Gateway를 중심으로 이미지·앱·검색·배치 계층이 나뉘고, Kafka를 통해 로그와 통계가 비동기로 흐릅니다.",
+        originalSrc: "/images/SKB_Arch.png",
+        originalAlt: "SKB 시스템 아키텍처 원본 자료",
+      },
+      {
         specId: "skb-flow-search",
         title: "로그 기반 추천 · 검색 서비스",
         role: "설계 · 개발 담당",
