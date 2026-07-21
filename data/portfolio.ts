@@ -55,6 +55,15 @@ export const diagramGroups: DiagramGroup[] = [
         originalSrc: "/images/yanadoo_all.png",
         originalAlt: "야나두 전체 시스템 원본 자료",
       },
+      {
+        specId: "yanadoo-app",
+        title: "야나두 앱",
+        role: "설계 · 개발 담당",
+        summary:
+          "UniWebView 기반 하이브리드 앱으로 영어·클래스·B2B 학습을 하나의 셸에서 제공합니다. 틈새단어, 스르르 학습지, AI 리얼톡 등 개별 학습 기능이 앱 안에서 연결됩니다.",
+        originalSrc: "/images/yanadoo_app.png",
+        originalAlt: "야나두 앱 원본 자료",
+      },
     ],
   },
   {

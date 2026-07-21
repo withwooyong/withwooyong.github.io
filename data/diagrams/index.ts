@@ -5,11 +5,13 @@ import { skbBtvSpec } from "./skb-btv";
 import { skbFlowSearchSpec } from "./skb-flow-search";
 import { skbFlowServingSpec } from "./skb-flow-serving";
 import { yanadooAiSpec } from "./yanadoo-ai";
+import { yanadooAppSpec } from "./yanadoo-app";
 import { yanadooPlatformSpec } from "./yanadoo-platform";
 
 const allSpecs: FlowSpec[] = [
   yanadooAiSpec,
   yanadooPlatformSpec,
+  yanadooAppSpec,
   skbBtvSpec,
   skbArchitectureSpec,
   skbFlowSearchSpec,
@@ -37,5 +39,6 @@ export {
   skbFlowSearchSpec,
   skbFlowServingSpec,
   yanadooAiSpec,
+  yanadooAppSpec,
   yanadooPlatformSpec,
 };
