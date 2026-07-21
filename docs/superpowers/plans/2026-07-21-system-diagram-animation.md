@@ -993,14 +993,10 @@ export const flowSpecs: Record<string, FlowSpec> = Object.fromEntries(
 export { skbFlowSearchSpec };
 ```
 
-- [ ] **Step 3: 검증기가 실제로 빌드를 막는지 확인**
+- [ ] **Step 3: 정상 빌드 확인**
 
-`data/diagrams/skb-flow-search.ts`에서 마지막 엣지의 `to: "search-ingest"`를 일시적으로 `to: "search-ingest-오타"`로 바꾼다.
-
-Run: `npm run build`
-Expected: **빌드 실패**. 출력에 `[skb-flow-search] 엣지 to "search-ingest-오타"에 해당하는 노드가 없습니다` 포함.
-
-확인 후 오타를 원래대로 되돌린다.
+> **실행 중 확인된 계획 결함(2026-07-21)**: 원래 이 위치에 "스펙을 일부러 부패시켜 빌드 실패를 확인" 단계가 있었으나, 이 시점에는 어떤 페이지도 `data/diagrams`를 import하지 않아 모듈이 번들에 포함되지 않고 `assertFlowSpecs()`가 실행되지 않는다. 부패시켜도 빌드가 성공한다.
+> 따라서 **검증 게이트 확인은 Task 7(페이지 연결) 이후로 이동**했다. Task 7 Step 5를 참조.
 
 - [ ] **Step 4: 정상 빌드 확인**
 
@@ -1233,7 +1229,20 @@ import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/p
 Run: `npm run build`
 Expected: 성공. 실패하면 `systemDiagrams` 잔여 참조를 `grep -rn "systemDiagrams" pages components data`로 찾아 제거한다.
 
-- [ ] **Step 5: 개발 서버로 육안 확인**
+- [ ] **Step 5: 검증기가 실제로 빌드를 막는지 확인 (Task 6에서 이동)**
+
+이 태스크에서 `pages/index.tsx` → `SystemDiagramCard` → `@/data/diagrams` 경로가 연결되었으므로, 이제 비로소 `assertFlowSpecs()`가 빌드 중 실행된다. 검증 게이트가 살아 있는지 반드시 확인한다.
+
+`data/diagrams/skb-flow-search.ts`에서 마지막 엣지의 `to: "search-ingest"`를 일시적으로 `to: "search-ingest-오타"`로 바꾼다.
+
+Run: `npm run build`
+Expected: **빌드 실패**. 출력에 `[skb-flow-search] 엣지 to "search-ingest-오타"에 해당하는 노드가 없습니다` 포함.
+
+**빌드가 성공하면 검증 게이트가 여전히 죽어 있는 것이다.** 그 경우 파일을 원상 복구하고 BLOCKED로 보고한다 — 남은 9개 스펙을 검증 없이 작성하면 안 된다.
+
+확인 후 오타를 원래대로 되돌리고 `npm run build`가 다시 성공하는지 확인한다. **부패시킨 상태로 커밋하지 않는다.**
+
+- [ ] **Step 6: 개발 서버로 육안 확인**
 
 Run: `npm run dev`
 브라우저에서 http://localhost:3000/#systems 확인 항목:
@@ -1245,14 +1254,14 @@ Run: `npm run dev`
 5. 브라우저 폭을 375px로 줄이면 다이어그램이 가로 스크롤된다(페이지 본문은 가로 스크롤되지 않는다)
 6. DevTools → Rendering → `prefers-reduced-motion: reduce` 적용 시 애니메이션이 멈추고 실선 화살표만 남는다
 
-- [ ] **Step 6: 커밋**
+- [ ] **Step 7: 커밋**
 
 ```bash
 git add data/portfolio.ts components/system-diagram-card.tsx pages/index.tsx
 git commit -m "feat: 시스템 구성도 섹션을 회사별 흐름도 카드 구조로 교체"
 ```
 
-- [ ] **Step 7: 사용자 검수 요청 (게이트)**
+- [ ] **Step 8: 사용자 검수 요청 (게이트)**
 
 사용자에게 애니메이션 속도, 색 대비, 노드 밀도, 폰트 크기, 모바일 판독성, 호버 하이라이트 체감을 확인받는다. **승인 전에는 Task 8로 넘어가지 않는다.** 수정 요청이 있으면 이 태스크 안에서 반영하고 다시 확인받는다.
 
