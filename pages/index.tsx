@@ -8,7 +8,7 @@ import { ThesisSummaryDialog } from "@/components/thesis-summary-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { navItems, skillCategories, systemDiagrams, writingLinks } from "@/data/portfolio";
+import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
 import { absoluteUrl } from "@/lib/site";
 import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Phone, Users, Wrench } from "lucide-react";
 import Image from "next/image";
@@ -468,18 +468,23 @@ export default function Home() {
           <SectionReveal>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">시스템 구성도</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {systemDiagrams.map((d) => (
-                <SystemDiagramCard
-                  key={d.id}
-                  title={d.title}
-                  description={d.description}
-                  imageSrc={d.imageSrc}
-                  alt={d.alt}
-                  caption={d.caption}
-                  Icon={d.Icon}
-                  iconClassName={d.iconClassName}
-                />
+            <div className="space-y-16">
+              {diagramGroups.map((group) => (
+                <div key={group.id}>
+                  <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-slate-200 pb-3 dark:border-slate-700">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                      {group.company}
+                    </h3>
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                      {group.period}
+                    </span>
+                  </div>
+                  <div className="space-y-8">
+                    {group.items.map((item) => (
+                      <SystemDiagramCard key={item.specId} item={item} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
