@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
 import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Users, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -113,7 +113,7 @@ export default function Home() {
               </p>
               <div className="flex flex-wrap justify-center gap-3 hero-stagger-5">
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
-                  <a href="https://www.notion.so/282845b3742d8060bff8cd6f0012ef63?source=copy_link" target="_blank" rel="noopener noreferrer">
+                  <a href={NOTION_RESUME_URL} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
                     경력기술서 보기
                   </a>

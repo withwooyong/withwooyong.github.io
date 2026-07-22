@@ -6,12 +6,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
 import { ArrowRight, Bot, ExternalLink, Github, Layers, Mail, Search, ShoppingCart, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const NOTION_RESUME_URL = "https://www.notion.so/282845b3742d8060bff8cd6f0012ef63?source=copy_link";
 
 /** 핵심 요약 4가지 — 플랫폼 프로덕트 리더로서의 강점 */
 const summaryCards = [

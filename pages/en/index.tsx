@@ -2,7 +2,7 @@ import { SiteHead } from "@/components/site-head";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
 import { ExternalLink, Github, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,7 +69,7 @@ export default function EnglishHome() {
 
           <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
             <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
-              <a href="https://www.notion.so/282845b3742d8060bff8cd6f0012ef63?source=copy_link" target="_blank" rel="noopener noreferrer">
+              <a href={NOTION_RESUME_URL} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Resume (Notion)
               </a>

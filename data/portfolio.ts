@@ -1,3 +1,5 @@
+import { NOTION_RESUME_URL } from "@/lib/site";
+
 export type NavItem = { href: string; label: string };
 
 export const navItems: NavItem[] = [
@@ -153,7 +155,7 @@ export type WritingLink = { label: string; href: string; description?: string };
 export const writingLinks: WritingLink[] = [
   {
     label: "경력기술서 (Notion)",
-    href: "https://www.notion.so/282845b3742d8060bff8cd6f0012ef63?source=copy_link",
+    href: NOTION_RESUME_URL,
     description: "상세 경력 및 프로젝트 정리",
   },
   {
