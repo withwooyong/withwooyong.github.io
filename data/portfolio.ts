@@ -37,7 +37,7 @@ export const diagramGroups: DiagramGroup[] = [
     id: "yanadoo",
     // 회사 라벨 표기는 사이트 전체와 동일하게 맞춘다(pages/index.tsx 참고)
     company: "(주)야나두 a kakao company (구 카카오키즈)",
-    period: "2022.02 - 재직중",
+    period: "2022.02 - 2026.07",
     items: [
       {
         specId: "yanadoo-ai",
@@ -195,7 +195,7 @@ export const skillCategories: SkillCategory[] = [
   { title: "Database", body: "AWS RDS, MongoDB, Oracle, MSSQL, PostgreSQL, Elasticsearch, Redis", icon: "database" },
   {
     title: "AI & Search",
-    body: "OpenAI, Google Gemini, DeepL, LangChain, LangGraph, LaLM, ELK Stack, Kafka, AI 챗봇, 검색엔진, 추천시스템",
+    body: "OpenAI, Google Gemini, DeepL, LangChain, LangGraph, LLM, ELK Stack, Kafka, AI 챗봇, 검색엔진, 추천시스템",
     icon: "bot",
   },
   { title: "DevOps & Tools", body: "AWS EC2, AWS RDS, AWS S3, CI/CD, Jira, Confluence, Jandi, Slack", icon: "wrench" },

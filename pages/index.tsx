@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
 import { absoluteUrl } from "@/lib/site";
-import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Phone, Users, Wrench } from "lucide-react";
+import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Users, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -40,7 +40,6 @@ export default function Home() {
       image: absoluteUrl("/images/Ted_yanadoo.png"),
       sameAs: ["https://github.com/withwooyong"],
       jobTitle: "Agile Developer & Tech Lead",
-      worksFor: { "@type": "Organization", name: "(주)야나두 a kakao company (구 카카오키즈)" },
     }),
     []
   );
@@ -51,7 +50,7 @@ export default function Home() {
     <>
       <SiteHead
         title="허우용 - Agile Developer & Tech Lead"
-        description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 (주)야나두(a kakao company, 구 카카오키즈) 커머스개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 풀스택 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
+        description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 직전 (주)야나두(a kakao company, 구 카카오키즈) 커머스개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 플랫폼 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
         path="/"
         jsonLd={personJsonLd}
       />
@@ -104,11 +103,11 @@ export default function Home() {
               <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
                 20년 이상 경력의 엔지니어링 리더.
                 <br className="hidden sm:inline" />{" "}
-                <strong>(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
+직전 <strong>(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
                 <br className="hidden sm:inline" />{" "}
                 <strong>KT, CJ헬로비전, SK브로드밴드</strong>에서 1,000만+ 사용자 서비스 개발 및 플랫폼 구축 주도.
                 <br className="hidden sm:inline" />{" "}
-                온프레미스(IDC)와 AWS 클라우드 환경 모두 경험한 풀스택 아키텍트.
+                온프레미스(IDC)와 AWS 클라우드 환경 모두 경험한 플랫폼 아키텍트.
                 <br className="hidden sm:inline" />{" "}
                 AI·플랫폼·조직을 연결해 서비스 성장과 개발 생산성 향상을 이끌어온 기술 리더.
               </p>
@@ -155,11 +154,11 @@ export default function Home() {
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
                       <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      현재 포지션
+                      직전 포지션
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장 (2022.02 ~ 재직중 · 4년 6개월)</p>
+                    <p className="text-slate-600 dark:text-slate-300">(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장 (2022.02 ~ 2026.07 · 4년 6개월)</p>
                   </CardContent>
                 </Card>
                 <Card className="coin-flip-card">
@@ -239,7 +238,7 @@ export default function Home() {
                       <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">(주)야나두 a kakao company (구 카카오키즈)</CardDescription>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="secondary">2022.02 - 재직중</Badge>
+                      <Badge variant="secondary">2022.02 - 2026.07</Badge>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 6개월</span>
                     </div>
                   </div>
@@ -562,7 +561,7 @@ export default function Home() {
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">서울시립대학교 (석사)</CardTitle>
                 <CardDescription className="text-lg">
-                  <strong>논문:</strong> 시스템 통합 서비스를 위한 확장 가능한 NoSQL의 설계에 관한 연구
+                  <strong>논문:</strong> 시스템 통합 서비스를 위한 확장 가능한 NoSQL 설계방법 연구
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-wrap items-center justify-center gap-3">
@@ -584,7 +583,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 mb-8">연락하기</h2>
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-12">함께 일하고 싶으시다면 언제든 연락해주세요!</p>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
               <Card className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-950 rounded-lg flex items-center justify-center">
@@ -600,21 +599,6 @@ export default function Home() {
                     이메일 보내기
                   </a>
                   <p className="text-xs text-muted-foreground break-all">withwooyong@gmail.com</p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-950 rounded-lg flex items-center justify-center">
-                    <Phone className="h-8 w-8 text-green-600 dark:text-green-400" />
-                  </div>
-                  <CardTitle>전화</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <a href="tel:+821026274952" className="inline-flex text-green-700 dark:text-green-400 hover:underline font-medium transition-colors">
-                    전화 걸기
-                  </a>
-                  <p className="text-xs text-muted-foreground">010-2627-4952</p>
                 </CardContent>
               </Card>
 

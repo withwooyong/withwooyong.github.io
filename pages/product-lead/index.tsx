@@ -44,7 +44,7 @@ const summaryCards = [
 /** 대표 여정 — 최신 경력부터 역순, 각 단계를 맥락 → 역할 → 접근 → 임팩트(정성)로 서술 */
 const journey = [
   {
-    period: "2022.02 - 재직중",
+    period: "2022.02 - 2026.07",
     duration: "4년 6개월",
     org: "(주)야나두 a kakao company (구 카카오키즈)",
     role: "커머스개발실장",
@@ -109,7 +109,6 @@ export default function ProductLead() {
     image: absoluteUrl("/images/Ted_yanadoo.png"),
     sameAs: ["https://github.com/withwooyong"],
     jobTitle: "Platform / Product Leader",
-    worksFor: { "@type": "Organization", name: "(주)야나두 a kakao company (구 카카오키즈)" },
   };
 
   return (
