@@ -2,6 +2,17 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-07-24
+
+### 변경
+
+- **포지셔닝 문구를 개발총괄·CTO 지향으로 정비** [`pages/index.tsx`](pages/index.tsx), [`pages/en/index.tsx`](pages/en/index.tsx) (`9d5e165`)
+  - 국·영문의 `<title>`·`og:title`·`twitter:title`·JSON-LD `jobTitle`·히어로 부제를 `Agile Developer & Tech Lead` → **`개발총괄·CTO 지향 20년차 백엔드·플랫폼 리더`**(영문 `Head of Engineering / CTO-track · 20-yr Backend & Platform Leader`)로 교체
+  - LinkedIn Featured 카드가 `og:title`을 따라오므로 카드 문구도 배포 후 함께 갱신된다
+- **소개 철학 섹션을 AI-네이티브 톤으로 재작성** [`pages/index.tsx`](pages/index.tsx) (`9d5e165`)
+  - "Tech Lead로서의 철학" → **"개발 리더로서의 철학"** 으로 개제, 폐기 문구("동료가 6개월 뒤에 읽어도 이해되는 코드") 제거
+  - "개발 실행은 이미 AI로 이동 / 좋은 코드 = AI가 정확히 읽고 안전하게 고칠 수 있는 구조"로 재작성, 리더의 일을 아키텍처 표준·코드 리뷰·보안 게이트·검증 파이프라인 구축으로 서술
+
 ## 2026-07-21
 
 > 작업 브랜치 `feat/system-diagram-animation` — **main 미병합 · 미배포**. 시스템 구성도 섹션의 정지 PNG를 데이터 흐름이 애니메이션되는 인라인 SVG로 교체하는 작업. **다이어그램 10개 전부 완료**되어 회사 4곳(야나두 → SK브로드밴드 → CJ헬로비전 → 쌍용정보통신) 카드가 모두 화면에 노출된다. 계획서 Task 1~16 완료.
