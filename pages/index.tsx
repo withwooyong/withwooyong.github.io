@@ -39,7 +39,7 @@ export default function Home() {
       url: absoluteUrl("/"),
       image: absoluteUrl("/images/Ted_yanadoo.png"),
       sameAs: ["https://github.com/withwooyong"],
-      jobTitle: "Agile Developer & Tech Lead",
+      jobTitle: "개발총괄·CTO 지향 백엔드·플랫폼 리더",
     }),
     []
   );
@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <>
       <SiteHead
-        title="허우용 - Agile Developer & Tech Lead"
+        title="허우용 · 개발총괄·CTO 지향 20년차 백엔드·플랫폼 리더"
         description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 직전 (주)야나두(a kakao company, 구 카카오키즈) 커머스개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 플랫폼 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
         path="/"
         jsonLd={personJsonLd}
@@ -99,7 +99,7 @@ export default function Home() {
                   안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 hero-stagger-3">Agile Developer & Tech Lead</p>
+              <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 hero-stagger-3">개발총괄·CTO 지향 20년차 백엔드·플랫폼 리더</p>
               <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
                 20년 이상 경력의 엔지니어링 리더.
                 <br className="hidden sm:inline" />{" "}
@@ -135,18 +135,18 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">소개</h2>
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">Tech Lead로서의 철학</h3>
+                <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">개발 리더로서의 철학</h3>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                  좋은 Tech Lead는 뛰어난 코드를 직접 쓰는 사람이 아니라, 팀 전체가 좋은 코드를 쓸 수 있는 기준과 환경을 만드는 사람이라고 생각합니다. 20년간 개발과 리딩을 함께 해 오며, 동료가 6개월 뒤에
-                  읽어도 이해되는 코드와 설계를 팀의 표준으로 세워 왔습니다. 이 원칙이 결국 팀의 속도와 서비스의 안정성을 만든다고 믿습니다.
+                  개발의 실행은 이미 AI로 옮겨가고 있습니다. 리더가 할 일은 무엇을 만들지 정하는 판단과, AI가 안전하게 일할 수 있는 틀을 세우는 것이라고 믿습니다. 좋은 코드의 기준도 사람이 읽기 좋은 코드에서,
+                  AI가 정확히 읽고 안전하게 고칠 수 있는 구조로 옮겨가고 있습니다. 20년간 개발과 리딩을 함께 해 오며, 이 기준을 팀의 표준으로 세우는 일이 결국 팀의 속도와 서비스의 안정성을 만든다고 믿습니다.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
                   좋은 제품은 기획·디자인·개발이 같은 그림을 볼 때 나온다고 믿습니다. 기획, UI/UX부터 프론트, 백엔드, 앱, 데브옵스까지 전 직군을 총괄하며, 요구사항을 그대로 구현하기보다 문제 정의 단계부터
                   기획자·디자이너와 함께 고민해 사용자 경험과 기술 구조가 어긋나지 않는 접점을 찾아 왔습니다. 개발 리더가 제품과 사용자의 언어를 함께 쓸 때, 팀의 결과물은 기능을 넘어 제품이 됩니다.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  기술적 결정은 팀이 감당할 수 있는 복잡도 안에서 내리고, 위임과 코드 리뷰를 통해 동료의 성장이 곧 조직의 성장이 되도록 이끕니다. 최근에는 코드 작성·리뷰, 문서화, 반복 업무에 AI를 도입해 팀이
-                  본질적인 문제 해결에 집중할 수 있는 환경을 만들고 있으며, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭해 왔습니다.
+                  기술적 결정은 팀이 감당할 수 있는 복잡도 안에서 내리고, 위임과 코드 리뷰를 통해 동료의 성장이 곧 조직의 성장이 되도록 이끕니다. 리더의 일은 아키텍처 표준과 코드 리뷰·보안 게이트, 검증 파이프라인을
+                  세워 AI가 안전하게 일하도록 만드는 것이라 보고, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭하며 이 방식을 실천해 왔습니다.
                 </p>
               </div>
               <CoinFlipDeck className="grid grid-cols-1 gap-6">
