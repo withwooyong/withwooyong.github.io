@@ -5,7 +5,8 @@ const valid = {
   title: "Elasticsearch 아키텍처",
   description: "클러스터 계층부터 색인 내부 동작까지 정리한다.",
   category: "search-engineering",
-  tags: ["elasticsearch", "search"],
+  // 통제 어휘(content/blog/tags.ts) 안의 태그만 쓴다. "search"는 어휘에 없어 fixture로 못 쓴다.
+  tags: ["elasticsearch", "search-architecture"],
   date: "2026-07-25",
   featured: false,
   draft: false,
@@ -54,7 +55,25 @@ describe("validateFrontmatter", () => {
   });
 
   it("올바른 슬러그는 통과한다", () => {
-    const tags = ["redis", "ci-cd", "cqrs", "k8s", "ab-testing", "search-ranking"];
+    // k8s는 형식은 옳지만 어휘 밖이라(§13-3 표기 통일: k8s → kubernetes) 여기 못 쓴다.
+    const tags = ["redis", "ci-cd", "cqrs", "kubernetes", "ab-testing", "search-ranking"];
+    expect(validateFrontmatter({ ...valid, tags }, "a.md").tags).toEqual(tags);
+  });
+
+  it("통제 어휘에 없는 태그는 오류를 던진다", () => {
+    // 형식은 맞지만 어휘 밖 — 동의어 분산을 막는다.
+    expect(() => validateFrontmatter({ ...valid, tags: ["redis-cache"] }, "a.md")).toThrow(/어휘/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["fastapi"] }, "a.md")).toThrow(/어휘/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["k8s"] }, "a.md")).toThrow(/어휘/);
+  });
+
+  it("어휘 오류 메시지에 위반한 태그 값이 전부 들어간다", () => {
+    expect(() => validateFrontmatter({ ...valid, tags: ["k8s", "fastapi"] }, "a.md"))
+      .toThrow(/k8s.*fastapi|fastapi.*k8s/);
+  });
+
+  it("통제 어휘 안의 태그는 통과한다", () => {
+    const tags = ["redis", "kubernetes", "caching", "troubleshooting"];
     expect(validateFrontmatter({ ...valid, tags }, "a.md").tags).toEqual(tags);
   });
 
