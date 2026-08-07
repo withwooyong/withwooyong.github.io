@@ -18,7 +18,10 @@ export function buildToc(md: string): TocEntry[] {
   const toc: TocEntry[] = [];
   let inFence = false;
 
-  for (const line of md.split("\n")) {
+  // CRLF로 잘라야 한다. Windows에서 git이 md를 CRLF로 체크아웃하면 줄 끝에 \r이 남는데,
+  // JS의 `.`은 \r을 line terminator로 보아 제외하므로 아래 `(.*)$`가 $에 닿지 못한다.
+  // 결과적으로 헤딩이 하나도 매치되지 않아 목차가 통째로 비어버린다.
+  for (const line of md.split(/\r?\n/)) {
     if (FENCE.test(line)) {
       inFence = !inFence;
       continue;

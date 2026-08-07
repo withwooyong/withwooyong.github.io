@@ -45,7 +45,10 @@ export function readPosts(root: string = CONTENT_DIR): Post[] {
 
       if (fm.draft) continue;
 
-      const body = content.trim();
+      // 개행을 LF로 정규화한다. Windows에서 git이 md를 CRLF로 체크아웃하므로,
+      // 그대로 두면 같은 커밋에서도 빌드 플랫폼에 따라 산출물이 달라진다
+      // (body는 props로 __NEXT_DATA__에 직렬화되어 HTML에 실린다).
+      const body = content.replace(/\r\n/g, "\n").trim();
       posts.push({
         ...fm,
         slug: fileName.replace(/\.md$/, ""),
