@@ -1,6 +1,7 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostMeta } from "@/components/blog/post-meta";
 import { SeriesNav } from "@/components/blog/series-nav";
+import { serializable } from "@/components/blog/serialize";
 import { TagList } from "@/components/blog/tag-list";
 import { Markdown } from "@/components/markdown";
 import { SiteHead } from "@/components/site-head";
@@ -19,17 +20,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
   paths: getAllPosts().map((p) => ({ params: { category: p.categorySlug, slug: p.slug } })),
   fallback: false,
 });
-
-/**
- * frontmatter의 선택 필드(updated·series·seriesOrder·source)는 값이 없어도 키가 남아
- * `undefined`가 된다. Next.js는 props를 __NEXT_DATA__에 JSON으로 직렬화하는데
- * JSON에는 undefined가 없어 빌드가 실패한다. 직렬화 왕복으로 그 키들을 떨어뜨린다.
- *
- * Post·PostSummary는 문자열·불리언·숫자·배열만 담으므로 왕복해도 손실이 없다.
- */
-function serializable<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
-}
 
 export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const category = String(params?.category);
