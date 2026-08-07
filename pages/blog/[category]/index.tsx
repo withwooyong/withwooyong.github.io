@@ -1,15 +1,17 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
 import { SiteHead } from "@/components/site-head";
-import { blogCategories, findCategory, type BlogCategory } from "@/content/blog/categories";
-import { getPostsByCategory } from "@/lib/blog/loader";
+import { findCategory, type BlogCategory } from "@/content/blog/categories";
+import { getPostsByCategory, getPublishedCategories } from "@/lib/blog/loader";
 import type { PostSummary } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
-type Props = { category: BlogCategory; posts: PostSummary[] };
+type Props = { categories: BlogCategory[]; category: BlogCategory; posts: PostSummary[] };
 
+// 글이 있는 카테고리만 경로를 만든다. 빈 카테고리는 페이지 자체가 생기지 않으므로
+// out/을 스캔하는 sitemap 생성기에서도 자동으로 빠진다.
 export const getStaticPaths: GetStaticPaths = () => ({
-  paths: blogCategories.map((c) => ({ params: { category: c.slug } })),
+  paths: getPublishedCategories().map((c) => ({ params: { category: c.slug } })),
   fallback: false,
 });
 
@@ -18,10 +20,10 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const category = findCategory(slug);
   if (!category) throw new Error(`[blog] 없는 카테고리입니다: ${slug}`);
 
-  return { props: { category, posts: getPostsByCategory(slug) } };
+  return { props: { categories: getPublishedCategories(), category, posts: getPostsByCategory(slug) } };
 };
 
-export default function BlogCategoryPage({ category, posts }: Props) {
+export default function BlogCategoryPage({ categories, category, posts }: Props) {
   return (
     <>
       <SiteHead
@@ -30,7 +32,7 @@ export default function BlogCategoryPage({ category, posts }: Props) {
         path={`/blog/${category.slug}/`}
       />
 
-      <BlogShell activeCategory={category.slug}>
+      <BlogShell categories={categories} activeCategory={category.slug}>
         <div className="max-w-4xl">
           <header className="border-b border-slate-200 pb-5 dark:border-slate-800">
             <h1 className="text-2xl font-bold break-keep sm:text-3xl">{category.name}</h1>

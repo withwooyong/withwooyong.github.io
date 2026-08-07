@@ -4,12 +4,14 @@ import { SeriesNav } from "@/components/blog/series-nav";
 import { TagList } from "@/components/blog/tag-list";
 import { Markdown } from "@/components/markdown";
 import { SiteHead } from "@/components/site-head";
-import { getAdjacentPosts, getAllPosts, getPost } from "@/lib/blog/loader";
+import type { BlogCategory } from "@/content/blog/categories";
+import { getAdjacentPosts, getAllPosts, getPost, getPublishedCategories } from "@/lib/blog/loader";
 import { absoluteUrl } from "@/lib/site";
 import type { Post, PostSummary } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
 type Props = {
+  categories: BlogCategory[];
   post: Post;
   prev: PostSummary | null;
   next: PostSummary | null;
@@ -26,10 +28,10 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const post = getPost(category, slug);
   const { prev, next } = getAdjacentPosts(category, slug);
 
-  return { props: { post, prev, next } };
+  return { props: { categories: getPublishedCategories(), post, prev, next } };
 };
 
-export default function BlogPostPage({ post, prev, next }: Props) {
+export default function BlogPostPage({ categories, post, prev, next }: Props) {
   const path = `/blog/${post.categorySlug}/${post.slug}/`;
 
   const jsonLd = {
@@ -53,7 +55,7 @@ export default function BlogPostPage({ post, prev, next }: Props) {
         jsonLd={jsonLd}
       />
 
-      <BlogShell activeCategory={post.categorySlug} toc={post.toc}>
+      <BlogShell categories={categories} activeCategory={post.categorySlug} toc={post.toc}>
         <article className="max-w-4xl">
           <header className="space-y-3 border-b border-slate-200 pb-6 dark:border-slate-800">
             <PostMeta post={post} />
