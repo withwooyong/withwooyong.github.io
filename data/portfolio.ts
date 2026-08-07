@@ -10,6 +10,7 @@ export const navItems: NavItem[] = [
   { href: "#systems", label: "시스템 구성" },
   { href: "#skills", label: "기술" },
   { href: "#writing", label: "글·링크" },
+  { href: "/blog/", label: "기술 노트" },
   { href: "#education", label: "학력" },
   { href: "#contact", label: "연락" },
 ];
@@ -153,6 +154,11 @@ export const diagramGroups: DiagramGroup[] = [
 export type WritingLink = { label: string; href: string; description?: string };
 
 export const writingLinks: WritingLink[] = [
+  {
+    label: "기술 노트",
+    href: "/blog/",
+    description: "검색·플랫폼·AI 기술 정리",
+  },
   {
     label: "경력기술서 (Notion)",
     href: NOTION_RESUME_URL,

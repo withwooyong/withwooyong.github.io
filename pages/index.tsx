@@ -529,25 +529,33 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-4">글·링크</h2>
             <p className="text-center text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
-              블로그 대신 외부에 공개된 자료와 저장소로 연결합니다. (정적 사이트 — MDX 없이 유지보수 단순화)
+              직접 정리한 기술 노트와 외부에 공개된 자료·저장소로 연결합니다.
             </p>
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {writingLinks.map((w) => (
-                <Card key={w.href} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{w.label}</CardTitle>
-                    {w.description ? <CardDescription>{w.description}</CardDescription> : null}
-                  </CardHeader>
-                  <CardContent>
-                    <Button asChild variant="outline" className="w-full">
-                      <a href={w.href} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        열기
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+              {writingLinks.map((w) => {
+                // 같은 사이트 안의 이동(/blog/)에 target="_blank"가 붙으면 안 된다.
+                const external = /^https?:\/\//.test(w.href);
+                return (
+                  <Card key={w.href} className="hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{w.label}</CardTitle>
+                      {w.description ? <CardDescription>{w.description}</CardDescription> : null}
+                    </CardHeader>
+                    <CardContent>
+                      <Button asChild variant="outline" className="w-full">
+                        <a href={w.href} {...(external && { target: "_blank", rel: "noopener noreferrer" })}>
+                          {external ? (
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                          ) : (
+                            <ArrowRight className="h-4 w-4 mr-2" />
+                          )}
+                          열기
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
           </SectionReveal>
