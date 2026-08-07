@@ -71,9 +71,14 @@ export function BlogShell({ activeCategory, toc, children }: BlogShellProps) {
             </Link>
           </div>
           <div className="flex items-center gap-3">
+            {/*
+              폭에 상관없이 항상 보여야 한다. 검색으로 포스트에 직접 들어온 방문자에게는
+              이 링크가 포트폴리오로 가는 유일한 경로다 (요구사항 FR-4.3).
+              위키(wiki-shell)는 noindex라 sm:block으로 숨겨도 됐지만 블로그는 색인된다.
+            */}
             <Link
               href="/"
-              className="hidden text-sm text-slate-600 hover:text-blue-600 sm:block dark:text-slate-300 dark:hover:text-blue-400"
+              className="shrink-0 text-sm text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400"
             >
               포트폴리오
             </Link>
