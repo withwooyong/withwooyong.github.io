@@ -2082,15 +2082,36 @@ export const navItems: NavItem[] = [
 
 이 단계가 이 태스크의 핵심 검증이다.
 
+> **⚠ buildId 함정 — 이 지시를 그냥 따르면 오판한다.** Next.js의 buildId(21자 nanoid)는 **빌드마다 새로 생성**되어 `_next/static/<buildId>/_buildManifest.js` 경로에 박힌다. 단순 `Compare-Object`는 변경이 없어도 "차이 있음"을 낸다. 실측 사례:
+>
+> ```
+> before: Oc8l9MReVUiE-iHAx5rMw/_buildManifest.js
+> after : NjevPEOHT5lDToiLnnMWt/_buildManifest.js
+> ```
+>
+> 파일 길이는 바이트 단위로 동일했다(64908=64908). **반드시 buildId를 정규화한 뒤 비교하고, 표본 3개가 아니라 `out/` 하위 .html 전수를 비교하라.**
+
 ```powershell
 # 변경 전 산출물 보관
 Copy-Item -Recurse out out-before -Force
-# (Step 2 적용 후)
+# (변경 적용 후)
 npm run build
-# index.html은 네비가 바뀌므로 달라진다. 나머지가 그대로인지 본다
-Compare-Object (Get-Content out-before\en\index.html) (Get-Content out\en\index.html)
-Compare-Object (Get-Content out-before\product-lead-v2\index.html) (Get-Content out\product-lead-v2\index.html)
+
+# buildId를 정규화해 읽는 헬퍼
+function Get-Normalized($path) {
+  (Get-Content $path -Raw) -replace '/_next/static/[A-Za-z0-9_-]{21}/', '/_next/static/__BUILDID__/'
+}
+
+# out/ 하위 .html 전수 비교 (표본 몇 개로는 나머지에서 무슨 일이 났는지 알 수 없다)
+Get-ChildItem out -Recurse -Filter *.html | ForEach-Object {
+  $rel = $_.FullName.Substring((Resolve-Path out).Path.Length + 1)
+  $before = Join-Path "out-before" $rel
+  if (-not (Test-Path $before)) { "신규: $rel"; return }
+  if ((Get-Normalized $before) -ne (Get-Normalized $_.FullName)) { "변경: $rel" }
+}
 ```
+
+Expected: **`변경: index.html` 한 줄만** 출력된다. 다른 파일이 나오면 GC-6 위반이므로 원인을 찾아야 한다.
 
 Expected: `out/en/`, `out/product-lead-v2/`, `out/product-lead-wiki/` 는 **차이가 없어야 한다.** `out/index.html`만 네비 항목과 글·링크 섹션 추가분이 달라진다.
 
