@@ -25,6 +25,8 @@
 | GC-9 | 커밋 메시지 | 한글로 작성 |
 | GC-10 | 푸시 금지 | 사용자가 명시적으로 요청하기 전까지 `git push`를 실행하지 않는다 |
 | GC-11 | 발행 산출물 금칙어 | `면접`, `커닝페이퍼`, `암기용`, `화이트보드`, `이력서` 가 `content/blog/` 및 `out/blog/` 에 존재하면 안 된다 |
+| GC-12 | **타입 검사는 별도 검증이다** | 코드를 만지는 모든 태스크는 `npx tsc --noEmit`을 실행하고 종료 코드를 보고한다. **Vitest는 esbuild로 타입을 지울 뿐 검사하지 않는다** — 테스트 전원 통과 상태에서 `tsc`가 오류를 잡는 일이 실제로 발생했다 |
+| GC-13 | `tsconfig.json` 수정 금지 | `target: "es5"` 등을 바꾸면 전 프로젝트 컴파일 산출물이 달라져 GC-6에 저촉된다. 타입 오류는 호출부를 고쳐 해결한다 |
 
 ---
 
@@ -482,18 +484,24 @@ export function buildToc(md: string): TocEntry[] {
 
 `lib/wiki.ts`에서 다음 두 곳을 고친다.
 
-1. 상단 import에 추가:
+1. 기존 `GithubSlugger` import를 다음으로 교체:
 
 ```ts
-import { buildToc } from "@/lib/toc";
+import { buildToc, type TocEntry } from "@/lib/toc";
 ```
 
-2. `GithubSlugger` import와 `buildToc` 함수 정의(170~191행), `TocEntry` 타입 정의(92행)를 제거하고 re-export로 대체:
+> **`type TocEntry`를 반드시 함께 import해야 한다.** 아래의 `export type { TocEntry } from "..."` 는 **지역 바인딩을 만들지 않는 순수 재수출**이라, 같은 파일의 `getDoc()` 반환 타입 주석에서 `TocEntry`가 미해결 이름이 된다. 이 저장소는 `isolatedModules: true`이므로 `type` 수식어도 필수다. (실측으로 확인된 함정 — 재수출만 하면 `tsc`가 실패한다.)
+
+2. `buildToc` 함수 정의(170~191행)와 `TocEntry` 타입 정의(92행)를 제거하고 re-export로 대체:
 
 ```ts
+// 목차 생성은 블로그와 공유하므로 lib/toc.ts가 단일 구현이다.
+// 기존 import 경로(`@/lib/wiki`)를 유지하기 위해 여기서 re-export한다.
 export type { TocEntry } from "@/lib/toc";
 export { buildToc } from "@/lib/toc";
 ```
+
+지역 import와 재수출이 공존해도 이름 충돌은 없다.
 
 기존에 `import { ..., type TocEntry } from "@/lib/wiki"` 하던 `pages/product-lead-wiki/[slug].tsx`와 `components/wiki-shell.tsx`가 그대로 동작해야 한다. **이것이 GC-6(기존 페이지 무영향)의 핵심 검증 지점이다.**
 
@@ -891,7 +899,9 @@ export function getAllTags(): { tag: string; count: number }[] {
   for (const post of readPosts()) {
     for (const tag of post.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
   }
-  return [...counts.entries()]
+  // 이 저장소의 tsconfig target이 es5라 Map 이터레이터 전개(`[...counts.entries()]`)가
+  // TS2802로 실패한다. tsconfig를 고치면 전 프로젝트 산출물이 바뀌므로(GC-6) 호출부를 맞춘다.
+  return Array.from(counts.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => (a.count === b.count ? a.tag.localeCompare(b.tag) : b.count - a.count));
 }
