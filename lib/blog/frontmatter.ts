@@ -1,4 +1,5 @@
 import { findCategory } from "@/content/blog/categories";
+import { isKnownTag } from "@/content/blog/tags";
 import type { PostFrontmatter } from "@/lib/blog/types";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -53,6 +54,18 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
   const badTags = (tags as unknown[]).filter((t) => typeof t === "string" && !TAG_SLUG.test(t));
   if (badTags.length > 0) {
     fail(`tags는 소문자 영문·숫자·하이픈만 쓸 수 있습니다 (위반: ${badTags.join(", ")})`);
+  }
+  // 형식 검사 뒤에 어휘 대조를 둔다 — 순서가 원인을 구분한다.
+  // "CI/CD"는 형식 오류로, "k8s"는 어휘 오류로 나와야 고치는 방법이 달라진다.
+  //
+  // 형식만 검사하면 `redis`와 `redis-cache`가 둘 다 통과해 별개의 태그 페이지로 갈라진다.
+  // 128편을 여러 배치로 나눠 변환하므로 어휘를 문서로만 정해두면 배치마다 이탈이 생긴다.
+  const unknownTags = (tags as string[]).filter((t) => !isKnownTag(t));
+  if (unknownTags.length > 0) {
+    fail(
+      `tags는 통제 어휘 안에서만 고를 수 있습니다 (어휘 밖: ${unknownTags.join(", ")}). ` +
+        `허용 목록은 content/blog/tags.ts를 보세요`,
+    );
   }
 
   const featured = bool("featured");
