@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import GithubSlugger from "github-slugger";
+import { buildToc, type TocEntry } from "@/lib/toc";
 
 /**
  * 프로덕트 로드맵 위키 — 원문 마크다운 로더 (빌드 타임 전용).
@@ -89,7 +89,10 @@ const H2 = /^##\s+§(\d+)\./;
 const H3 = /^###\s+(\d+-\d+)\./;
 const FENCE = /^\s*```/;
 
-export type TocEntry = { depth: 2 | 3; text: string; id: string };
+// 목차 생성은 블로그와 공유하므로 lib/toc.ts가 단일 구현이다.
+// 기존 import 경로(`@/lib/wiki`)를 유지하기 위해 여기서 re-export한다.
+export type { TocEntry } from "@/lib/toc";
+export { buildToc } from "@/lib/toc";
 
 /**
  * 원문 마크다운에서 면접용 내용을 제거하고, 위키에서 쓸 형태로 정리한다.
@@ -164,30 +167,6 @@ function rewriteLinks(md: string): string {
     // ../posting_tving.md, ../../glossary/... 등 저장소에 없는 문서
     return text;
   });
-}
-
-/** 렌더링될 헤딩과 동일한 id를 만들기 위해 rehype-slug와 같은 슬러거를 쓴다. */
-export function buildToc(md: string): TocEntry[] {
-  const slugger = new GithubSlugger();
-  const toc: TocEntry[] = [];
-  let inFence = false;
-
-  for (const line of md.split("\n")) {
-    if (FENCE.test(line)) {
-      inFence = !inFence;
-      continue;
-    }
-    if (inFence) continue;
-
-    const m = /^(##|###)\s+(.*)$/.exec(line);
-    if (!m) continue;
-
-    // 마크다운 강조 기호를 제거한 텍스트가 실제로 렌더링되는 값이다.
-    const text = m[2].replace(/[*`]/g, "").trim();
-    toc.push({ depth: m[1].length as 2 | 3, text, id: slugger.slug(text) });
-  }
-
-  return toc;
 }
 
 export function getDoc(slug: string): { doc: WikiDoc; markdown: string; toc: TocEntry[] } {
