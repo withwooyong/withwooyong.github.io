@@ -26,7 +26,7 @@ export default function BlogTagIndexPage({ tags }: Props) {
                   className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-3 py-1.5 text-sm transition-colors hover:border-blue-400 hover:text-blue-600 dark:border-slate-800 dark:hover:border-blue-600 dark:hover:text-blue-400"
                 >
                   <span>{tag}</span>
-                  <span className="tabular-nums text-xs text-slate-400 dark:text-slate-500">{count}</span>
+                  <span className="tabular-nums text-xs text-slate-500 dark:text-slate-400">{count}</span>
                 </Link>
               </li>
             ))}

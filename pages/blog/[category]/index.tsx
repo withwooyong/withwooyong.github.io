@@ -37,7 +37,7 @@ export default function BlogCategoryPage({ category, posts }: Props) {
             <p className="mt-2 text-sm leading-relaxed break-keep text-slate-600 dark:text-slate-300">
               {category.description}
             </p>
-            <p className="mt-2 text-xs tabular-nums text-slate-400 dark:text-slate-500">{posts.length}편</p>
+            <p className="mt-2 text-xs tabular-nums text-slate-500 dark:text-slate-400">{posts.length}편</p>
           </header>
 
           <div>

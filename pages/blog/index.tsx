@@ -61,7 +61,7 @@ export default function BlogHomePage({ categories, featured, recent }: Props) {
                   >
                     <div className="flex items-baseline justify-between gap-2">
                       <span className="font-semibold break-keep">{c.name}</span>
-                      <span className="shrink-0 text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                      <span className="shrink-0 text-xs tabular-nums text-slate-500 dark:text-slate-400">
                         {c.count}편
                       </span>
                     </div>

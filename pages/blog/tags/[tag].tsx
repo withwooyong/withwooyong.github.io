@@ -31,7 +31,7 @@ export default function BlogTagPage({ tag, posts }: Props) {
           <header className="border-b border-slate-200 pb-5 dark:border-slate-800">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400">태그</p>
             <h1 className="mt-1 text-2xl font-bold break-keep sm:text-3xl">{tag}</h1>
-            <p className="mt-2 text-xs tabular-nums text-slate-400 dark:text-slate-500">{posts.length}편</p>
+            <p className="mt-2 text-xs tabular-nums text-slate-500 dark:text-slate-400">{posts.length}편</p>
           </header>
 
           <div>
