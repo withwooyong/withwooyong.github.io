@@ -82,8 +82,8 @@ export function getPost(categorySlug: string, slug: string): Post {
   return post;
 }
 
-export function getPostsByCategory(categorySlug: string): PostSummary[] {
-  return readPosts()
+export function getPostsByCategory(categorySlug: string, root?: string): PostSummary[] {
+  return readPosts(root)
     .filter((p) => p.categorySlug === categorySlug)
     .map(toSummary);
 }
@@ -106,16 +106,55 @@ export function getPostsByTag(tag: string): PostSummary[] {
     .map(toSummary);
 }
 
-/** 같은 카테고리 안에서 이전/다음 글. 목록과 같은 정렬을 쓴다. */
-export function getAdjacentPosts(
-  categorySlug: string,
+/** 정렬이 끝난 목록에서 slug의 앞뒤를 집는다. */
+function neighbors(
+  list: PostSummary[],
   slug: string
 ): { prev: PostSummary | null; next: PostSummary | null } {
-  const list = getPostsByCategory(categorySlug);
   const i = list.findIndex((p) => p.slug === slug);
   if (i === -1) return { prev: null, next: null };
   return {
     prev: i > 0 ? list[i - 1] : null,
     next: i < list.length - 1 ? list[i + 1] : null,
   };
+}
+
+/**
+ * 이전/다음 글. 시리즈에 속한 글이면 시리즈를 우선한다.
+ *
+ * - `series`가 있으면 같은 시리즈 안에서 `seriesOrder` 순으로 잇는다.
+ * - `series`가 없으면 종전대로 카테고리 목록 순서(날짜 내림차순)의 이웃이다.
+ *
+ * 시리즈를 분기하는 이유는 카테고리 정렬이 시리즈 순서를 보존하지 못하기 때문이다.
+ * 분할된 긴 글은 한 원본에서 나오므로 date가 전부 같고, 그러면 readPosts의 정렬이
+ * 제목 localeCompare 타이브레이커로 넘어간다. 결과적으로 카테고리 순서가 제목 가나다순이
+ * 되어 같은 시리즈의 편들이 서로 떨어지고, 사이에 무관한 시리즈의 글이 끼어든다.
+ * (실제로 2차 rag 카테고리에서 시리즈 소속 23편 중 22편의 이웃이 다른 시리즈를 가리켰다.
+ *  1차에는 시리즈가 없어 이 경로가 한 번도 실행되지 않았다.)
+ *
+ * 시리즈는 닫힌 단위로 둔다 — 1편의 prev와 마지막 편의 next는 null이다.
+ * 시리즈 밖으로 넘기면 "이전 글"의 뜻이 시리즈 내부(같은 글의 앞 부분)와
+ * 외부(무관한 다른 글)에서 달라져 읽는 사람이 혼란스럽다.
+ *
+ * @param root 콘텐츠 루트. 테스트에서 픽스처를 주입하기 위한 선택 인자다.
+ */
+export function getAdjacentPosts(
+  categorySlug: string,
+  slug: string,
+  root?: string
+): { prev: PostSummary | null; next: PostSummary | null } {
+  const list = getPostsByCategory(categorySlug, root);
+  const current = list.find((p) => p.slug === slug);
+  if (!current) return { prev: null, next: null };
+
+  if (current.series) {
+    // seriesOrder는 series가 있으면 반드시 있다(validateFrontmatter가 강제한다).
+    // ?? 0은 타입 좁히기용이며 실제로 쓰이는 경로가 아니다.
+    const siblings = list
+      .filter((p) => p.series === current.series)
+      .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0));
+    return neighbors(siblings, slug);
+  }
+
+  return neighbors(list, slug);
 }
