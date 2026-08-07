@@ -2,7 +2,33 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
-## 2026-07-24
+## 2026-08-07
+
+> **기술블로그 신설.** 별도 저장소(`yanadoo-exit/shared/knowledge`)의 학습 정리 md 143개를 소스로, **편집·검수를 거친 발행본만** 이 저장소에 두는 구조로 기술블로그를 추가했다. 1차 `search-engineering` 6편, 2차 첫 카테고리 `rag` 25편을 발행해 **총 31편**이 공개됐다. `main` 배포 완료(`d543dac`).
+
+### 추가
+
+- **블로그 콘텐츠 파이프라인** [`lib/blog/`](lib/blog/) — 타입(`types.ts`), frontmatter 검증(`frontmatter.ts`), 파일시스템 스캔 로더(`loader.ts`). 위키가 5개 문서를 배열에 하드코딩하던 방식을 **디렉터리 스캔**으로 일반화했다. 스키마를 위반하면 **빌드가 실패**해 잘못된 글이 발행되지 않는다 (`55b96cc`, `3dd2448`, `fc60c13`)
+- **목차 생성 공용화** [`lib/toc.ts`](lib/toc.ts) — `lib/wiki.ts`의 `buildToc`을 추출해 위키·블로그가 공유한다. 기존 import 경로(`@/lib/wiki`)는 re-export로 유지해 호출부를 한 줄도 고치지 않았다 (`1097046`)
+- **블로그 라우트 5종** [`pages/blog/`](pages/blog/) — 홈 / 카테고리 목록 / 포스트 상세 / 태그 인덱스 / 태그별 목록. 렌더링은 기존 `components/markdown.tsx`·`mermaid.tsx`를 그대로 재사용한다 (`2e7c6c3`, `cfe8d74`)
+- **sitemap 자동 생성** [`scripts/generate-sitemap.mjs`](scripts/generate-sitemap.mjs) — `next build` 후 `out/`을 스캔해 만든다. 라우팅 로직을 두 번 구현하지 않아도 되고 실제로 생성된 페이지만 들어간다. `noindex`인 위키·로드맵·notion 경로는 제외. 수동 관리하던 `public/sitemap.xml` 삭제 (`9d1fd6f`, `a575b5c`)
+- **발행본 31편** [`content/blog/`](content/blog/) — 검색 엔지니어링 6편(`0015a58`), RAG 25편(`ed8feb2`~`4259c84`). 도식 **103개** 보존, 내부 링크 96개(깨짐 0), 시리즈 7개
+- **카테고리·태그 통제 어휘** [`content/blog/categories.ts`](content/blog/categories.ts), [`content/blog/tags.ts`](content/blog/tags.ts) — 143편 전수 조사로 카테고리 12개와 태그 81종을 확정하고 **코드에서 강제**한다. 어휘를 벗어나면 빌드가 실패해, 128편 배치 변환에서 `redis`/`redis-cache` 같은 동의어 분산이 생기지 않는다 (`404d220`)
+- **단위 테스트 36개** [`tests/blog/`](tests/blog/) — Vitest 도입. 목차 생성·frontmatter 검증·파일 스캔·시리즈 네비게이션·빈 카테고리 필터 (`55b96cc` 외)
+- **메인 사이트 연동** [`pages/index.tsx`](pages/index.tsx), [`data/portfolio.ts`](data/portfolio.ts) — 네비게이션에 "기술 노트", "글·링크" 섹션에 **대표글 제목을 `getStaticProps`로 노출**. 하드코딩하지 않으므로 대표글이 바뀌면 자동 반영된다 (`de844cd`, `79770c6`)
+
+### 수정
+
+- **CRLF 개행에서 목차가 통째로 비던 문제** [`lib/toc.ts`](lib/toc.ts) — `md.split("\n")`로 자르면 Windows 체크아웃 시 줄 끝에 `\r`이 남는데, **JS의 `.`은 `\r`을 line terminator로 보아 제외**하므로 `/^(##|###)\s+(.*)$/`의 `(.*)`가 `$`에 닿지 못해 헤딩이 하나도 매치되지 않았다. 브랜치를 옮기는 것만으로 재현된다. `split(/\r?\n/)`로 수정하고 로더가 본문을 LF로 정규화한다 — 그러지 않으면 같은 커밋에서도 빌드 플랫폼에 따라 산출물이 달라진다 (`b454017`)
+- **시리즈 글의 이전/다음이 무관한 글을 가리키던 문제** [`lib/blog/loader.ts`](lib/blog/loader.ts) — `getAdjacentPosts`가 카테고리 내 날짜순 이웃을 반환하는데, 분할된 긴 글은 한 원본에서 나와 `date`가 전부 같아 정렬이 **제목 가나다순 타이브레이커**로 넘어갔다. 시리즈 소속 23편 중 **22편**이 어긋났다. `series`가 있으면 같은 시리즈 안에서 `seriesOrder` 순으로 잇고, 시리즈를 **닫힌 단위**로 둔다(1편 prev=null, 마지막 next=null). 1차에는 시리즈가 없어 이 경로가 한 번도 실행된 적이 없었다 (`da2366c`)
+- **선택 필드의 `undefined` 키가 빌드를 깨뜨리던 문제** [`lib/blog/frontmatter.ts`](lib/blog/frontmatter.ts) — `validateFrontmatter`가 값 없는 선택 필드도 키로 남겨, Next.js의 `getStaticProps` JSON 직렬화가 실패했다(`Error serializing .post.series`). 조건부 스프레드로 키 자체를 만들지 않게 고치고 우회하던 헬퍼를 삭제. 우회책은 새 페이지마다 잊지 않고 호출해야 하는 규율이라 페이지가 늘면 반드시 빠뜨린다 (`25fb8a4`)
+- **태그 슬러그 검증 부재** [`lib/blog/frontmatter.ts`](lib/blog/frontmatter.ts) — 형식(`^[a-z0-9-]+$`)과 통제 어휘(81종)를 이중으로 강제한다. 없으면 `Redis`와 `redis`가 별개 태그 페이지가 되고 `CI/CD`의 슬래시가 경로를 깨뜨린다. 위반한 값을 **전부** 오류 메시지에 담아 어느 태그가 문제인지 바로 찾을 수 있게 했다 (`1948cc5`, `404d220`)
+- **글이 0편인 카테고리가 노출되던 문제** — 2차 준비로 카테고리 12개를 미리 등록했으나 실제 글은 2개에만 있었다. 빈 페이지가 색인되면 "콘텐츠 없음"으로 평가받는다. `getPublishedCategories()`로 목록에서 빼고 `getStaticPaths`에서도 제외해 **페이지 자체를 만들지 않는다**. sitemap 93 → 83 URL (`d543dac`)
+- **카운트 텍스트의 라이트·다크 명도가 뒤바뀐 문제** [`pages/blog/`](pages/blog/) — `text-slate-400 dark:text-slate-500`은 흰 배경에서 연하고 어두운 배경에서 진해 양쪽 다 대비가 낮다. 두 값을 맞바꿔 Lighthouse `color-contrast` 실패를 해소 (`a53a815`)
+
+### 문서
+
+- **요구사항·작업계획서** [`docs/superpowers/`](docs/superpowers/) — 143편 실측 기반 요구사항(§1~§14)과 1차 실행계획. 2차 실행 사양(카테고리 12개·태그 81종·발행 제외 9편)과 `rag` 실행에서 확정된 규칙 정정을 포함한다 (`b0077fa`~)
 
 ### 변경
 

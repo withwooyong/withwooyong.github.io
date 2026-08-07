@@ -58,6 +58,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run build` | 정적 export → `out/` |
 | `npm run start` | 프로덕션 서버 (로컬 검증용) |
 | `npm run lint` | Next.js ESLint |
+| `npm test` | Vitest — 블로그 로더·frontmatter 검증·목차 생성 단위 테스트 |
 
 ## 프로젝트 구조
 
