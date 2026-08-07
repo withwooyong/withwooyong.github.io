@@ -1852,16 +1852,28 @@ import path from "node:path";
 const OUT = path.join(process.cwd(), "out");
 const ORIGIN = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://withwooyong.github.io";
 
-/** 색인에서 뺄 경로. 위키는 noindex라 sitemap에도 넣지 않는다. */
-const EXCLUDE = [/^product-lead-wiki\//, /^product-lead-loadmap\//, /^notion\//, /^404$/];
+/**
+ * 색인에서 뺄 경로. 위키·로드맵은 noindex, /notion/은 meta refresh 리다이렉트라 넣지 않는다.
+ *
+ * `(\/|$)`가 필요하다. `/^product-lead-wiki\//` 처럼 슬래시를 강제하면 하위 문서
+ * (product-lead-wiki/cms)만 걸러지고 인덱스 라우트(product-lead-wiki) 자체는 통과해
+ * noindex 페이지가 sitemap에 실린다.
+ */
+const EXCLUDE = [/^product-lead-wiki(\/|$)/, /^product-lead-loadmap(\/|$)/, /^notion(\/|$)/, /^404$/];
 
-/** 경로별 우선순위. 앞에서 매칭되는 첫 규칙을 쓴다. */
+/**
+ * 경로별 우선순위. 앞에서 매칭되는 첫 규칙을 쓴다.
+ *
+ * 그래서 좁은 규칙(blog/tags)을 넓은 규칙(blog/<무엇이든>)보다 먼저 둬야 한다.
+ * 뒤에 두면 blog/tags는 카테고리 규칙에, blog/tags/<태그>는 포스트 규칙에 먼저 걸려
+ * 목록 페이지가 실제 글과 같은 우선순위를 갖는다.
+ */
 const PRIORITY = [
   [/^$/, "1.0"],
   [/^blog$/, "0.9"],
+  [/^blog\/tags(\/|$)/, "0.4"],
   [/^blog\/[^/]+$/, "0.7"],
   [/^blog\/[^/]+\/[^/]+$/, "0.8"],
-  [/^blog\/tags/, "0.4"],
 ];
 
 function collect(dir, prefix = "") {
@@ -1938,8 +1950,13 @@ Run: `Get-Content out\sitemap.xml`
 Expected 확인 항목:
 1. `/blog/`, `/blog/search-engineering/`, `/blog/tags/` 가 있다
 2. 포스트 6개 URL이 모두 있다
-3. `/product-lead-wiki/` 로 시작하는 URL이 **없다** (noindex 페이지)
-4. 기존 `/`, `/en/`, `/product-lead-v2/` 가 있다
+3. `/product-lead-wiki/`, `/product-lead-loadmap/`, `/notion/` 이 **없다** — 인덱스 라우트까지 전부
+4. 기존 `/`, `/en/`, `/product-lead/`, `/product-lead-v2/` 가 있다
+5. 우선순위가 의도대로인가 — `/blog/` 0.9, `/blog/<카테고리>/` 0.7, 포스트 0.8, `/blog/tags*` 0.4
+
+> **3번을 확인할 때 "디렉터리가 없어서 안 나온 것"과 "제외돼서 안 나온 것"을 구분하라.** `out/product-lead-wiki/index.html`이 실제로 존재하는지 먼저 확인한 뒤, 그런데도 sitemap에 없으면 제외가 동작한 것이다.
+>
+> **5번은 `/blog/tags/`가 빌드된 뒤에야 관측할 수 있다.** Task 5 완료 전에는 정규식만 보고 판단하지 말고 미검증으로 남겨라.
 
 - [ ] **Step 5: robots.txt 확인 (변경 불필요 예상)**
 
