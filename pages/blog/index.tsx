@@ -1,8 +1,8 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
 import { SiteHead } from "@/components/site-head";
-import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
-import { getPostSummaries } from "@/lib/blog/loader";
+import type { BlogCategory } from "@/content/blog/categories";
+import { getPostSummaries, getPublishedCategories } from "@/lib/blog/loader";
 import type { PostSummary } from "@/lib/blog/types";
 import Link from "next/link";
 import type { GetStaticProps } from "next";
@@ -20,7 +20,8 @@ export const getStaticProps: GetStaticProps<Props> = () => {
 
   return {
     props: {
-      categories: sortedCategories().map((c) => ({
+      // 글이 있는 카테고리만. 여기서 세는 count는 항상 1 이상이 된다.
+      categories: getPublishedCategories().map((c) => ({
         ...c,
         count: posts.filter((p) => p.categorySlug === c.slug).length,
       })),
@@ -39,7 +40,7 @@ export default function BlogHomePage({ categories, featured, recent }: Props) {
         path="/blog/"
       />
 
-      <BlogShell>
+      <BlogShell categories={categories}>
         <div className="max-w-4xl space-y-12">
           <header className="space-y-2">
             <h1 className="text-2xl font-bold break-keep sm:text-3xl">기술 노트</h1>

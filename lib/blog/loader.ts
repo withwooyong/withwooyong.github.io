@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
 import { validateFrontmatter } from "@/lib/blog/frontmatter";
 import { buildToc } from "@/lib/toc";
 import type { Post, PostSummary } from "@/lib/blog/types";
@@ -86,6 +87,24 @@ export function getPostsByCategory(categorySlug: string, root?: string): PostSum
   return readPosts(root)
     .filter((p) => p.categorySlug === categorySlug)
     .map(toSummary);
+}
+
+/**
+ * 글이 1편 이상인 카테고리만. 빈 카테고리는 페이지도 목록도 만들지 않는다.
+ *
+ * categories.ts에는 12개가 등록돼 있지만 이는 변환 시 frontmatter의 category가
+ * validateFrontmatter를 통과하기 위한 것이고, 실제 글은 그중 일부에만 있다.
+ * 등록된 전부를 노출하면 글 0편인 카테고리 페이지가 생성돼 sitemap에 실리고 색인되는데,
+ * 빈 페이지가 색인되면 "콘텐츠 없음"으로 평가받아 사이트 품질 신호에 영향을 준다.
+ *
+ * draft는 readPosts가 이미 걸러내므로, 초안만 있는 카테고리도 0편으로 취급돼 제외된다.
+ * 정렬은 sortedCategories()의 order를 그대로 따른다 — 글 수나 디렉터리 순서가 아니다.
+ *
+ * @param root 콘텐츠 루트. 테스트에서 픽스처를 주입하기 위한 선택 인자다.
+ */
+export function getPublishedCategories(root?: string): BlogCategory[] {
+  const posts = readPosts(root);
+  return sortedCategories().filter((c) => posts.some((p) => p.categorySlug === c.slug));
 }
 
 export function getAllTags(): { tag: string; count: number }[] {

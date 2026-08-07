@@ -1,12 +1,16 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { getAdjacentPosts, readPosts } from "@/lib/blog/loader";
+import { getAdjacentPosts, getPublishedCategories, readPosts } from "@/lib/blog/loader";
 
 const FIXTURES = path.join(__dirname, "fixtures");
 
 // 시리즈 픽스처는 별도 루트에 둔다. FIXTURES에 넣으면 "date 내림차순으로 정렬한다"가
 // 목록 전체를 ["ok", "older"]로 단정하고 있어 깨진다.
 const FIXTURES_SERIES = path.join(__dirname, "fixtures-series");
+
+// 정렬 픽스처도 별도 루트다. 디렉터리 알파벳순과 category order가 어긋나는
+// 두 카테고리를 담는다 — FIXTURES는 카테고리가 하나뿐이라 정렬을 검증할 수 없다.
+const FIXTURES_ORDER = path.join(__dirname, "fixtures-order");
 
 describe("readPosts", () => {
   it("draft:true인 글을 제외한다", () => {
@@ -37,6 +41,37 @@ describe("readPosts", () => {
 
   it("잘못된 frontmatter는 파일명과 함께 던진다", () => {
     expect(() => readPosts(path.join(__dirname, "fixtures-invalid"))).toThrow(/bad\.md/);
+  });
+});
+
+describe("getPublishedCategories", () => {
+  it("글이 있는 카테고리만 반환한다", () => {
+    const cats = getPublishedCategories(FIXTURES);
+    expect(cats.map((c) => c.slug)).toEqual(["search-engineering"]);
+  });
+
+  it("order 순서를 유지한다", () => {
+    const cats = getPublishedCategories(FIXTURES);
+    const orders = cats.map((c) => c.order);
+    expect([...orders].sort((a, b) => a - b)).toEqual(orders);
+  });
+
+  it("디렉터리 알파벳순이 아니라 order 순으로 정렬한다", () => {
+    // FIXTURES는 카테고리가 하나뿐이라 위 단언이 어떤 구현으로도 통과한다.
+    // 이 픽스처는 두 순서가 어긋나도록 골랐다 —
+    // 디렉터리 알파벳순은 agentic-coding < ai-transformation이지만
+    // order는 ai-transformation(10) < agentic-coding(20)이다.
+    // readdirSync 순서를 그대로 흘려보내는 구현은 여기서 걸린다.
+    const cats = getPublishedCategories(FIXTURES_ORDER);
+    expect(cats.map((c) => c.slug)).toEqual(["ai-transformation", "agentic-coding"]);
+  });
+
+  it("draft만 있는 카테고리는 제외한다", () => {
+    // 픽스처의 rag/draft-only.md는 draft:true라 발행되지 않는다.
+    // 디렉터리는 존재하므로, 제외의 근거가 "디렉터리 없음"이 아니라
+    // "발행 글 0편"임을 이 단언이 실제로 검증한다.
+    const cats = getPublishedCategories(FIXTURES);
+    expect(cats.every((c) => c.slug !== "rag")).toBe(true);
   });
 });
 

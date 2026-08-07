@@ -1,21 +1,22 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { SiteHead } from "@/components/site-head";
-import { getAllTags } from "@/lib/blog/loader";
+import type { BlogCategory } from "@/content/blog/categories";
+import { getAllTags, getPublishedCategories } from "@/lib/blog/loader";
 import Link from "next/link";
 import type { GetStaticProps } from "next";
 
-type Props = { tags: { tag: string; count: number }[] };
+type Props = { categories: BlogCategory[]; tags: { tag: string; count: number }[] };
 
 export const getStaticProps: GetStaticProps<Props> = () => ({
-  props: { tags: getAllTags() },
+  props: { categories: getPublishedCategories(), tags: getAllTags() },
 });
 
-export default function BlogTagIndexPage({ tags }: Props) {
+export default function BlogTagIndexPage({ categories, tags }: Props) {
   return (
     <>
       <SiteHead title="태그 | 기술 노트" description="기술 노트의 전체 태그 목록." path="/blog/tags/" />
 
-      <BlogShell>
+      <BlogShell categories={categories}>
         <div className="max-w-4xl">
           <h1 className="text-2xl font-bold break-keep sm:text-3xl">태그</h1>
           <ul className="mt-6 flex flex-wrap gap-2">

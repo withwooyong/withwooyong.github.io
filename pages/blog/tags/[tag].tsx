@@ -1,11 +1,12 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
 import { SiteHead } from "@/components/site-head";
-import { getAllTags, getPostsByTag } from "@/lib/blog/loader";
+import type { BlogCategory } from "@/content/blog/categories";
+import { getAllTags, getPostsByTag, getPublishedCategories } from "@/lib/blog/loader";
 import type { PostSummary } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
-type Props = { tag: string; posts: PostSummary[] };
+type Props = { categories: BlogCategory[]; tag: string; posts: PostSummary[] };
 
 export const getStaticPaths: GetStaticPaths = () => ({
   paths: getAllTags().map(({ tag }) => ({ params: { tag } })),
@@ -14,10 +15,10 @@ export const getStaticPaths: GetStaticPaths = () => ({
 
 export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const tag = String(params?.tag);
-  return { props: { tag, posts: getPostsByTag(tag) } };
+  return { props: { categories: getPublishedCategories(), tag, posts: getPostsByTag(tag) } };
 };
 
-export default function BlogTagPage({ tag, posts }: Props) {
+export default function BlogTagPage({ categories, tag, posts }: Props) {
   return (
     <>
       <SiteHead
@@ -26,7 +27,7 @@ export default function BlogTagPage({ tag, posts }: Props) {
         path={`/blog/tags/${encodeURIComponent(tag)}/`}
       />
 
-      <BlogShell>
+      <BlogShell categories={categories}>
         <div className="max-w-4xl">
           <header className="border-b border-slate-200 pb-5 dark:border-slate-800">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400">태그</p>
