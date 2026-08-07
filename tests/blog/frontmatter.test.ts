@@ -38,6 +38,26 @@ describe("validateFrontmatter", () => {
     expect(() => validateFrontmatter({ ...valid, tags }, "a.md")).toThrow(/tags/);
   });
 
+  it("태그가 소문자 영문 슬러그가 아니면 오류를 던진다", () => {
+    // 태그는 /blog/tags/<태그>/ URL 경로가 된다.
+    expect(() => validateFrontmatter({ ...valid, tags: ["Redis"] }, "a.md")).toThrow(/tags/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["CI/CD"] }, "a.md")).toThrow(/tags/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["멀티에이전트"] }, "a.md")).toThrow(/tags/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["spring boot"] }, "a.md")).toThrow(/tags/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["node.js"] }, "a.md")).toThrow(/tags/);
+    expect(() => validateFrontmatter({ ...valid, tags: ["ci_cd"] }, "a.md")).toThrow(/tags/);
+  });
+
+  it("오류 메시지에 위반한 태그 값이 들어간다", () => {
+    // 128편 배치에서 어느 태그가 문제인지 알 수 없으면 찾을 수 없다.
+    expect(() => validateFrontmatter({ ...valid, tags: ["Redis"] }, "a.md")).toThrow(/Redis/);
+  });
+
+  it("올바른 슬러그는 통과한다", () => {
+    const tags = ["redis", "ci-cd", "cqrs", "k8s", "ab-testing", "search-ranking"];
+    expect(validateFrontmatter({ ...valid, tags }, "a.md").tags).toEqual(tags);
+  });
+
   it("series가 있는데 seriesOrder가 없으면 오류를 던진다", () => {
     expect(() => validateFrontmatter({ ...valid, series: "s" }, "a.md")).toThrow(/seriesOrder/);
   });
