@@ -4,6 +4,11 @@ import type { PostFrontmatter } from "@/lib/blog/types";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_TAGS = 6;
 
+// 태그는 그대로 /blog/tags/<태그>/ 라는 URL 경로가 되므로 형식을 강제한다.
+// 강제하지 않으면 "Redis"와 "redis"가 별개의 태그 페이지로 갈라지고(getPostsByTag는 정확 일치다),
+// "CI/CD"의 슬래시는 경로 구분자로 해석돼 URL이 깨지며, 한글 태그는 인코딩된 경로가 된다.
+const TAG_SLUG = /^[a-z0-9-]+$/;
+
 /**
  * frontmatter를 검증한다. 위반하면 던진다 — 빌드가 실패해야 잘못된 글이 발행되지 않는다.
  *
@@ -43,6 +48,11 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
   if ((tags as unknown[]).length > MAX_TAGS) fail(`tags는 ${MAX_TAGS}개 이하여야 합니다`);
   if ((tags as unknown[]).some((t) => typeof t !== "string" || t.trim() === "")) {
     fail("tags의 각 항목은 비어 있지 않은 문자열이어야 합니다");
+  }
+  // 위반한 값을 전부 담아 던진다 — 어느 태그가 문제인지 알 수 없으면 찾을 수 없다.
+  const badTags = (tags as unknown[]).filter((t) => typeof t === "string" && !TAG_SLUG.test(t));
+  if (badTags.length > 0) {
+    fail(`tags는 소문자 영문·숫자·하이픈만 쓸 수 있습니다 (위반: ${badTags.join(", ")})`);
   }
 
   const featured = bool("featured");
