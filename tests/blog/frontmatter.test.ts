@@ -1,0 +1,72 @@
+import { describe, expect, it } from "vitest";
+import { validateFrontmatter } from "@/lib/blog/frontmatter";
+
+const valid = {
+  title: "Elasticsearch 아키텍처",
+  description: "클러스터 계층부터 색인 내부 동작까지 정리한다.",
+  category: "search-engineering",
+  tags: ["elasticsearch", "search"],
+  date: "2026-07-25",
+  featured: false,
+  draft: false,
+};
+
+describe("validateFrontmatter", () => {
+  it("올바른 frontmatter를 통과시킨다", () => {
+    expect(validateFrontmatter(valid, "a.md")).toMatchObject(valid);
+  });
+
+  it("필수 필드가 없으면 파일명을 포함한 오류를 던진다", () => {
+    const { title, ...rest } = valid;
+    expect(() => validateFrontmatter(rest, "posts/a.md")).toThrow(/posts\/a\.md.*title/);
+  });
+
+  it("존재하지 않는 카테고리면 오류를 던진다", () => {
+    expect(() => validateFrontmatter({ ...valid, category: "nope" }, "a.md")).toThrow(/카테고리/);
+  });
+
+  it("date가 YYYY-MM-DD 형식이 아니면 오류를 던진다", () => {
+    expect(() => validateFrontmatter({ ...valid, date: "2026/07/25" }, "a.md")).toThrow(/date/);
+  });
+
+  it("tags가 비어 있으면 오류를 던진다", () => {
+    expect(() => validateFrontmatter({ ...valid, tags: [] }, "a.md")).toThrow(/tags/);
+  });
+
+  it("tags가 7개 이상이면 오류를 던진다", () => {
+    const tags = ["a", "b", "c", "d", "e", "f", "g"];
+    expect(() => validateFrontmatter({ ...valid, tags }, "a.md")).toThrow(/tags/);
+  });
+
+  it("series가 있는데 seriesOrder가 없으면 오류를 던진다", () => {
+    expect(() => validateFrontmatter({ ...valid, series: "s" }, "a.md")).toThrow(/seriesOrder/);
+  });
+
+  it("featured/draft 기본값을 채우지 않는다 — 명시를 강제한다", () => {
+    const { featured, ...rest } = valid;
+    expect(() => validateFrontmatter(rest, "a.md")).toThrow(/featured/);
+  });
+
+  it("값이 없는 선택 필드는 키 자체를 만들지 않는다", () => {
+    // Next.js가 props를 JSON 직렬화할 때 undefined 키가 있으면 빌드가 실패한다.
+    const result = validateFrontmatter(valid, "a.md");
+    expect(Object.keys(result)).not.toContain("updated");
+    expect(Object.keys(result)).not.toContain("series");
+    expect(Object.keys(result)).not.toContain("seriesOrder");
+    expect(Object.keys(result)).not.toContain("source");
+  });
+
+  it("값이 있는 선택 필드는 그대로 실린다", () => {
+    const withOptional = { ...valid, updated: "2026-08-07", source: "테디노트" };
+    const result = validateFrontmatter(withOptional, "a.md");
+    expect(result.updated).toBe("2026-08-07");
+    expect(result.source).toBe("테디노트");
+  });
+
+  it("series가 있으면 seriesOrder와 함께 실린다", () => {
+    const withSeries = { ...valid, series: "rag-pipeline", seriesOrder: 2 };
+    const result = validateFrontmatter(withSeries, "a.md");
+    expect(result.series).toBe("rag-pipeline");
+    expect(result.seriesOrder).toBe(2);
+  });
+});

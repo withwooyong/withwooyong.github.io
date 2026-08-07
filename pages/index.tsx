@@ -9,8 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
+import { getPostSummaries } from "@/lib/blog/loader";
 import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
+import type { PostSummary } from "@/lib/blog/types";
 import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Users, Wrench } from "lucide-react";
+import type { GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -23,7 +26,22 @@ const skillIconMap = {
   wrench: Wrench,
 } as const;
 
-export default function Home() {
+/** 목록에 쓰는 필드만 추린다. props는 __NEXT_DATA__로 HTML에 실리므로 안 쓰는 필드는 용량만 늘린다. */
+type FeaturedPost = Pick<PostSummary, "title" | "description" | "slug" | "categorySlug">;
+
+type HomeProps = { featuredPosts: FeaturedPost[] };
+
+export const getStaticProps: GetStaticProps<HomeProps> = () => {
+  // loader는 node:fs를 쓴다. 반드시 getStaticProps 안에서만 부른다 —
+  // 컴포넌트 본문에서 참조하면 클라이언트 번들에 fs가 딸려 들어가 빌드가 깨진다.
+  const featuredPosts = getPostSummaries()
+    .filter((p) => p.featured)
+    .map(({ title, description, slug, categorySlug }) => ({ title, description, slug, categorySlug }));
+
+  return { props: { featuredPosts } };
+};
+
+export default function Home({ featuredPosts }: HomeProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -529,25 +547,61 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-4">글·링크</h2>
             <p className="text-center text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
-              블로그 대신 외부에 공개된 자료와 저장소로 연결합니다. (정적 사이트 — MDX 없이 유지보수 단순화)
+              직접 정리한 기술 노트와 외부에 공개된 자료·저장소로 연결합니다.
             </p>
+            {featuredPosts.length > 0 ? (
+              // 개수를 가정하지 않는 세로 목록. 2열 그리드로 두면 featured가 홀수일 때 칸이 빈다.
+              // 구분선을 전용 유틸리티가 아니라 인덱스로 주는 이유: 이 페이지에서 처음 쓰이는
+              // Tailwind 클래스가 생기면 CSS 번들 해시가 바뀌어 기존 페이지의 stylesheet 링크까지
+              // 전부 달라진다(GC-6). 같은 이유로 주석에도 클래스명을 적지 않는다 —
+              // Tailwind는 소스를 텍스트로 스캔해 주석 안의 토큰도 클래스로 인식한다.
+              <Card className="max-w-3xl mx-auto mb-6">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">먼저 읽어볼 글</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {featuredPosts.map((p, i) => (
+                    <div
+                      key={`${p.categorySlug}/${p.slug}`}
+                      className={cn(i > 0 && "border-t border-slate-200 pt-4 dark:border-slate-800")}
+                    >
+                      <Link
+                        href={`/blog/${p.categorySlug}/${p.slug}/`}
+                        className="font-semibold text-slate-900 transition-colors hover:text-blue-600 hover:underline dark:text-slate-100 dark:hover:text-blue-400 break-keep"
+                      >
+                        {p.title}
+                      </Link>
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 break-keep">{p.description}</p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            ) : null}
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {writingLinks.map((w) => (
-                <Card key={w.href} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{w.label}</CardTitle>
-                    {w.description ? <CardDescription>{w.description}</CardDescription> : null}
-                  </CardHeader>
-                  <CardContent>
-                    <Button asChild variant="outline" className="w-full">
-                      <a href={w.href} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        열기
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+              {writingLinks.map((w) => {
+                // 같은 사이트 안의 이동(/blog/)에 target="_blank"가 붙으면 안 된다.
+                const external = /^https?:\/\//.test(w.href);
+                return (
+                  <Card key={w.href} className="hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{w.label}</CardTitle>
+                      {w.description ? <CardDescription>{w.description}</CardDescription> : null}
+                    </CardHeader>
+                    <CardContent>
+                      <Button asChild variant="outline" className="w-full">
+                        <a href={w.href} {...(external && { target: "_blank", rel: "noopener noreferrer" })}>
+                          {external ? (
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                          ) : (
+                            <ArrowRight className="h-4 w-4 mr-2" />
+                          )}
+                          열기
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
           </SectionReveal>

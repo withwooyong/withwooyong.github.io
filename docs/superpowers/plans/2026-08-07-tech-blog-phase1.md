@@ -25,6 +25,8 @@
 | GC-9 | 커밋 메시지 | 한글로 작성 |
 | GC-10 | 푸시 금지 | 사용자가 명시적으로 요청하기 전까지 `git push`를 실행하지 않는다 |
 | GC-11 | 발행 산출물 금칙어 | `면접`, `커닝페이퍼`, `암기용`, `화이트보드`, `이력서` 가 `content/blog/` 및 `out/blog/` 에 존재하면 안 된다 |
+| GC-12 | **타입 검사는 별도 검증이다** | 코드를 만지는 모든 태스크는 `npx tsc --noEmit`을 실행하고 종료 코드를 보고한다. **Vitest는 esbuild로 타입을 지울 뿐 검사하지 않는다** — 테스트 전원 통과 상태에서 `tsc`가 오류를 잡는 일이 실제로 발생했다 |
+| GC-13 | `tsconfig.json` 수정 금지 | `target: "es5"` 등을 바꾸면 전 프로젝트 컴파일 산출물이 달라져 GC-6에 저촉된다. 타입 오류는 호출부를 고쳐 해결한다 |
 
 ---
 
@@ -482,18 +484,24 @@ export function buildToc(md: string): TocEntry[] {
 
 `lib/wiki.ts`에서 다음 두 곳을 고친다.
 
-1. 상단 import에 추가:
+1. 기존 `GithubSlugger` import를 다음으로 교체:
 
 ```ts
-import { buildToc } from "@/lib/toc";
+import { buildToc, type TocEntry } from "@/lib/toc";
 ```
 
-2. `GithubSlugger` import와 `buildToc` 함수 정의(170~191행), `TocEntry` 타입 정의(92행)를 제거하고 re-export로 대체:
+> **`type TocEntry`를 반드시 함께 import해야 한다.** 아래의 `export type { TocEntry } from "..."` 는 **지역 바인딩을 만들지 않는 순수 재수출**이라, 같은 파일의 `getDoc()` 반환 타입 주석에서 `TocEntry`가 미해결 이름이 된다. 이 저장소는 `isolatedModules: true`이므로 `type` 수식어도 필수다. (실측으로 확인된 함정 — 재수출만 하면 `tsc`가 실패한다.)
+
+2. `buildToc` 함수 정의(170~191행)와 `TocEntry` 타입 정의(92행)를 제거하고 re-export로 대체:
 
 ```ts
+// 목차 생성은 블로그와 공유하므로 lib/toc.ts가 단일 구현이다.
+// 기존 import 경로(`@/lib/wiki`)를 유지하기 위해 여기서 re-export한다.
 export type { TocEntry } from "@/lib/toc";
 export { buildToc } from "@/lib/toc";
 ```
+
+지역 import와 재수출이 공존해도 이름 충돌은 없다.
 
 기존에 `import { ..., type TocEntry } from "@/lib/wiki"` 하던 `pages/product-lead-wiki/[slug].tsx`와 `components/wiki-shell.tsx`가 그대로 동작해야 한다. **이것이 GC-6(기존 페이지 무영향)의 핵심 검증 지점이다.**
 
@@ -891,7 +899,9 @@ export function getAllTags(): { tag: string; count: number }[] {
   for (const post of readPosts()) {
     for (const tag of post.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
   }
-  return [...counts.entries()]
+  // 이 저장소의 tsconfig target이 es5라 Map 이터레이터 전개(`[...counts.entries()]`)가
+  // TS2802로 실패한다. tsconfig를 고치면 전 프로젝트 산출물이 바뀌므로(GC-6) 호출부를 맞춘다.
+  return Array.from(counts.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => (a.count === b.count ? a.tag.localeCompare(b.tag) : b.count - a.count));
 }
@@ -1842,16 +1852,28 @@ import path from "node:path";
 const OUT = path.join(process.cwd(), "out");
 const ORIGIN = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://withwooyong.github.io";
 
-/** 색인에서 뺄 경로. 위키는 noindex라 sitemap에도 넣지 않는다. */
-const EXCLUDE = [/^product-lead-wiki\//, /^product-lead-loadmap\//, /^notion\//, /^404$/];
+/**
+ * 색인에서 뺄 경로. 위키·로드맵은 noindex, /notion/은 meta refresh 리다이렉트라 넣지 않는다.
+ *
+ * `(\/|$)`가 필요하다. `/^product-lead-wiki\//` 처럼 슬래시를 강제하면 하위 문서
+ * (product-lead-wiki/cms)만 걸러지고 인덱스 라우트(product-lead-wiki) 자체는 통과해
+ * noindex 페이지가 sitemap에 실린다.
+ */
+const EXCLUDE = [/^product-lead-wiki(\/|$)/, /^product-lead-loadmap(\/|$)/, /^notion(\/|$)/, /^404$/];
 
-/** 경로별 우선순위. 앞에서 매칭되는 첫 규칙을 쓴다. */
+/**
+ * 경로별 우선순위. 앞에서 매칭되는 첫 규칙을 쓴다.
+ *
+ * 그래서 좁은 규칙(blog/tags)을 넓은 규칙(blog/<무엇이든>)보다 먼저 둬야 한다.
+ * 뒤에 두면 blog/tags는 카테고리 규칙에, blog/tags/<태그>는 포스트 규칙에 먼저 걸려
+ * 목록 페이지가 실제 글과 같은 우선순위를 갖는다.
+ */
 const PRIORITY = [
   [/^$/, "1.0"],
   [/^blog$/, "0.9"],
+  [/^blog\/tags(\/|$)/, "0.4"],
   [/^blog\/[^/]+$/, "0.7"],
   [/^blog\/[^/]+\/[^/]+$/, "0.8"],
-  [/^blog\/tags/, "0.4"],
 ];
 
 function collect(dir, prefix = "") {
@@ -1928,8 +1950,13 @@ Run: `Get-Content out\sitemap.xml`
 Expected 확인 항목:
 1. `/blog/`, `/blog/search-engineering/`, `/blog/tags/` 가 있다
 2. 포스트 6개 URL이 모두 있다
-3. `/product-lead-wiki/` 로 시작하는 URL이 **없다** (noindex 페이지)
-4. 기존 `/`, `/en/`, `/product-lead-v2/` 가 있다
+3. `/product-lead-wiki/`, `/product-lead-loadmap/`, `/notion/` 이 **없다** — 인덱스 라우트까지 전부
+4. 기존 `/`, `/en/`, `/product-lead/`, `/product-lead-v2/` 가 있다
+5. 우선순위가 의도대로인가 — `/blog/` 0.9, `/blog/<카테고리>/` 0.7, 포스트 0.8, `/blog/tags*` 0.4
+
+> **3번을 확인할 때 "디렉터리가 없어서 안 나온 것"과 "제외돼서 안 나온 것"을 구분하라.** `out/product-lead-wiki/index.html`이 실제로 존재하는지 먼저 확인한 뒤, 그런데도 sitemap에 없으면 제외가 동작한 것이다.
+>
+> **5번은 `/blog/tags/`가 빌드된 뒤에야 관측할 수 있다.** Task 5 완료 전에는 정규식만 보고 판단하지 말고 미검증으로 남겨라.
 
 - [ ] **Step 5: robots.txt 확인 (변경 불필요 예상)**
 
@@ -2055,15 +2082,63 @@ export const navItems: NavItem[] = [
 
 이 단계가 이 태스크의 핵심 검증이다.
 
+> **⚠ buildId 함정 — 이 지시를 그냥 따르면 오판한다.** Next.js의 buildId(21자 nanoid)는 **빌드마다 새로 생성**되어 `_next/static/<buildId>/_buildManifest.js` 경로에 박힌다. 단순 `Compare-Object`는 변경이 없어도 "차이 있음"을 낸다. 실측 사례:
+>
+> ```
+> before: Oc8l9MReVUiE-iHAx5rMw/_buildManifest.js
+> after : NjevPEOHT5lDToiLnnMWt/_buildManifest.js
+> ```
+>
+> 파일 길이는 바이트 단위로 동일했다(64908=64908). **반드시 buildId를 정규화한 뒤 비교하고, 표본 3개가 아니라 `out/` 하위 .html 전수를 비교하라.**
+
 ```powershell
 # 변경 전 산출물 보관
 Copy-Item -Recurse out out-before -Force
-# (Step 2 적용 후)
+# (변경 적용 후)
 npm run build
-# index.html은 네비가 바뀌므로 달라진다. 나머지가 그대로인지 본다
-Compare-Object (Get-Content out-before\en\index.html) (Get-Content out\en\index.html)
-Compare-Object (Get-Content out-before\product-lead-v2\index.html) (Get-Content out\product-lead-v2\index.html)
+
+# buildId를 정규화해 읽는 헬퍼
+function Get-Normalized($path) {
+  (Get-Content $path -Raw) -replace '/_next/static/[A-Za-z0-9_-]{21}/', '/_next/static/__BUILDID__/'
+}
+
+# out/ 하위 .html 전수 비교 (표본 몇 개로는 나머지에서 무슨 일이 났는지 알 수 없다)
+Get-ChildItem out -Recurse -Filter *.html | ForEach-Object {
+  $rel = $_.FullName.Substring((Resolve-Path out).Path.Length + 1)
+  $before = Join-Path "out-before" $rel
+  if (-not (Test-Path $before)) { "신규: $rel"; return }
+  if ((Get-Normalized $before) -ne (Get-Normalized $_.FullName)) { "변경: $rel" }
+}
 ```
+
+Expected: **`변경: index.html` 한 줄만** 출력된다. 다른 파일이 나오면 아래 두 함정을 먼저 의심하라.
+
+> **⚠ 함정 A — CSS 번들 해시.** Tailwind는 **실제로 쓰인 클래스만** CSS에 생성한다. 새 UI가 이 프로젝트에서 처음 쓰이는 유틸리티를 하나라도 도입하면 CSS 내용 → 파일 해시 → **모든 페이지의 `<link stylesheet>` 경로**가 바뀐다. 실측 사례에서 이것 때문에 39개 중 38개가 "변경"으로 나왔다.
+>
+> ```
+> before: 5b0d6dcd7d88a458.css" as="style"/>
+> after : ba9e2c1c4ef15bfe.css" as="style"/>
+> ```
+>
+> **판정 기준**: CSS 해시가 바뀌었으면 룰 단위로 비교하라.
+>
+> | 룰 diff 결과 | 판정 |
+> | --- | --- |
+> | 신규만 있고 **제거 0개** | 회귀 아님. 순증이므로 기존 페이지 렌더는 동일하다 |
+> | **제거된 룰이 있음** | **진짜 회귀.** 기존 페이지의 스타일이 사라진다 |
+>
+> 회피가 가능하면(기존 클래스로 같은 결과를 낼 수 있으면) 회피하는 편이 낫지만, 새 UI가 정말 새 유틸리티를 요구하면 해시 변경은 불가피하다. 그때는 위 판정 기준으로 통과시킨다.
+
+> **⚠ 함정 B — Tailwind는 주석 안의 문자열도 클래스로 스캔한다.** JIT는 소스를 AST로 파싱하지 않고 **정규식 텍스트 스캔**으로 클래스 후보를 뽑는다. 주석·문자열 리터럴 안의 토큰도 전부 후보가 된다.
+>
+> 실측 사례: 코드에서 `divide-y`를 제거했는데도 CSS에 `.divide-y` 룰이 계속 생성됐다. 범인은 주석이었다 —
+>
+> ```ts
+> // 구분선은 first:/divide-y 대신 인덱스로 준다
+> //                ^^^^^^^^ 이것이 클래스로 스캔된다
+> ```
+>
+> (`first:`는 단독으로 유효한 클래스가 아니라 매칭되지 않았고, 완전한 클래스명인 `divide-y`만 걸렸다.) **주석에 클래스명을 적지 마라.** 설명이 필요하면 클래스명 대신 개념으로 쓴다.
 
 Expected: `out/en/`, `out/product-lead-v2/`, `out/product-lead-wiki/` 는 **차이가 없어야 한다.** `out/index.html`만 네비 항목과 글·링크 섹션 추가분이 달라진다.
 
@@ -2209,16 +2284,25 @@ Task 7 Step 4에서 이미 확인했다면 그 결과를 인용한다. 안 했�
 
 ## §E. 2차 착수 전 확정할 것
 
-1차 완료 후 다음을 확정하고 나머지 11개 카테고리 변환에 들어간다.
+**1차 실측 결과가 요구사항 문서 §12에 반영되었다.** 상세 내용은 그쪽을 볼 것 — 여기서는 목록만 유지한다.
 
-| # | 항목 | 1차에서 얻을 근거 |
+`docs/superpowers/specs/2026-08-07-tech-blog-requirements.md` §12
+
+| # | 항목 | 1차에서 얻은 결론 |
 | --- | --- | --- |
-| Q1 | 카테고리 슬러그·표시명 12개 (요구사항 §7) | `search-engineering` 하나를 써 보고 명명 규칙이 적절한지 |
-| Q2 | 발행 제외 8개 최종 확정 | — (1차와 무관, 별도 검토) |
-| Q4 | 대표글 선정 기준 | 1차 대표글 2개의 실제 노출 결과 |
+| §12-1 ① | **태그 통제 어휘** | 배치 변환 전 카테고리별 허용 태그 목록 확정 필수. 문서별 독립 태깅 시 싱글톤 태그 수백 개 발생 |
+| §12-1 ② | 1인칭 유지 판정 기준 | "경험 회고 성격이면 유지" 규칙 필요 |
+| §12-1 ③ | 문서 내부 `§N` 자기 참조 | 헤딩 번호 제거의 필연적 후속. 섹션 이름 참조로 전환 |
+| §12-1 ④ | 금칙어 제거 vs 도식 보존 충돌 | **결정: 금칙어 제거가 우선. 도식은 라벨 수정해 보존** |
+| §12-1 ⑤ | 참조 전용 열 처리 | 표 전체가 네비면 제거, 한 열만 네비면 링크 교체 |
+| §12-2 | **분할 규칙 보강** | H2 경계만으로는 정반대 실패. 목표 분량 15~25KB로 인접 H2 병합 |
+| §12-3 | 면접 섹션 이관 목적지 | 비-면접 문서 89개에 130개 섹션. 목적지 없는 카테고리는 Q&A 신설 |
+| §12-4 | Q&A 매핑표 적용 범위 | `search/05` 전용. 나머지 8개는 구조가 달라 신규 유형 4종 규칙 추가 |
+| §12-5 | 플레이스홀더 검사 | `[사례]` 미기입 빈칸이 실존. SC-9 추가 |
+| Q1 | 카테고리 슬러그·표시명 12개 | `search-engineering` 하나로 명명 규칙 검증됨 |
+| Q4 | 대표글 선정 기준 | 1차는 카테고리당 2개. 노출 결과 보고 조정 |
 | Q6 | 코드 문법 강조 도입 여부 | 1차 글의 코드블록 가독성을 보고 판단 |
-| 신규 | 변환 규칙(§3-1) 조정 사항 | 6개를 변환하며 규칙이 부족했던 지점 |
-| 신규 | 시리즈 분할 UI 필요 여부 | 2차에는 80KB 초과 7개가 포함된다 |
+| 신규 | 시리즈 분할 UI 필요 여부 | 2차에 80KB 초과 7개 포함. `series`/`seriesOrder` 필드는 이미 타입에 있음 |
 
 ---
 
