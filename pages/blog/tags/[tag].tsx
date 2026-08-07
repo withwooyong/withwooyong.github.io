@@ -1,6 +1,5 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
-import { serializable } from "@/components/blog/serialize";
 import { SiteHead } from "@/components/site-head";
 import { getAllTags, getPostsByTag } from "@/lib/blog/loader";
 import type { PostSummary } from "@/lib/blog/types";
@@ -15,7 +14,7 @@ export const getStaticPaths: GetStaticPaths = () => ({
 
 export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const tag = String(params?.tag);
-  return { props: serializable({ tag, posts: getPostsByTag(tag) }) };
+  return { props: { tag, posts: getPostsByTag(tag) } };
 };
 
 export default function BlogTagPage({ tag, posts }: Props) {

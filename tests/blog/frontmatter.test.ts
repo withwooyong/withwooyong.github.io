@@ -46,4 +46,27 @@ describe("validateFrontmatter", () => {
     const { featured, ...rest } = valid;
     expect(() => validateFrontmatter(rest, "a.md")).toThrow(/featured/);
   });
+
+  it("값이 없는 선택 필드는 키 자체를 만들지 않는다", () => {
+    // Next.js가 props를 JSON 직렬화할 때 undefined 키가 있으면 빌드가 실패한다.
+    const result = validateFrontmatter(valid, "a.md");
+    expect(Object.keys(result)).not.toContain("updated");
+    expect(Object.keys(result)).not.toContain("series");
+    expect(Object.keys(result)).not.toContain("seriesOrder");
+    expect(Object.keys(result)).not.toContain("source");
+  });
+
+  it("값이 있는 선택 필드는 그대로 실린다", () => {
+    const withOptional = { ...valid, updated: "2026-08-07", source: "테디노트" };
+    const result = validateFrontmatter(withOptional, "a.md");
+    expect(result.updated).toBe("2026-08-07");
+    expect(result.source).toBe("테디노트");
+  });
+
+  it("series가 있으면 seriesOrder와 함께 실린다", () => {
+    const withSeries = { ...valid, series: "rag-pipeline", seriesOrder: 2 };
+    const result = validateFrontmatter(withSeries, "a.md");
+    expect(result.series).toBe("rag-pipeline");
+    expect(result.seriesOrder).toBe(2);
+  });
 });

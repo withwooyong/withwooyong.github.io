@@ -1,6 +1,5 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
-import { serializable } from "@/components/blog/serialize";
 import { SiteHead } from "@/components/site-head";
 import { blogCategories, findCategory, type BlogCategory } from "@/content/blog/categories";
 import { getPostsByCategory } from "@/lib/blog/loader";
@@ -19,7 +18,7 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const category = findCategory(slug);
   if (!category) throw new Error(`[blog] 없는 카테고리입니다: ${slug}`);
 
-  return { props: serializable({ category, posts: getPostsByCategory(slug) }) };
+  return { props: { category, posts: getPostsByCategory(slug) } };
 };
 
 export default function BlogCategoryPage({ category, posts }: Props) {

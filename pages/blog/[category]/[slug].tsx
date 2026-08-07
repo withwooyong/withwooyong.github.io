@@ -1,7 +1,6 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostMeta } from "@/components/blog/post-meta";
 import { SeriesNav } from "@/components/blog/series-nav";
-import { serializable } from "@/components/blog/serialize";
 import { TagList } from "@/components/blog/tag-list";
 import { Markdown } from "@/components/markdown";
 import { SiteHead } from "@/components/site-head";
@@ -27,7 +26,7 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const post = getPost(category, slug);
   const { prev, next } = getAdjacentPosts(category, slug);
 
-  return { props: serializable({ post, prev, next }) };
+  return { props: { post, prev, next } };
 };
 
 export default function BlogPostPage({ post, prev, next }: Props) {

@@ -1,6 +1,5 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
-import { serializable } from "@/components/blog/serialize";
 import { SiteHead } from "@/components/site-head";
 import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
 import { getPostSummaries } from "@/lib/blog/loader";
@@ -20,14 +19,14 @@ export const getStaticProps: GetStaticProps<Props> = () => {
   const posts = getPostSummaries();
 
   return {
-    props: serializable({
+    props: {
       categories: sortedCategories().map((c) => ({
         ...c,
         count: posts.filter((p) => p.categorySlug === c.slug).length,
       })),
       featured: posts.filter((p) => p.featured),
       recent: posts.slice(0, 10),
-    }),
+    },
   };
 };
 

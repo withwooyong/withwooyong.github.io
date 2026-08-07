@@ -66,11 +66,14 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
     category,
     tags: tags as string[],
     date,
-    updated,
-    series,
-    seriesOrder,
     featured,
     draft,
-    source,
+    // 값이 없는 선택 필드는 키 자체를 만들지 않는다.
+    // Next.js는 getStaticProps props를 JSON으로 직렬화하는데 JSON에 undefined가 없어,
+    // `updated: undefined` 같은 키가 남아 있으면 빌드가 실패한다.
+    //   Error serializing `.post.series` ... `undefined` cannot be serialized as JSON.
+    ...(updated !== undefined && { updated }),
+    ...(series !== undefined && { series, seriesOrder }),
+    ...(source !== undefined && { source }),
   };
 }
