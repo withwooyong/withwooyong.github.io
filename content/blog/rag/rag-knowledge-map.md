@@ -129,3 +129,5 @@ flowchart LR
 | 답이 연결에 있는 문제를 다룬다 | [Knowledge Graph와 GraphRAG](/blog/rag/knowledge-graph-and-graphrag/) |
 
 1층의 기술 디테일은 문제가 생겼을 때 내려가서 확인하는 보험이지, 처음부터 전부 읽어야 하는 전제가 아니다. **지금 막힌 지점이 어느 층인지 먼저 정하는 편이 빠르다.**
+
+각 축에서 반복해 부딪히는 판단은 문답으로도 모아 두었다 — [기본기 Q&A](/blog/rag/rag-qna-fundamentals/)(청킹·검색·리랭커), [품질 Q&A](/blog/rag/rag-qna-quality/)(파싱·검증), [운영 Q&A](/blog/rag/rag-qna-operations/)(비용·관측·거버넌스).

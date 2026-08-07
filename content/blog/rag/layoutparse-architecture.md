@@ -20,7 +20,7 @@ source: "테디노트 RAG 비법노트"
 
 | 용어 | 풀이 |
 |---|---|
-| **element** | 레이아웃 파싱의 최소 단위. `category` + `content` + `coordinates` + `page` + `id` |
+| **element** | 레이아웃 파싱의 최소 단위. 구성은 [1편](/blog/rag/document-parsing-bottleneck/), 유형별 처리는 [2편](/blog/rag/layout-parser-pipeline/) 참조 |
 | **`base64_encoding`** | 잘라낸 그림·표 이미지를 API 응답 안에 문자열로 실어 보내는 필드 |
 | **`ParseState`** | 그래프가 공유하는 상태 스키마(`TypedDict`). 각 노드는 자기가 채우는 키만 반환한다 |
 | **리듀서(reducer)** | 노드 반환값을 기존 상태에 합치는 규칙. `operator.add`면 누적, 기본은 덮어쓰기 |

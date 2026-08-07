@@ -20,12 +20,12 @@ source: "테디노트 RAG 비법노트"
 
 | 용어 | 풀이 |
 |---|---|
-| **element** | 레이아웃 파싱의 최소 단위. `category` + `content` + `coordinates` + `page` + `id` |
+| **element** | 레이아웃 파싱의 최소 단위. [1편](/blog/rag/document-parsing-bottleneck/)에서 정의했다 |
 | **category** | element의 유형 라벨. `table` `figure` `chart` `heading1` `header` `footer` `caption` `paragraph` 등 |
 | **bounding box (bbox)** | element가 페이지에서 차지하는 사각 영역. 4개 꼭짓점 좌표로 표현 |
 | **normalized coordinates** | bbox를 페이지 너비·높이로 나눠 0~1 비율로 만든 좌표. **DPI가 달라도 크롭 위치가 안 깨진다** |
 | **crop (크롭)** | bbox 영역만 잘라 PNG로 저장하는 것. 잘린 표·그림이 VLM 입력이 된다 |
-| **VLM** | Vision Language Model. 이미지를 이해하고 텍스트로 설명하는 모델 |
+| **VLM** | 이미지를 이해하고 텍스트로 설명하는 모델. 그림·표를 검색 가능한 텍스트로 바꾸는 데 쓴다 |
 | **StateGraph** | 상태(State)를 노드들이 갱신하며 진행하는 LangGraph의 그래프 실행 엔진 |
 | **`TypedDict` State** | 그래프가 공유하는 상태 스키마. 각 노드는 자기가 채우는 키만 반환한다 |
 | **checkpointer** | 그래프 실행 중간 상태를 저장. 중단·재개·상태 조회가 가능해진다 |
