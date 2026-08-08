@@ -209,7 +209,7 @@ LCEL 체인을 노드 안에서 쓰면 편리하지만 의존은 아니다. 이 
 >
 > 역할만 정의하면 굴러간다는 편의를 얻으면, 특정 조건에서 되돌아가게 만드는 일이 어려워진다. 코드를 더 쓰는 만큼 실패 지점을 통제하는 것이 반대편이다.
 
-축별 상세 비교는 [제어권을 얼마나 쥘 것인가](/blog/ai-agent/agent-framework-comparison/)에 열세 축으로 있다.
+축별 상세 비교는 [제어권을 얼마나 쥘 것인가](/blog/ai-agent/agent-framework-comparison/)에 열두 축으로 있다.
 
 ## Q. CrewAI와 AutoGen의 결정적 차이는 무엇인가
 

@@ -263,4 +263,4 @@ flowchart LR
 
 ---
 
-여기까지가 "왜 에이전트인가"다. 남은 질문은 **그것을 무엇으로 구현하는가**다. CrewAI·AutoGen·LangGraph는 같은 문제를 서로 다른 추상화 수준에서 푸는데, 그 차이는 곧 **제어권을 얼마나 개발자가 쥐는가**의 차이다. [다음 편](/blog/ai-agent/agent-framework-comparison/)에서 세 프레임워크를 13개 축으로 비교하고 선택 트리로 정리한다.
+여기까지가 "왜 에이전트인가"다. 남은 질문은 **그것을 무엇으로 구현하는가**다. CrewAI·AutoGen·LangGraph는 같은 문제를 서로 다른 추상화 수준에서 푸는데, 그 차이는 곧 **제어권을 얼마나 개발자가 쥐는가**의 차이다. [다음 편](/blog/ai-agent/agent-framework-comparison/)에서 세 프레임워크를 12개 축으로 비교하고 선택 트리로 정리한다.

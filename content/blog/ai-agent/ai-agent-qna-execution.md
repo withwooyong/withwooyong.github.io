@@ -1,5 +1,5 @@
 ---
-title: "LangGraph 실행 모델 Q&A — State·도구 루프·체크포인터·승인 게이트 23문답"
+title: "LangGraph 실행 모델 Q&A — State·도구 루프·체크포인터·승인 게이트 26문답"
 description: "리듀서를 왜 채널마다 정해야 하는지, tool_calls가 찍힌 시점에 무엇이 아직 일어나지 않았는지, 기억이 어디에 붙어 있는지를 결론부터 정리한다."
 category: "ai-agent"
 tags: ["langgraph", "ai-agent", "human-in-the-loop", "python"]

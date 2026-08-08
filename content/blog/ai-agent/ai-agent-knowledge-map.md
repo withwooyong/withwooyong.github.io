@@ -10,7 +10,7 @@ draft: false
 source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
-이 카테고리는 50편이다. 순서대로 읽을 수도 있지만, 대부분은 **지금 부딪힌 문제**를 들고 온다. 이 글은 그 문제에서 편으로 가는 지도다.
+이 카테고리는 이 글을 포함해 51편이다. 순서대로 읽을 수도 있지만, 대부분은 **지금 부딪힌 문제**를 들고 온다. 이 글은 그 문제에서 편으로 가는 지도다.
 
 한 가지만 먼저 말해 두면, 이 계보를 관통하는 문장은 하나다. **각 단계는 앞 단계의 표현력 한계를 풀고, 그 대가로 비용과 실패 지점을 늘린다.** 그래서 "왜 LangGraph를 쓰나" 같은 질문에 프레임워크 비교로 답하면 절반만 맞는다. 정확한 답은 "1회 검색으로 안 풀리는 질문이 실제로 있었다"는 문제 서술이다.
 
@@ -277,6 +277,6 @@ flowchart TD
 
 ---
 
-읽는 순서가 정해지지 않았다면 **④ 담론부터 한 편**을 권한다. [Agent = Model + Harness](/blog/ai-agent/agent-equals-model-plus-harness/)가 "왜 모델을 바꿔도 제품이 안 좋아지는가"를 다루는데, 이 질문이 나머지 49편이 답하려는 것의 요약이기 때문이다.
+읽는 순서가 정해지지 않았다면 **④ 담론부터 한 편**을 권한다. [Agent = Model + Harness](/blog/ai-agent/agent-equals-model-plus-harness/)가 "왜 모델을 바꿔도 제품이 안 좋아지는가"를 다루는데, 이 질문이 나머지 50편이 답하려는 것의 요약이기 때문이다.
 
 반복해 돌아오는 질문들은 네 편의 문답으로 따로 모아 두었다 — [기본기](/blog/ai-agent/ai-agent-qna-fundamentals/) · [실행 모델](/blog/ai-agent/ai-agent-qna-execution/) · [멀티에이전트](/blog/ai-agent/ai-agent-qna-multi-agent/) · [운영](/blog/ai-agent/ai-agent-qna-operations/).
