@@ -277,7 +277,7 @@ flowchart LR
 
 노드가 함수 → 그래프 → 에이전트 팀으로 커질 뿐 **계약은 동일하다.** 그래서 모듈 계약을 잘 잡아 둔 조직이 멀티에이전트로 넘어갈 때 추가 비용이 거의 없다.
 
-화려해 보이는 리서치 에이전트도 뜯어 보면 **모듈 + 병렬 + Human-in-the-loop**의 조합이다. Supervisor 패턴과 계층적 팀 구성은 [병렬 처리와 멀티에이전트](/blog/rag/langgraph-parallel-multiagent/)에서 다뤘다.
+화려해 보이는 리서치 에이전트도 뜯어 보면 **모듈 + 병렬 + Human-in-the-loop**의 조합이다. Supervisor 패턴과 계층적 팀 구성은 [병렬 처리와 멀티에이전트](/blog/rag/langgraph-parallel-multiagent/)에 정리돼 있고, 언제 쪼개는지의 판정 기준과 각 토폴로지의 구현은 [멀티에이전트 패턴 시리즈](/blog/ai-agent/when-to-split-agents/)에서 더 깊게 다룬다.
 
 ## Q. 노코드를 왜 쓰나
 

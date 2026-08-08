@@ -71,7 +71,7 @@ flowchart TD
 
 **1층과 2층을 건너뛰면 3층과 4층이 공허해진다.** "에이전트를 도입하겠다"는 결정은 검색이 왜 실패하는지 아는 사람과 모르는 사람에게 전혀 다른 무게를 가진다. 반대로 1층에만 머물면 청크 크기를 조정하는 일을 성능 개선이라고 부르게 된다.
 
-이 카테고리에서 다루는 것은 1층부터 4층의 앞부분까지다. 3층 후반과 4층의 에이전트 아키텍처 담론 — 하네스, 루프 엔지니어링, 에이전트가 개발조직 구조에 미치는 영향 — 은 RAG 실습이 아니라 별개의 주제라 **에이전트 아키텍처 쪽에서 따로 다룬다.**
+이 카테고리에서 다루는 것은 1층부터 4층의 앞부분까지다. 3층 후반과 4층의 에이전트 아키텍처 담론 — [하네스](/blog/ai-agent/agent-harness-architecture/), [루프 엔지니어링](/blog/ai-agent/loop-engineering-basics/), [에이전트가 개발조직 구조에 미치는 영향](/blog/ai-agent/enterprise-ai-adoption-actions/) — 은 RAG 실습이 아니라 별개의 주제라 **[AI 에이전트 카테고리](/blog/ai-agent/ai-agent-knowledge-map/)에서 따로 다룬다.**
 
 ## 시간 궤적 — 2년간 무엇이 움직였나
 
@@ -91,10 +91,10 @@ flowchart LR
 |---|---|---|
 | 2024 상반기 | 어떻게 만드나 | 8단계 파이프라인 |
 | 2024 하반기 | 왜 답이 틀리나 | 파싱 품질 + 관련성 검증 |
-| 2025 상반기 | 누가 경로를 정하나 | 에이전트 아키텍처, 노코드 확산 |
-| 2025 하반기 | 좋아졌는지 어떻게 아나 | 평가·관측 체계, MCP 표준화 |
-| 2026 상반기 | 왜 모델이 좋아져도 제품이 안 좋아지나 | Agent Harness — 컨텍스트를 파일로 밀어냄 |
-| 2026 중반 | 반복 실행을 어떻게 믿나 | Loop Engineering — 검증기·승인·감사 |
+| 2025 상반기 | 누가 경로를 정하나 | [에이전트 아키텍처](/blog/ai-agent/agent-vs-workflow/), 노코드 확산 |
+| 2025 하반기 | 좋아졌는지 어떻게 아나 | [평가·관측 체계](/blog/ai-agent/agent-evaluation-observability/), [MCP 표준화](/blog/ai-agent/mcp-a2a-landscape/) |
+| 2026 상반기 | 왜 모델이 좋아져도 제품이 안 좋아지나 | [Agent Harness](/blog/ai-agent/agent-harness-architecture/) — 컨텍스트를 파일로 밀어냄 |
+| 2026 중반 | 반복 실행을 어떻게 믿나 | [Loop Engineering](/blog/ai-agent/loop-engineering-basics/) — 검증기·승인·감사 |
 
 이 표에서 읽어야 할 것은 항목이 아니라 **이동의 방향**이다. 질문이 "만드는 법"에서 "고치는 법"으로, 다시 "믿는 법"으로 옮겨 갔다. 기술이 성숙한다는 것은 대개 이 순서를 밟는다.
 
@@ -127,6 +127,8 @@ flowchart LR
 | 유지보수 가능한 구조를 설계한다 | [LangGraph 모듈화](/blog/rag/langgraph-module-boundaries/) |
 | 조직에 AI를 확산시켜야 한다 | [Dify 구조](/blog/rag/dify-architecture/) → [사내 AI의 확산과 통제](/blog/rag/dify-enterprise-governance/) |
 | 답이 연결에 있는 문제를 다룬다 | [Knowledge Graph와 GraphRAG](/blog/rag/knowledge-graph-and-graphrag/) |
+| 검색을 도구로 만들어 에이전트에 맡긴다 | [판단하는 RAG 4종](/blog/ai-agent/agentic-rag-as-tool/) → [Self-RAG](/blog/ai-agent/self-rag-grader-design/) |
+| 모델을 바꿨는데 제품이 안 좋아진다 | [Agent = Model + Harness](/blog/ai-agent/agent-equals-model-plus-harness/) |
 
 1층의 기술 디테일은 문제가 생겼을 때 내려가서 확인하는 보험이지, 처음부터 전부 읽어야 하는 전제가 아니다. **지금 막힌 지점이 어느 층인지 먼저 정하는 편이 빠르다.**
 

@@ -390,3 +390,5 @@ prompt = ChatPromptTemplate.from_messages(
 > 모델을 안 바꿔도 프롬프트 한 줄로 시스템 동작이 바뀌므로, 형상관리가 없으면 장애의 원인을 재현할 수 없다.
 
 여기까지가 판정을 도구로 만드는 설계다. 그 도구를 실제로 붙였을 때 루프가 어떻게 도는지, 문맥 압축기를 결합하면 무엇이 달라지는지는 [다음 편](/blog/rag/agentic-rag-context-extractor/)에서 다룬다.
+
+같은 아이디어를 이름 붙여 정형화한 변종이 넷 있다 — Agentic RAG·Self-RAG·CRAG·Adaptive RAG. 각각이 어떤 실패를 막고 그 대가로 호출이 몇 회 늘어나는지는 [판단하는 RAG 4종의 계보](/blog/ai-agent/agentic-rag-as-tool/)에서 StateGraph 구현과 함께 비교한다.
