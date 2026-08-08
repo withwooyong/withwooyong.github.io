@@ -46,7 +46,7 @@ flowchart TD
     E --> F["Hierarchical<br/>Supervisor를 계층으로 중첩"]
 ```
 
-핵심은 **F가 E의 확장**이라는 점이다. Hierarchical은 Supervisor를 갖는 여러 팀을 하위 팀으로 구성해 하나의 조직 시스템을 만든 것이지, 별개의 발명이 아니다. 같은 넷을 축별로 펼치면 여덟 줄이 된다.
+핵심은 **F가 E의 확장**이라는 점이다. Hierarchical은 Supervisor를 갖는 여러 팀을 하위 팀으로 구성해 하나의 조직 시스템을 만든 것이지, 별개의 발명이 아니다. 이 넷은 더 넓은 목록의 일부이기도 하다 — 프롬프트 체이닝부터 컴퓨터 유즈까지 열한 개 패턴을 자율성 수준과 대표 실패 모드로 나란히 세운 조망은 [에이전트 패턴 카탈로그](/blog/ai-agent/agent-pattern-catalog/)에 있다. 같은 넷을 축별로 펼치면 여덟 줄이 된다.
 
 | 항목 | 단일 에이전트 | Network / 협업 | Supervisor | Hierarchical |
 |---|---|---|---|---|
