@@ -255,7 +255,7 @@ flowchart LR
 
 표의 마지막 행이 나머지 다섯 행을 가능하게 하는 전제다. 재검색·재작성·되돌림은 전부 **뒤로 가는 화살표**를 요구하고, DAG는 정의상 그것을 표현하지 못한다.
 
-관련성 판정기를 실제로 어떻게 만드는지, 판정 프롬프트가 어떤 실패를 겪는지는 [Agentic RAG와 관련성 검증](/blog/rag/agentic-rag-relevance-check/)에서 코드 수준으로 다뤘다. 이 아이디어를 이름 붙여 정형화한 변종으로 **Self-RAG**(생성물 자기평가), **CRAG**(검색 품질이 낮으면 웹 검색으로 교정), **Adaptive RAG**(질문 난이도에 따라 경로 자체를 분기)가 있다.
+관련성 판정기를 실제로 어떻게 만드는지, 판정 프롬프트가 어떤 실패를 겪는지는 [Agentic RAG와 관련성 검증](/blog/rag/agentic-rag-relevance-check/)에서 코드 수준으로 다뤘다. 이 아이디어를 이름 붙여 정형화한 변종으로 [**Self-RAG**](/blog/ai-agent/self-rag-grader-design/)(생성물 자기평가), [**CRAG**](/blog/ai-agent/crag-adaptive-rag-routing/)(검색 품질이 낮으면 웹 검색으로 교정), [**Adaptive RAG**](/blog/ai-agent/crag-adaptive-rag-routing/)(질문 난이도에 따라 경로 자체를 분기)가 있다. 네 변종의 계보와 발동 조건은 [판단하는 RAG 시리즈](/blog/ai-agent/agentic-rag-as-tool/)에서 축별로 비교한다.
 
 > 주의할 것은 이런 검증 루프가 환각을 **줄이는 장치**이지 0으로 만드는 보증이 아니라는 점이다. 평가자 역시 LLM이므로 오판한다.
 >
