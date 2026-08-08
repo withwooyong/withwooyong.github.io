@@ -344,3 +344,5 @@ flowchart LR
 ---
 
 여기까지가 LangChain으로 만드는 RAG의 전부이자 한계다. 검색 결과를 채점하고, 미달이면 질문을 재작성해 다시 검색하는 사이클 — 그것을 표현하려면 파이프가 아니라 그래프가 필요하다. 이어지는 시리즈에서 [State·Node·Edge라는 실행 모델](/blog/ai-agent/langgraph-state-reducer/)로 내려간다.
+
+청크 크기를 무엇으로 정하는지, 임베딩 모델을 바꾸면 무슨 일이 생기는지처럼 RAG 설계에서 반복되는 질문은 [기본기 Q&A](/blog/ai-agent/ai-agent-qna-fundamentals/)에 결론부터 모아 두었다.

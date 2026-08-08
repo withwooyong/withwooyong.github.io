@@ -164,3 +164,5 @@ flowchart TD
 ---
 
 여기까지가 "무엇을 고를 것인가"다. 다음은 실제로 짜 보는 단계인데, 순서는 추상화가 높은 쪽부터 밟는 편이 이해가 빠르다. **역할·태스크라는 익숙한 은유로 먼저 조립해 보고**, 그 은유가 어디서 깨지는지를 겪은 뒤에 State/Node/Edge로 내려가면 Low-level 프레임워크가 무엇을 해결하려는지가 선명해진다. 이어지는 시리즈에서 [CrewAI의 Agent·Task·Crew](/blog/ai-agent/crewai-agent-task-crew/)를 먼저 다룬다.
+
+프레임워크 선택에서 반복해 부딪히는 판단들 — 넷 중 무엇을 쓸지, CrewAI와 AutoGen이 무엇으로 갈리는지, 언제 LangGraph를 쓰지 않는지 — 은 [기본기 Q&A](/blog/ai-agent/ai-agent-qna-fundamentals/)에 결론부터 모아 두었다.

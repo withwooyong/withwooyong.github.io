@@ -429,3 +429,5 @@ for event in graph.stream(None, config, stream_mode="values"):   # None = 저장
 여기까지가 LangGraph의 실행 모델이다. 상태를 들고 돌고, 도구를 부르고, 멈췄다 재개한다. 그런데 지금까지의 판단은 전부 **"도구를 부를까 말까"** 한 종류뿐이었다. `tools_condition`이 보는 것은 마지막 메시지에 `tool_calls`가 있는지, 그것뿐이다.
 
 판단 대상을 바꾸면 어떻게 되는가. **검색 결과가 질문과 관련 있는가**를 LLM에게 묻고 그 답으로 경로를 가른다면, 그 그래프는 "검색이 실패했다는 사실을 스스로 아는" RAG가 된다. 여기에 "답변이 문서에 근거하는가", "질문에 답하고 있는가"를 더하면 판정기가 셋이 된다. 이어지는 시리즈에서 [판정기를 꽂아 경로를 바꾸는 RAG 4종](/blog/ai-agent/agentic-rag-as-tool/)을 다룬다.
+
+리듀서를 어떤 채널에 붙이는지, `tool_calls`가 찍힌 시점에 무엇이 아직 일어나지 않았는지, `MemorySaver`를 왜 운영에 올리면 안 되는지는 [실행 모델 Q&A](/blog/ai-agent/ai-agent-qna-execution/)에 문답으로 정리돼 있다.

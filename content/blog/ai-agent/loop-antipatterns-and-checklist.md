@@ -327,3 +327,5 @@ flowchart LR
 일곱 편에 걸쳐 2026년 하반기의 논의를 정리했다. 모델은 상향 평준화됐고 차이는 하네스에서 나며, 하네스는 스스로 진화하되 거버넌스와 짝을 이뤄야 하고, 위임 격차는 신뢰의 구조로 메우며, 자율 실행은 단일 디스패처와 결정 로그로 감사 가능하게 만들고, 루프는 여덟 표면을 가진 런타임 계약이며, 무너질 때는 열 가지 방식 중 하나다.
 
 이 카테고리에는 앞서 프레임워크 비교부터 멀티에이전트 패턴까지의 구현 계보가 [따로 정리](/blog/ai-agent/agent-pattern-catalog/)돼 있다. 도구를 고르는 문제와 루프를 소유하는 문제는 층위가 다르므로, 두 계열을 나란히 읽으면 어느 결정이 어느 층에 속하는지가 분명해진다.
+
+그리고 두 계열에서 반복해 돌아오는 질문들은 네 편의 문답으로 따로 모아 두었다 — [기본기](/blog/ai-agent/ai-agent-qna-fundamentals/) · [실행 모델](/blog/ai-agent/ai-agent-qna-execution/) · [멀티에이전트](/blog/ai-agent/ai-agent-qna-multi-agent/) · [운영](/blog/ai-agent/ai-agent-qna-operations/).

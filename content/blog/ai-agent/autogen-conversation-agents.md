@@ -305,3 +305,5 @@ flowchart LR
 CrewAI는 순서를 코드에 고정하고, AutoGen은 순서를 LLM에 맡긴다. 그런데 실무 문제는 대개 그 사이에 있다 — **순서는 대체로 정해져 있지만 특정 조건에서만 되돌아가야 하고, 중간에 사람이 승인해야 하며, 장시간 실행을 중단했다 재개해야 한다.**
 
 두 프레임워크의 마지막 비교 행이 가리키는 것이 그 지점이다. 조건 분기와 상태 관리가 복잡해지면 State·Node·Edge를 직접 다루는 쪽으로 내려가게 된다. 이어지는 시리즈에서 [LangChain의 구성요소](/blog/ai-agent/langchain-core-components/)부터 그 경로를 밟는다.
+
+종료 조건의 소재지, `expected_output`이 품질을 좌우하는 이유처럼 두 프레임워크를 가르는 판단은 [기본기 Q&A](/blog/ai-agent/ai-agent-qna-fundamentals/)에, 실행 권한과 격리는 [운영 Q&A](/blog/ai-agent/ai-agent-qna-operations/)에 정리돼 있다.
