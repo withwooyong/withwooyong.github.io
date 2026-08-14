@@ -447,7 +447,16 @@ Select-String -Path "content\blog\ai-transformation\*.md" `
 
 ## 부록 A. 조사 산출물
 
-세션 스크래치패드 `scratchpad/survey/`에 있다. **원본·발행본은 조사 단계에서 수정되지 않았다.**
+**절대 경로** (세션이 바뀌어도 파일은 남는다 — `/clear` 후에도 이 경로로 읽어라):
+
+```
+C:\Users\aeby\AppData\Local\Temp\claude\C--Users-aeby-vscode-withwooyong-github-io\
+  898dce7e-a7a1-49f2-b313-330be3d2a99d\scratchpad\
+    survey\      COMMON-BRIEF.md · survey-{A..G}.md
+    inventory\   sections.tsv · forbidden.txt · filesizes.tsv
+```
+
+**원본·발행본은 조사 단계에서 수정되지 않았다.**
 
 | 축 | 파일 | 크기 |
 | :---: | --- | ---: |
