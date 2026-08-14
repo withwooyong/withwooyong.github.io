@@ -1,0 +1,237 @@
+#!/usr/bin/env node
+// 축자 복제 스캔 — 신규 발행본이 기발행본의 문장·표 셀을 그대로 옮겼는지 찾는다.
+//
+// 왜 필요한가: 검증자가 중복을 찾으려 기발행본을 정독하면, 처방을 쓸 때 그 문장을 다시 꺼낸다.
+// 실제로 한 배치에서 검증자 처방을 그대로 채택한 자리가 기발행본의 연속 30자 축자였다.
+// 사람 눈으로는 안 잡힌다 — 원본에는 없고 기발행본에만 있는 문장이기 때문이다.
+//
+// 사용법:
+//   node scripts/dup-scan.mjs --self-test              검사기 작동 증명 (본 스캔 전에 반드시)
+//   node scripts/dup-scan.mjs <파일...>                지정 파일을 나머지 전편과 대조
+//   node scripts/dup-scan.mjs --category ai-transformation
+//   node scripts/dup-scan.mjs --min 20 <파일...>       임계값 변경 (기본 20자)
+//
+// 판정하지 않는다. 양쪽 문자열과 위치를 그대로 보고한다 — 판정은 사람이 한다.
+
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join, basename, relative } from "node:path";
+
+const BLOG_DIR = join(process.cwd(), "content", "blog");
+const DEFAULT_MIN = 20;
+
+// ── 정규화 ─────────────────────────────────────────────────────────
+// 마크다운 기호를 걷어내면 표 셀 경계를 넘는 일치까지 잡힌다.
+// `| 셀A | 셀B |`와 산문 `셀A 셀B`가 같은 문자열로 수렴하기 때문이다.
+function normalizeLine(raw) {
+  return raw
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // 링크는 제목만 — URL은 겹쳐도 복제가 아니다
+    .replace(/[|*_`#>~]/g, "")
+    .replace(/\s+/g, "")
+    .trim();
+}
+
+// 링크 제목은 다른 편의 title이므로 겹치는 것이 정상이다.
+// 분류하지 않으면 지도편·Q&A편처럼 링크가 많은 글이 전부 위양성으로 뒤덮인다.
+function linkTitles(raw) {
+  const out = [];
+  for (const m of raw.matchAll(/\[([^\]]*)\]\([^)]*\)/g)) {
+    const t = normalizeLine(m[1]);
+    if (t.length > 0) out.push(t);
+  }
+  return out;
+}
+
+function stripFrontmatter(text) {
+  const m = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+  return m ? { body: text.slice(m[0].length), offset: m[0].split(/\r?\n/).length - 1 } : { body: text, offset: 0 };
+}
+
+// 줄 단위로 정규화하되 원문 줄 번호를 유지한다.
+// 보고가 `파일:줄`로 나와야 사람이 열어 볼 수 있다.
+function parseFile(path) {
+  const text = readFileSync(path, "utf8");
+  const { body, offset } = stripFrontmatter(text);
+  const lines = [];
+  let inFence = false;
+  body.split(/\r?\n/).forEach((raw, i) => {
+    if (/^\s*```/.test(raw)) {
+      inFence = !inFence;
+      return;
+    }
+    const norm = normalizeLine(raw);
+    if (norm.length > 0)
+      lines.push({ line: offset + i + 1, norm, raw: raw.trim(), fence: inFence, links: linkTitles(raw) });
+  });
+  return lines;
+}
+
+function listPosts(dir = BLOG_DIR) {
+  const out = [];
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry);
+    if (statSync(p).isDirectory()) out.push(...listPosts(p));
+    else if (entry.endsWith(".md")) out.push(p);
+  }
+  return out;
+}
+
+// ── 색인 ───────────────────────────────────────────────────────────
+// 기발행본의 모든 N자 윈도우를 Map에 넣는다. 조회가 O(1)이라 113편도 즉시 끝난다.
+function buildIndex(files, min) {
+  const index = new Map();
+  for (const file of files) {
+    for (const { line, norm, fence } of parseFile(file)) {
+      for (let i = 0; i + min <= norm.length; i++) {
+        const key = norm.slice(i, i + min);
+        if (!index.has(key)) index.set(key, []);
+        index.get(key).push({ file, line, fence });
+      }
+    }
+  }
+  return index;
+}
+
+// 매치된 윈도우가 연속되면 하나의 구간으로 병합한다.
+// 병합하지 않으면 30자 축자 하나가 11건으로 보고돼 심각도를 오독하게 된다.
+function findMatches(target, index, min) {
+  const hits = [];
+  for (const { line, norm, raw, fence, links } of parseFile(target)) {
+    let i = 0;
+    while (i + min <= norm.length) {
+      const key = norm.slice(i, i + min);
+      const found = index.get(key);
+      if (!found) {
+        i++;
+        continue;
+      }
+      // 최장 확장: 같은 상대 파일에서 계속 이어지는지 본다
+      let len = min;
+      while (i + len < norm.length) {
+        const next = index.get(norm.slice(i + len - min + 1, i + len + 1));
+        if (!next) break;
+        len++;
+      }
+      const matched = norm.slice(i, i + len);
+      hits.push({
+        line,
+        raw,
+        fence,
+        matched,
+        length: len,
+        // 매치가 링크 제목 안에 통째로 들어가면 복제가 아니라 참조다
+        isLink: links.some((t) => t.includes(matched)),
+        sources: [...new Set(found.map((f) => `${relative(BLOG_DIR, f.file)}:${f.line}`))].slice(0, 5),
+      });
+      i += len - min + 1;
+    }
+  }
+  return hits;
+}
+
+// ── 자체 검사 ──────────────────────────────────────────────────────
+// 「발견 0건」이 참인지 못 찾은 것인지 구분하려면 검사기가 작동함을 먼저 증명해야 한다.
+function selfTest() {
+  const posts = listPosts();
+  if (posts.length === 0) {
+    console.error("FAIL: content/blog에 발행본이 없다");
+    process.exit(1);
+  }
+  const min = DEFAULT_MIN;
+  const index = buildIndex(posts, min);
+
+  // 기발행본에서 실재 문자열 하나를 뽑는다 (주입용)
+  let sample = null;
+  for (const { norm } of parseFile(posts[0])) {
+    if (norm.length >= 40) {
+      sample = norm.slice(0, 40);
+      break;
+    }
+  }
+  if (!sample) {
+    console.error("FAIL: 40자 이상인 줄을 찾지 못해 주입 검사를 만들 수 없다");
+    process.exit(1);
+  }
+
+  const probe = (text) => {
+    const lines = text
+      .split(/\r?\n/)
+      .map((raw, i) => ({ line: i + 1, norm: normalizeLine(raw), raw }))
+      .filter((l) => l.norm.length > 0);
+    let count = 0;
+    for (const { norm } of lines) {
+      for (let i = 0; i + min <= norm.length; i++) if (index.has(norm.slice(i, i + min))) count++;
+    }
+    return count;
+  };
+
+  const cases = [
+    ["① 19자는 미검출 (임계값이 바이트가 아니라 「자」임을 증명)", probe(sample.slice(0, min - 1)) === 0],
+    ["② 20자는 검출", probe(sample.slice(0, min)) > 0],
+    ["③ 기발행본 실재 40자 주입 → 검출", probe(sample) > 0],
+    ["④ 비실재 문자열 → 미검출", probe("이문장은어느발행본에도존재하지않는통제용문자열입니다검사기음성대조") === 0],
+  ];
+
+  console.log(`자체 검사 — 발행본 ${posts.length}편 · 임계값 ${min}자 · 색인 ${index.size.toLocaleString()}개 윈도우\n`);
+  let ok = true;
+  for (const [name, pass] of cases) {
+    console.log(`  ${pass ? "PASS" : "FAIL"}  ${name}`);
+    if (!pass) ok = false;
+  }
+  console.log(`\n${ok ? "검사기가 작동한다. 본 스캔의 「0건」은 결론이다." : "검사기가 고장났다. 본 스캔 결과를 믿지 마라."}`);
+  process.exit(ok ? 0 : 1);
+}
+
+// ── 본체 ───────────────────────────────────────────────────────────
+const argv = process.argv.slice(2);
+if (argv.includes("--self-test")) selfTest();
+
+let min = DEFAULT_MIN;
+const minIdx = argv.indexOf("--min");
+if (minIdx >= 0) min = Number(argv[minIdx + 1]);
+
+let targets = [];
+const catIdx = argv.indexOf("--category");
+if (catIdx >= 0) {
+  targets = listPosts(join(BLOG_DIR, argv[catIdx + 1]));
+} else {
+  targets = argv.filter((a) => a.endsWith(".md"));
+}
+
+if (targets.length === 0) {
+  console.error("대상이 없다. 사용법: node scripts/dup-scan.mjs [--self-test] [--min N] [--category <slug> | <파일...>]");
+  process.exit(1);
+}
+
+const all = listPosts();
+const targetSet = new Set(targets.map((t) => join(process.cwd(), t.startsWith("content") ? t : t)));
+const others = all.filter((f) => !targets.some((t) => basename(t) === basename(f)));
+const index = buildIndex(others, min);
+
+console.log(`축자 복제 스캔 — 대상 ${targets.length}편 · 대조 ${others.length}편 · 임계값 ${min}자\n`);
+
+let total = 0;
+let linkTotal = 0;
+for (const target of targets) {
+  const all = findMatches(target, index, min).sort((a, b) => b.length - a.length);
+  const hits = all.filter((h) => !h.isLink);
+  const links = all.filter((h) => h.isLink);
+  const name = relative(BLOG_DIR, target.startsWith(process.cwd()) ? target : join(process.cwd(), target));
+  linkTotal += links.length;
+
+  if (hits.length === 0) {
+    console.log(`  ${name}  —  0건${links.length > 0 ? `  (링크 제목 ${links.length}건은 별도 분류)` : ""}`);
+    continue;
+  }
+  console.log(`  ${name}  —  ${hits.length}건 (최장 ${hits[0].length}자)${links.length > 0 ? ` · 링크 제목 ${links.length}건 별도` : ""}`);
+  for (const h of hits) {
+    console.log(`    L${h.line}  ${h.length}자${h.fence ? " [코드펜스]" : ""}`);
+    console.log(`      일치: ${h.matched}`);
+    console.log(`      원문: ${h.raw.slice(0, 120)}`);
+    console.log(`      상대: ${h.sources.join(" · ")}`);
+  }
+  console.log("");
+  total += hits.length;
+}
+
+console.log(`합계 ${total}건 (링크 제목 ${linkTotal}건은 제외).`);
+console.log("판정하지 않았다 — 용어 정의·의도적 인용은 정당할 수 있다. 사람이 열어 판정하라.");

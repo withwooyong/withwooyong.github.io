@@ -7,7 +7,9 @@
     "build": "next build && node scripts/generate-sitemap.mjs",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dup-scan": "node scripts/dup-scan.mjs",
+    "dup-scan:verify": "node scripts/dup-scan.mjs --self-test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
