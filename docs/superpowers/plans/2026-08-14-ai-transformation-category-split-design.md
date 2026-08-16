@@ -440,7 +440,7 @@ Select-String -Path "content\blog\ai-transformation\*.md" `
 | 2 | **`05 §3` MCP 4계층 중 어디까지 실을지** | 프로토콜·도구통합·**팀 공유**·거버넌스 4층. 발행본 `mcp-selection-practice`와 층위 대조 필요 |
 | 3 | **Q&A 편 문항 수급** | `aiteam/08 §3` 9문항이 유일한 소스다. **`agentic-coding`은 Q&A 4편을 냈으나 이 카테고리는 1편이 상한**일 수 있다 |
 | 4 | **`07` 기업 사례의 시점 유효성** | Klarna 재채용(2025) · Duolingo 철회(2026) 등 **시점 표기를 반드시 남긴다** |
-| 5 | **축자 복제 자동 스캔 상설화** | `agentic-coding` 미해결 23번. **T1 착수 전에 `scripts/`로 옮겨라** |
+| ~~5~~ | ~~축자 복제 자동 스캔 상설화~~ | ✅ **완료** — [`scripts/dup-scan.mjs`](../../../scripts/dup-scan.mjs) · `npm run dup-scan` / `dup-scan:verify`. **자체 검사 4/4 PASS**(113편·442,497 윈도우)이고 `topic-map-reading-paths`에 돌려 B9의 사람 판정(0건)을 재현했다 |
 | 6 | **`reviewer` 에이전트 `Write` 도구 부재** | 브리프에 **Bash heredoc 사용법을 명시하라.** 이번 조사 7기 전원이 heredoc으로 성공했다 |
 
 ---
