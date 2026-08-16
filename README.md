@@ -59,6 +59,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run start` | 프로덕션 서버 (로컬 검증용) |
 | `npm run lint` | Next.js ESLint |
 | `npm test` | Vitest — 블로그 로더·frontmatter 검증·목차 생성 단위 테스트 |
+| `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. `--category <slug>` · `--min N`(기본 20자) |
+| `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 
 ## 프로젝트 구조
 
