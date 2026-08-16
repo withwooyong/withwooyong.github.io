@@ -430,24 +430,31 @@ C:\Users\aeby\AppData\Local\Temp\claude\C--Users-aeby-vscode-withwooyong-github-
 
 ## 9. README/문서 갱신 필요
 
-### 이번 세션에서 고친 것
+### ✅ README drift 해소 — **열다섯 번째 이월을 이번에 끝냈다**
+
+**README는 2026-08-07(`7f28866`) 이후 39커밋 동안 방치돼 있었고, 실측해 보니 한 항목이 아니라 전제부터 낡아 있었다** — 「단일 페이지 포트폴리오」로 서술하는데 실제 라우트가 **12개**였고, 블로그 5개와 프로덕트 리드 계열 5개가 통째로 빠져 있었다.
+
+| 절 | 무엇을 고쳤나 | 근거 |
+| --- | --- | --- |
+| 소개 | 포트폴리오 **+ 기술 블로그 117편** · 라우트/편수/sitemap 규모 표 신설 | 디렉터리 실측 |
+| 기술 스택 | **콘텐츠 렌더링 6종 + Vitest 추가.** 정적 export 제약과 mermaid 클라이언트 렌더 명시 | [`package.json`](package.json) · `components/mermaid.tsx` |
+| **페이지 구성** | **신설** — 라우트 12개를 표로 | `pages/` 실측 |
+| 프로젝트 구조 | 실측대로 재작성 — `content/`·`scripts/`·`tests/`·`lib/`(8파일)·`components/`(23개, 하위 3디렉터리) | 디렉터리 실측 |
+| **블로그 콘텐츠 규약** | **신설** — 카테고리 12등재/5발행 · 태그 패싯 상한 · **빈 문자열 금지** · `dup-scan` | `categories.ts` · `lib/blog/frontmatter.ts` |
+| 문서 표 | `docs/superpowers/specs`·`plans` 추가 | `docs/` |
+| 스크립트 표 | `dup-scan` · `dup-scan:verify` 2행 | `package.json` L11~12 |
+
+**제3자 검증(`verifier`)에 링크·수치·라우트·의존성·서술 주장을 전부 실행시켰다.**
+**틀린 주장 1건이 나왔고 고쳤다** — 「라우트 14개」는 `find pages -name "*.tsx"`의 파일 수였고 **`_app.tsx`·`_document.tsx`는 라우트가 아니다.** 실제 **12개**이며, **README 자신의 페이지 구성 표를 세도 12개라 문서가 자체 모순**이었다. 검증자가 그 모순을 근거로 잡았다.
+
+> **교훈: 파일 수를 라우트 수로 쓰지 마라.** 그리고 **문서 안에 같은 수를 두 번 적었으면 둘을 대조하라** —
+> 상세 표가 요약 수치를 반증하는 형태는 이번 배치 발행본에서도 반복해서 나온 결함이다(§2).
+
+### 설계서
 
 | 파일 | 무엇을 | 근거 |
 | --- | --- | --- |
-| `README.md` | 스크립트 표에 `dup-scan` · `dup-scan:verify` **2행 추가** | [`package.json`](package.json) L11~12 실재 확인 |
 | 설계서 §1·§3·§9·§13 | 팽창률 반증 · 편9 가용 오기 정정 · T1·T2 완료 표기 · `dup-scan` 한계 2건 등재 | 본 세션 실측 |
-
-### ⚠️ 이월 — 고치지 않았다
-
-**README는 2026-08-07(`7f28866`) 이후 손대지 않았고 그 사이 39커밋이 쌓였다. 열다섯 번째 이월이다.**
-**서술·구조 수정은 컨텍스트가 온전한 세션이 해야 한다** — 세션 끝에 손대면 「그럴듯하지만 틀린 README」가 커밋된다.
-
-| 낡은 부분 | 왜 낡았나 | 확인할 진실원 |
-| --- | --- | --- |
-| 프로젝트 구조 트리 | `content/`·`scripts/`·`tests/`가 없다 | 실제 디렉터리 |
-| 기술 스택 | Vitest·react-markdown·mermaid 없음 | [`package.json`](package.json) |
-| 기능 설명 | **블로그 117편·5카테고리가 통째로 없다** | [`content/blog/`](content/blog/) |
-| 문서 표 | `docs/superpowers/plans/` 설계서 3종 미등재 | `docs/superpowers/` |
 
 ### ⚠️ 환경변수 검사 신호는 **오탐이다. 고치지 마라**
 
