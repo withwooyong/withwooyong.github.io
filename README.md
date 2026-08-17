@@ -6,8 +6,8 @@ Next.js 14 Pages Router로 만들어 **정적 export**하고 GitHub Pages에 배
 | | 규모 |
 |---|---|
 | 페이지 라우트 | 12개 (포트폴리오 · 프로덕트 리드 · 블로그) |
-| 블로그 발행본 | **122편 / 5개 카테고리** |
-| sitemap | 185 URL |
+| 블로그 발행본 | **123편 / 5개 카테고리** |
+| sitemap | 186 URL |
 
 ## 문서
 
@@ -101,7 +101,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── en/                 # 영문 요약
 │   ├── product-lead*/      # 프로덕트 리더 소개·로드맵·위키
 │   └── blog/               # 목록 · 카테고리 · 글 · 태그
-├── content/blog/           # 발행본 122편 + categories.ts · tags.ts
+├── content/blog/           # 발행본 123편 + categories.ts · tags.ts
 ├── lib/
 │   ├── blog/               # loader · frontmatter 검증 · types
 │   ├── site.ts             # canonical·OG용 절대 URL
