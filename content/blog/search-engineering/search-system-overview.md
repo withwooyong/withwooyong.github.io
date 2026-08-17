@@ -140,4 +140,4 @@ flowchart LR
 - **Intent Prediction**: "고화질 TV"를 4K/8K 의도로 추론.
 - **Re-ranking(LTR)**: 과거 클릭·구매 이력을 학습해 재정렬. 개인화 검색의 핵심이다.
 
-이 흐름은 벡터 검색(`dense_vector`·KNN)·RAG와도 곧바로 연결된다.
+이 흐름은 벡터 검색(`dense_vector`·KNN)·RAG와도 곧바로 연결된다. dense와 sparse를 어떻게 결합하고, 이 파이프라인의 LTR 자리에 **Cross-Encoder 리랭커**를 놓으면 어떤 구조가 되는지는 [RAG 임베딩·벡터스토어·검색기·리랭커](/blog/rag/rag-pipeline-retrieval/)에서 다룬다.
