@@ -4,7 +4,7 @@ description: "에이전트가 프로덕션에서 실패하는 이유를 모델 �
 category: "ai-transformation"
 tags: ["knowledge-management", "mcp", "ai-automation", "data-pipeline"]
 date: "2026-08-16"
-updated: "2026-08-16"
+updated: "2026-08-17"
 featured: false
 draft: false
 ---
@@ -56,7 +56,7 @@ MCP도 RAG도 이 블로그에 이미 여러 편이 있다. 겹치는 것은 **�
 
 **첫째, 원 자료가 잡은 타깃은 범용 스타트업이다.** 작은 팀, 빠른 도입, 저비용 셀프호스팅 우선이라고 스스로 적었다. 아래의 비용 수치와 도입 순서는 전부 그 전제 위에 있다.
 
-**둘째, 원 자료는 자기가 나열한 SaaS 목록에 스스로 단서를 달았다.** 단계마다 SaaS를 따로 사기 전에 더 얇은 레퍼런스 아키텍처를 먼저 보라는 것이고, 여기 실린 SaaS 상당수는 하네스와 Skills 쪽으로 흡수되므로 **이 목록은 대안·벤치마크 카탈로그로 쓰는 것이 맞다**는 것이다. 팀 지식도 1순위는 LLM 위키이고 RAG는 규모가 그것을 넘을 때라는 단서까지 붙어 있다. 그 얇은 쪽 아키텍처는 후속 편에서 다룬다.
+**둘째, 원 자료는 자기가 나열한 SaaS 목록에 스스로 단서를 달았다.** 단계마다 SaaS를 따로 사기 전에 더 얇은 레퍼런스 아키텍처를 먼저 보라는 것이고, 여기 실린 SaaS 상당수는 하네스와 Skills 쪽으로 흡수되므로 **이 목록은 대안·벤치마크 카탈로그로 쓰는 것이 맞다**는 것이다. 팀 지식도 1순위는 LLM 위키이고 RAG는 규모가 그것을 넘을 때라는 단서까지 붙어 있다. 그 얇은 쪽 아키텍처는 [하네스·위키·게이트 세 레이어와 Skill 카탈로그 열하나](/blog/ai-transformation/lean-three-layer-harness/)가 다룬다.
 
 두 단서를 지운 채로 아래 표를 읽으면 「전부 사라」로 읽히는데, 원 자료는 그렇게 쓰지 않았다.
 
@@ -395,7 +395,7 @@ MIT·McKinsey·GitClear 등 위 다섯 기관의 수치와 그 맥락은 같은 
 | MCP 도구 선별 기준·인증 설계·토큰 예산 | [MCP 도입은 기능 추가가 아니라 예산 배분이다](/blog/agentic-coding/mcp-selection-practice/) |
 | 도입 사례의 정량 지표와 6주 실행 사이클 | [역할을 세 층으로 다시 나눈다](/blog/ai-agent/enterprise-ai-adoption-actions/) |
 | 부서 단위로 업무를 에이전트에 쪼개는 설계 | [부서 이름을 지우면 같은 5단계가 남는다](/blog/ai-transformation/department-agent-blueprint/) |
-| SaaS 목록을 하네스·Skills로 걷어내는 얇은 아키텍처 | 후속 편 |
+| SaaS 목록을 하네스·Skills로 걷어내는 얇은 아키텍처 | [하네스·위키·게이트 세 레이어와 Skill 카탈로그 열하나](/blog/ai-transformation/lean-three-layer-harness/) |
 | 다른 규모·업종에 맞춘 변주 | 이 글의 범위 밖 — 원 자료가 전제한 타깃은 범용 스타트업이다 |
 
 인프라 넷 가운데 셋 — 워크플로 자동화·회사 두뇌·프롬프트 라이브러리 — 에는 **무엇을 살 것인가**의 선택지가 표로 붙어 있다. 남은 하나인 MCP 절에는 그 표가 없다. 벤더 공식 원격 서버와 게이트웨이가 이름으로 나열될 뿐 비교표가 서지 않는다.
