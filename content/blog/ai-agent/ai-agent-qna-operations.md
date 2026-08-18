@@ -193,6 +193,8 @@ draft: false
 
 무효화 없는 영구 캐시는 기능이 아니라 결함이다. 문서를 고쳤는데 옛 답이 계속 나오는 사고가 여기서 나온다.
 
+무효화 방식 네 가지와 TTL 설계 원칙은 [캐시 무효화와 동시성](/blog/backend-engineering/cache-invalidation-and-concurrency/)에 정리해 두었다.
+
 ## Q. AI 에이전트가 개발조직 구조를 어떻게 바꾸나
 
 **일하는 단위가 바뀐다.**
