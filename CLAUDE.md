@@ -14,9 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | Command | What it checks |
 | --- | --- |
-| `npm run check-forbidden:verify` | **Run this first.** Proves the forbidden-word scanner actually catches things (8 self-test cases). |
+| `npm run check-forbidden:verify` | **Run this first.** Proves the forbidden-word scanner actually catches things (15 self-test cases). |
 | `npm run check-forbidden` | Scans `content/blog`. Must report **HARD 0** before publishing; exits 1 otherwise. |
-| `npm run dup-scan:verify` → `npm run dup-scan` | Verbatim-duplication scan. Same order: prove, then scan. |
+| `npm run check-forbidden:built` | Scans the **built output** (`out/blog` plus the matching `_next/data` JSON). Run it after `npm run build`. A clean source does not prove a clean page — the template injects `og:image` and titles too, which is how `Ted_yanadoo.png` sat in 366 places while the source scan kept reporting zero. Exits 2 when `out/blog` is missing rather than reporting a false zero. |
+| `npm run dup-scan:verify` → `npm run dup-scan --category <slug>` | Verbatim-duplication scan. Same order: prove, then scan. It needs a target — a bare `npm run dup-scan` exits 1 with 「대상이 없다」. |
 
 Both scanners follow the same rule: **run the self-test before trusting a zero.** A "0 findings" result that was never proven is indistinguishable from a false negative — this actually happened here. The forbidden-word list held only Latin spellings (`FASTCAMPUS`, `teddynote`) and silently missed the Korean ones (「패스트캠퍼스」, 「테디노트」), so a false zero was recorded in CHANGELOG as fact (fixed 2026-08-18).
 

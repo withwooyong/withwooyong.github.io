@@ -35,7 +35,7 @@ export default function BlogHomePage({ categories, featured, recent }: Props) {
   return (
     <>
       <SiteHead
-        title="기술 노트 | 허우용"
+        title="기술 노트"
         description="검색 엔지니어링, 대용량 트래픽, AI 에이전트 등 플랫폼 기술을 주제별로 정리한 기술 노트."
         path="/blog/"
       />

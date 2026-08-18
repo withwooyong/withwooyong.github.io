@@ -105,7 +105,7 @@ export default function ProductLead() {
     name: "허우용",
     alternateName: ["Ted", "Wooyong Heo"],
     url: absoluteUrl("/product-lead/"),
-    image: absoluteUrl("/images/Ted_yanadoo.png"),
+    image: absoluteUrl("/images/Ted_profile.png"),
     sameAs: ["https://github.com/withwooyong"],
     jobTitle: "Platform / Product Leader",
   };
@@ -153,7 +153,7 @@ export default function ProductLead() {
             <div className="profile-coin-group w-28 h-28 shrink-0">
               <div className="relative h-full w-full rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
                 <div className="profile-coin-face">
-                  <Image src="/images/Ted_yanadoo.png" alt="허우용 프로필 사진" width={112} height={112} className="w-full h-full object-cover" priority />
+                  <Image src="/images/Ted_profile.png" alt="허우용 프로필 사진" width={112} height={112} className="w-full h-full object-cover" priority />
                 </div>
               </div>
             </div>

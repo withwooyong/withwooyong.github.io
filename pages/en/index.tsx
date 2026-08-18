@@ -14,7 +14,7 @@ export default function EnglishHome() {
     name: "Wooyong Heo",
     alternateName: ["Ted", "허우용"],
     url: absoluteUrl("/en/"),
-    image: absoluteUrl("/images/Ted_yanadoo.png"),
+    image: absoluteUrl("/images/Ted_profile.png"),
     sameAs: ["https://github.com/withwooyong"],
     jobTitle: "Head of Engineering / CTO-track Backend & Platform Leader",
   };
@@ -41,7 +41,7 @@ export default function EnglishHome() {
         <main id="main" className="max-w-3xl mx-auto px-4 py-12 space-y-10">
           <div className="flex flex-col sm:flex-row items-center gap-8">
             <div className="w-28 h-28 rounded-full overflow-hidden shadow-lg ring-2 ring-white/50 dark:ring-slate-600 shrink-0">
-              <Image src="/images/Ted_yanadoo.png" alt="Wooyong Heo" width={112} height={112} className="w-full h-full object-cover" priority />
+              <Image src="/images/Ted_profile.png" alt="Wooyong Heo" width={112} height={112} className="w-full h-full object-cover" priority />
             </div>
             <div className="text-center sm:text-left">
               <h1 className="text-3xl font-bold tracking-tight">Wooyong (Ted) Heo</h1>

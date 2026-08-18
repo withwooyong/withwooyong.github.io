@@ -80,7 +80,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. `--category <slug>` · `--min N`(기본 20자) |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
-| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 8건) |
+| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 15건) |
+| `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
 
 ## 페이지 구성
 
@@ -134,8 +135,9 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 | 카테고리 | [`content/blog/categories.ts`](content/blog/categories.ts)에 **12개 등록 · 5개 발행** (`ai-agent` 51 · `agentic-coding` 31 · `rag` 25 · `search-engineering` 6 · `ai-transformation` 11) |
 | 태그 | [`content/blog/tags.ts`](content/blog/tags.ts)의 통제 어휘만 사용. 글당 **3~5개**, 같은 패싯 **최대 2개** |
 | frontmatter | [`lib/blog/frontmatter.ts`](lib/blog/frontmatter.ts)가 검증합니다. **선택 필드에 빈 문자열을 넣으면 빌드가 실패하므로 값이 없으면 키를 생략**하세요 |
-| 중복 검사 | `npm run dup-scan`으로 기존 글과의 축자 복제를 확인합니다 |
-| 금칙어 검사 | `npm run check-forbidden`이 **HARD 0건**이어야 발행합니다. 두 검사기 모두 `:verify`(self-test)를 **먼저** 돌리세요 — 증명 없는 「0건」은 거짓 음성과 구분되지 않습니다 |
+| 중복 검사 | `npm run dup-scan --category <slug>`로 기존 글과의 축자 복제를 확인합니다. 대상을 주지 않으면 종료 코드 1 |
+| 금칙어 검사 (소스) | `npm run check-forbidden`이 **HARD 0건**이어야 발행합니다. 두 검사기 모두 `:verify`(self-test)를 **먼저** 돌리세요 — 증명 없는 「0건」은 거짓 음성과 구분되지 않습니다 |
+| 금칙어 검사 (산출물) | 빌드 뒤 `npm run check-forbidden:built`도 **HARD 0회**여야 합니다. 소스가 깨끗해도 템플릿이 넣은 것은 여기서만 잡힙니다 |
 
 어휘에 없는 태그나 등록되지 않은 카테고리를 쓰면 빌드가 막습니다.
 

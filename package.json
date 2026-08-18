@@ -11,7 +11,8 @@
     "dup-scan": "node scripts/dup-scan.mjs",
     "dup-scan:verify": "node scripts/dup-scan.mjs --self-test",
     "check-forbidden": "node scripts/check-forbidden.mjs",
-    "check-forbidden:verify": "node scripts/check-forbidden.mjs --self-test"
+    "check-forbidden:verify": "node scripts/check-forbidden.mjs --self-test",
+    "check-forbidden:built": "node scripts/check-forbidden.mjs --built"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

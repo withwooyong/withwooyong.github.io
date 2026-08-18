@@ -15,7 +15,7 @@ export function SiteHead({
   title,
   description,
   path = "/",
-  ogImagePath = "/images/Ted_yanadoo.png",
+  ogImagePath = "/images/Ted_profile.png",
   jsonLd,
   noindex = false,
 }: SiteHeadProps) {

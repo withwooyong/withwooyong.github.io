@@ -55,7 +55,7 @@ export default function Home({ featuredPosts }: HomeProps) {
       name: "허우용",
       alternateName: ["Ted", "Wooyong Heo"],
       url: absoluteUrl("/"),
-      image: absoluteUrl("/images/Ted_yanadoo.png"),
+      image: absoluteUrl("/images/Ted_profile.png"),
       sameAs: ["https://github.com/withwooyong"],
       jobTitle: "개발총괄·CTO 지향 백엔드·플랫폼 리더",
     }),
@@ -101,7 +101,7 @@ export default function Home({ featuredPosts }: HomeProps) {
                   <div className="relative h-full w-full rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
                     <div className="profile-coin-face">
                       <Image
-                        src="/images/Ted_yanadoo.png"
+                        src="/images/Ted_profile.png"
                         alt="허우용 프로필 사진"
                         width={128}
                         height={128}

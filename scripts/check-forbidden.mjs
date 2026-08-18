@@ -11,11 +11,13 @@
 // 사용법:
 //   node scripts/check-forbidden.mjs --self-test     검사기 작동 증명 (본 스캔 전에 반드시)
 //   node scripts/check-forbidden.mjs                 발행본 스캔 (content/blog) — 판정한다
+//   node scripts/check-forbidden.mjs --built         산출물 스캔 (out/blog) — 판정한다. 빌드 후에 돌린다
 //   node scripts/check-forbidden.mjs --all           조사 모드 — 리포 전체를 훑되 판정하지 않는다
 //   node scripts/check-forbidden.mjs <파일...>       지정 파일만
 //
 // 종료 코드: HARD 위반이 1건이라도 있으면 1, 아니면 0. SOFT는 보고만 하고 막지 않는다.
 //            --all 은 언제나 0이다 — 아래 「적용 범위」 참조.
+//            --built 는 out/blog 가 없으면 2로 종료한다 — 안 만든 것을 「깨끗함」으로 세지 않는다.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -59,13 +61,14 @@ const SOFT = [
 // ── 스캔 ──────────────────────────────────────────────────────────
 const SKIP_DIRS = new Set(["node_modules", ".next", "out", "dist", "build", ".git"]);
 const TEXT_EXT = /\.(md|mdx|ts|tsx|js|mjs|json)$/;
+const BUILT_EXT = /\.(html|json|txt|xml)$/; // 산출물은 HTML 이 본체다
 
-function walk(dir, out = []) {
+function walk(dir, out = [], extRe = TEXT_EXT) {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (e.isDirectory()) {
       if (SKIP_DIRS.has(e.name)) continue;
-      walk(join(dir, e.name), out);
-    } else if (TEXT_EXT.test(e.name)) {
+      walk(join(dir, e.name), out, extRe);
+    } else if (extRe.test(e.name)) {
       out.push(join(dir, e.name));
     }
   }
@@ -81,13 +84,40 @@ function isAsciiWord(w) {
   for (const c of w) if (c.charCodeAt(0) > 127) return false;
   return true;
 }
+// ⚠️ 밑줄은 단어 문자가 아니다 — 구분자다.
+//   `_` 를 단어 문자로 치면 파일명 `Ted_yanadoo.png` 의 `yanadoo` 가 경계 검사에서 탈락해
+//   통째로 놓친다. 실제로 그렇게 놓쳤고, 그 파일명이 블로그 전 페이지의 og:image 에
+//   들어가 산출물에 366회 남아 있었는데 검사는 계속 0건을 반환했다.
+//   식별자·파일명에서 `_` 는 낱말을 잇는 문자가 아니라 나누는 문자다. 경계로 취급한다.
 function isWordChar(c) {
   if (c === undefined) return false;
-  return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9") || c === "_";
+  return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9");
 }
-function scanText(text, words) {
+// 산출물에만 적용하는 정당 문맥 — 정확한 문자열로 못박는다.
+//   JSON-LD 의 author 는 저작자 표기이며 기술 블로그의 표준이다. 위반이 아니라고 판정했다.
+//   ⚠️ 이 면제는 「이 문자열 안에 있을 때」만이다. 같은 이름이 본문·제목에 나오면 그대로 잡는다.
+//      「기술 블로그니까 이름은 괜찮다」로 넓히면 검사기가 이름을 아예 못 보게 된다.
+const BUILT_ALLOW = ['"author":{"@type":"Person","name":"허우용"}'];
+
+// countAll: 한 줄 안의 모든 출현을 센다. 산출물 HTML은 한 줄이 수십 KB라 줄 단위로 세면
+//   페이지당 2회가 1건으로 접혀 수치가 거짓이 된다. 소스(.md)는 줄이 나뉘어 있어 기본은 접는다.
+// allow: 이 문자열들 **안쪽**의 매칭은 세지 않는다. 문맥 판정을 문자열 일치로 좁혀서 한다.
+function scanText(text, words, opts = {}) {
+  const countAll = opts.countAll === true;
+  const allow = opts.allow ?? [];
   const hits = [];
   const lines = text.split("\n");
+  // 면제 구간을 줄별로 미리 잡아 둔다 — 낱말마다 다시 훑지 않기 위해서다.
+  const allowRanges = allow.length
+    ? lines.map((line) => {
+        const r = [];
+        for (const a of allow) {
+          let at = 0;
+          while ((at = line.indexOf(a, at)) !== -1) { r.push([at, at + a.length]); at += a.length; }
+        }
+        return r;
+      })
+    : null;
   for (const w of words) {
     const needle = w.toLowerCase();
     const boundary = isAsciiWord(w);
@@ -98,9 +128,17 @@ function scanText(text, words) {
       while ((at = lower.indexOf(needle, at)) !== -1) {
         const before = at === 0 ? undefined : line[at - 1];
         const after = line[at + needle.length];
-        if (!boundary || (!isWordChar(before) && !isWordChar(after))) {
-          hits.push({ word: w, line: i + 1, text: line.replace(/\r$/, "").trim() });
-          break; // 한 줄에 같은 낱말이 여러 번 있어도 한 번만 보고한다
+        const boundaryOk = !boundary || (!isWordChar(before) && !isWordChar(after));
+        const exempt = allowRanges !== null &&
+          allowRanges[i].some(([s, e]) => at >= s && at + needle.length <= e);
+        if (boundaryOk && !exempt) {
+          const snippet = countAll
+            ? line.slice(Math.max(0, at - 40), at + needle.length + 40).trim()
+            : line.replace(/\r$/, "").trim();
+          hits.push({ word: w, line: i + 1, text: snippet });
+          if (!countAll) break; // 소스는 한 줄에 여러 번 있어도 한 번만 보고한다
+          at += needle.length;
+          continue;
         }
         at += 1;
       }
@@ -121,18 +159,51 @@ function selfTest() {
     { name: "한글은 조사가 붙어도 잡는가",     text: "테디노트의 자료를 보면",                 expect: ["테디노트"] },
     { name: "깨끗한 문장에 오탐이 없는가",    text: "Elasticsearch 색인 파이프라인을 설계한다.",    expect: [] },
     { name: "SOFT를 HARD로 승격하지 않는가",  text: "recruiter 에이전트는 면접 질문을 만든다.",     expect: ["면접"] },
+
+    // ↓ 산출물 검사(--built)를 세우며 드러난 두 결함. 각각이 거짓 0건의 원인이었다.
+    { name: "밑줄 뒤의 라틴을 잡는가",        text: '<img src="/images/Ted_yanadoo.png">',           expect: ["yanadoo"] },
+    { name: "밑줄 앞의 라틴을 잡는가",        text: "yanadoo_app.png 를 참조한다",                  expect: ["yanadoo"] },
+    { name: "산출물은 한 줄에 여러 번 나와도 횟수를 센다", countAll: true,
+      text: '<meta property="og:image" content="/i/Ted_yanadoo.png"><meta name="twitter:image" content="/i/Ted_yanadoo.png">',
+      expect: ["yanadoo"], counts: { yanadoo: 2 } },
+    { name: "기본 모드는 한 줄을 1건으로 접는다",
+      text: '<meta content="/i/Ted_yanadoo.png"><meta content="/i/Ted_yanadoo.png">',
+      expect: ["yanadoo"], counts: { yanadoo: 1 } },
+
+    // ↓ 정당 문맥 면제. 「넓게 봐주기」가 아니라 「이 문자열 안에서만」이라는 것을 양쪽으로 고정한다.
+    { name: "JSON-LD author 의 실명은 산출물에서 면제한다", built: true, countAll: true,
+      text: '{"@type":"BlogPosting","author":{"@type":"Person","name":"허우용"},"url":"/x"}',
+      expect: [] },
+    { name: "면제는 그 문맥 밖으로 새지 않는다", built: true, countAll: true,
+      text: '<title>기술 노트 | 허우용</title><p>허우용이 설계했다</p>',
+      expect: ["허우용"], counts: { 허우용: 2 } },
+    { name: "면제는 소스 스캔에 적용되지 않는다",
+      text: '본문에 "author":{"@type":"Person","name":"허우용"} 를 그대로 적었다',
+      expect: ["허우용"] },
   ];
   let pass = 0, fail = 0;
   console.log("=== self-test — 검사기가 실제로 잡는지 증명한다 ===\n");
   for (const c of cases) {
-    const found = new Set(scanText(c.text, [...HARD, ...SOFT]).map((h) => h.word));
+    const hits = scanText(c.text, [...HARD, ...SOFT], {
+      countAll: c.countAll === true,
+      allow: c.built ? BUILT_ALLOW : [], // built 케이스만 면제를 켠다
+    });
+    const found = new Set(hits.map((h) => h.word));
     const missing = c.expect.filter((w) => !found.has(w));
     const extra = [...found].filter((w) => !c.expect.includes(w));
-    const ok = missing.length === 0 && extra.length === 0;
+    // counts 가 있으면 「몇 번 나왔는가」까지 본다. 산출물 HTML은 한 줄이 수십 KB라
+    // 줄 단위로 세면 페이지당 2회가 1건으로 접힌다 — 그 접힘을 여기서 고정한다.
+    const countMiss = [];
+    for (const [w, n] of Object.entries(c.counts ?? {})) {
+      const got = hits.filter((h) => h.word === w).length;
+      if (got !== n) countMiss.push(`${w} ${n}회여야 하는데 ${got}회`);
+    }
+    const ok = missing.length === 0 && extra.length === 0 && countMiss.length === 0;
     console.log(`  ${ok ? "✅" : "❌"} ${c.name}`);
     if (!ok) {
       if (missing.length) console.log(`       놓친 낱말: ${missing.join(", ")}`);
       if (extra.length) console.log(`       오탐: ${extra.join(", ")}`);
+      if (countMiss.length) console.log(`       횟수 불일치: ${countMiss.join(", ")}`);
     }
     ok ? pass++ : fail++;
   }
@@ -150,6 +221,13 @@ function selfTest() {
 // 이 구분이 곧 정책이다. 범위를 넓히면 위반 490건이 보고되는데 그중 발행본은 0건이라,
 // 검사기가 늑대소년이 되고 진짜 위반이 소음에 묻힌다.
 // ⇒ --all 은 판정하지 않는다. 어디에 무엇이 있는지 보여주는 조사 도구이고, 판정은 사람이 한다.
+//
+// ⚠️ 소스가 깨끗한 것은 산출물이 깨끗하다는 증거가 아니다 — --built 가 필요한 이유다.
+//   content/blog 에 금칙어가 0건이어도, 그 글을 감싸는 템플릿(components/site-head.tsx)이
+//   금칙어를 넣으면 발행된 페이지에는 남는다. 실제로 og:image 기본값이 그랬고
+//   out/blog 에 366회 남아 있는 동안 소스 스캔은 계속 0건을 반환했다.
+//   out/blog 는 content/blog 의 산출물이므로 같은 정책이 적용되는 같은 대상이다 — 판정한다.
+//   out/ 전체가 아니라 out/blog 만인 이유는 위와 같다. 포트폴리오는 정책 대상이 아니다.
 
 // ── main ──────────────────────────────────────────────────────────
 const argv = process.argv.slice(2);
@@ -157,9 +235,35 @@ const argv = process.argv.slice(2);
 if (argv.includes("--self-test")) process.exit(selfTest());
 
 const surveyOnly = argv.includes("--all");
+const builtMode = argv.includes("--built");
 
 let files;
-if (surveyOnly) files = walk(process.cwd());
+if (builtMode) {
+  const root = join(process.cwd(), "out", "blog");
+  let ok = false;
+  try { ok = statSync(root).isDirectory(); } catch { ok = false; }
+  if (!ok) {
+    console.error("\n❌ out/blog 가 없다. --built 는 빌드 산출물을 검사한다 — 먼저 `npm run build` 를 돌려라.");
+    console.error("   ⚠️ 산출물이 없는 채로 「0건」을 반환하면 그것이 곧 거짓 음성이다. 그래서 통과시키지 않는다.\n");
+    process.exit(2);
+  }
+  files = walk(root, [], BUILT_EXT);
+  // 클라이언트 네비게이션용 데이터도 발행물이다. HTML 의 __NEXT_DATA__ 와 같은 props 가
+  // out/_next/data/<buildId>/blog/**.json 으로 한 벌 더 나간다.
+  // 「HTML 에 들어 있으니 됐다」로 넘기면 그 한 벌이 사각지대가 된다 — 검사하는 척하지 않는다.
+  // buildId 는 빌드마다 바뀌므로 경로를 박지 않고 훑어서 /blog/ 를 지나는 것만 고른다.
+  const dataRoot = join(process.cwd(), "out", "_next", "data");
+  let dataOk = false;
+  try { dataOk = statSync(dataRoot).isDirectory(); } catch { dataOk = false; }
+  if (dataOk) {
+    const slash = String.fromCharCode(92);
+    for (const f of walk(dataRoot, [], BUILT_EXT)) {
+      const p = relative(process.cwd(), f).split(slash).join("/");
+      // 블로그 홈은 `<buildId>/blog.json` 이라 `/blog/` 를 지나지 않는다. 둘 다 받는다.
+      if (p.includes("/blog/") || p.endsWith("/blog.json")) files.push(f);
+    }
+  }
+} else if (surveyOnly) files = walk(process.cwd());
 else if (argv.length > 0) files = argv.filter((a) => !a.startsWith("--"));
 else files = walk(join(process.cwd(), "content", "blog"));
 
@@ -173,15 +277,31 @@ const hardFiles = [], softFiles = [];
 for (const f of files) {
   let text;
   try { text = readFileSync(f, "utf8"); } catch { continue; }
-  const hard = scanText(text, HARD);
-  const soft = scanText(text, SOFT);
+  const hard = scanText(text, HARD, { countAll: builtMode, allow: builtMode ? BUILT_ALLOW : [] });
+  // 산출물에서 SOFT 는 보지 않는다 — 소스에서 이미 판정한 같은 문장이 그대로 다시 나와
+  // 소음만 늘린다. 산출물이 답해야 하는 질문은 「고유명사가 남았는가」 하나다.
+  const soft = builtMode ? [] : scanText(text, SOFT);
   if (hard.length) { hardFiles.push([f, hard]); hardTotal += hard.length; }
   if (soft.length) { softFiles.push([f, soft]); softTotal += soft.length; }
 }
 
 const rel = (f) => relative(process.cwd(), f).split(String.fromCharCode(92)).join("/");
 
-if (hardFiles.length) {
+if (hardFiles.length && builtMode) {
+  // 낱말별로 묶는다. 366건을 개별로 찍으면 읽히지 않고, 고쳐야 할 자리는 낱말당 하나다.
+  console.log("\n❌ HARD — 산출물에 남은 위반. 소스가 아니라 템플릿이 원인일 수 있다\n");
+  const byWord = new Map();
+  for (const [f, hits] of hardFiles)
+    for (const h of hits) {
+      if (!byWord.has(h.word)) byWord.set(h.word, { n: 0, files: new Set(), sample: h.text });
+      const e = byWord.get(h.word);
+      e.n++; e.files.add(rel(f));
+    }
+  for (const [w, e] of [...byWord].sort((a, b) => b[1].n - a[1].n)) {
+    console.log(`  [${w}]  ${e.n}회 · ${e.files.size}개 파일`);
+    console.log(`       예: ${[...e.files][0]}  …${e.sample.slice(0, 100)}…`);
+  }
+} else if (hardFiles.length) {
   console.log("\n❌ HARD — 문맥과 무관한 위반. 반드시 고쳐라\n");
   for (const [f, hits] of hardFiles)
     for (const h of hits) console.log(`  ${rel(f)}:${h.line}  [${h.word}]  ${h.text.slice(0, 110)}`);
@@ -191,6 +311,12 @@ if (softFiles.length) {
   console.log("\n⚠️ SOFT — 정당한 문맥일 수 있다. 줄을 열어 사람이 판정하라\n");
   for (const [f, hits] of softFiles)
     for (const h of hits) console.log(`  ${rel(f)}:${h.line}  [${h.word}]  ${h.text.slice(0, 110)}`);
+}
+
+if (builtMode) {
+  console.log(`\n산출물 ${files.length}개 파일 · HARD ${hardTotal}회 (출현 횟수다. 줄 수가 아니다)`);
+  console.log("※ 산출물에서는 SOFT 를 보지 않는다 — 소스에서 판정한 문장이 그대로 다시 나올 뿐이다");
+  process.exit(hardTotal > 0 ? 1 : 0);
 }
 
 console.log(`\n검사 파일 ${files.length}개 · HARD ${hardTotal}건 · SOFT ${softTotal}건`);
