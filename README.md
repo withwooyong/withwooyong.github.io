@@ -79,6 +79,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm test` | Vitest — 블로그 로더·frontmatter 검증·목차 생성 단위 테스트 |
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. `--category <slug>` · `--min N`(기본 20자) |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
+| `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
+| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 8건) |
 
 ## 페이지 구성
 
@@ -113,7 +115,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── flow-diagram/       # 흐름 다이어그램 (2)
 │   └── ui/                 # shadcn/ui — badge · button · card · dialog
 ├── data/                   # portfolio.ts · product-lead-*.ts · diagrams/ (시스템 다이어그램 10종)
-├── scripts/                # generate-sitemap.mjs · dup-scan.mjs
+├── scripts/                # generate-sitemap.mjs · dup-scan.mjs · check-forbidden.mjs
 ├── tests/blog/             # Vitest — frontmatter · loader · toc (+ fixtures)
 ├── public/                 # 이미지, favicon, robots.txt, sitemap.xml
 ├── styles/                 # 전역 CSS (테마·모션)
@@ -129,10 +131,11 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 
 | 항목 | 규칙 |
 |------|------|
-| 카테고리 | [`content/blog/categories.ts`](content/blog/categories.ts)에 **12개 등록 · 5개 발행** (`ai-agent` 51 · `agentic-coding` 31 · `rag` 25 · `search-engineering` 6 · `ai-transformation` 8) |
+| 카테고리 | [`content/blog/categories.ts`](content/blog/categories.ts)에 **12개 등록 · 5개 발행** (`ai-agent` 51 · `agentic-coding` 31 · `rag` 25 · `search-engineering` 6 · `ai-transformation` 11) |
 | 태그 | [`content/blog/tags.ts`](content/blog/tags.ts)의 통제 어휘만 사용. 글당 **3~5개**, 같은 패싯 **최대 2개** |
 | frontmatter | [`lib/blog/frontmatter.ts`](lib/blog/frontmatter.ts)가 검증합니다. **선택 필드에 빈 문자열을 넣으면 빌드가 실패하므로 값이 없으면 키를 생략**하세요 |
 | 중복 검사 | `npm run dup-scan`으로 기존 글과의 축자 복제를 확인합니다 |
+| 금칙어 검사 | `npm run check-forbidden`이 **HARD 0건**이어야 발행합니다. 두 검사기 모두 `:verify`(self-test)를 **먼저** 돌리세요 — 증명 없는 「0건」은 거짓 음성과 구분되지 않습니다 |
 
 어휘에 없는 태그나 등록되지 않은 카테고리를 쓰면 빌드가 막습니다.
 
