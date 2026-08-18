@@ -26,7 +26,7 @@ draft: false
 | 2. [데이터 모델링과 정규화](/blog/backend-engineering/data-modeling-and-normalization/) | ERD의 네 요소, 정규화, 그리고 반정규화를 언제 하는가 |
 | 3. [SQL 실행과 인덱스](/blog/backend-engineering/sql-execution-and-indexes/) | SQL이 느린 이유를 어디서 보는가 — 파싱, 인덱스, 실행계획, 조인 |
 | 4. [트랜잭션과 동시성 제어](/blog/backend-engineering/transactions-and-concurrency-control/) | ACID, 격리수준, 락, 그리고 데드락 |
-| 5. Q&A | 앞 네 편의 선택지를 트레이드오프와 장애 상황에 적용하는 문답 |
+| 5. [Q&A](/blog/backend-engineering/database-fundamentals-qna/) | 앞 네 편의 선택지를 트레이드오프와 장애 상황에 적용하는 문답 |
 
 ## 용어 정리
 
@@ -52,7 +52,7 @@ draft: false
 | 1NF~5NF | Normal Form | 정규형. 이상현상 제거 단계 |
 | BCNF | Boyce-Codd Normal Form | 모든 결정자가 후보키인 강화된 3NF |
 | Anomaly | — | 이상현상(입력/삭제/수정 이상) |
-| MD | Merchandiser | 상품·판매촉진 담당자(모델링 예시에 등장) |
+| MD | Merchandiser | 상품·판매촉진 담당자 |
 
 ### SQL 층 — 9개
 
