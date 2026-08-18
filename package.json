@@ -12,7 +12,9 @@
     "dup-scan:verify": "node scripts/dup-scan.mjs --self-test",
     "check-forbidden": "node scripts/check-forbidden.mjs",
     "check-forbidden:verify": "node scripts/check-forbidden.mjs --self-test",
-    "check-forbidden:built": "node scripts/check-forbidden.mjs --built"
+    "check-forbidden:built": "node scripts/check-forbidden.mjs --built",
+    "check-baseline": "node scripts/check-baseline.mjs",
+    "check-baseline:update": "node scripts/check-baseline.mjs --update"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
