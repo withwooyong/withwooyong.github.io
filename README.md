@@ -82,6 +82,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
 | `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 15건) |
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
+| `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
+| `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
 
 ## 페이지 구성
 
@@ -138,8 +140,24 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 | 중복 검사 | `npm run dup-scan --category <slug>`로 기존 글과의 축자 복제를 확인합니다. 대상을 주지 않으면 종료 코드 1 |
 | 금칙어 검사 (소스) | `npm run check-forbidden`이 **HARD 0건**이어야 발행합니다. 두 검사기 모두 `:verify`(self-test)를 **먼저** 돌리세요 — 증명 없는 「0건」은 거짓 음성과 구분되지 않습니다 |
 | 금칙어 검사 (산출물) | 빌드 뒤 `npm run check-forbidden:built`도 **HARD 0회**여야 합니다. 소스가 깨끗해도 템플릿이 넣은 것은 여기서만 잡힙니다 |
+| 산출물 불변 검사 | 빌드 뒤 `npm run check-baseline`이 통과해야 합니다. 블로그가 아닌 페이지(`/`·`/en`·`/product-lead*`)의 산출물이 바뀌면 막습니다 |
 
 어휘에 없는 태그나 등록되지 않은 카테고리를 쓰면 빌드가 막습니다.
+
+### 게이트는 자동으로 돕니다
+
+위 검사들을 손으로 기억해 돌릴 필요는 없습니다.
+
+| 자리 | 언제 | 무엇 |
+|------|------|------|
+| **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | `content/blog`를 건드린 커밋 | 금칙어 self-test → 콘텐츠 불변식 → 금칙어 스캔. 하나라도 실패하면 커밋이 막힙니다 |
+| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다 |
+
+훅은 `npm install` 시 `prepare` 스크립트가 자동으로 설정합니다(`git config core.hooksPath .githooks`).
+수동으로 켜려면 같은 명령을 직접 실행하세요. husky 같은 의존성은 쓰지 않습니다.
+
+**순서가 규칙입니다** — 자기 증명(`:verify`)이 스캔보다 먼저입니다. 증명 없는 「0건」은 거짓 음성과
+구분되지 않고, 이 저장소는 실제로 그 대가를 치렀습니다.
 
 ## 라이선스
 
