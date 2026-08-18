@@ -248,3 +248,5 @@ flowchart LR
 - 동의어 표현 2방식: 동등관계 `"A, B"`(양방향) / 치환 `"A => B"`(단방향). `synonym_graph`가 권장된다.
 - 불용어(stop): 검색 노이즈·금칙어 제거(`type:stop`, `stopwords_path`).
 - 사용자사전(user_dictionary): "싼타페TM"을 등록하면 "TM" 검색에 노출되게 하는 등 도메인 어휘를 보강한다.
+
+이 글에서 다룬 판단들 — Nori 오분해, 초성·한영검색, 자동완성 분석기 분리, 무결과 폴백, 동의어 적용 시점 — 은 [검색 엔지니어링 Q&A](/blog/search-engineering/search-engineering-qna/)에도 문답 형태로 정리해 두었다.
