@@ -36,21 +36,30 @@ describe("발행본 전수 스키마", () => {
 describe("발행본 분량", () => {
   it("하한 미달 편을 보고한다 (SOFT — 실패시키지 않는다)", () => {
     const small: string[] = [];
+    let scanned = 0;
 
     for (const categorySlug of fs.readdirSync(CONTENT)) {
       const dir = path.join(CONTENT, categorySlug);
       if (!fs.statSync(dir).isDirectory()) continue;
       for (const fileName of fs.readdirSync(dir)) {
         if (!fileName.endsWith(".md")) continue;
+        scanned++;
         const bytes = Buffer.byteLength(fs.readFileSync(path.join(dir, fileName), "utf8"), "utf8");
         if (bytes < MIN_BYTES) small.push(`${categorySlug}/${fileName} (${bytes} B)`);
       }
     }
 
+    // 스캐너가 실제로 뭔가를 세었는지 스스로 증명한다. readPosts() 가 다른 루트를 봐도
+    // 이 스캐너는 CONTENT 를 독립적으로 훑으므로, content/blog 가 존재하되 .md 가 0개면
+    // (예: 경로가 어긋나거나 디렉터리가 비면) 조용히 통과하던 구멍을 막는다.
+    expect(scanned, `${CONTENT} 아래에서 .md 파일을 찾지 못했다`).toBeGreaterThan(0);
+
     // 판정하지 않고 알린다. 병합 여부는 내용을 읽어야 정해지므로 기계가 결정할 수 없다.
+    // console.warn 대신 process.stderr.write 를 쓴다 — 리포터가 통과한 테스트의 콘솔
+    // 출력을 숨길 수 있어(`npm test` 단독 실행이 그랬다), 리포터를 거치지 않는 이 쪽이
+    // 항상 화면에 남는다.
     if (small.length > 0) {
-      console.warn(`[SOFT] 분량 하한 ${MIN_BYTES} B 미만 ${small.length}편:\n  ${small.join("\n  ")}`);
+      process.stderr.write(`[SOFT] 분량 하한 ${MIN_BYTES} B 미만 ${small.length}편:\n  ${small.join("\n  ")}\n`);
     }
-    expect(true).toBe(true);
   });
 });
