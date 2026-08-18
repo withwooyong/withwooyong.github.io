@@ -623,7 +623,9 @@ slug 충돌 검사 완료(`content/blog/` 전체, 7개 전부 0건).
 | `series` | **`"cicd-automation"`** | 기존 36개 series와 충돌 없음. 원본 제목이 「CI/CD 자동화」 |
 | `seriesOrder` | 위 표의 값 | `map`도 1을 갖는다(앞 배치 `batch-processing-fundamentals`) |
 | `date` | **`"2026-07-26"`** | **커밋일이 아니라 원본 작성 기준일이다.** 앞 배치 5편 전부 이 값을 쓴다 |
+| `updated` | **`"2026-08-19"`** | 발행일. 앞 배치는 `"2026-08-18"`을 **5편 모두** 썼다 — 이것이 `date`와 갈리는 쌍이다 |
 | `role` | 편1만 `"map"`, 나머지 없음 | `links.test.ts:85`가 이 값으로만 고립을 면제한다 |
+| `featured` / `draft` | `false` / `false` | |
 
 #### 4-2. 편별 브리프 필수 문구 — **여기서 잘라 쓴다**
 
