@@ -40,10 +40,12 @@ jobs:
       - name: Prove forbidden-word scanner
         run: npm run check-forbidden:verify
 
-      # verbose 를 쓰는 이유: 기본 리포터는 통과한 테스트의 console.warn 을 감춘다.
-      # 분량 하한 미달을 알리는 [SOFT] 경고가 그렇게 조용히 묻힌다.
+      # [SOFT] 분량 경고는 process.stderr.write 로 나가므로 기본 리포터에서도 보인다(196a3fc).
+      # verbose 를 쓰는 이유는 그것이 아니라, 어느 테스트가 실제로 돌았는지를 CI 로그에 남기기 위해서다.
+      # 경로 인자를 주지 않는다 — 범위는 vitest.config.ts 의 include 가 정한다.
+      # 여기에 tests/blog 를 박으면 나중에 다른 곳에 생긴 테스트를 CI가 조용히 빼먹는다.
       - name: Content invariants
-        run: npx vitest run tests/blog --reporter=verbose
+        run: npx vitest run --reporter=verbose
 
       - name: Scan source for forbidden words
         run: npm run check-forbidden
