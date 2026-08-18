@@ -33,8 +33,31 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # ⚠️ 증명이 스캔보다 먼저다. 증명 없는 0건은 거짓 음성과 구분되지 않는다.
+      - name: Prove forbidden-word scanner
+        run: npm run check-forbidden:verify
+
+      # verbose 를 쓰는 이유: 기본 리포터는 통과한 테스트의 console.warn 을 감춘다.
+      # 분량 하한 미달을 알리는 [SOFT] 경고가 그렇게 조용히 묻힌다.
+      - name: Content invariants
+        run: npx vitest run tests/blog --reporter=verbose
+
+      - name: Scan source for forbidden words
+        run: npm run check-forbidden
+
       - name: Build
         run: npm run build
+
+      # 소스가 깨끗한 것은 산출물이 깨끗하다는 증거가 아니다 —
+      # 템플릿이 og:image와 제목을 주입한다. Ted_yanadoo.png가 366곳에 있던 것이 그 경우다.
+      - name: Scan built output
+        run: npm run check-forbidden:built
+
+      - name: GC-6 baseline
+        run: npm run check-baseline
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
