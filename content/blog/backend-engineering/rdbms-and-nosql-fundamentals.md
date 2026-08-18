@@ -1,6 +1,6 @@
 ---
 title: "관계형 데이터베이스와 NoSQL — 무엇을 고르고, 무엇을 기준으로 고르는가"
-description: "저장소를 고르기 전에 정리해야 할 것들을 다룬다. 관계형 모델이 「관계」를 물리적으로 어디에 저장하는지, NoSQL 네 유형이 각각 무엇을 잘하고 못하는지, 그리고 제품 선택을 성능이 아니라 문제 해결·비용·유지보수로 판정하는 이유다."
+description: "저장소를 고르기 전에 정리해야 할 것들을 다룬다. 관계형 모델이 「관계」를 물리적으로 어디에 저장하는지, NoSQL 네 유형이 각각 무엇을 잘하고 못하는지, 그리고 제품 선택을 성능이 아니라 문제 해결·비용·유지·보수로 판정하는 이유다."
 category: "backend-engineering"
 tags: ["database", "nosql", "terminology", "scalability"]
 date: "2026-07-26"
@@ -23,9 +23,9 @@ draft: false
 | 편 | 다루는 것 |
 |---|---|
 | **1. 관계형 데이터베이스와 NoSQL** (이 글) | 용어 사전, DBMS가 걸어온 길, RDBMS가 관계를 저장하는 방식, NoSQL 4유형, 제품 선택 기준 |
-| 2. [데이터 모델링과 정규화](/blog/backend-engineering/data-modeling-and-normalization/) | ERD의 네 요소, 정규화, 그리고 반정규화를 언제 하는가 |
-| 3. [SQL 실행과 인덱스](/blog/backend-engineering/sql-execution-and-indexes/) | SQL이 느린 이유를 어디서 보는가 — 파싱, 인덱스, 실행계획, 조인 |
-| 4. [트랜잭션과 동시성 제어](/blog/backend-engineering/transactions-and-concurrency-control/) | ACID, 격리수준, 락, 그리고 데드락 |
+| 2. [데이터 모델링과 정규화](/blog/backend-engineering/data-modeling-and-normalization/) | ERD의 네 요소, 정규화와 반정규화, NoSQL 모델링, 데이터 표준 |
+| 3. [SQL 실행과 인덱스](/blog/backend-engineering/sql-execution-and-indexes/) | 파싱과 바인드 변수, DB 왕복 줄이기, 인덱스, 실행계획, 조인, 모델을 바꿀 때 |
+| 4. [트랜잭션과 동시성 제어](/blog/backend-engineering/transactions-and-concurrency-control/) | ACID, 읽기 일관성, 격리수준, 비관적·낙관적 동시성 제어, 락과 데드락 |
 | 5. [Q&A](/blog/backend-engineering/database-fundamentals-qna/) | 앞 네 편의 선택지를 트레이드오프와 장애 상황에 적용하는 문답 |
 
 ## 용어 정리
@@ -107,7 +107,7 @@ flowchart LR
 | SQL | SQL이 잘못 짜이면 파싱·I/O가 폭발한다 | 바인드 변수로 실행계획을 재사용하고, 고급 SQL로 DB 왕복 횟수를 줄이고, 인덱스·조인 방식을 데이터 양에 맞게 고른다 |
 | 트랜잭션 | 동시 접근을 제어하지 않으면 데이터가 깨진다 | 격리수준을 올리면 일관성이 올라가고 동시성이 떨어진다. 이 트레이드오프를 의식적으로 선택하는 것이 설계다 |
 
-세 행의 해법 열을 나란히 읽으면 성격이 갈린다. 모델링과 SQL의 해법은 **더 나은 쪽이 정해져 있는** 문제다 — 중복은 제거하는 쪽이 낫고, 실행계획은 재사용하는 쪽이 낫다. 트랜잭션만 다르다. 격리수준에는 "더 나은 값"이 없고 **교환 조건만 있다.** 이 시리즈에서 마지막 편이 가장 판단을 많이 요구하는 이유가 여기 있다.
+세 행의 해법 열을 나란히 읽으면 성격이 갈린다. 세 행 모두 교환 조건을 담지만 **출발점이 있느냐**가 다르다. 모델링과 SQL에는 기본값이 있다 — 중복은 제거하는 쪽에서 출발하고, 실행계획은 재사용하는 쪽에서 출발한다. 언제 그 기본값을 되돌릴지가 판단이고, 반정규화와 인덱스 추가가 그 자리다. 격리수준에는 그런 출발점이 약하다. 올리면 일관성이 오르고 동시성이 떨어질 뿐이어서, 원 자료도 이 행에만 **"이 트레이드오프를 의식적으로 선택하는 것이 설계"** 라고 적었다.
 
 ## 데이터베이스와 DBMS — 무엇이 무엇인가
 
