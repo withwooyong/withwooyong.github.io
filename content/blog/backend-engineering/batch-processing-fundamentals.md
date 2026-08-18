@@ -215,7 +215,7 @@ Spring Batch의 어휘는 층이 섞이기 쉽다. `Job`·`JobInstance`·`JobExe
 | 편 | 제목 | 답하는 질문 |
 | :---: | --- | --- |
 | **1** | **실시간으로 하면 안 되는 일 — 이커머스에서 배치가 필요한 지점** (이 글) | 이 일을 왜 배치로 하는가 |
-| 2 | Spring Batch 아키텍처와 메타데이터 | 프레임워크가 무엇을 대신 해 주는가 — 직접 짜면 무엇을 재발명하는가 |
+| 2 | [Spring Batch 아키텍처와 메타데이터](/blog/backend-engineering/spring-batch-architecture-and-metadata/) | 프레임워크가 무엇을 대신 해 주는가 — 직접 짜면 무엇을 재발명하는가 |
 | 3 | Chunk 지향 처리와 Reader / Writer | 한 Step 안에서 데이터가 실제로 어떻게 흐르는가 |
 | 4 | 성능 최적화와 병렬화 | 느릴 때 무엇을 어떤 순서로 손대는가 |
 | 5 | Spring Batch Q&A — 선택지 8개, 실패 모드 8가지, 25문답 | 고를 때 · 터졌을 때 · 설명해야 할 때 |
