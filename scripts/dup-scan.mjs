@@ -11,13 +11,23 @@
 //   node scripts/dup-scan.mjs --category ai-transformation
 //   node scripts/dup-scan.mjs --min 20 <파일...>       임계값 변경 (기본 20자)
 //
+// 대상을 몇 편 넘기든 결과는 같다 — 각 편은 **자기 자신을 뺀 나머지 전부**와 대조된다.
+// 대상끼리도 대조하므로 새 배치를 통째로 넘겨도 된다. 2026-08-18 이전에는 대상 전부를
+// 대조 집합에서 빼서, 배치를 통째로 넘기는 경우에만 조용히 0건을 냈다 (자체 검사 ⑤).
+//
 // 판정하지 않는다. 양쪽 문자열과 위치를 그대로 보고한다 — 판정은 사람이 한다.
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, basename, relative } from "node:path";
+import { readFileSync, readdirSync, statSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { join, relative, resolve } from "node:path";
+import { tmpdir } from "node:os";
 
 const BLOG_DIR = join(process.cwd(), "content", "blog");
 const DEFAULT_MIN = 20;
+
+// CLI 인자는 상대경로(`content/blog/x.md`)로 오고 listPosts()는 절대경로를 낸다.
+// 같은 파일을 같은 문자열로 만들지 않으면 「자기 자신 제외」가 조용히 실패한다.
+// `startsWith(cwd)` 판정은 cwd 밖의 절대경로를 상대경로로 오인한다 — resolve가 둘 다 다룬다.
+const toAbs = (p) => resolve(p);
 
 // ── 정규화 ─────────────────────────────────────────────────────────
 // 마크다운 기호를 걷어내면 표 셀 경계를 넘는 일치까지 잡힌다.
@@ -93,13 +103,22 @@ function buildIndex(files, min) {
 
 // 매치된 윈도우가 연속되면 하나의 구간으로 병합한다.
 // 병합하지 않으면 30자 축자 하나가 11건으로 보고돼 심각도를 오독하게 된다.
-function findMatches(target, index, min) {
+// selfPath: 색인이 대상 자신을 포함할 때 그 출처를 걸러낸다. 걸러내지 않으면
+// 모든 줄이 자기 자신과 일치해 전편이 위양성으로 뒤덮인다.
+function findMatches(target, index, min, selfPath = null) {
+  const lookup = (key) => {
+    const found = index.get(key);
+    if (!found) return null;
+    if (!selfPath) return found;
+    const others = found.filter((f) => f.file !== selfPath);
+    return others.length > 0 ? others : null;
+  };
   const hits = [];
   for (const { line, norm, raw, fence, links } of parseFile(target)) {
     let i = 0;
     while (i + min <= norm.length) {
       const key = norm.slice(i, i + min);
-      const found = index.get(key);
+      const found = lookup(key);
       if (!found) {
         i++;
         continue;
@@ -107,7 +126,7 @@ function findMatches(target, index, min) {
       // 최장 확장: 같은 상대 파일에서 계속 이어지는지 본다
       let len = min;
       while (i + len < norm.length) {
-        const next = index.get(norm.slice(i + len - min + 1, i + len + 1));
+        const next = lookup(norm.slice(i + len - min + 1, i + len + 1));
         if (!next) break;
         len++;
       }
@@ -126,6 +145,29 @@ function findMatches(target, index, min) {
     }
   }
   return hits;
+}
+
+// ── 스캔 본체 ──────────────────────────────────────────────────────
+// CLI와 자체 검사가 **같은 함수**를 탄다. 이전에는 대조 집합 구성이 CLI 본체에만 있어
+// 자체 검사가 검증할 수 없었고, 그래서 「대상끼리 대조되지 않는다」가 4개 케이스를
+// 전부 통과한 채 거짓 0을 냈다.
+function scan(targets, all, min) {
+  // 대상도 코퍼스에 넣고, 매치 시점에 **자기 자신만** 걸러낸다.
+  // 대상 전부를 코퍼스에서 빼면 대상끼리는 영원히 대조되지 않는다 — 새 배치를 통째로
+  // 넘기는 경우가 정확히 그 경우다.
+  const targetPaths = targets.map(toAbs);
+  const corpus = [...new Set([...all.map(toAbs), ...targetPaths])];
+  const index = buildIndex(corpus, min);
+  const results = targets.map((target, i) => {
+    const found = findMatches(target, index, min, targetPaths[i]).sort((a, b) => b.length - a.length);
+    return {
+      target,
+      hits: found.filter((h) => !h.isLink),
+      links: found.filter((h) => h.isLink),
+    };
+  });
+  // 대상 1편이 마주하는 대조 편수 — 자기 자신을 뺀 나머지 전부다.
+  return { results, contrastCount: corpus.length - 1 };
 }
 
 // ── 자체 검사 ──────────────────────────────────────────────────────
@@ -164,11 +206,38 @@ function selfTest() {
     return count;
   };
 
+  // ⑤⑥은 probe()가 아니라 scan()을 탄다. probe()는 색인을 직접 조회할 뿐
+  // **대조 집합이 어떻게 구성되는지**는 건드리지 않아, 「대상끼리 대조되지 않는다」가
+  // ①~④를 전부 통과한 채 새 배치를 통째로 넘긴 경우에만 거짓 0을 냈다.
+  const CONTROL = "통제용문자열가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허";
+  const tmp = mkdtempSync(join(tmpdir(), "dup-scan-selftest-"));
+  const write = (name, body) => {
+    const p = join(tmp, name);
+    writeFileSync(p, `---\ntitle: "자체 검사"\n---\n\n${body}\n`, "utf8");
+    return p;
+  };
+  const countHits = (targets, corpus) =>
+    scan(targets, corpus, min).results.reduce((n, r) => n + r.hits.length, 0);
+
+  let crossTargets = 0;
+  let withinOne = 0;
+  try {
+    const a = write("alpha.md", CONTROL);
+    const b = write("beta.md", CONTROL);
+    crossTargets = countHits([a, b], [a, b]);
+    const c = write("gamma.md", `${CONTROL}\n\n${CONTROL}`);
+    withinOne = countHits([c], [c]);
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+
   const cases = [
     ["① 19자는 미검출 (임계값이 바이트가 아니라 「자」임을 증명)", probe(sample.slice(0, min - 1)) === 0],
     ["② 20자는 검출", probe(sample.slice(0, min)) > 0],
     ["③ 기발행본 실재 40자 주입 → 검출", probe(sample) > 0],
     ["④ 비실재 문자열 → 미검출", probe("이문장은어느발행본에도존재하지않는통제용문자열입니다검사기음성대조") === 0],
+    ["⑤ 대상 2편을 함께 넘겨도 서로 대조된다 (배치 통째 검사의 거짓 0 방지)", crossTargets > 0],
+    ["⑥ 한 편 안의 반복은 검출하지 않는다 (자기 대조는 위양성)", withinOne === 0],
   ];
 
   console.log(`자체 검사 — 발행본 ${posts.length}편 · 임계값 ${min}자 · 색인 ${index.size.toLocaleString()}개 윈도우\n`);
@@ -202,20 +271,14 @@ if (targets.length === 0) {
   process.exit(1);
 }
 
-const all = listPosts();
-const targetSet = new Set(targets.map((t) => join(process.cwd(), t.startsWith("content") ? t : t)));
-const others = all.filter((f) => !targets.some((t) => basename(t) === basename(f)));
-const index = buildIndex(others, min);
+const { results, contrastCount } = scan(targets, listPosts(), min);
 
-console.log(`축자 복제 스캔 — 대상 ${targets.length}편 · 대조 ${others.length}편 · 임계값 ${min}자\n`);
+console.log(`축자 복제 스캔 — 대상 ${targets.length}편 · 대조 ${contrastCount}편 · 임계값 ${min}자\n`);
 
 let total = 0;
 let linkTotal = 0;
-for (const target of targets) {
-  const all = findMatches(target, index, min).sort((a, b) => b.length - a.length);
-  const hits = all.filter((h) => !h.isLink);
-  const links = all.filter((h) => h.isLink);
-  const name = relative(BLOG_DIR, target.startsWith(process.cwd()) ? target : join(process.cwd(), target));
+for (const { target, hits, links } of results) {
+  const name = relative(BLOG_DIR, toAbs(target));
   linkTotal += links.length;
 
   if (hits.length === 0) {
