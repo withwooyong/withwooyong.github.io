@@ -6,8 +6,8 @@ Next.js 14 Pages Router로 만들어 **정적 export**하고 GitHub Pages에 배
 | | 규모 |
 |---|---|
 | 페이지 라우트 | 12개 (포트폴리오 · 프로덕트 리드 · 블로그) |
-| 블로그 발행본 | **124편 / 5개 카테고리** |
-| sitemap | 187 URL |
+| 블로그 발행본 | **128편 / 6개 카테고리** |
+| sitemap | 196 URL |
 
 ## 문서
 
@@ -104,7 +104,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── en/                 # 영문 요약
 │   ├── product-lead*/      # 프로덕트 리더 소개·로드맵·위키
 │   └── blog/               # 목록 · 카테고리 · 글 · 태그
-├── content/blog/           # 발행본 124편 + categories.ts · tags.ts
+├── content/blog/           # 발행본 128편 + categories.ts · tags.ts
 ├── lib/
 │   ├── blog/               # loader · frontmatter 검증 · types
 │   ├── site.ts             # canonical·OG용 절대 URL
@@ -132,7 +132,7 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 
 | 항목 | 규칙 |
 |------|------|
-| 카테고리 | [`content/blog/categories.ts`](content/blog/categories.ts)에 **12개 등록 · 5개 발행** (`ai-agent` 51 · `agentic-coding` 31 · `rag` 25 · `search-engineering` 6 · `ai-transformation` 11) |
+| 카테고리 | [`content/blog/categories.ts`](content/blog/categories.ts)에 **12개 등록 · 6개 발행** (`ai-agent` 51 · `agentic-coding` 31 · `rag` 25 · `ai-transformation` 11 · `search-engineering` 6 · `backend-engineering` 4) |
 | 태그 | [`content/blog/tags.ts`](content/blog/tags.ts)의 통제 어휘만 사용. 글당 **3~5개**, 같은 패싯 **최대 2개** |
 | frontmatter | [`lib/blog/frontmatter.ts`](lib/blog/frontmatter.ts)가 검증합니다. **선택 필드에 빈 문자열을 넣으면 빌드가 실패하므로 값이 없으면 키를 생략**하세요 |
 | 중복 검사 | `npm run dup-scan --category <slug>`로 기존 글과의 축자 복제를 확인합니다. 대상을 주지 않으면 종료 코드 1 |
