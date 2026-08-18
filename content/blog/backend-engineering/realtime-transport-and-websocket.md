@@ -30,7 +30,7 @@ draft: false
 | 2. [STOMP와 Spring의 WebSocket 지원](/blog/backend-engineering/stomp-and-spring-websocket/) | 생 WebSocket의 공백, STOMP 프레임과 destination 규약, Spring의 세 층위, 핸드셰이크 인증 |
 | 3. [OAuth2 로그인과 채팅 도메인](/blog/backend-engineering/oauth2-login-and-chat-domain/) | 회원가입 인프라, Authorization Code Grant, 도메인 모델, 페이징과 신규 알림 |
 | 4. [스케일아웃과 세션](/blog/backend-engineering/realtime-scaleout-and-session/) | 서버를 늘리면 깨지는 세 가지, 스티키 세션과 세션 외부화, 서버 간 메시지 전파, 읽기/쓰기 분리 |
-| 5. 실시간 채팅 Q&A | 트레이드오프와 실패 모드, 25문답 |
+| 5. [실시간 채팅 Q&A](/blog/backend-engineering/websocket-realtime-qna/) | 트레이드오프와 실패 모드, 25문답 |
 
 ## 용어 정리
 
