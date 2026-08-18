@@ -9,7 +9,6 @@ series: "agent-operations"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 에이전트를 만드는 법을 다룬 글은 많다. 만든 다음이 문제다. 하루를 어떻게 굴리고, 조용히 실패하는 것을 어떻게 잡아내고, 개수가 늘어날 때 무엇이 먼저 깨지는가.

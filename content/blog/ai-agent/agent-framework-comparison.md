@@ -9,7 +9,6 @@ series: "agent-fundamentals"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 프레임워크 선택 질문에 "요즘 다 LangGraph 쓴다"고 답하는 것은 근거가 아니다. 세 프레임워크는 같은 문제를 서로 다른 **추상화 수준**에서 푸는데, 추상화가 주는 편의와 개발자가 쥐는 제어권은 반비례한다. 그래서 선택은 취향이 아니라 **운영 요건의 함수**다.

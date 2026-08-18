@@ -9,7 +9,6 @@ series: "agentic-rag"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 관련성 판정을 항상 `no`로 고정한 스텁을 붙이고 자기교정 루프를 돌리면 무슨 일이 일어날까. 정확히 10회 재검색한 뒤 `Agent stopped due to max iterations.`만 출력하고 끝난다. **답변이 아예 없다.** 그리고 10회 동안 생성된 쿼리는 어순과 수식어만 바뀐 동의어 나열이다.

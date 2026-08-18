@@ -9,7 +9,6 @@ series: "rag-pipeline"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 RAG 프롬프트에서 가장 중요한 문장은 "답을 찾을 수 없다면 모른다고 하세요" 한 줄이다. 모르는 것을 모른다고 하는 시스템이 아무 말이나 하는 시스템보다 실무에서 훨씬 쓸모 있기 때문이다. 그런데 이 문장은 검색이 제대로 됐을 때만 의미가 있다.

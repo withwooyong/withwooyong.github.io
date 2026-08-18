@@ -109,8 +109,8 @@ flowchart LR
 
 | 기능 | 필터명 | 입력 → 토큰 |
 |---|---|---|
-| 초성 추출 | `chosung_filter` | 패스트캠퍼스 → ㅍㅅㅌㅋㅍㅅ |
-| 자소(자모) 분해 | `jamo_filter` | 패스트캠퍼스 → ㅍㅐㅅㅡㅌㅡㅋㅐㅁㅍㅓㅅㅡ |
+| 초성 추출 | `chosung_filter` | 스타벅스 → ㅅㅌㅂㅅ |
+| 자소(자모) 분해 | `jamo_filter` | 스타벅스 → ㅅㅡㅌㅏㅂㅓㄱㅅㅡ |
 | soundex(유사발음) | `soundex_filter` | ㅏ/ㅓ 등 통일(내셔널=네셔널) |
 
 - **구현 단계 선택**: 자소분해는 tokenizer 단계에서도 되지만, tokenizer 단계에서 하면 동의어·불용어 필터를 얹기 어렵다('스벅'→'스타벅스' 동의어가 필요하다). 그래서 **token filter 단계가 권장**된다.
@@ -124,8 +124,8 @@ flowchart LR
 
 | 기능 | 필터명 | 입력 → 변환 |
 |---|---|---|
-| 영타 → 한글 | `eng2kor_filter` | votmxmzoavjtm → 패스트캠퍼스 |
-| 한타 → 영문 | `kor2eng_filter` | ㄹㅁㄴㅅㅊ… → fastcampus |
+| 영타 → 한글 | `eng2kor_filter` | tmxkqjrtm → 스타벅스 |
+| 한타 → 영문 | `kor2eng_filter` | ㄴㅅㅁㄱㅠ… → starbucks |
 
 - 색인 시 이 필터들로 만든 서브필드를 함께 색인해 두고, 검색 시 `multi_match`로 여러 변환 필드를 동시에 질의한다(아래 자동완성 절의 멀티필드 패턴).
 - 오타 대응 자체는 fuzzy·동의어·자소분해 수준까지 순수 ES 기능으로 커버되지만, **자판 한영변환은 별도 커스텀 플러그인**(starstory) 영역이다. 즉 "한영검색"은 ES 기본 기능이 아니라 직접 구현 영역이다.

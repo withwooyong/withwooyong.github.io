@@ -9,7 +9,6 @@ series: "dify-workflow"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 노코드로 만든다고 해서 RAG 개념을 몰라도 되는 것은 아니다. 청크 크기를 잘못 잡으면 화면에서 조립했든 코드로 짰든 똑같이 검색이 실패한다. **노코드가 없애는 것은 구현 부담이지 설계 부담이 아니다.**

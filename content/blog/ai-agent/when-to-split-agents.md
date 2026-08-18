@@ -9,7 +9,6 @@ series: "multi-agent-patterns"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 "다중 에이전트 리포트 생성기"라는 이름의 예제를 열어 보면 코드에 **Supervisor가 없다.** 노드 네 개가 고정 순서로 연결되고 섹션 카운터로 루프백하는 정적 파이프라인이다. 그런데 이 예제가 잘못 만들어진 것이 아니다. 쪼갠 이유가 "라우팅 판단이 필요해서"가 아니라 **"한 번에 다 못 써서"**였고, 그 목적에는 이 구조가 맞다.

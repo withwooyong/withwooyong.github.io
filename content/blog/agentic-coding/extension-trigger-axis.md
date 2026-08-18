@@ -9,7 +9,6 @@ series: "claude-code-extensions"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 에이전트에 기능을 붙이는 방법은 하나가 아니다. 같은 일을 슬래시 명령으로 만들 수도 있고, AI가 알아서 읽는 문서로 둘 수도 있고, 이벤트에 걸리는 스크립트로 박아 둘 수도 있다. 셋 다 "자동화"라고 불리는데 동작 시점과 실행 보장은 서로 다르다.

@@ -9,7 +9,6 @@ series: "multi-agent-patterns"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 Supervisor 패턴에서 라우팅 함수는 `lambda x: x["next"]` 한 줄이다. 관리자가 LLM인데 라우팅 로직에 LLM 호출도 조건문도 없다. 판단은 이미 끝났고 그래프는 그 값을 **읽기만** 하기 때문이다.

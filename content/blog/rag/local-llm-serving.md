@@ -9,7 +9,6 @@ series: "rag-core-concepts"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 로컬 LLM 도입 논의는 대개 "API보다 싸다"에서 시작하는데, 손익분기 계산에 운영 인건비를 넣는 순간 그 전제가 무너지는 경우가 많다. GPU 하드웨어 비용보다 **이걸 관리할 사람**의 비용이 큰 조직이 흔하기 때문이다.

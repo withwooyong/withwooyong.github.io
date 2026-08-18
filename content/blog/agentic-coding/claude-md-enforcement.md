@@ -9,7 +9,6 @@ series: "claude-code-tools"
 seriesOrder: 4
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 조직에서 규칙 문서가 실패하는 방식은 대체로 같다. 문서는 잘 쓰였고 공유도 됐는데 지켜지지 않는다. 그러면 문서를 더 잘 쓰려는 시도가 이어지고, 더 잘 쓴 문서도 같은 이유로 지켜지지 않는다.

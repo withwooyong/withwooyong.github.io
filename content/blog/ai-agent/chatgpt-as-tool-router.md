@@ -9,7 +9,6 @@ series: "chatgpt-clone"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 기능이 많은 제품을 보면 뒤에 에이전트가 여러 개 있을 것 같다. 그림도 그리고 검색도 하고 코드도 돌리는데 그게 하나일 리 없다는 직관이다. 그런데 이 직관은 비용을 세어 보면 흔들린다 — 역할을 쪼갤 때마다 LLM 호출이 배로 늘고, 대화형 제품에서 그 지연은 그대로 체감된다.

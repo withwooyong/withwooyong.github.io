@@ -9,7 +9,6 @@ series: "self-correcting-rag"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 "대한민국 2023년 최저 시급은?"이라는 질문에 사내 인사규정 벡터DB를 뒤지는 챗봇이 있다. 검색은 성공한다 — "임직원 연봉은 매년 계약을 갱신한다"는 청크가 올라온다. 그리고 그 청크를 근거로 그럴듯한 답이 나간다. **아무것도 에러를 내지 않았고 아무도 실패를 몰랐다.**

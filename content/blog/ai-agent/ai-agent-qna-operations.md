@@ -9,7 +9,6 @@ series: "ai-agent-qna"
 seriesOrder: 4
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 돌아가는 에이전트와 운영할 수 있는 에이전트는 다르다. 차이를 만드는 것은 대개 세 가지다 — **검증이 실제로 무엇을 보장하는가**, **언제 멈추는가**, **무엇을 실행할 수 있는가**.

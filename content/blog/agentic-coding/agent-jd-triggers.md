@@ -9,7 +9,6 @@ series: "agent-operations"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/agentic-coding/automation-scope-criteria/)이 착수 이전을 정했다. 무엇을 자동화 대상으로 고를지, 무엇을 만들면 끝난 것인지, 조직 규칙을 어디에 얼마나 적을지까지다.

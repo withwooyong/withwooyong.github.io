@@ -9,7 +9,6 @@ series: "llm-app-trends"
 seriesOrder: 1
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2025.5·6·7·10"
 ---
 
 "요즘 트렌드를 어떻게 보시나요"라는 질문에 기술 이름을 나열하면 대개 답이 되지 않는다. 프롬프트 엔지니어링, RAG, 에이전트, MCP — 이름을 순서대로 말하는 것은 목차를 읽는 것이지 판단이 아니다.

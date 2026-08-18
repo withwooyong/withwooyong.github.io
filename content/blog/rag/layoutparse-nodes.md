@@ -9,7 +9,6 @@ series: "document-parsing"
 seriesOrder: 4
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 같은 API 응답에서 표는 `markdown` 필드를 쓰고 문단은 `text` 필드를 쓴다. 반대로 하면 문단에 불필요한 이스케이프가 섞이고 표는 구조가 사라진다. **유형별로 다른 필드를 골라 쓰는 것**이 파싱 파이프라인의 실제 작업이다.

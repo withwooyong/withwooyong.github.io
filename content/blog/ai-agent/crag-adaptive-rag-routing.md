@@ -9,7 +9,6 @@ series: "self-correcting-rag"
 seriesOrder: 3
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 `decide_to_generate`라는 같은 이름의 함수가 두 구현에 있는데, 하나는 **"관련 문서가 전부 탈락했을 때만"** 발동하고 다른 하나는 **"하나라도 탈락하면 즉시"** 발동한다. 오타가 아니라 설계 의도의 차이다. 그리고 이 임계치 차이가 top-k 설정과 맞물려 시스템 전체의 성격을 바꾼다.

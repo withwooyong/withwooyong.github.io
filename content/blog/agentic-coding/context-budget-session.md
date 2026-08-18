@@ -9,7 +9,6 @@ series: "claude-md-context"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [앞 편](/blog/agentic-coding/dot-claude-directory/)의 프롬프트 7패턴이 **"한 번의 지시를 잘 쓰는 법"** — 목적·맥락·제약·형식 네 요소를 채우고, 반복되는 지시는 커맨드로 저장하고, 이미 파일로 있는 맥락은 `@`나 파이프로 연결하는 것 — 이었다면, 이 글의 3패턴은 **"복잡한 업무를 어떻게 나눠 시킬 것인가"** 다.

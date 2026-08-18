@@ -9,7 +9,6 @@ series: "subagent-design"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/agentic-coding/subagent-definition-fields/)이 한 명을 정의했다. 정의서 한 장에 필드를 채우고 담당·비담당 경계를 긋는 일이었다. 이 글은 그 한 명을 여럿으로 늘린다.

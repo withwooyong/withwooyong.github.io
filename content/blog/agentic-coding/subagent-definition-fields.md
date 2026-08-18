@@ -9,7 +9,6 @@ series: "subagent-design"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 에이전트를 여러 명 굴리는 이야기는 대개 구조에서 시작한다. 파이프라인이냐 분업이냐, 팀장을 둘 것이냐. 그런데 구조를 고르기 전에 정해야 하는 것이 하나 있다. **한 명이 무엇인지**다.

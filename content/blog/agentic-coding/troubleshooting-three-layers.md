@@ -9,7 +9,6 @@ series: "agent-operations"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [앞 편](/blog/agentic-coding/agent-jd-triggers/)에서 하루가 사람 손 없이 도는 데까지 만들었다. 잘 만들어도 장애는 난다. 그리고 자동화의 장애는 수동 작업의 장애와 성격이 다르다 — **아무도 보고 있지 않을 때 나고, 조용히 나며, 나는 동안에도 계속 돈다.**

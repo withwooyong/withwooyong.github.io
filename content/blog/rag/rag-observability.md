@@ -9,7 +9,6 @@ series: "rag-core-concepts"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 30초 걸리는 RAG 응답에서 검색이 1초, LLM 생성이 28.7초를 쓰고 있다면 벡터 DB 튜닝은 전체의 3.6%를 건드리는 일이다. 그런데 관측 없이 감으로 최적화하면 이 판단을 정확히 거꾸로 하기 쉽다. 눈에 보이는 것이 검색 쪽 코드이기 때문이다.

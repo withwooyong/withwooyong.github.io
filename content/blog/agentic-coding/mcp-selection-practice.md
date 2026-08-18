@@ -9,7 +9,6 @@ series: "claude-code-extensions"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 연결 층은 넷 중에서 성격이 다르다. 커맨드·스킬·훅은 에이전트가 이미 가진 능력을 언제 어떻게 쓸지 정하지만, MCP는 **에이전트가 만질 수 있는 대상 자체**를 늘린다. [앞 편](/blog/agentic-coding/extension-trigger-axis/)의 4자 비교표가 MCP 행에만 트리거를 적지 않고 "연결 계층"이라고 쓴 이유가 그것이다.

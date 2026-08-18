@@ -9,7 +9,6 @@ series: "agent-operations"
 seriesOrder: 4
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [앞 편](/blog/agentic-coding/troubleshooting-three-layers/)까지는 에이전트가 몇 개 안 될 때의 이야기였다. 개수가 늘면 성격이 다른 문제가 나온다. 하나하나는 멀쩡한데 **묶음이 안 돌아가는** 종류다.

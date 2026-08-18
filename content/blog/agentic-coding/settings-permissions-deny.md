@@ -9,7 +9,6 @@ series: "claude-code-tools"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 지시 습관으로 통제하는 방식에는 한계가 있다. Plan Mode를 켜야 할 때 켜지 않아도 아무것도 막지 않고, 규약 파일에 "위험한 명령을 쓰지 말 것"이라고 써 둬도 모델이 어길 수 있다. 규칙과 강제된 규칙은 다르다.

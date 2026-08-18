@@ -9,7 +9,6 @@ series: "rules-hooks-skills"
 seriesOrder: 4
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 체크리스트가 65개라는 사실보다 중요한 것은 그 65개를 **매번 다 하지 않는다**는 것이다. 여섯 섹션의 점검 주기가 각각 다르고, 그 주기를 모르면 체크리스트는 첫 배포에 한 번 쓰이고 버려진다.

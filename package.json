@@ -9,7 +9,9 @@
     "lint": "next lint",
     "test": "vitest run",
     "dup-scan": "node scripts/dup-scan.mjs",
-    "dup-scan:verify": "node scripts/dup-scan.mjs --self-test"
+    "dup-scan:verify": "node scripts/dup-scan.mjs --self-test",
+    "check-forbidden": "node scripts/check-forbidden.mjs",
+    "check-forbidden:verify": "node scripts/check-forbidden.mjs --self-test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

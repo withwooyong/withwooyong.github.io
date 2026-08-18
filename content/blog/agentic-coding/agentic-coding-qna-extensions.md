@@ -9,7 +9,6 @@ series: "agentic-coding-qna"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 에이전트에 무언가를 붙이려고 하면 곧바로 네 개의 이름이 한꺼번에 나온다. MCP·커맨드·스킬·훅이다. 이름이 넷이라 어려워 보이지만 갈리는 축은 하나뿐이고, 정작 어려운 것은 그다음 — **무엇을 몇 개까지 붙일 것인가** 쪽이다.

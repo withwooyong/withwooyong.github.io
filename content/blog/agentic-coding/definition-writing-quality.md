@@ -9,7 +9,6 @@ series: "agent-definition-catalog"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [앞 편](/blog/agentic-coding/thirty-agent-catalog/)은 서른 개가 각각 무엇을 하는지를 펼쳤다. 이 글은 그 서른 개가 **어떻게 쓰여 있는지**로 들어간다.

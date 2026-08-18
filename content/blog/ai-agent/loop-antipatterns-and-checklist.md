@@ -9,7 +9,6 @@ series: "loop-engineering"
 seriesOrder: 7
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2026.4·5·6"
 ---
 
 루프가 이상하게 동작할 때 가장 먼저 나오는 가설은 대개 "모델이 별로다"이다. 그런데 실제로 잡히는 원인의 대부분은 앞의 세 자리 — 종료 조건, 상태 반영, 예산 경계 — 에 있다. 모델 교체는 가장 비싸고 가장 늦게 검토해야 할 선택지다.

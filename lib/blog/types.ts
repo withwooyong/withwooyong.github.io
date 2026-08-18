@@ -19,8 +19,6 @@ export type PostFrontmatter = {
   seriesOrder?: number;
   featured: boolean;
   draft: boolean;
-  /** 학습 출처 표기 */
-  source?: string;
 };
 
 export type TocEntry = { depth: 2 | 3; text: string; id: string };

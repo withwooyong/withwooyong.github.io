@@ -9,7 +9,6 @@ series: "department-agents"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 부서를 에이전트로 옮기는 작업에서 어려운 쪽은 "무엇을 자동화할까"가 아니다. **어디서 멈출지를 어떻게 적어 두는가**다. 멈춤 지점이 문서에 없으면 그 자리는 자동화된 것이 아니라 그냥 감시되지 않는 것이 된다.

@@ -9,7 +9,6 @@ series: "agent-fundamentals"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 "에이전트가 뭐냐"는 질문에 "LLM에 도구를 붙인 것"이라고 답하면 절반만 답한 것이다. 도구 호출은 결과이지 정의가 아니다. 진짜 차이는 **결과 품질을 끌어올리는 반복을 누가 감당하는가**에 있다.

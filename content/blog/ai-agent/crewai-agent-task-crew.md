@@ -9,7 +9,6 @@ series: "crewai-autogen"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 멀티에이전트 프레임워크는 크게 두 갈래다. **CrewAI**는 역할을 나눠 조립 라인처럼 흘려보내고, **AutoGen**은 에이전트끼리 대화하며 결론으로 수렴한다. 이 차이는 취향이 아니라 **"언제 멈추는가"가 어디에 새겨져 있는가**의 차이다.

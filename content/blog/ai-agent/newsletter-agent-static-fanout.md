@@ -9,7 +9,6 @@ series: "report-automation"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 리포트를 자동으로 쓰게 만들 때 처음 손대는 곳은 대개 프롬프트다. 더 좋은 모델을 쓰고 지시를 정교하게 다듬으면 결과물이 나아질 것 같다. 그런데 실제로 파이프라인을 돌려 보면 병목이 다른 데 있다 — **수집과 분석이 본질적으로 병렬인데 순차로 짜여 있어서**, API 왕복 시간이 그대로 누적된다.

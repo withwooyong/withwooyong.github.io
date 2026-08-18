@@ -9,7 +9,6 @@ series: "rules-hooks-skills"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 빌드 순서를 정하는 일은 무엇을 먼저 만들지 고르는 일이 아니라 **무엇이 무엇의 입력인지**를 정하는 일이다. 앞 단계가 다음 단계의 입력이면 건너뛴 만큼 되돌아와야 한다.

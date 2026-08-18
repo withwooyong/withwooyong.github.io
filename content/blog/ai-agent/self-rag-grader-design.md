@@ -9,7 +9,6 @@ series: "self-correcting-rag"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 환각이 잡혔을 때 무엇을 다시 해야 하는가. 반사적으로는 "다시 검색한다"가 떠오르지만, Self-RAG의 답은 다르다. **문서는 멀쩡하니 답변만 다시 쓴다.** 반대로 답변이 질문에 답하지 못하면 그때는 검색어가 잘못됐다고 보고 재검색으로 간다.

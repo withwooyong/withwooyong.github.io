@@ -9,7 +9,6 @@ series: "chatgpt-clone"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 노트북에서 도는 에이전트를 서비스로 옮길 때 대개 화면부터 붙인다. Streamlit 파일을 하나 만들고 노트북 셀을 복사해 넣으면 일단 돌아간다. 그러다 사용자가 파일을 올리는 기능을 넣는 순간 막힌다 — 도구 목록이 사용자마다 달라야 하는데 그래프가 모듈 최상단의 전역 상수이기 때문이다.

@@ -9,7 +9,6 @@ series: "loop-engineering"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2026.4·5·6"
 ---
 
 "하네스를 바꾸면 성능이 좋아진다"는 주장은 검증하기 어렵다. 대개 모델도 같이 바뀌기 때문이다. 그래서 모델을 고정한 채 하네스만 교체한 실험 하나가 이 논의에서 유독 무겁게 인용된다 — 벤치마크 52.8%에서 66.5%, 순위는 Top 30 밖에서 Top 5로.

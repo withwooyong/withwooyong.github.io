@@ -9,7 +9,6 @@ series: "report-automation"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 조건부 엣지는 목적지 노드 이름을 문자열로 돌려주는 함수다. 문자열 하나를 돌려주니 갈 곳도 하나다 — 이것이 조건부 엣지를 **라우팅** 장치로 이해하게 만들고, 그 이해가 팬아웃을 막는다. 갈래를 여럿 만들고 싶으면 엣지를 미리 여러 개 그려 두는 수밖에 없어 보인다.

@@ -66,12 +66,6 @@ export default function BlogPostPage({ categories, post, prev, next }: Props) {
 
           <Markdown>{post.body}</Markdown>
 
-          {post.source ? (
-            <p className="mt-10 border-t border-slate-200 pt-4 text-xs text-slate-400 break-keep dark:border-slate-800 dark:text-slate-500">
-              학습 출처: {post.source}
-            </p>
-          ) : null}
-
           <SeriesNav prev={prev} next={next} />
         </article>
       </BlogShell>

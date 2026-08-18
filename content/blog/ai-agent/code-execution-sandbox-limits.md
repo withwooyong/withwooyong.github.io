@@ -9,7 +9,6 @@ series: "coding-agent"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 앞 편의 그래프는 사이클이 없다. 근거를 찾고, 코드를 쓰고, 끝난다. 그 코드가 도는지는 사용자가 붙여 넣어 보고 알게 된다.

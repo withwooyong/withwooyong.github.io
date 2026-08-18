@@ -9,7 +9,6 @@ series: "document-parsing"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 표 이미지만 잘라서 VLM에 보여주면 "숫자가 있는 표입니다"라고 답한다. 같은 페이지의 텍스트 요약을 함께 주면 "2019~2022년 부처별 추진일정 표"라고 답한다. **문맥 주입 한 번의 차이가 그 표의 검색 가능 여부를 가른다.**

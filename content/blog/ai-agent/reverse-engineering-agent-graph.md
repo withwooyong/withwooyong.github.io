@@ -9,7 +9,6 @@ series: "perplexity-clone"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 "Perplexity 클론"이라는 이름이 붙은 예제를 열면 시선이 대개 결과물로 간다. 검색이 되는가, 답변이 그럴듯한가. 그런데 완성도로만 보면 이런 클론은 거의 항상 원본에 못 미치고, 그 격차를 확인하는 것만으로는 남는 것이 없다.

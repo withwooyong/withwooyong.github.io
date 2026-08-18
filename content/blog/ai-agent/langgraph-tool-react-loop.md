@@ -9,7 +9,6 @@ series: "langgraph-core"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 `model.invoke("서울 날씨는 어때?").tool_calls`를 찍었더니 `get_weather`가 인자와 함께 나왔다. 도구가 실행됐다고 읽기 쉽지만, 이 시점에 날씨 함수는 **한 줄도 돌지 않았다.** 모델이 낸 것은 "이 이름의 도구를 이 인자로 불러 달라"는 구조화된 요청뿐이다.

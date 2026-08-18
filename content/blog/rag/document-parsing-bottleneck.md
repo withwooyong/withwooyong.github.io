@@ -9,7 +9,6 @@ series: "document-parsing"
 seriesOrder: 1
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 RAG가 틀린 답을 낼 때 대부분 검색기나 모델을 먼저 의심한다. 그런데 실제 원인의 상당수는 그 앞단 — **문서를 텍스트로 바꾸는 순간**에 이미 정보가 사라진 것이다. 임베딩 모델을 바꾸거나 리랭커를 붙여도, 애초에 텍스트에 없는 숫자는 검색되지 않는다.

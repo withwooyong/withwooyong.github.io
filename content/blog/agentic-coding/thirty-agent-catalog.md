@@ -9,7 +9,6 @@ series: "agent-definition-catalog"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 에이전트 하나를 잘 만드는 법과, 서른 개를 한 벌로 설계하는 법은 다른 문제다. 서른 개가 되면 이름이 겹치고, 권한이 제각각이 되고, "이건 누가 하는 일인가"가 문서 어디에도 적혀 있지 않은 상태가 된다.

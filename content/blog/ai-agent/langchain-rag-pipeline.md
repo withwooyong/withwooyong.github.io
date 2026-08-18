@@ -9,7 +9,6 @@ series: "langchain-fundamentals"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 `chunk_size=500`을 주면 청크가 500자로 나온다고 생각하기 쉽다. 실제로 논문 PDF 한 편을 `CharacterTextSplitter`로 자르면 **2,191자에서 6,130자짜리 청크**가 나온다. 파라미터를 줬다고 지켜지는 것이 아니다.

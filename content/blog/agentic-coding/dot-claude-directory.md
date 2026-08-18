@@ -9,7 +9,6 @@ series: "claude-md-context"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/agentic-coding/claude-md-scope-layers/)이 규칙 파일 한 장을 다뤘다. 어디에 두면 어디까지 적용되는지, 얼마나 길게 쓸 수 있는지, 무엇을 어떤 순서로 적는지까지다.

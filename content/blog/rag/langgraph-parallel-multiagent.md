@@ -9,7 +9,6 @@ series: "langgraph-modularization"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 평가 결과가 나쁠 때 던지는 진짜 질문은 "무엇을 고칠까"가 아니라 **"어느 지점으로 되돌아갈까"**다. 질문이 모호했는지, 검색이 부실했는지, 답변 생성이 어긋났는지에 따라 되돌아갈 노드가 다르다. 그리고 **되돌아갈 지점의 정밀도는 모듈을 얼마나 잘 쪼갰는지로 결정된다.**

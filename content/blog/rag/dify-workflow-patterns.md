@@ -9,7 +9,6 @@ series: "dify-workflow"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 이름이 거의 같은 두 워크플로우가 있다. 하나는 IF/ELSE로 갈라 변수 집계자로 모으고, 다른 하나는 분기 없이 전부 병렬 실행한 뒤 템플릿으로 조합한다. **겉보기엔 같은 요약 기능인데 실행 모델과 비용 구조가 완전히 다르다.**

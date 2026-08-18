@@ -9,7 +9,6 @@ series: "document-parsing"
 seriesOrder: 5
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 RAG 답변 품질이 떨어질 때 대부분의 팀이 프롬프트와 모델부터 확인한다. 순서가 거꾸로다. **파싱 산출물을 열어 표가 깨져 있으면 뒤 단계는 볼 필요가 없다.**

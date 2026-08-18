@@ -9,7 +9,6 @@ featured: false
 draft: false
 series: "department-agents"
 seriesOrder: 1
-source: "AI 에이전트 실무 과정"
 ---
 
 부서 하나를 자동화하는 일과, 일곱 부서를 한 벌로 설계하는 일은 다른 문제다. 부서마다 따로 만들면 계약이 제각각이 되고, 같은 실패를 부서마다 다시 겪고, "이건 사람이 봐야 하는가"의 기준선이 부서마다 다른 곳에 그어진다.

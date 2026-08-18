@@ -9,7 +9,6 @@ series: "claude-code-tools"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 AI 코딩 도구를 비교할 때 흔히 쓰는 축은 성능이다. 어느 모델이 더 정확한가, 어느 제품이 더 빠른가. 그런데 이 축으로는 도구를 바꿀 때 조직에서 실제로 벌어지는 일이 설명되지 않는다 — 정확도가 올랐다고 해서 권한 정책을 새로 써야 할 이유는 없기 때문이다.

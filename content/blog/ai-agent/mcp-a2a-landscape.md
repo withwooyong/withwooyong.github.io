@@ -9,7 +9,6 @@ series: "agent-architecture-2025"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2025.2·2025.4"
 ---
 
 에이전트를 하나 만들어 본 팀이 두 번째를 만들 때 가장 먼저 부딪히는 것은 모델도 패턴도 아니다. **Gmail 연동 코드를 또 짜야 한다는 사실**이다. 프레임워크를 바꾸면 그마저도 다시 짜야 한다.

@@ -9,7 +9,6 @@ series: "langgraph-modularization"
 seriesOrder: 1
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 노드를 다 짤 줄 아는 사람에게 남는 질문은 하나다. **그걸 어떻게 배치해야 6개월 뒤에도 고칠 수 있는가.** 마크다운 출력 한 줄을 고치려고 PDF 파싱부터 20초와 $0.21을 다시 내야 하는 구조라면, 코드가 동작하더라도 개선이 멈춘다.

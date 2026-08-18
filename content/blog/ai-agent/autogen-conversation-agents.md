@@ -9,7 +9,6 @@ series: "crewai-autogen"
 seriesOrder: 3
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 CrewAI에서는 "언제 끝나는가"를 물을 필요가 없다. Task 리스트가 유한하기 때문이다. AutoGen에서는 그 질문이 **설계의 출발점**이 된다. 대화가 실행 모델이므로 끝은 구조가 주지 않고 사람이 설계해야 한다.

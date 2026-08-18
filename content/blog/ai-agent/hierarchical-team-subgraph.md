@@ -9,7 +9,6 @@ series: "multi-agent-patterns"
 seriesOrder: 3
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 계층 구조에서 최상위 State에 필드가 **두 개뿐**이다. `messages`와 `next`. 팀 내부가 대본을 만들든 오디오 조각을 붙이든, 상위 그래프는 그 필드들의 존재조차 모른다.

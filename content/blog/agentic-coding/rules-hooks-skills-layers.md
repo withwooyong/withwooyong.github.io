@@ -9,7 +9,6 @@ series: "rules-hooks-skills"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 "AI가 안전하게 일하는 틀을 만들었다"는 문장은 그 자체로는 아무것도 말하지 않는다. 무엇이 그 틀을 강제하는지, 강제가 실패했을 때 무엇이 남는지가 빠져 있기 때문이다.

@@ -9,7 +9,6 @@ series: "claude-code-extensions"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/agentic-coding/extension-trigger-axis/)이 넷을 트리거 주체로 갈랐고, [앞 편](/blog/agentic-coding/mcp-selection-practice/)이 그중 연결 층을 떼어 봤다. 이 글은 나머지 셋을 파일 단위까지 내려간다. 커맨드는 `.md` 한 장, 스킬은 디렉터리, 훅은 설정 등록과 셸 스크립트다.

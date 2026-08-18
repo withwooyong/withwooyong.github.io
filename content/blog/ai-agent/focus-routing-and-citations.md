@@ -9,7 +9,6 @@ series: "perplexity-clone"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 각주가 안 붙는 문제를 만나면 프롬프트부터 손보게 된다. "모든 문장 끝에 `[n]`을 붙여라"를 시스템 메시지에 넣고, 안 되면 더 강하게 쓰고, 그래도 안 되면 모델을 바꾼다. 그런데 이 순서로 접근하면 대개 해결되지 않는다. 각주를 달 **대상 자체가 그래프 안에 없기** 때문이다.

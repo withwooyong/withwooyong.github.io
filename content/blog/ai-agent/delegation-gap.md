@@ -9,7 +9,6 @@ series: "loop-engineering"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2026.4·5·6"
 ---
 
 AI 코딩 도구의 도입률은 이미 논쟁거리가 아니다. 문제는 그 다음 숫자다 — 개발자는 업무의 약 60%에 AI를 쓰지만, **완전히 위임할 수 있는 일은 0~20%**에 불과하다. 40포인트가 넘는 이 간극에 이름이 붙어 있다. **위임 격차(Delegation Gap)**다.

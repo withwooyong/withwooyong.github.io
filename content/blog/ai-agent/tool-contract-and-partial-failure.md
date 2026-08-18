@@ -9,7 +9,6 @@ series: "report-automation"
 seriesOrder: 3
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 3년치 분기 재무제표를 33개 항목으로 뽑아 놓고 나면 다음 질문이 생긴다. 이걸 어떻게 LLM에게 넘기지. 텍스트로 직렬화해 프롬프트에 넣는 것이 자연스러워 보이는데, 그러면 컨텍스트를 통째로 먹고 숫자는 토큰을 거치며 뭉개진다.

@@ -9,7 +9,6 @@ featured: false
 draft: false
 series: "department-agents"
 seriesOrder: 3
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/ai-transformation/department-agent-blueprint/)이 부서를 에이전트로 옮길 때 공유되는 설계 골격을 세웠고, [두 번째 편](/blog/ai-transformation/department-automation-frontline/)이 그 골격을 마케팅·영업·고객지원·인사에 적용했다. 이 글은 남은 세 부서 — 재무·법무·경영지원 — 을 보고, 마지막에 **부서 사례를 지우고 절차만 남긴 체크리스트**로 닫는다.

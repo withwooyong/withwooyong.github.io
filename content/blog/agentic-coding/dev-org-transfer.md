@@ -9,7 +9,6 @@ series: "agent-definition-catalog"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/agentic-coding/thirty-agent-catalog/)이 서른 개를 펼쳤고 [두 번째 편](/blog/agentic-coding/definition-writing-quality/)이 그 서른 개가 어떻게 쓰였는지를 봤다. 남은 질문은 하나다. **이 중 무엇을 실제로 가져다 쓰는가.**

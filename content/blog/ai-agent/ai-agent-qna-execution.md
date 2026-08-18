@@ -9,7 +9,6 @@ series: "ai-agent-qna"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 그래프를 짜기 시작하면 질문의 성격이 바뀐다. "무엇을 쓸 것인가"에서 "왜 값이 사라지나", "왜 도구를 안 부르나", "왜 재시작하면 대화가 없어지나"로 옮겨 간다. 이 글은 그 질문들을 다룬다.

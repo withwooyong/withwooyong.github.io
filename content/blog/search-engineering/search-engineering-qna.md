@@ -90,8 +90,8 @@ Elasticsearch에 초성 추출 기능이 없으므로, **유니코드 자소분�
 
 | 방향 | 필터 | 입력 → 변환 |
 |---|---|---|
-| 영타 → 한글 | `eng2kor_filter` | `votmxmzoavjtm` → 패스트캠퍼스 |
-| 한타 → 영문 | `kor2eng_filter` | `ㄹㅁㄴㅅㅊ…` → fastcampus |
+| 영타 → 한글 | `eng2kor_filter` | `tmxkqjrtm` → 스타벅스 |
+| 한타 → 영문 | `kor2eng_filter` | `ㄴㅅㅁㄱㅠ…` → starbucks |
 
 오타 대응 자체는 fuzzy·동의어·자소분해로 상당 부분 커버되지만, **자판 전환 실수는 편집거리로 잡히지 않는다.** "dkssud"와 "안녕"은 문자열로는 완전히 다르기 때문에 별도 변환 경로가 필요하다.
 

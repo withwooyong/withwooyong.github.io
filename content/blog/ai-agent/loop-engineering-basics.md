@@ -9,7 +9,6 @@ series: "loop-engineering"
 seriesOrder: 5
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2026.4·5·6"
 ---
 
 새 용어가 나올 때마다 물어야 할 것은 "이게 뭔가"가 아니라 "무엇이 바뀌어서 이 말이 필요해졌나"다. **Loop Engineering**도 마찬가지다. 이 이름은 아직 학술 표준 용어가 아니고, 자료 자신이 그 점을 반복해서 못 박는다. 그럼에도 다룰 값이 있는 이유는 이름이 아니라 이름이 가리키는 이동에 있다.

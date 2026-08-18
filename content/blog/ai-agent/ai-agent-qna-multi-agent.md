@@ -9,7 +9,6 @@ series: "ai-agent-qna"
 seriesOrder: 3
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 에이전트를 쪼개는 결정은 되돌리기가 어렵다. 한번 나누면 라우팅 호출이 매 스텝 붙고, 상태 경계가 생기고, 실패 지점이 늘어난다. 그래서 "언제 쪼개는가"보다 **"쪼개지 않고 버틸 수 있는 조건이 무엇인가"**를 먼저 답할 수 있어야 한다.

@@ -9,7 +9,6 @@ series: "langgraph-modularization"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 이미 돌아가는 파이프라인에 신규 단계를 추가할 때 가장 흔한 실수는 **그래프부터 고치는 것**이다. 그러면 신규 로직을 한 줄 바꿀 때마다 전 구간이 재실행되고, 앞단이 유료 API라면 개발 루프마다 돈이 나간다.

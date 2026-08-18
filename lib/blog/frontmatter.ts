@@ -81,8 +81,6 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
     seriesOrder = d.seriesOrder as number;
   }
 
-  const source = d.source === undefined ? undefined : str("source");
-
   return {
     title,
     description,
@@ -97,6 +95,5 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
     //   Error serializing `.post.series` ... `undefined` cannot be serialized as JSON.
     ...(updated !== undefined && { updated }),
     ...(series !== undefined && { series, seriesOrder }),
-    ...(source !== undefined && { source }),
   };
 }

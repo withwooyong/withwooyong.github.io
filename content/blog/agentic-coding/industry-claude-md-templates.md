@@ -9,7 +9,6 @@ series: "rules-hooks-skills"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 조직 규칙 문서를 한 벌만 보면 그 조직의 사정처럼 보인다. 세 벌을 나란히 놓아야 무엇이 그 조직의 사정이고 무엇이 문서라는 형식 자체의 요구인지 갈린다.

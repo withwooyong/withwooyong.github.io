@@ -9,7 +9,6 @@ series: "langgraph-core"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 노드를 세 번 돌렸는데 리스트에 원소가 하나뿐이다. 코드에는 틀린 곳이 없다. 노드는 `["Hello"]`를 정확히 반환했고, 그래프도 세 번 정확히 돌았다. 그런데도 결과는 `['Hello']` 하나다. 이 증상을 만나면 대개 노드 함수를 들여다보지만, 원인은 노드가 아니라 **상태 스키마의 타입 선언 한 줄**에 있다.

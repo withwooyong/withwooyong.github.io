@@ -9,7 +9,6 @@ series: "agentic-coding-qna"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 AI 코딩 에이전트를 팀에 들이려고 하면 질문이 거의 같은 순서로 돌아온다. "무엇부터 하나", "규칙을 어디에 쓰나", "써 놨는데 안 지키면 어떻게 하나" 같은 것들이다. 이 글은 그중 도입과 표준화에 걸린 열일곱 개에 결론부터 답하고 근거를 뒤에 붙인다.

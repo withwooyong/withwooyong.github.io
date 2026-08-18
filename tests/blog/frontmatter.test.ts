@@ -92,14 +92,12 @@ describe("validateFrontmatter", () => {
     expect(Object.keys(result)).not.toContain("updated");
     expect(Object.keys(result)).not.toContain("series");
     expect(Object.keys(result)).not.toContain("seriesOrder");
-    expect(Object.keys(result)).not.toContain("source");
   });
 
   it("값이 있는 선택 필드는 그대로 실린다", () => {
-    const withOptional = { ...valid, updated: "2026-08-07", source: "테디노트" };
+    const withOptional = { ...valid, updated: "2026-08-07" };
     const result = validateFrontmatter(withOptional, "a.md");
     expect(result.updated).toBe("2026-08-07");
-    expect(result.source).toBe("테디노트");
   });
 
   it("series가 있으면 seriesOrder와 함께 실린다", () => {

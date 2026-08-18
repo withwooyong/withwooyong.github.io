@@ -9,7 +9,6 @@ series: "document-parsing"
 seriesOrder: 3
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 21페이지 산업 리포트를 파싱하면 465개 element가 나오는데, 그중 62개(13%)가 머리말·꼬리말이고 표·차트·그림은 42개(9%)뿐이다. **13%는 버리려고, 9%는 살리려고** 파이프라인의 대부분이 존재한다. 수치의 대부분이 그 9%에 있기 때문이다.

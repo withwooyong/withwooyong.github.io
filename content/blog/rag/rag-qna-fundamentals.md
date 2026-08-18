@@ -9,7 +9,6 @@ series: "rag-qna"
 seriesOrder: 1
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 RAG를 설계하다 보면 같은 질문이 반복해서 돌아온다. "청크를 얼마로 잡나", "top-k를 늘리면 안전한가", "임베딩 모델을 바꾸면 어떻게 되나" 같은 것들이다. 이 글은 그 질문들에 결론부터 답하고 근거를 뒤에 붙인다.

@@ -9,7 +9,6 @@ series: "ai-agent-qna"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 에이전트를 설계하다 보면 같은 질문이 반복해서 돌아온다. "이건 에이전트로 만들어야 하나", "LangChain과 LangGraph 중 무엇을 쓰나", "RAG는 아직 필요한가" 같은 것들이다. 이 글은 그 질문들에 결론부터 답하고 근거를 뒤에 붙인다.

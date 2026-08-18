@@ -9,7 +9,6 @@ series: "dify-workflow"
 seriesOrder: 1
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 노코드 LLM 플랫폼을 도입하는 결정은 도구 선택이 아니다. **병목 리스크를 거버넌스 리스크로 교환하는 결정**이다. 개발조직이 요청을 처리하느라 막히던 문제는 풀리지만, 대신 난립·중복·데이터 유출·비용 폭주가 새로 생긴다.

@@ -9,7 +9,6 @@ series: "rag-pipeline"
 seriesOrder: 1
 featured: true
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 LLM에 사내 문서를 붙이려 할 때 처음 부딪히는 벽은 모델이 아니다. "왜 이 답이 나왔는지 알 수 없다"는 것이다. 파일을 올려서 답이 이상하면 할 수 있는 일이 문서 형태를 바꿔 보는 것뿐인데, 사내 문서 전체의 형태를 바꾸는 것은 현실적으로 불가능하다.

@@ -9,7 +9,6 @@ series: "rag-core-concepts"
 seriesOrder: 1
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 RAG에서 비용이 새는 지점은 대개 둘이다. 대화 히스토리를 자르지 않고 전부 재전송하는 것, 그리고 top-k를 습관적으로 크게 잡는 것. 둘 다 "일단 많이 넣으면 안전하다"는 직관에서 나오는데, 실제로는 비용만 늘고 답변 품질은 오히려 떨어진다.

@@ -9,7 +9,6 @@ series: "subagent-design"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 [첫 편](/blog/agentic-coding/subagent-definition-fields/)이 한 명을 정의했고, [앞 편](/blog/agentic-coding/collaboration-patterns-isolation/)이 여럿을 묶는 패턴과 격리 수단을 골랐다. 구조는 다 섰는데, 팀을 실제로 띄우면 첫날 부딪히는 것은 패턴 선택이 아니다.

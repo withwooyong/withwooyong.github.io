@@ -9,7 +9,6 @@ series: "agentic-coding-qna"
 seriesOrder: 3
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 에이전트를 여럿 굴리기 시작하면 질문이 조직 운영 쪽으로 옮겨 간다. "몇 개를 만들어야 하나", "누가 무엇을 결정하나", "충돌은 어떻게 막나" 같은 것들이다. 사람 조직에서 익숙한 질문인데 답이 그대로 옮겨지지는 않는다.

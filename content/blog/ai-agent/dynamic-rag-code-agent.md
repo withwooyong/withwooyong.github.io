@@ -9,7 +9,6 @@ series: "coding-agent"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 코드를 물으면 LLM은 대답한다. 문제는 그 대답이 **학습 시점에 갇혀 있다**는 것이다. LangGraph를 물었는데 존재하지 않는 "RankGraph"를 설명하거나, AutoGen 질문에 LangChain 코드를 준다. 최신 프레임워크일수록 심하고, 프레임워크가 최신이라서 묻는 것이니 정확히 필요한 곳에서 틀린다.

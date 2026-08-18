@@ -9,7 +9,6 @@ series: "rag-qna"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 "사내 문서 RAG 정확도가 낮다"는 문제는 대부분 모델이 아니라 그 앞에서 시작된다. 파싱 단계에서 사라진 정보는 뒤에서 복구되지 않고, 검색이 빗나가면 프롬프트를 아무리 다듬어도 그럴듯한 오답이 나온다.

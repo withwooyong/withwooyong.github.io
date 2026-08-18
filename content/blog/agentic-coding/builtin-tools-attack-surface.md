@@ -9,7 +9,6 @@ series: "claude-code-tools"
 seriesOrder: 2
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 권한 설계를 어렵게 만드는 것은 대개 범위 문제다. 무엇을 허용하고 무엇을 막을지 목록을 짜다 보면 끝이 없어 보이고, 결국 "일단 다 열고 문제 생기면 막자"로 흐른다.

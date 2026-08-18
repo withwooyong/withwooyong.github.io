@@ -9,7 +9,6 @@ series: "langchain-fundamentals"
 seriesOrder: 1
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 LangChain을 처음 볼 때 가장 헷갈리는 것은 "이게 왜 필요한가"다. OpenAI SDK를 직접 부르면 세 줄이면 되는데 왜 추상화 계층을 하나 더 얹느냐는 질문이다.

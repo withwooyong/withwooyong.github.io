@@ -9,7 +9,6 @@ series: "langgraph-core"
 seriesOrder: 3
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 멀티유저 챗봇에서 다른 사용자의 대화가 섞여 나오는 사고는 보안 설정이 아니라 **문자열 하나**에서 난다. 대화 기억은 모델에도 그래프 객체에도 붙어 있지 않고, `thread_id`라는 키에 붙어 있기 때문이다. 이 키를 상수로 하드코딩한 코드는 로컬 테스트에서는 완벽하게 동작하고 운영에서만 터진다.

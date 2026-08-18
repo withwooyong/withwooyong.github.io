@@ -9,7 +9,6 @@ series: "rag-pipeline"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 RAG 품질이 나쁠 때 가장 흔한 오진은 LLM을 바꾸는 것이다. 실제로는 대부분의 실패가 그 앞에서 일어난다. **정답 문서가 검색 결과에 아예 들어오지 않았거나, 들어왔는데 순위가 낮았거나** 둘 중 하나다.

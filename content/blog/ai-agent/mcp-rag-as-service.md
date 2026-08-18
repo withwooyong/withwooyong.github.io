@@ -9,7 +9,6 @@ series: "llm-app-trends"
 seriesOrder: 4
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2025.5·6·7·10"
 ---
 
 MCP를 붙여 본 팀이 처음 받는 질문은 대개 기술 질문이 아니다. **"그럼 우리 사내 문서가 다 열리는 건가요?"**

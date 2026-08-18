@@ -7,8 +7,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — start the dev server at http://localhost:3000
 - `npm run build` — produce the static export into `out/` (Next.js `output: "export"` runs at build time, so there is no separate `next export` step; the README's mention of `npm run export` is outdated)
 - `npm run start` — serve the production build (rarely needed since this site is statically exported)
+- `npm test` — Vitest over `tests/blog/`. Vitest strips types with esbuild rather than checking them, so run `npx tsc --noEmit` as a **separate** step.
+- `npm run lint` — `next lint`.
 
-There are no test or lint scripts wired up. ESLint and `eslint-config-next` are installed but only invoked implicitly by `next build`.
+### Pre-publish checks (run these whenever `content/blog/` changes)
+
+| Command | What it checks |
+| --- | --- |
+| `npm run check-forbidden:verify` | **Run this first.** Proves the forbidden-word scanner actually catches things (8 self-test cases). |
+| `npm run check-forbidden` | Scans `content/blog`. Must report **HARD 0** before publishing; exits 1 otherwise. |
+| `npm run dup-scan:verify` → `npm run dup-scan` | Verbatim-duplication scan. Same order: prove, then scan. |
+
+Both scanners follow the same rule: **run the self-test before trusting a zero.** A "0 findings" result that was never proven is indistinguishable from a false negative — this actually happened here. The forbidden-word list held only Latin spellings (`FASTCAMPUS`, `teddynote`) and silently missed the Korean ones (「패스트캠퍼스」, 「테디노트」), so a false zero was recorded in CHANGELOG as fact (fixed 2026-08-18).
+
+The canonical forbidden-word list lives in `scripts/check-forbidden.mjs`, **not** in any document. Do not copy it into docs — that split is exactly what caused the failure above.
 
 ## Architecture
 

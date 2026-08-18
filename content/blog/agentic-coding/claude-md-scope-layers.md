@@ -9,7 +9,6 @@ series: "claude-md-context"
 seriesOrder: 1
 featured: false
 draft: false
-source: "AI 에이전트 실무 과정"
 ---
 
 AI에게 팀의 일하는 방식을 알려주는 방법은 두 가지다. 매 대화마다 다시 설명하거나, 한 번 파일에 적어 두고 매 세션이 그것을 읽게 하거나. 앞은 사람마다 다른 결과가 나오고 뒤는 저장소에 커밋되어 리뷰 대상이 된다.

@@ -9,7 +9,6 @@ series: "crewai-autogen"
 seriesOrder: 2
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 에이전트에 도구를 붙일 때 흔히 하는 일은 기존 함수에 `@tool`을 얹는 것이다. 그러면 대개 두 가지가 함께 일어난다. LLM이 그 툴을 언제 써야 하는지 헷갈려 하고, 반환값이 컨텍스트를 통째로 먹는다.

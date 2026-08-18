@@ -9,7 +9,6 @@ series: "dify-workflow"
 seriesOrder: 4
 featured: true
 draft: false
-source: "테디노트 RAG 비법노트"
 ---
 
 노코드 확산의 최대 공포는 **"누가 뭘 만들었는지 모르고 비용만 나간다"**는 것이다. 그런데 이 공포에 금지 목록으로 대응하면 확산 자체가 멈춘다. 금지로 막으면 도입이 멈추고, **설계로 막으면 멈추지 않는다.**

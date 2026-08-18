@@ -9,7 +9,6 @@ series: "llm-app-trends"
 seriesOrder: 2
 featured: false
 draft: false
-source: "테디노트 RAG 비법노트 주주총회 2025.5·6·7·10"
 ---
 
 챗봇 UI에는 구조적 제약이 하나 있다. **한 번에 한 가지 대화만 가능하다.** 에이전트가 3분짜리 리서치를 도는 동안 그 창에서는 다른 일을 시킬 수 없고, 사용자는 앉아서 기다리거나 창을 떠난다.

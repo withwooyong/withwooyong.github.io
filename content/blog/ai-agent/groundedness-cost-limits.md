@@ -9,7 +9,6 @@ series: "self-correcting-rag"
 seriesOrder: 4
 featured: false
 draft: false
-source: "패스트캠퍼스 LangGraph 멀티에이전트 시스템"
 ---
 
 "환각을 0으로 만들었다"는 문장이 자료 제목에 그대로 등장한다. 코드는 실제로 잘 돌고, 근거 없는 답변이 걸러지는 것도 사실이다. 그런데 이 표현은 **틀렸다.** 검증 노드가 재는 것은 사실성이 아니기 때문이다.
