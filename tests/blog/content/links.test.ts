@@ -90,3 +90,105 @@ describe("링크 고립", () => {
     expect(isolated, `고립 ${isolated.length}편`).toEqual([]);
   });
 });
+
+/**
+ * 카테고리 고립 검사.
+ *
+ * 위의 편 단위 검사를 통과해도 카테고리가 통째로 떨어져 나갈 수 있다 —
+ * 한 카테고리 안에서 서로만 링크하면 편마다 inbound는 1 이상이지만
+ * 바깥에서 그 카테고리로 들어오는 길은 없다. search-engineering 6편이 그랬다.
+ *
+ * 판정 기준을 **비율이 아니라 연결성**으로 잡는다. 「카테고리 간 링크가 전체의 N%」
+ * 같은 임계는 배치마다 분모가 달라져 새 글을 낼 때마다 깨진다.
+ * 나가는 길 하나와 들어오는 길 하나 — 이건 배치 크기와 무관하게 참이어야 한다.
+ *
+ * 방향을 둘 다 요구하는 이유: out만 보면 「참조는 하는데 아무도 안 찾는」 카테고리를
+ * 못 잡고, in만 보면 「받기만 하고 내보내지 않는」 막다른 카테고리를 못 잡는다.
+ */
+
+type Node = { cat: string; id: string; links: string[] };
+
+/** 카테고리 간 간선을 세어 한 방향이라도 0인 카테고리를 돌려준다. */
+function brokenCategories(nodes: Node[]): string[] {
+  const catOf = new Map<string, string>(nodes.map((n) => [n.id, n.cat]));
+  const cats = Array.from(new Set(nodes.map((n) => n.cat))).sort();
+  const out = new Map<string, number>(cats.map((c) => [c, 0]));
+  const inn = new Map<string, number>(cats.map((c) => [c, 0]));
+
+  for (const n of nodes) {
+    for (const target of Array.from(new Set(n.links))) {
+      const to = catOf.get(target);
+      // 대상이 실재하지 않는 링크는 위의 「대상이 전부 실재한다」가 잡는다.
+      if (!to || to === n.cat) continue;
+      out.set(n.cat, out.get(n.cat)! + 1);
+      inn.set(to, inn.get(to)! + 1);
+    }
+  }
+
+  return cats
+    .filter((c) => out.get(c)! === 0 || inn.get(c)! === 0)
+    .map((c) => `${c} (나감 ${out.get(c)} · 들어옴 ${inn.get(c)})`);
+}
+
+describe("카테고리 고립", () => {
+  // 「0건」을 믿기 전에 이 검사가 실제로 무언가를 잡는지 먼저 보인다.
+  // 통과한 검사와 아무것도 안 하는 검사는 출력이 같기 때문이다.
+  it("자기검사 — 끊긴 지형을 실제로 잡는다", () => {
+    const ok: Node[] = [
+      { cat: "a", id: "a/1", links: ["b/1"] },
+      { cat: "b", id: "b/1", links: ["a/1"] },
+    ];
+    expect(brokenCategories(ok)).toEqual([]);
+
+    // ① 안에서만 서로 링크한다 — 편 단위 고립 검사는 통과하지만 카테고리는 떨어져 있다.
+    const inward: Node[] = [
+      { cat: "a", id: "a/1", links: ["b/1"] },
+      { cat: "b", id: "b/1", links: ["a/1"] },
+      { cat: "z", id: "z/1", links: ["z/2"] },
+      { cat: "z", id: "z/2", links: ["z/1"] },
+    ];
+    expect(brokenCategories(inward)).toEqual(["z (나감 0 · 들어옴 0)"]);
+
+    // ② 내보내기만 한다 — 아무도 찾아오지 않는 카테고리.
+    const noIn: Node[] = [
+      { cat: "a", id: "a/1", links: ["b/1"] },
+      { cat: "b", id: "b/1", links: ["a/1"] },
+      { cat: "z", id: "z/1", links: ["a/1"] },
+    ];
+    expect(brokenCategories(noIn)).toEqual(["z (나감 1 · 들어옴 0)"]);
+
+    // ③ 받기만 한다 — 막다른 카테고리.
+    const noOut: Node[] = [
+      { cat: "a", id: "a/1", links: ["b/1", "z/1"] },
+      { cat: "b", id: "b/1", links: ["a/1"] },
+      { cat: "z", id: "z/1", links: [] },
+    ];
+    expect(brokenCategories(noOut)).toEqual(["z (나감 0 · 들어옴 1)"]);
+
+    // ④ 같은 카테고리 안의 링크는 간선으로 세지 않는다.
+    const selfOnly: Node[] = [
+      { cat: "a", id: "a/1", links: ["a/2"] },
+      { cat: "a", id: "a/2", links: ["a/1"] },
+    ];
+    expect(brokenCategories(selfOnly)).toEqual(["a (나감 0 · 들어옴 0)"]);
+
+    // ⑤ 실재하지 않는 대상은 간선을 만들지 못한다 — 죽은 링크로 연결성을 위조할 수 없다.
+    const dead: Node[] = [
+      { cat: "a", id: "a/1", links: ["b/1"] },
+      { cat: "b", id: "b/1", links: ["a/1"] },
+      { cat: "z", id: "z/1", links: ["a/999"] },
+    ];
+    expect(brokenCategories(dead)).toEqual(["z (나감 0 · 들어옴 0)"]);
+  });
+
+  it("모든 카테고리가 바깥과 양방향으로 이어져 있다", () => {
+    const nodes: Node[] = posts.map((p) => ({
+      cat: p.categorySlug,
+      id: key(p),
+      links: outboundKeys(p).filter((t) => published.has(t)),
+    }));
+
+    const broken = brokenCategories(nodes);
+    expect(broken, `카테고리 고립 ${broken.length}건`).toEqual([]);
+  });
+});
