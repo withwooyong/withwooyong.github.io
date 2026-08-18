@@ -55,8 +55,14 @@ describe("링크 무결성", () => {
     // trailingSlash: true 이므로 슬래시가 없으면 리다이렉트가 한 번 더 돈다.
     const bad: string[] = [];
     for (const post of posts) {
-      for (const m of Array.from(post.body.matchAll(/\]\((\/blog\/[^)#?]*)\)/g))) {
-        if (!m[1].endsWith("/")) bad.push(`${key(post)}: ${m[1]}`);
+      // 링크 전체를 잡은 뒤 경로부와 앵커·질의부를 갈라 본다. #·? 를 문자 클래스에서
+      // 배제하면(구판 `[^)#?]*`) 앵커 링크는 매칭 자체가 실패해 검사를 통째로 빠져나간다 —
+      // `/blog/rag/foo#s` 같은 진짜 위반이 조용히 통과한다.
+      for (const m of Array.from(post.body.matchAll(/\]\((\/blog\/[^)]*)\)/g))) {
+        const href = m[1];
+        const path = href.split(/[#?]/)[0];
+        // 판정은 경로부로, 보고는 원본 전체로. 경로부만 적으면 파일에서 찾지 못한다.
+        if (!path.endsWith("/")) bad.push(`${key(post)}: ${href}`);
       }
     }
     expect(bad, `슬래시 누락 ${bad.length}건`).toEqual([]);
