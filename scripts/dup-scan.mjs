@@ -29,6 +29,9 @@ const DEFAULT_MIN = 20;
 // `startsWith(cwd)` 판정은 cwd 밖의 절대경로를 상대경로로 오인한다 — resolve가 둘 다 다룬다.
 const toAbs = (p) => resolve(p);
 
+// 「글자」의 정의 — 한글·영문·숫자. 이것이 하나도 없으면 그 줄은 기호뿐이다.
+const HAS_WORD = /[0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ]/;
+
 // ── 정규화 ─────────────────────────────────────────────────────────
 // 마크다운 기호를 걷어내면 표 셀 경계를 넘는 일치까지 잡힌다.
 // `| 셀A | 셀B |`와 산문 `셀A 셀B`가 같은 문자열로 수렴하기 때문이다.
@@ -69,7 +72,10 @@ function parseFile(path) {
       return;
     }
     const norm = normalizeLine(raw);
-    if (norm.length > 0)
+    // 정규화 후 글자가 하나도 남지 않는 줄은 내용이 아니다 — 표 구분선 `|---|---|`,
+    // 수평선 `---`, 기호 나열이 여기 걸린다. 걸러내지 않으면 표를 쓰는 모든 편이
+    // 서로 「복제」로 잡혀, 위양성이 쌓여 진짜 복제를 가린다.
+    if (norm.length > 0 && HAS_WORD.test(norm))
       lines.push({ line: offset + i + 1, norm, raw: raw.trim(), fence: inFence, links: linkTitles(raw) });
   });
   return lines;
@@ -219,14 +225,22 @@ function selfTest() {
   const countHits = (targets, corpus) =>
     scan(targets, corpus, min).results.reduce((n, r) => n + r.hits.length, 0);
 
+  // 표 구분선은 마크다운 기호를 걷어내면 하이픈만 남는다. 이 코퍼스는 표가 지배적이라
+  // 걸러내지 않으면 표를 쓰는 모든 편이 서로 「복제」로 잡히고, 위양성이 진짜 복제를 가린다.
+  const TABLE_RULE = "|-------|-------|-------|";
+
   let crossTargets = 0;
   let withinOne = 0;
+  let tableRule = 0;
   try {
     const a = write("alpha.md", CONTROL);
     const b = write("beta.md", CONTROL);
     crossTargets = countHits([a, b], [a, b]);
     const c = write("gamma.md", `${CONTROL}\n\n${CONTROL}`);
     withinOne = countHits([c], [c]);
+    const d = write("delta.md", `${CONTROL}\n\n${TABLE_RULE}`);
+    const e = write("epsilon.md", `겹치지않는통제용문장하나둘셋넷다섯여섯일곱여덟아홉열\n\n${TABLE_RULE}`);
+    tableRule = countHits([d, e], [d, e]);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -238,6 +252,7 @@ function selfTest() {
     ["④ 비실재 문자열 → 미검출", probe("이문장은어느발행본에도존재하지않는통제용문자열입니다검사기음성대조") === 0],
     ["⑤ 대상 2편을 함께 넘겨도 서로 대조된다 (배치 통째 검사의 거짓 0 방지)", crossTargets > 0],
     ["⑥ 한 편 안의 반복은 검출하지 않는다 (자기 대조는 위양성)", withinOne === 0],
+    ["⑦ 표 구분선은 검출하지 않는다 (기호만 남는 줄은 내용이 아니다)", tableRule === 0],
   ];
 
   console.log(`자체 검사 — 발행본 ${posts.length}편 · 임계값 ${min}자 · 색인 ${index.size.toLocaleString()}개 윈도우\n`);
