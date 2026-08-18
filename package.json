@@ -15,7 +15,12 @@
     "check-forbidden:verify": "node scripts/check-forbidden.mjs --self-test",
     "check-forbidden:built": "node scripts/check-forbidden.mjs --built",
     "check-baseline": "node scripts/check-baseline.mjs",
-    "check-baseline:update": "node scripts/check-baseline.mjs --update"
+    "check-baseline:update": "node scripts/check-baseline.mjs --update",
+    "check-counts": "node scripts/check-counts.mjs",
+    "check-counts:verify": "node scripts/check-counts.mjs --self-test",
+    "check-counts:print": "node scripts/check-counts.mjs --print",
+    "compose": "node scripts/compose.mjs",
+    "compose:verify": "node scripts/compose.mjs --self-test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

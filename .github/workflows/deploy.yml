@@ -50,6 +50,17 @@ jobs:
       - name: Scan source for forbidden words
         run: npm run check-forbidden
 
+      # 문서에 적힌 발행본 수가 실제와 맞는지 본다. README 세 곳이 128편에서 멈춰 있는 동안
+      # 실제로는 149편이었다(인수인계 §11). 세는 사람이 없으면 숫자는 반드시 낡는다.
+      #
+      # GC-6와 달리 이 검사는 환경에 종속되지 않는다 — content/blog 의 .md 개수와 README 텍스트만 본다.
+      # 자리를 못 찾는 것도 실패로 센다. 그렇지 않으면 README 구조가 바뀔 때 조용히 통과한다.
+      - name: Prove count checker
+        run: npm run check-counts:verify
+
+      - name: Check documented counts
+        run: npm run check-counts
+
       - name: Build
         run: npm run build
 
