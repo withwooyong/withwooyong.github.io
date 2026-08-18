@@ -17,6 +17,11 @@ export type PostFrontmatter = {
   /** 분할된 시리즈 식별자. 1차에서는 사용하지 않는다 */
   series?: string;
   seriesOrder?: number;
+  /**
+   * 편의 역할. 지도편은 카테고리 전체를 가리키는 것이 목적이라 들어오는 링크가 없어도 정상이다.
+   * 링크 검사(tests/blog/content/links.test.ts)가 이 값으로 고립 판정에서 제외한다.
+   */
+  role?: "map";
   featured: boolean;
   draft: boolean;
 };

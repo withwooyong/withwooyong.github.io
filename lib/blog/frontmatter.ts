@@ -104,6 +104,11 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
   const updated = d.updated === undefined ? undefined : str("updated");
   if (updated !== undefined && !DATE.test(updated)) fail("updated는 YYYY-MM-DD 형식이어야 합니다");
 
+  const role = d.role === undefined ? undefined : str("role");
+  if (role !== undefined && role !== "map") {
+    fail(`role은 "map"만 쓸 수 있습니다 (받은 값: ${role})`);
+  }
+
   const series = d.series === undefined ? undefined : str("series");
   let seriesOrder: number | undefined;
   if (series !== undefined) {
@@ -124,6 +129,7 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
     // `updated: undefined` 같은 키가 남아 있으면 빌드가 실패한다.
     //   Error serializing `.post.series` ... `undefined` cannot be serialized as JSON.
     ...(updated !== undefined && { updated }),
+    ...(role !== undefined && { role: role as "map" }),
     ...(series !== undefined && { series, seriesOrder }),
   };
 }

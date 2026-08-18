@@ -123,4 +123,16 @@ describe("validateFrontmatter", () => {
     const withOptional = { ...valid, updated: "2026-08-18", series: "s", seriesOrder: 1 };
     expect(validateFrontmatter(withOptional, "a.md")).toMatchObject({ series: "s", seriesOrder: 1 });
   });
+
+  it("role은 map만 허용한다", () => {
+    expect(() => validateFrontmatter({ ...valid, role: "index" }, "a.md")).toThrow(/role/);
+  });
+
+  it("role: map을 통과시킨다", () => {
+    expect(validateFrontmatter({ ...valid, role: "map" }, "a.md")).toMatchObject({ role: "map" });
+  });
+
+  it("role이 없으면 키를 만들지 않는다", () => {
+    expect(validateFrontmatter(valid, "a.md")).not.toHaveProperty("role");
+  });
 });

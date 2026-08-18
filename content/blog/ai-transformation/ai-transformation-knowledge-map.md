@@ -7,6 +7,7 @@ date: "2026-08-17"
 updated: "2026-08-17"
 featured: false
 draft: false
+role: "map"
 ---
 
 `ai-transformation` 카테고리에는 이 글을 뺀 **열 편**이 있다. 한 편씩은 각자 완결돼 있고, 앞에서부터 순서대로 읽어야 하는 것도 아니다. 열 편 가운데 읽는 순서가 프론트매터에 박혀 있는 것은 세 편뿐이다.
