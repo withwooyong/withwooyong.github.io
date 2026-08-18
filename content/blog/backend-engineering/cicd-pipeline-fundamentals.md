@@ -100,7 +100,7 @@ flowchart LR
 
 ### `master` · `slave` 표기는 이렇게 쓴다
 
-원본 사전은 Jenkins의 두 노드를 「Controller / Master」와 「Agent / Worker / Slave」로 적었다. 이 시리즈는 **산문에서 현행 어휘만 쓰되 환경변수명·설정 키 같은 식별자는 바꾸지 않는다** — 제어 노드는 Controller, 빌드 노드는 Agent, 기본 브랜치는 `main`이지만 `JENKINS_SLAVE_SSH_PUBKEY`는 그대로 적는다. 식별자를 읽기 좋게 고치면 글은 깔끔해지고 실행은 안 되기 때문이다.
+원본 사전은 Jenkins의 두 노드를 「Controller / Master」와 「Agent / Worker / Slave」로 적었다. 이 시리즈는 **산문에서 현행 어휘만 쓰되, 그 이름이어야만 성립하는 자리는 바꾸지 않는다** — 제어 노드는 Controller, 빌드 노드는 Agent, 기본 브랜치는 `main`이지만 `JENKINS_SLAVE_SSH_PUBKEY`도 이미 실행된 명령 안의 `master`도 그대로 적는다. 읽기 좋게 고치면 글은 깔끔해지고 실행은 안 되기 때문이다. 거꾸로 **독자가 자기 저장소에 옮겨 쓸 설정값**은 현행 어휘로 적는다. 거기서는 원본 그대로가 안 돌아간다.
 
 ## 용어 정리
 
