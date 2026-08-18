@@ -58,8 +58,25 @@ jobs:
       - name: Scan built output
         run: npm run check-forbidden:built
 
-      - name: GC-6 baseline
-        run: npm run check-baseline
+      # GC-6 baseline — 2026-08-18 CI에서 비활성화. 로컬 검사로만 쓴다.
+      #
+      # 이유: 기준선(scripts/baseline.json)이 **빌드 환경에 종속**된다. Windows 로컬에서 만든
+      # 기준선을 ubuntu CI에서 검사하니 Next.js가 생성한 13개 파일이 전부 「변경」으로 잡혔다
+      # (run 32103823116). public/ 에서 그대로 복사되는 notion/index.html 하나만 일치했다 —
+      # 즉 buildId 마스킹 문제가 아니라 산출물 자체가 환경에 따라 다르다.
+      #
+      # 이 상태로 두면 검사가 늘 실패하고, 복구 수단인 --update 를 CI가 돌리게 만들고 싶어진다.
+      # 그러면 scripts/check-baseline.mjs 헤더가 경고한 「검사가 아무것도 막지 못한다」가 된다.
+      #
+      # 되살리려면 둘 중 하나를 해야 한다:
+      #   (a) 기준선을 CI와 같은 환경(ubuntu-latest, node 20)에서 만들어 커밋한다
+      #   (b) CI 안에서 두 번 빌드해 서로 비교한다 — 기준선 파일 자체를 없앤다
+      # 무엇이 다른지 먼저 실측하라. 아티팩트를 받아 13개 파일을 diff 하면 나온다.
+      #
+      # 로컬에서는 그대로 유효하다: npm run build && npm run check-baseline
+      #
+      # - name: GC-6 baseline
+      #   run: npm run check-baseline
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
