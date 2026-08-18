@@ -106,4 +106,21 @@ describe("validateFrontmatter", () => {
     expect(result.series).toBe("rag-pipeline");
     expect(result.seriesOrder).toBe(2);
   });
+
+  it("스키마에 없는 키가 있으면 던진다", () => {
+    expect(() => validateFrontmatter({ ...valid, source: "원본 문서명" }, "a.md")).toThrow(
+      /스키마에 없는 키/,
+    );
+  });
+
+  it("스키마 외 키 오류에 위반한 키 이름이 전부 들어간다", () => {
+    expect(() => validateFrontmatter({ ...valid, source: "x", legacy: 1 }, "a.md")).toThrow(
+      /source, legacy/,
+    );
+  });
+
+  it("선택 필드는 스키마 외 키로 잡지 않는다", () => {
+    const withOptional = { ...valid, updated: "2026-08-18", series: "s", seriesOrder: 1 };
+    expect(validateFrontmatter(withOptional, "a.md")).toMatchObject({ series: "s", seriesOrder: 1 });
+  });
 });

@@ -11,6 +11,27 @@ const MAX_TAGS = 6;
 const TAG_SLUG = /^[a-z0-9-]+$/;
 
 /**
+ * PostFrontmatter가 허용하는 키 전부. 여기 없는 키는 던진다.
+ *
+ * 이 검사가 없던 동안 폐지된 `source:` 가 109편에 남아 있었고, 스키마에 없는 키라
+ * 아무 검사에도 걸리지 않았다. 조용히 무시하는 것은 실수를 감추는 것이다.
+ * 스키마를 늘릴 때는 lib/blog/types.ts의 PostFrontmatter와 이 집합을 함께 고친다.
+ */
+const KNOWN_KEYS = new Set([
+  "title",
+  "description",
+  "category",
+  "tags",
+  "date",
+  "updated",
+  "series",
+  "seriesOrder",
+  "featured",
+  "draft",
+  "role",
+]);
+
+/**
  * frontmatter를 검증한다. 위반하면 던진다 — 빌드가 실패해야 잘못된 글이 발행되지 않는다.
  *
  * 조용히 기본값을 채우지 않는 것이 이 함수의 방침이다. 기본값은 실수를 감추고,
@@ -23,6 +44,15 @@ export function validateFrontmatter(data: unknown, file: string): PostFrontmatte
 
   if (typeof data !== "object" || data === null) return fail("frontmatter가 객체가 아닙니다");
   const d = data as Record<string, unknown>;
+
+  // 위반한 키를 전부 담아 던진다 — 어느 키가 문제인지 알 수 없으면 찾을 수 없다.
+  const unknownKeys = Object.keys(d).filter((k) => !KNOWN_KEYS.has(k));
+  if (unknownKeys.length > 0) {
+    fail(
+      `스키마에 없는 키입니다: ${unknownKeys.join(", ")}. ` +
+        `스키마는 lib/blog/types.ts의 PostFrontmatter를 보세요`,
+    );
+  }
 
   const str = (key: string): string => {
     const v = d[key];
