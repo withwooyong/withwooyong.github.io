@@ -24,7 +24,7 @@ Redis를 붙였는데 응답이 빨라지지 않는 일은 생각보다 흔하�
 |---|---|
 | **1. 캐시 설계** (이 글) | 캐싱 후보 판별 기준, Redis와 RDBMS의 역할 분담, 자료구조 5종, 캐시 전략 4종 |
 | [2. 무효화와 동시성](/blog/backend-engineering/cache-invalidation-and-concurrency/) | 무효화 방식 4종과 TTL 설계, 캐시 3대 장애, Spring 구현 3계층과 함정, 원자 카운터와 분산 락 |
-| 3. 담을 것과 담지 않을 것 | 집합 연산으로 푸는 좋아요·구독, 운영 명령의 함정과 Pub/Sub, 저장소 분리, Redis 운영 지식 |
+| [3. 담을 것과 담지 않을 것](/blog/backend-engineering/redis-storage-and-operations/) | 집합 연산으로 푸는 좋아요·구독, 운영 명령의 함정과 Pub/Sub, 저장소 분리, Redis 운영 지식 |
 | 4. Q&A | 선택지 정리, 실패 모드 8가지, 25문답 |
 
 ## 용어 정리
