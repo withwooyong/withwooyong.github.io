@@ -40,10 +40,10 @@ Conversely, do not put a batch-scoped instruction ("not in scope this time", "on
 into a permanent rule list — a permanent rule has to be true in *every* batch. 14 of the 105 rules failed
 that test and were struck through.
 
-⚠️ **The `pre-commit` hook is not installed yet** (`.githooks/` does not exist and `core.hooksPath` is
-unset). Until it lands, run the pre-publish checks above by hand whenever `content/blog/` changes.
-Once it exists, `npm install` will wire it up via `prepare`; to do it manually,
-`git config core.hooksPath .githooks`.
+The `pre-commit` hook at `.githooks/pre-commit` runs the source checks whenever a commit touches
+`content/blog/`; commits that don't touch it pass straight through. `npm install` wires the hook up
+via the `prepare` script — to do it by hand, `git config core.hooksPath .githooks`. Checks that need
+a build run in CI instead.
 
 ### Constraints the build does *not* catch
 
