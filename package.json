@@ -7,6 +7,7 @@
     "build": "next build && node scripts/generate-sitemap.mjs",
     "start": "next start",
     "lint": "next lint",
+    "prepare": "git config core.hooksPath .githooks",
     "test": "vitest run",
     "dup-scan": "node scripts/dup-scan.mjs",
     "dup-scan:verify": "node scripts/dup-scan.mjs --self-test",
