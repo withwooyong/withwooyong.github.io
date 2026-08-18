@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | Command | What it checks |
 | --- | --- |
-| `npm run check-forbidden:verify` | **Run this first.** Proves the forbidden-word scanner actually catches things (15 self-test cases). |
+| `npm run check-forbidden:verify` | **Run this first.** Proves the forbidden-word scanner actually catches things. It prints how many cases ran — the count lives in the code, not here, so it can't go stale. |
 | `npm run check-forbidden` | Scans `content/blog`. Must report **HARD 0** before publishing; exits 1 otherwise. |
 | `npm run check-forbidden:built` | Scans the **built output** (`out/blog` plus the matching `_next/data` JSON). Run it after `npm run build`. A clean source does not prove a clean page — the template injects `og:image` and titles too, which is how `Ted_yanadoo.png` sat in 366 places while the source scan kept reporting zero. Exits 2 when `out/blog` is missing rather than reporting a false zero. |
 | `npm run dup-scan:verify` → `npm run dup-scan --category <slug>` | Verbatim-duplication scan. Same order: prove, then scan. It needs a target — a bare `npm run dup-scan` exits 1 with 「대상이 없다」. |
