@@ -20,7 +20,7 @@
 | 축자 복제 | `scripts/dup-scan.mjs` |
 | 정적 export · `trailingSlash` · `fs` 위치 · 타입 | `npm run build` · `npx tsc --noEmit` |
 | 발행본 전수 스키마 · **분량 하한** | `tests/blog/content/schema.test.ts` |
-| 내부 링크 실재 · 슬래시 종결 · inbound 0 고립 · **카테고리 고립** | `tests/blog/content/links.test.ts` |
+| 내부 링크 실재 · 슬래시 종결 · inbound 0 고립 · **카테고리 고립** · **앵커 실존** | `tests/blog/content/links.test.ts` |
 | 기존 페이지 산출물 불변 | `scripts/check-baseline.mjs` (로컬 전용 — CI에는 `out/`이 없다) |
 | 발행본 수 · 카테고리별 분포 | `scripts/check-counts.mjs` |
 
