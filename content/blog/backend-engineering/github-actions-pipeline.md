@@ -51,7 +51,7 @@ flowchart LR
 
 같은 축이다. 파이프라인은 S3까지만 책임지고 EC2에 손을 대는 것은 CodeDeploy다 — 선언이 Git이 아니라 클라우드 쪽에 있을 뿐이다.
 
-### 그래서 무엇을 고르는가 — 축은 셋이다
+### 그래서 무엇을 고르는가 — 표의 축은 셋이다
 
 | 도구 | 비용 | 설치 | 설정 난이도 | 특징 |
 | --- | --- | --- | --- | --- |
@@ -59,7 +59,7 @@ flowchart LR
 | **Jenkins** | 완전 무료 | War 또는 Docker 이미지 | 높다 — 기본 기능이 없어 「무에서 유를 창조」한다 | 사용자 정의 자유도가 가장 높다 |
 | **Travis-CI** | 크레딧 10,000 소진 후 유료 | — | Jenkins보다 훨씬 적게 든다 | 국내 레퍼런스가 부족하다 |
 
-비용 열의 값은 2026년 7월 기준이다. **돈으로만 읽으면 Jenkins의 압승으로 보이지만** 실제로 드는 것은 서버를 세우고 지키는 사람의 시간이고 그 값은 표에 없다. 이 편이 GitHub Actions를 먼저 여는 것도 셋 중 유일하게 **저장소가 이미 갖고 있는 것**이어서다.
+비용 열의 값은 2026년 7월 기준이다. **돈으로만 읽으면 Jenkins의 압승으로 보이지만** 실제로 드는 것은 서버를 세우고 지키는 사람의 시간이고 그 값은 표에 없다.
 
 ## 저장소에서 일어난 일이 곧 트리거다
 
@@ -104,7 +104,7 @@ flowchart TD
 | `workflow_dispatch` | 수동 실행 버튼 | 테스트·디버깅, **비상 시 수동 배포** |
 | `schedule` | Crontab 문법(분 시 일 월 요일) | 야간 정기 빌드, 정기 점검 |
 
-둘째 행이 앞 편의 빈자리를 채운다. 편3은 [PR을 규칙이 강제되는 자리](/blog/backend-engineering/branching-strategy-and-containers/#pull-request--규칙이-실제로-강제되는-자리)로 놓으면서 CI만은 규칙이 아니라 사건이라고 적었다. 그 사건의 이름이 `pull_request`이고 「필수 체크」의 실체가 이것으로 깨어난 워크플로다.
+둘째 행이 앞 편의 빈자리를 채운다. 편3은 [PR을 규칙이 강제되는 자리](/blog/backend-engineering/branching-strategy-and-containers/#pull-request--규칙이-실제로-강제되는-자리)로 놓으면서 CI만은 규칙이 아니라 사건이라고 적었다. 그 사건의 이름이 `pull_request`이고 필수 체크의 실체가 이것으로 깨어난 워크플로다.
 
 셋째 행의 **Release**는 태그와 붙어 다니지만 같은 것이 아니다. Git 태그가 커밋에 이름을 붙이는 표시라면 Release는 **그 태그에 릴리즈 노트와 산출물을 매달아 게시하는 것**이다. [편2](/blog/backend-engineering/version-control-as-cicd-premise/)가 「태그는 배포에 이름을 주는 장치」로 닫았는데, `release` 배포는 **릴리즈가 게시되는 시점**에 돈다.
 
@@ -127,7 +127,7 @@ on:
 >
 > 그래서 배포 워크플로는 「어떤 태그를 배포할지」를 입력받을 수 있어야 한다.
 
-왜 브랜치로는 안 되는지는 편2가 논증을 끝냈다. 이 두 줄은 표의 세 행을 한 축으로 꿴다 — `push` 배포와 `release`·`workflow_dispatch` 배포는 **배포 단위가 다르고**, 선택은 편7이 받는다.
+왜 브랜치로는 안 되는지는 편2가 논증을 끝냈다. 이 두 줄은 표의 세 행을 한 축으로 꿴다 — `push` 배포와 `release`·`workflow_dispatch` 배포는 **배포 대상이 다르고**, 선택은 편7이 받는다.
 
 ## 어디서 도는가 — Runner 두 종
 
@@ -178,7 +178,7 @@ steps:
   - run: echo ${{ steps.set-foo.outputs.foo }}
 ```
 
-값을 셸 변수가 아니라 `$GITHUB_OUTPUT`이 가리키는 파일에 적는 것이 요점이다. 프로세스는 끝나도 파일은 남는다. **`id`를 안 붙이면 참조할 이름이 없다.**
+값을 셸 변수가 아니라 `$GITHUB_OUTPUT`이 가리키는 파일에 적는 것이 요점이다. 프로세스는 끝나도 파일은 남고, 러너가 그것을 `steps.<id>.outputs`로 옮긴다. **`id`를 안 붙이면 참조할 이름이 없다.**
 
 층을 올리면 같은 문제가 더 심해진다. **Job은 서로 다른 머신**이라 파일에 적어 두는 방법조차 통하지 않는다.
 
@@ -299,7 +299,7 @@ ssh -i private_key.pem -o StrictHostKeyChecking=no user@host \
 rm -f private_key.pem          # 키 파일은 반드시 삭제한다
 ```
 
-여섯 줄 중 셋이 열쇠 관리다. GitHub-hosted 러너는 매번 지워지지만 **self-hosted라면 지우지 않은 키가 남는다.** 다섯째 줄에는 진짜 문제가 있다 — 죽인 직후 재기동까지 **서비스가 떠 있지 않은 구간**이 생기고, 그것을 없애는 방법이 편6의 주제다.
+여섯 줄 중 셋이 열쇠 관리다. GitHub-hosted 러너는 매번 지워지지만 **self-hosted라면 지우지 않은 키가 남는다.** 다섯째 줄에는 진짜 문제가 있다 — 죽인 직후 재기동까지 **서비스가 떠 있지 않은 구간**, 곧 다운타임이 생기고, 그것을 없애는 **무중단 배포**가 편6의 주제다.
 
 **컨테이너 이미지를 밀어 넣는 흐름**
 
@@ -321,7 +321,7 @@ flowchart LR
 
 왼쪽 끝의 트리거와 오른쪽 끝의 `docker push`가 편3이 정한 두 단위다. **이 편이 채운 것은 그 사이 전부다.**
 
-이미지를 **어떻게 만드는가**는 다시 쓰지 않는다 — [Dockerfile은 편3이 열어 두었다](/blog/backend-engineering/branching-strategy-and-containers/#dockerfile--이미지를-코드로-적는다). 새로 정해지는 것은 **누가 언제 부르는가**뿐이어서 손으로 치던 `docker build`가 커밋마다 돈다. 편3이 운영 규칙으로 적어 둔 `docker system prune -f`도, Gradle 없이 도는 `gradlew`도 매번 새 머신이 뜨는 곳에서는 전제다.
+이미지를 **어떻게 만드는가**는 다시 쓰지 않는다 — [Dockerfile은 편3이 열어 두었다](/blog/backend-engineering/branching-strategy-and-containers/#dockerfile--이미지를-코드로-적는다). 새로 정해지는 것은 **누가 언제 부르는가**뿐이어서 손으로 치던 `docker build`가 커밋마다 돈다. 편3이 운영 규칙으로 적어 둔 `docker system prune -f`도, 지정된 Gradle 버전을 스스로 내려받아 어디서든 같은 결과를 내는 `gradlew`도 매번 새 머신이 뜨는 곳에서는 전제다.
 
 ## 정리
 
