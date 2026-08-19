@@ -83,7 +83,7 @@ Job을 만들 때 첫 화면에서 종류를 고른다. 실질적으로 갈리�
 
 ## Freestyle 화면이 어휘를 정한다
 
-기준선이 Pipeline이라면 Freestyle 화면은 왜 보는가. **거기 적힌 항목 이름이 그대로 Jenkins의 어휘이기 때문이다.** 뒤에 나올 `options`·`triggers`·`parameters`는 이 화면의 섹션을 코드로 옮긴 것이다. 세 섹션이 각각 다른 질문에 답한다 — **General은 「무엇이며 어디서 도는가」, Build Trigger는 「누가 먼저 말을 거는가」, Build Env는 「돌기 전후에 무엇을 정리하는가」다.**
+기준선이 Pipeline이라면 Freestyle 화면은 왜 보는가. **거기 적힌 항목 이름이 그대로 Jenkins의 어휘이기 때문이다.** 뒤에 나올 `options`·`triggers`·`parameters`가 이 화면에서 그대로 온 이름이다. 세 섹션이 같은 무게는 아니다 — **Build Trigger만 「누가 먼저 말을 거는가」 하나로 닫힌다. Build Env는 돌기 전후의 처리를 모으고, General은 나머지 전부가 모이는 자리다.**
 
 | 섹션 | 설정 | 의미 |
 | --- | --- | --- |
@@ -114,14 +114,14 @@ Job을 만들 때 첫 화면에서 종류를 고른다. 실질적으로 갈리�
 | 방향 | GitHub → Jenkins (push) | Jenkins → GitHub (pull) |
 | 지연 | 즉시 | 폴링 주기만큼 |
 | 부하 | 낮음 | 주기적 요청으로 낭비 발생 |
-| 요구사항 | **Jenkins가 외부에서 접근 가능한 공인 도메인 필요** | 없음. 방화벽 뒤 Jenkins도 가능 |
+| 요구사항 | **Jenkins가 외부에서 접근 가능한 공인 도메인 필요** (ngrok 같은 터널링 도구로 임시 발급) | 없음. 방화벽 뒤 Jenkins도 가능 |
 | 선택 | 기본 선택 | 사내망 격리 환경에서 차선 |
 
 첫 행이 나머지 넷을 결정한다. GitHub이 부르면 즉시 오지만 닿을 주소가 있어야 하고, Jenkins가 물으러 가면 주소는 필요 없지만 주기만큼 늦는다. **사내망 안에 두면 도달 가능성 때문에 차선을 고른다.**
 
 ## Declarative Pipeline 문법
 
-Pipeline을 고르면 폼 대신 파일을 쓴다. 최소 형태는 이렇다.
+Pipeline을 고르면 폼 대신 Jenkinsfile을 쓴다. 최소 형태는 이렇다.
 
 ```groovy
 pipeline {
@@ -143,14 +143,14 @@ pipeline {
 }
 ```
 
-중괄호가 층을 그대로 드러낸다. `pipeline` 안에 `stages`, 그 안에 `stage`, 그 안에 `steps`, 그 안에 명령이다. **`stage`가 편4의 Job 자리이고 `steps`가 Step 자리다.** 쓸 수 있는 블록은 열두 개다.
+중괄호가 층을 그대로 드러낸다. `pipeline` 안에 `stages`, 그 안에 `stage`, 그 안에 `steps`, 그 안에 명령이다. **`stage`가 편4의 Job 자리이고 `steps`가 Step 자리다.** 쓸 수 있는 블록은 열세 개다.
 
 | 블록 | 역할 |
 | --- | --- |
 | `pipeline` | 전체 CI/CD 프로세스의 시작점. 자바의 `main()`에 해당 |
 | `agent` | 실행 환경. `any` / `none`(stage별 필수 선언) / `label 'x'` / `docker` |
 | `environment` | key-value 환경변수. `credentials('id')` 헬퍼로 자격증명 즉시 사용 |
-| `tools` | steps에서 쓸 도구(JDK 등). Global Tool Configuration에 사전 등록 필요 |
+| `tools` | steps에서 쓸 도구(JDK 등). Global Tool Configuration(2026년 7월 기준 「Tools」)에 사전 등록 필요 |
 | `options` | 실행 옵션. 파이프라인 블록에서 **한 번만** 정의 |
 | `triggers` | 재실행 자동화. `cron('H */4 * * 1-5')` |
 | `parameters` | 실행 시 입력 매개변수. `choice`, Git Parameter 플러그인 등 |
@@ -161,7 +161,7 @@ pipeline {
 | `input` | 사용자 승인 대기. `steps` 앞에 위치, `when`과 조합 가능 |
 | `post` | 완료 후 조건별 후처리. `always`, `changed`, `fixed`, `regression`, `aborted`, `failure`, `success`, `unstable`, `unsuccessful`, `cleanup` |
 
-열두 블록이 앞 절의 세 섹션과 겹친다. `triggers`·`parameters`가 Build Trigger와 General이고 `options`가 실행 제어, `post`가 Post-build Action이다. **폼에서 본 것을 파일로 옮겨 적은 것이 이 표다.**
+열세 블록이 앞 절의 세 섹션과 겹친다. `triggers`·`parameters`가 Build Trigger와 General이고 `options`가 실행 제어, `post`가 Post-build Action이다. **폼에서 본 것을 파일로 옮겨 적은 것이 이 표다.**
 
 둘째 행이 이 편의 「환경」이다. 시리즈 안에서 이 낱말은 세 가지를 가리키는데([편1의 낱말 구분표](/blog/backend-engineering/cicd-pipeline-fundamentals/#시리즈-안에서-갈리는-넷)), `agent any`의 그것은 **무엇 위에서 도는가**를 뜻하는 셋째 것이다.
 
@@ -179,7 +179,7 @@ pipeline {
 
 넷째 행이 둘의 관계를 말한다. **Declarative가 Scripted를 대체한 것이 아니라 감쌌다** — 표현력이 모자라는 자리에는 `script` 블록을 열어 그 안에서 Scripted 문법을 쓴다. 실제 판단은 「무엇을 고를까」가 아니라 「어디서 열까」다.
 
-열둘 중 `options`에 자주 넣는 셋만 따로 본다.
+열셋 중 `options`에 자주 넣는 셋만 따로 본다.
 
 | 옵션 | 효과 |
 | --- | --- |
@@ -217,7 +217,7 @@ script {
 
 `input`은 `steps` 앞에 놓이고 `when`과 조합되므로 조건까지 걸린다. 운영 배포 stage에만 승인을 붙이고 나머지는 통과시키는 구성이 여기서 나온다.
 
-## 실무 파이프라인은 이렇게 생겼다
+## Jenkins 실무 파이프라인은 이렇게 생겼다
 
 부품이 모였으니 한 벌로 세운다. 태그를 골라 실행하면 열 단계가 순서대로 돈다.
 
@@ -234,17 +234,17 @@ flowchart LR
     S9 --> S10["10. Health Check · junit 리포트"]
 ```
 
-가운데 여섯 단계는 편4의 컨테이너 흐름과 같은 그림이다. 다른 것은 양 끝이다 — 왼쪽 끝이 저장소 사건이 아니라 **사람이 태그를 고르는 화면**이고, 오른쪽 끝에 리포트 수집이 붙는다. 다섯째 단계의 `--no-cache`는 [편3이 속도와 재현성의 맞바꿈으로 정리해 둔](/blog/backend-engineering/branching-strategy-and-containers/#dockerfile--이미지를-코드로-적는다) 바로 그 선택이고, 이 파이프라인은 재현성 쪽을 골랐다.
+가운데 여덟 단계는 편4의 컨테이너 흐름과 같은 그림이다. 다른 것은 양 끝이다 — 왼쪽 끝이 저장소 사건이 아니라 **사람이 태그를 고르는 화면**이고, 오른쪽 끝에 리포트 수집이 붙는다. 다섯째 단계의 `--no-cache`는 [편3이 속도와 재현성의 맞바꿈으로 정리해 둔](/blog/backend-engineering/branching-strategy-and-containers/#dockerfile--이미지를-코드로-적는다) 바로 그 선택이고, 이 파이프라인은 재현성 쪽을 골랐다.
 
 이 구성이 내린 결정 셋은 따로 볼 값어치가 있다.
 
 | 결정 | 이유 |
 | --- | --- |
 | 배포 기준을 브랜치가 아니라 **태그**로 | `main` 배포는 버전을 특정할 수 없고 어떤 기능이 들어갔는지 확인이 어렵다. Git Parameter 플러그인으로 태그 목록을 동적으로 선택한다 |
-| Pipeline Script를 **애플리케이션 저장소와 분리**된 저장소에 보관 | 소스 코드의 소유자(앱 개발자)와 CI/CD 스크립트의 소유자가 다르기 때문. 다수 팀의 스크립트가 한 저장소에 모이므로 어떤 스크립트를 실행할지 지정한다 |
+| Pipeline Script를 **애플리케이션 저장소와 분리**된 저장소에 보관 | 소스 코드의 소유자(앱 개발자)와 CI/CD 스크립트의 소유자(DevOps)가 다르기 때문. 다수 팀의 스크립트가 한 저장소에 모이므로 어떤 스크립트를 실행할지 지정한다 |
 | Jenkins 컨테이너에 **Docker socket 마운트** | 컨테이너 안에서 `docker build`를 하기 위해 호스트 도커를 사용한다. `- /var/run/docker.sock:/var/run/docker.sock` |
 
-첫 행은 편2가 이미 논증을 끝냈고, 둘째 행이 이 편에서만 나올 수 있는 결정이다. 편4에서는 워크플로 파일이 앱 저장소 안에 있는 것이 모델의 전제였는데 여기서는 **정의 파일의 소재지가 선택지**다. 나누면 어느 스크립트를 돌릴지 Job이 지목해야 한다. 셋째 행은 편리한 만큼 값이 있다.
+첫 행은 편2가 이미 논증을 끝냈고, 둘째 행이 이 편에서만 나올 수 있는 결정이다. 편4에서는 워크플로 파일이 앱 저장소 안에 있는 것이 모델의 전제였는데 여기서는 **Jenkinsfile의 소재지가 선택지**다. 나누면 어느 스크립트를 돌릴지 Job이 지목해야 한다. 셋째 행은 편리한 만큼 값이 있다.
 
 > Docker socket 마운트는 편리하지만 보안상 중대한 트레이드오프다.
 >
@@ -252,7 +252,7 @@ flowchart LR
 >
 > 파이프라인 스크립트를 쓸 수 있는 사람 = 호스트를 장악할 수 있는 사람이 되므로, 스크립트 저장소의 쓰기 권한 관리가 곧 인프라 보안이 된다. 대안으로 Kaniko·BuildKit rootless 같은 데몬리스 빌더를 검토한다.
 
-둘째 결정과 셋째 결정이 여기서 만난다. 스크립트를 별도 저장소로 뺀 것은 소유권 정리였는데, 소켓을 마운트한 순간 **그 저장소의 쓰기 권한이 호스트 root 권한과 같아진다.** 편4에서 self-hosted 러너를 붙이는 것이 「저장소에 코드를 넣을 수 있는 사람이 내 서버에서 명령을 돌리게 된다」는 선언이었던 것과 같은 구조이고, 대상만 워크플로 파일에서 Pipeline Script로 바뀌었다. **서버를 직접 가지면 권한 경계도 직접 그어야 한다.**
+둘째 결정과 셋째 결정이 여기서 만난다. 스크립트를 별도 저장소로 뺀 것은 소유권 정리였는데, 소켓을 마운트한 순간 **그 저장소의 쓰기 권한이 호스트 root 권한과 같아진다.** 편4에서 self-hosted 러너를 붙이는 것이 저장소에 코드를 넣을 수 있는 사람이 내 서버에서 명령을 돌리게 된다는 선언이었던 것과 같은 구조이고, 대상만 워크플로 파일에서 Pipeline Script로 바뀌었다. **서버를 직접 가지면 권한 경계도 직접 그어야 한다.**
 
 ## Groovy는 이만큼만 알면 된다
 
