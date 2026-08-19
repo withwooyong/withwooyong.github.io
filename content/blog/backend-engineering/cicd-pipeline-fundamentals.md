@@ -184,7 +184,7 @@ flowchart LR
 | **1** | 지형 전체 (이 글) | 무엇을 왜 기계에 옮기는가 |
 | [**2**](/blog/backend-engineering/version-control-as-cicd-premise/) | 형상관리와 Git의 세 영역 | 「되돌린다」는 무엇을 어디로 되돌리는 것인가 |
 | [**3**](/blog/backend-engineering/branching-strategy-and-containers/) | 브랜치 전략과 컨테이너 | 무엇을 단위로 합치고 무엇을 단위로 나르는가 |
-| 4 | GitHub Actions | 저장소 이벤트에서 시작하는 파이프라인은 어떻게 조립되는가 |
+| [**4**](/blog/backend-engineering/github-actions-pipeline/) | GitHub Actions | 저장소 이벤트에서 시작하는 파이프라인은 어떻게 조립되는가 |
 | 5 | Jenkins | 서버를 직접 가지면 무엇이 달라지는가 |
 | 6 | 무중단 배포와 품질·보안 게이트 | 멈추지 않고 바꾸되, 잘못됐을 때 멈추려면 |
 | 7 | Q&A | 고를 때 · 터졌을 때 · 설명해야 할 때 |
@@ -193,7 +193,7 @@ flowchart LR
 
 **[편3](/blog/backend-engineering/branching-strategy-and-containers/) — 합치는 단위와 나르는 단위.** 브랜치 전략은 「무엇을 언제 합치는가」의 규칙이고 컨테이너는 「합친 것을 무엇에 담아 나르는가」의 답이다. 둘이 한 편에 있는 것은 각각 CI의 입력과 출력이기 때문이다.
 
-**편4 — GitHub Actions.** 저장소 이벤트가 곧 트리거인 모델이다. Workflow → Job → Step 세 층과 Runner, 마켓플레이스 액션을 조립하는 방식을 다룬다.
+**[편4](/blog/backend-engineering/github-actions-pipeline/) — GitHub Actions.** 저장소 이벤트가 곧 트리거인 모델이다. Workflow → Job → Step 세 층과 Runner, 마켓플레이스 액션을 조립하는 방식을 다룬다.
 
 **편5 — Jenkins.** 서버를 직접 가지는 모델이다. Declarative Pipeline 문법, Jenkinsfile을 형상관리에 넣는다는 발상, Controller와 Agent의 분리를 다룬다. 편4를 읽고 오면 같은 개념이 다른 이름과 다른 층에 놓인 것이 보인다.
 
