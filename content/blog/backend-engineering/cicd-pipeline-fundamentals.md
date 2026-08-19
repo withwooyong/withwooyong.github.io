@@ -94,7 +94,7 @@ flowchart LR
 | **워크플로** | `.github/workflows/*.yml` 파일 하나 | [미리 정의된 코드 경로로 오케스트레이션되는 시스템](/blog/ai-agent/agent-vs-workflow/) · Airflow의 잡 오케스트레이션 |
 | **게이트** | **둘을 다 쓴다.** Quality Gate — 기계가 수치로 판정하는 관문(편6) · 승인 게이트 — **배포 단계에서** 사람이 통과를 허가하는 자리(편1·2·5·6) | [사람 게이트](/blog/ai-transformation/sdlc-human-gates/) — 개발 수명주기의 **여러 지점**에서 사람이 판정을 넘겨받는 자리 |
 
-첫 행이 가장 심하다. 이 카테고리 안에서만 「파이프라인」이 이미 세 가지를 가리키고 있고 이 시리즈가 더해지면 넷이 된다. 그래서 뒤의 편들은 이 낱말을 홀로 쓰지 않고 **「CI/CD 파이프라인」**·**「Jenkins Pipeline」** 처럼 한정어를 붙인다.
+첫 행이 가장 심하다. 이 카테고리 안에서만 「파이프라인」이 이미 세 가지를 가리키고 있고 이 시리즈가 더해지면 넷이 된다. 그래서 뒤의 편들은 **혼동이 생기는 자리에서** **「CI/CD 파이프라인」**·**「Jenkins Pipeline」** 처럼 한정어를 붙인다. **문맥이 이미 CI/CD로 잡힌 뒤에는 홀로 쓴다.**
 
 반대로 **블루그린은 뜻이 갈리지 않는다.** 어디서나 「같은 구성을 두 벌 두고 통째로 전환」이다. 갈리는 것은 두 벌로 두는 **대상**이고, 그 대상이 상태를 가지면 값이 달라진다 — [Elasticsearch 노드](/blog/search-engineering/elasticsearch-operations/)를 두 벌 두면 데이터까지 두 벌이라 자원이 2배다. 이 시리즈가 다루는 무상태 애플리케이션 서버와 같은 낱말을 쓰지만 드는 값이 다르다.
 
@@ -186,7 +186,7 @@ flowchart LR
 | [**3**](/blog/backend-engineering/branching-strategy-and-containers/) | 브랜치 전략과 컨테이너 | 무엇을 단위로 합치고 무엇을 단위로 나르는가 |
 | [**4**](/blog/backend-engineering/github-actions-pipeline/) | GitHub Actions | 저장소 이벤트에서 시작하는 파이프라인은 어떻게 조립되는가 |
 | [**5**](/blog/backend-engineering/jenkins-pipeline-and-agents/) | Jenkins | 서버를 직접 가지면 무엇이 달라지는가 |
-| 6 | 무중단 배포와 품질·보안 게이트 | 멈추지 않고 바꾸되, 잘못됐을 때 멈추려면 |
+| [**6**](/blog/backend-engineering/zero-downtime-and-quality-gates/) | 무중단 배포와 품질·보안 게이트 | 멈추지 않고 바꾸되, 잘못됐을 때 멈추려면 |
 | 7 | Q&A | 고를 때 · 터졌을 때 · 설명해야 할 때 |
 
 **[편2](/blog/backend-engineering/version-control-as-cicd-premise/) — 형상관리가 전제인 이유.** Git이 파일을 Working Directory · Index · Repository 세 영역에 나눠 두는 구조에서 시작한다. 이 셋을 구분하지 못하면 「되돌린다」가 한 가지 명령으로 보이지만, 실제로는 대상이 어느 영역에 있느냐에 따라 다른 일이 된다.
@@ -197,7 +197,7 @@ flowchart LR
 
 **[편5](/blog/backend-engineering/jenkins-pipeline-and-agents/) — Jenkins.** 서버를 직접 가지는 모델이다. Declarative Pipeline 문법, Jenkinsfile을 형상관리에 넣는다는 발상, Controller와 Agent의 분리를 다룬다. 편4를 읽고 오면 같은 개념이 다른 이름과 다른 층에 놓인 것이 보인다.
 
-**편6 — 무중단 배포와 게이트.** 세 전략이 각각 무엇을 대가로 무엇을 얻는지, 그리고 파이프라인을 **실패시키는** 쪽 — 테스트 리포트·API 테스트·정적 분석의 Quality Gate가 여기서 붙는다. 첫 문장의 「어떻게 멈출 수 있게 만드는가」가 이 편에서 답을 받는다.
+**[편6](/blog/backend-engineering/zero-downtime-and-quality-gates/) — 무중단 배포와 게이트.** 세 전략이 각각 무엇을 대가로 무엇을 얻는지, 그리고 파이프라인을 **실패시키는** 쪽 — 테스트 리포트·API 테스트·정적 분석의 Quality Gate가 여기서 붙는다. 첫 문장의 「어떻게 멈출 수 있게 만드는가」가 이 편에서 답을 받는다.
 
 **편7 — Q&A.** 실제로 되돌아오는 질문은 편의 경계를 가로지른다. 「둘 중 무엇을 고르나」는 편4와 편5에, 「배포가 실패했는데 롤백이 안 된다」는 편3과 편6에 걸친다.
 
