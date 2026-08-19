@@ -187,7 +187,7 @@ flowchart LR
 | [**4**](/blog/backend-engineering/github-actions-pipeline/) | GitHub Actions | 저장소 이벤트에서 시작하는 파이프라인은 어떻게 조립되는가 |
 | [**5**](/blog/backend-engineering/jenkins-pipeline-and-agents/) | Jenkins | 서버를 직접 가지면 무엇이 달라지는가 |
 | [**6**](/blog/backend-engineering/zero-downtime-and-quality-gates/) | 무중단 배포와 품질·보안 게이트 | 멈추지 않고 바꾸되, 잘못됐을 때 멈추려면 |
-| 7 | Q&A | 고를 때 · 터졌을 때 · 설명해야 할 때 |
+| [**7**](/blog/backend-engineering/questions-that-come-back/) | Q&A | 고를 때 · 터졌을 때 · 설명해야 할 때 |
 
 **[편2](/blog/backend-engineering/version-control-as-cicd-premise/) — 형상관리가 전제인 이유.** Git이 파일을 Working Directory · Index · Repository 세 영역에 나눠 두는 구조에서 시작한다. 이 셋을 구분하지 못하면 「되돌린다」가 한 가지 명령으로 보이지만, 실제로는 대상이 어느 영역에 있느냐에 따라 다른 일이 된다.
 
@@ -199,7 +199,7 @@ flowchart LR
 
 **[편6](/blog/backend-engineering/zero-downtime-and-quality-gates/) — 무중단 배포와 게이트.** 세 전략이 각각 무엇을 대가로 무엇을 얻는지, 그리고 파이프라인을 **실패시키는** 쪽 — 테스트 리포트·API 테스트·정적 분석의 Quality Gate가 여기서 붙는다. 첫 문장의 「어떻게 멈출 수 있게 만드는가」가 이 편에서 답을 받는다.
 
-**편7 — Q&A.** 실제로 되돌아오는 질문은 편의 경계를 가로지른다. 「둘 중 무엇을 고르나」는 편4와 편5에, 「배포가 실패했는데 롤백이 안 된다」는 편3과 편6에 걸친다.
+**[편7](/blog/backend-engineering/questions-that-come-back/) — Q&A.** 실제로 되돌아오는 질문은 편의 경계를 가로지른다. 「둘 중 무엇을 고르나」는 편4와 편5에, 「배포가 실패했는데 롤백이 안 된다」는 편3과 편6에 걸친다.
 
 ## 정리
 

@@ -127,7 +127,7 @@ on:
 >
 > 그래서 배포 워크플로는 「어떤 태그를 배포할지」를 입력받을 수 있어야 한다.
 
-왜 브랜치로는 안 되는지는 편2가 논증을 끝냈다. 이 두 줄은 표의 세 행을 한 축으로 꿴다 — `push` 배포와 `release`·`workflow_dispatch` 배포는 **배포 대상이 다르고**, 선택은 편7이 받는다.
+왜 브랜치로는 안 되는지는 편2가 논증을 끝냈다. 이 두 줄은 표의 세 행을 한 축으로 꿴다 — `push` 배포와 `release`·`workflow_dispatch` 배포는 **배포 대상이 다르고**, 선택은 [편7](/blog/backend-engineering/questions-that-come-back/)이 받는다.
 
 ## 어디서 도는가 — Runner 두 종
 
