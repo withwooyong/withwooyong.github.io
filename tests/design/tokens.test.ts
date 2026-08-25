@@ -87,6 +87,25 @@ function resolve(vars: Record<string, string>, name: string, depth = 0): string 
   return resolve(vars, alias[1], depth + 1);
 }
 
+describe("해석기 자체 증명 — resolve 가 별칭을 어디까지 따라가는가", () => {
+  it("hex 는 그대로 돌려준다", () => {
+    expect(resolve({ x: "#abcdef" }, "x")).toBe("#abcdef");
+  });
+
+  it("한 단계 별칭을 따라간다", () => {
+    expect(resolve({ a: "var(--b)", b: "#123456" }, "a")).toBe("#123456");
+  });
+
+  it("여러 단계 별칭도 따라간다", () => {
+    expect(resolve({ a: "var(--b)", b: "var(--c)", c: "#654321" }, "a")).toBe("#654321");
+  });
+
+  it("별칭이 순환하면 조용히 통과하지 않는다", () => {
+    // 순환을 못 잡으면 스택이 터지거나 무한 루프가 된다. 어느 쪽도 「통과」여서는 안 된다.
+    expect(() => resolve({ a: "var(--b)", b: "var(--a)" }, "a")).toThrow();
+  });
+});
+
 describe("검사기 자체 증명 — 알려진 미달 값을 잡아내는가", () => {
   // 스펙 2판의 다크 n6 값. 이 검사기가 실제로 잡아냈던 결함이다.
   it("2판 #71717a 는 다크 배경에서 AA 미달로 판정된다", () => {
@@ -255,6 +274,9 @@ const SHADCN_PAIRS: Array<[string, string]> = [
   ["muted", "muted-foreground"],
   ["accent", "accent-foreground"],
   ["destructive", "destructive-foreground"],
+  ["primary-hover", "primary-foreground"],
+  ["secondary-hover", "secondary-foreground"],
+  ["destructive-hover", "destructive-foreground"],
 ];
 
 describe("shadcn 토큰의 짝은 서로 위에서 읽힌다", () => {
@@ -269,6 +291,29 @@ describe("shadcn 토큰의 짝은 서로 위에서 읽힌다", () => {
       it(`${theme.name}: ${fg} 가 ${bg} 위에서 AA 를 넘는다`, () => {
         const ratio = contrastRatio(resolve(theme.vars, fg), resolve(theme.vars, bg));
         expect(ratio, `${fg} on ${bg} = ${ratio.toFixed(2)}:1`).toBeGreaterThanOrEqual(AA);
+      });
+    }
+  }
+});
+
+const MUST_DIFFER: Array<[string, string]> = [
+  ["background", "muted"],
+  ["background", "card"],
+  ["background", "secondary"],
+];
+
+describe("구분돼야 하는 면은 실제로 다른 색이다", () => {
+  // 대비 검사는 두 면이 같은 색이어도 통과한다 — 같은 색끼리는 텍스트 대비를 따로 재기 때문이다.
+  // 실제로 --muted 를 --background 와 같은 값으로 두었다가 16짝이 전부 초록인 채로 통과했다.
+  for (const theme of [
+    { name: "라이트", vars: LIGHT },
+    { name: "다크", vars: DARK },
+  ]) {
+    for (const [a, b] of MUST_DIFFER) {
+      it(`${theme.name}: ${a} 와 ${b} 는 다른 값이다`, () => {
+        const va = resolve(theme.vars, a);
+        const vb = resolve(theme.vars, b);
+        expect(vb, `${a} 와 ${b} 가 둘 다 ${va} 다 — 면이 구분되지 않는다`).not.toBe(va);
       });
     }
   }

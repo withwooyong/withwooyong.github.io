@@ -73,11 +73,13 @@
     --popover: var(--n1);
     --popover-foreground: var(--n9);
     --primary: var(--n9);
+    --primary-hover: var(--n8);
     --primary-foreground: var(--n0);
     --secondary: var(--n3);
+    --secondary-hover: var(--n4);
     --secondary-foreground: var(--n9);
-    --muted: var(--n0);
-    --muted-foreground: var(--n6);
+    --muted: var(--n3);
+    --muted-foreground: var(--n7);
     --accent: var(--n3);
     --accent-foreground: var(--n9);
     --destructive: #dc2626;
