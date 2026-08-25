@@ -360,7 +360,8 @@ describe("임계 인라인 스타일이 램프와 어긋나지 않는다", () =>
   const DOC = fs.readFileSync(path.join(process.cwd(), "pages", "_document.tsx"), "utf8");
 
   function criticalBg(selector: string): string {
-    const re = new RegExp(`${selector}\\{background-color:(#[0-9a-fA-F]{6});`);
+    // 공백을 허용한다 — `html {` 로 포매팅해도 깨지지 않게. 값 판정은 느슨해지지 않는다.
+    const re = new RegExp(`${selector}\\s*\\{\\s*background-color:\\s*(#[0-9a-fA-F]{6})`);
     const m = re.exec(DOC);
     expect(m, `_document.tsx 의 CRITICAL_STYLE 에서 ${selector} 규칙을 못 찾았다`).not.toBeNull();
     return m![1].toLowerCase();
@@ -381,5 +382,40 @@ describe("임계 인라인 스타일이 램프와 어긋나지 않는다", () =>
   it("양쪽 color-scheme 이 선언돼 있다", () => {
     expect(DOC).toMatch(/html\{[^}]*color-scheme:light/);
     expect(DOC).toMatch(/html\.dark\{[^}]*color-scheme:dark/);
+  });
+});
+
+/**
+ * 테마 저장 키는 값이 두 벌이다 — 임계 스타일의 hex 와 같은 성격이다.
+ *
+ * 읽는 쪽은 _document.tsx 의 THEME_SCRIPT 안 문자열 리터럴이고, 쓰는 쪽은
+ * theme-toggle.tsx 의 상수다. 스크립트는 문자열이라 타입 시스템이 안을 못 본다.
+ * 한쪽만 바꾸면 전 사용자의 저장 테마가 조용히 무효화되고 다크로 리셋되는데,
+ * 빌드도 타입체크도 테스트도 전부 통과한다.
+ */
+describe("테마 저장 키가 두 곳에서 어긋나지 않는다", () => {
+  const TOGGLE = fs.readFileSync(path.join(process.cwd(), "components", "theme-toggle.tsx"), "utf8");
+  const DOCUMENT = fs.readFileSync(path.join(process.cwd(), "pages", "_document.tsx"), "utf8");
+
+  function extract(src: string, re: RegExp, what: string): string {
+    const m = re.exec(src);
+    expect(m, `${what} 를 못 찾았다`).not.toBeNull();
+    return m![1];
+  }
+
+  const scriptKey = () => extract(DOCUMENT, /localStorage\.getItem\('([^']+)'\)/, "_document.tsx 의 저장 키");
+  const toggleKey = () => extract(TOGGLE, /STORAGE_KEY\s*=\s*"([^"]+)"/, "theme-toggle.tsx 의 STORAGE_KEY");
+
+  it("추출기 자체 증명 — 대상이 없으면 소리 내며 실패한다", () => {
+    expect(() => extract("", /nothing-here-(x)/, "없는 것")).toThrow();
+  });
+
+  it("읽는 쪽(_document)과 쓰는 쪽(theme-toggle)의 키가 같다", () => {
+    expect(scriptKey()).toBe(toggleKey());
+  });
+
+  it("토글은 키를 상수로만 넘긴다 — 세 번째 사본을 막는다", () => {
+    const inlined = TOGGLE.match(/localStorage\.(get|set)Item\(\s*["'`]/g) ?? [];
+    expect(inlined, "theme-toggle.tsx 가 localStorage 키를 리터럴로 직접 넘긴다").toEqual([]);
   });
 });

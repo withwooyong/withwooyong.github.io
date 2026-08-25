@@ -870,7 +870,7 @@ check-baseline 은 실패한다 — CSS 파일명 해시가 HTML 에 박혀 비�
 
 **Interfaces:**
 - Consumes: T3의 램프
-- Produces: `text-hero`, `text-section`, `text-card`, `text-body`, `text-label` 유틸리티
+- Produces: `text-hero`, `text-section`, `text-card-title`, `text-body`, `text-label` 유틸리티
 
 - [ ] **Step 1: Pretendard CDN 주소가 살아 있는지 먼저 확인한다**
 
@@ -1139,7 +1139,7 @@ export function SiteHeader() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-card font-semibold text-n9 break-keep">
+        <Link href="/" className="text-card-title font-semibold text-n9 break-keep">
           허우용 <span className="text-n6 font-normal">Ted</span>
         </Link>
 
@@ -1798,7 +1798,7 @@ export function SectionSelectedWork() {
           {featured.map((exp) => (
             <li key={`${exp.company}-${exp.period}`} className="border-l-2 border-n4 pl-6">
               <p className="text-label uppercase tracking-widest text-n6 tabular">{exp.period}</p>
-              <h3 className="mt-2 text-card font-semibold text-n9 break-keep">{exp.role}</h3>
+              <h3 className="mt-2 text-card-title font-semibold text-n9 break-keep">{exp.role}</h3>
               <p className="text-body text-n6 break-keep">{exp.company}</p>
               <p className="mt-3 text-body text-n7 break-keep">{exp.summary}</p>
             </li>
@@ -1856,7 +1856,7 @@ export function SectionHowILead() {
         <dl className="mt-12 grid gap-10 md:grid-cols-3">
           {PRINCIPLES.map((p) => (
             <div key={p.atlasId}>
-              <dt className="text-card font-semibold text-n9 break-keep">{p.title}</dt>
+              <dt className="text-card-title font-semibold text-n9 break-keep">{p.title}</dt>
               <dd className="mt-2 text-body text-n7 break-keep">{p.body}</dd>
             </div>
           ))}
@@ -2011,7 +2011,7 @@ export default function Work() {
                   <p className="text-label uppercase tracking-widest text-n6 tabular">
                     {exp.period} · {exp.duration}
                   </p>
-                  <h3 className="mt-2 text-card font-semibold text-n9 break-keep">{exp.role}</h3>
+                  <h3 className="mt-2 text-card-title font-semibold text-n9 break-keep">{exp.role}</h3>
                   <p className="text-body text-n6 break-keep">{exp.company}</p>
                   <p className="mt-3 text-body text-n7 break-keep">{exp.summary}</p>
                   <ul className="mt-4 space-y-2">
@@ -2034,7 +2034,7 @@ export default function Work() {
             <ul className="mt-10 grid gap-8 md:grid-cols-2">
               {projects.map((p) => (
                 <li key={p.title} className="rounded-lg border border-n4 bg-n1 p-6">
-                  <h3 className="text-card font-semibold text-n9 break-keep">{p.title}</h3>
+                  <h3 className="text-card-title font-semibold text-n9 break-keep">{p.title}</h3>
                   <p className="mt-2 text-body text-n7 break-keep">{p.description}</p>
                   <ul className="mt-4 flex flex-wrap gap-2">
                     {p.tags.map((t) => (
@@ -2055,7 +2055,7 @@ export default function Work() {
             <div className="mt-10 space-y-16">
               {diagramGroups.map((group) => (
                 <div key={group.id}>
-                  <h3 className="text-card font-semibold text-n9 break-keep">
+                  <h3 className="text-card-title font-semibold text-n9 break-keep">
                     {group.company}{" "}
                     <span className="text-n6 font-normal tabular">{group.period}</span>
                   </h3>
@@ -2171,7 +2171,7 @@ export default function About() {
             <dl className="mt-8 space-y-8">
               {skillCategories.map((c) => (
                 <div key={c.title}>
-                  <dt className="text-card font-semibold text-n9 break-keep">{c.title}</dt>
+                  <dt className="text-card-title font-semibold text-n9 break-keep">{c.title}</dt>
                   <dd className="mt-2 text-body text-n7 break-keep">{c.body}</dd>
                 </div>
               ))}
