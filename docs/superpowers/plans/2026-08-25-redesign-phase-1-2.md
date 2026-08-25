@@ -303,9 +303,53 @@ npm run build
 npm run check-baseline
 ```
 
-Expected: 셋 다 **종료 코드 0**. `check-baseline`이 「14개 불변」을 보고해야 한다.
+Expected: `tsc`·`build`는 종료 코드 0. `check-baseline`은 **`index.html` 1건 변경, 종료 코드 1**이 정상이다.
 
-**실패하면 데이터를 잘못 옮긴 것이다.** 기준선을 갱신해서 통과시키지 마라 — 그게 정확히 이 검사가 막으려는 행동이다. 차이가 난 HTML을 열어 어느 문자열이 달라졌는지 찾는다.
+> **⚠️ 정정 (T1 실행 중 발견).** 이 판정은 처음에 「`check-baseline` 14개 불변」이었다. **달성 불가능한 조건이었다.**
+>
+> HTML에 페이지 JS 청크의 **내용해시**가 박혀 있다 — `/_next/static/chunks/pages/index-<16자리hex>.js`. `scripts/check-baseline.mjs`는 `buildId`와 `featuredPosts`만 마스킹하므로(151~164행), 의미가 완전히 같은 리팩터링이어도 `index.html`은 반드시 「변경」으로 잡힌다. 계획을 세울 때 CSS 해시만 보고 JS 해시를 보지 않았다.
+>
+> `check-baseline`이 여전히 값을 하는 부분은 **나머지 13개**다. `en`·`notion`·`404`·`product-lead*`가 불변이라는 것은 이 리팩터링이 `index.html` 바깥으로 새지 않았다는 뜻이다.
+
+**대체 판정 — 두 조건을 모두 만족해야 한다.**
+
+| # | 조건 | 확인 방법 |
+| --- | --- | --- |
+| 1 | 비블로그 **13개 불변** | `check-baseline` 출력에 `index.html` **한 줄만** 있어야 한다 |
+| 2 | `index.html`이 마스킹 후 **바이트 동일** | 아래 절차 |
+
+작업 **전에** 산출물을 떠 두어야 한다. 이 순서를 놓치면 되돌릴 수 없다.
+
+```bash
+# 착수 전
+npm run build
+cp out/index.html /tmp/before.html
+
+# 작업 후
+npm run build
+cp out/index.html /tmp/after.html
+```
+
+두 파일에서 **빌드마다 달라지는 식별자 둘**을 고정 문자열로 치환한 뒤 비교한다.
+
+| 마스킹 대상 | 어디에 몇 곳 |
+| --- | --- |
+| 페이지 청크 해시 `/_next/static/chunks/pages/index-<16자리hex>.js` | 1곳 |
+| `buildId` — `"buildId":"<...>"` 와 경로의 `/_next/static/<buildId>/` | **3곳** (`_buildManifest.js` · `_ssgManifest.js` 경로 2 + `__NEXT_DATA__` JSON 1) |
+
+```bash
+sed -E 's#chunks/pages/index-[0-9a-f]{16}\.js#chunks/pages/index-<HASH>.js#g; s#"buildId":"[^"]+"#"buildId":"<BUILD>"#g' /tmp/before.html > /tmp/b.html
+# after.html 에도 같은 sed 를 적용한 뒤
+diff /tmp/b.html /tmp/a.html
+```
+
+Expected: **`diff` 0줄.** 한 줄이라도 나오면 데이터를 잘못 옮긴 것이다.
+
+⚠️ **`buildId`는 한 곳이 아니라 네 곳에 나타난다.** 경로에 박힌 것을 놓치면 「차이 1곳」이라는 잘못된 결론이 나온다 — T1 실행 중 실제로 그렇게 보고됐다.
+
+⚠️ **바이트 길이를 셀 때 `String.length`를 쓰지 마라.** UTF-16 코드 유닛이라 한글 1자당 UTF-8보다 2바이트 적게 세어진다. T1에서 이 때문에 265,043과 275,261이 어긋나 보였다. `Buffer.byteLength(s, 'utf8')`이나 `wc -c`를 쓴다.
+
+**실패하면 데이터를 잘못 옮긴 것이다.** 기준선을 갱신해서 통과시키지 마라 — 그게 정확히 이 검사가 막으려는 행동이다.
 
 - [ ] **Step 5: 커밋**
 

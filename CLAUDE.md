@@ -75,6 +75,7 @@ for real in this repo.
 | **`core.autocrlf=true` hides line-ending changes** | git normalises before diffing, so a wholly rewritten file shows a clean diff. This repo genuinely mixes CRLF and LF | A clean diff is not evidence nothing changed. Count CR/LF directly against a control file |
 | **Subagents go idle without reporting** | `reviewer` and `scout` have no `Write` tool; `scout` and `verifier` have gone idle across three notifications with nothing delivered | Judge by the file, not the message: `ls -la <scratchpad>` on every idle notification, then pull the report with `SendMessage`. Re-send the **original question** verbatim — "as I asked before" loses the awkward items first |
 | **`grep -r` scans `out/` and `node_modules`** | 120-second timeout | Use the `Grep` tool, or `--include` / an explicit path |
+| **Tailwind scans comments too** | The class extractor is a regex over raw file text — it does not parse comments out. A Tailwind arbitrary-value class written *inside a code comment* is emitted as real CSS. An example `bg-[url('./${logo}')]` left in a comment produced a rule PostCSS then tried to resolve, and the build died with `Cannot find module './${logo}'` — an error naming a file nobody imported | Never put bracket-arbitrary-value classes in comments. Write the example in prose, or name the field instead of showing the class. Hit for real in T1 of the site renewal |
 
 ## Architecture
 
