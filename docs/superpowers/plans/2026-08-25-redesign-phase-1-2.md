@@ -24,12 +24,24 @@
 | GC-2 | 정적 export | `output: "export"`. API 라우트·ISR·서버 액션·`next/image` 로더 전부 빌드를 깨뜨린다 |
 | GC-3 | 경로 별칭 | 상대경로 대신 `@/components/...`, `@/lib/...`. 상대경로도 빌드는 통과하므로 리뷰에서 잡아야 한다 |
 | GC-4 | `tsconfig.json` 동결 | `target`을 바꾸면 전체가 재방출되어 「기존 페이지 불변」이 깨진다. 타입 오류는 **호출부에서** 고친다 |
-| GC-5 | 한글 본문 | 새 컴포넌트에 `break-keep`, 모든 신규 컴포넌트에 `dark:` 변형 |
+| GC-5 | 한글 본문 | 새 컴포넌트에 `break-keep`. `dark:` 변형은 **토큰으로 표현되지 않은 색에만** — 아래 참조 |
 | GC-6 | 커밋 | 메시지는 **한글**. `git push`는 사용자가 명시적으로 요청할 때만 |
 | GC-7 | 모션 | 전 구간 `prefers-reduced-motion: reduce` 대응. 없으면 리뷰에서 반려 |
 | GC-8 | `lang="ko"` | `pages/_document.tsx`의 `<Html lang="ko">`를 **바꾸지 않는다.** Pagefind 한글 분절의 전제다(스펙 §8.2) |
 | GC-9 | 액센트 면적 | 액센트는 첫 화면 픽셀의 **5% 이하**. 넓은 면적 배경·본문 텍스트에 쓰지 않는다 |
 | GC-10 | 두 번째 액센트 금지 | 액센트 색은 **하나뿐이다.** 추가하는 순간 「이 색 = 클릭 가능」 규칙이 죽는다 |
+
+#### GC-5의 `dark:`는 언제 필요한가 — 리뷰어가 위양성을 내지 않도록
+
+`CLAUDE.md`의 「모든 신규 컴포넌트에 `dark:` 변형」은 **토큰 체계가 생기기 전에 쓰인 규칙**이다. T3 이후로는 그대로 적용하면 안 된다.
+
+| 색을 어떻게 썼나 | `dark:` 필요한가 | 이유 |
+| --- | :---: | --- |
+| `bg-n1` · `text-n9` · `text-signal` (토큰) | **아니오** | `--n*`가 `.dark`에서 재정의되므로 **이미 테마 인식**이다. `dark:`를 더하면 값이 두 벌이 되어 §5.3 안 B가 없애려던 문제가 되돌아온다 |
+| `bg-slate-800` · `text-blue-600` (하드코딩) | **예** | 테마를 모른다. GC-5가 그대로 유효하다 |
+| `bg-card` · `text-muted-foreground` (shadcn) | 아니오 | 토큰의 별칭이다 |
+
+⇒ **신규 컴포넌트가 토큰만 쓰면 `dark:`가 하나도 없는 것이 정답이다.** 리뷰어는 이걸 누락으로 보지 않는다. 반대로 신규 코드에 `slate-*` 같은 하드코딩 팔레트가 들어왔다면 그것 자체가 지적 대상이다 — 토큰을 쓰라는 뜻이다.
 
 ### 문구 규칙 (T11·T12에서 반드시 지킬 것)
 
@@ -111,9 +123,12 @@ eyebrow  20Y BACKEND · PLATFORM LEADER
 | `pages/index.tsx` | **687줄 전면 재작성** → 셸 + 5섹션 조립 | T10 |
 | `pages/product-lead-wiki/[slug].tsx` · `index.tsx` | 본문을 스텁으로 교체 (6 URL을 파일 2개로) | T13 |
 
-### 지우는 파일 (T14)
+### 지우는 파일
 
-`lib/wiki.ts` · `components/wiki-shell.tsx` · `components/roadmap-domain.tsx` · `data/product-lead-domains.ts` · `data/product-lead-roadmap.ts` · `pages/product-lead/index.tsx` · `pages/product-lead-v2/index.tsx` · `pages/product-lead-loadmap/index.tsx`
+| 태스크 | 파일 | 왜 그 태스크인가 |
+| --- | --- | --- |
+| **T13** | `pages/product-lead/index.tsx` · `pages/product-lead-v2/index.tsx` · `pages/product-lead-loadmap/index.tsx` | `public/`의 스텁과 **경로를 다툰다.** 살려 두면 스텁이 산출물에 안 나온다 |
+| **T14** | `lib/wiki.ts` · `components/wiki-shell.tsx` · `components/roadmap-domain.tsx` · `data/product-lead-domains.ts` · `data/product-lead-roadmap.ts` | 위 라우트만 부르던 자산. 호출자 0건을 증명한 뒤 한꺼번에 |
 
 ---
 
@@ -632,7 +647,9 @@ tests/design/tokens.test.ts 전부 통과."
 
 - [ ] **Step 1: shadcn 토큰을 별칭으로 교체한다**
 
-기존 `:root`의 20줄과 `.dark`의 20줄을 아래로 **통째로 갈아끼운다.**
+⚠️ **T3 이후 `globals.css`에는 `:root` 블록이 둘이다** — 위쪽이 신규 램프(`--n0`~`--n9`), 아래쪽이 기존 shadcn(`--background` 등). **갈아끼울 대상은 `--background`를 담은 아래쪽이다.** 램프 블록을 건드리면 `tests/design/tokens.test.ts`가 즉시 빨개지므로 사고는 감지되지만, 애초에 헷갈리지 않는 편이 낫다.
+
+그 블록의 `:root` 20줄과 `.dark` 20줄을 아래로 **통째로 갈아끼운다.**
 
 ```css
   /* ── shadcn 토큰 — 위 램프의 별칭이다 (설계서 §5.3 안 B) ───────────
@@ -2160,9 +2177,14 @@ git commit -m "feat(about): /about 신규 — 경력 요약·기술·학력
 - Create: `public/product-lead/index.html`
 - Create: `public/product-lead-v2/index.html`
 - Create: `public/product-lead-loadmap/index.html`
+- **Delete: `pages/product-lead/index.tsx` · `pages/product-lead-v2/index.tsx` · `pages/product-lead-loadmap/index.tsx`**
 - Modify: `pages/product-lead-wiki/index.tsx` (본문을 스텁으로)
 - Modify: `pages/product-lead-wiki/[slug].tsx` (본문을 스텁으로)
 - Create: `e2e/redirects.spec.ts`
+
+⚠️ **삭제가 이 태스크에 들어 있는 이유:** `public/product-lead/index.html`과 `pages/product-lead/index.tsx`는 **같은 경로를 다툰다.** 라우트가 살아 있으면 스텁이 산출물에 나오지 않아 이 태스크의 E2E 3건이 통과할 수 없다. 스텁과 그것이 대체하는 라우트는 **한 커밋**에 있어야 무엇이 무엇을 대신하는지가 diff 하나로 읽힌다.
+
+**wiki 라우트는 지우지 않는다** — `[slug].tsx`가 6 URL을 한 파일로 덮기 때문이다. 본문만 갈아끼운다.
 
 **Interfaces:**
 - Consumes: T11의 `/work/`
@@ -2281,21 +2303,36 @@ test.describe("제거된 라우트 스텁", () => {
 });
 ```
 
-- [ ] **Step 4: 돌린다**
+- [ ] **Step 4: 대체된 라우트 3개를 지운다**
+
+스텁과 같은 커밋에 들어간다. 지우지 않으면 `public/`의 스텁이 산출물에 나오지 않는다.
 
 ```bash
+git rm -r pages/product-lead pages/product-lead-v2 pages/product-lead-loadmap
+```
+
+- [ ] **Step 5: 돌린다**
+
+```bash
+npx tsc --noEmit
 npm run build
 npm run e2e -- e2e/redirects.spec.ts
 ```
 
-Expected: 10건 전부 통과.
-
-⚠️ `public/`의 스텁과 `pages/`의 라우트가 **같은 경로를 다투면** Next.js 빌드가 경고한다. `/product-lead/`는 `pages/product-lead/index.tsx`를 T14에서 지워야 `public/product-lead/index.html`이 산다. **T14 이후 이 검사를 한 번 더 돌린다.**
-
-- [ ] **Step 5: 커밋**
+Expected: 10건 전부 통과. `out/product-lead/index.html`이 `public/`의 스텁이어야 한다.
 
 ```bash
-git add public/product-lead public/product-lead-v2 public/product-lead-loadmap pages/product-lead-wiki e2e/redirects.spec.ts
+grep -l 'url=/work/' out/product-lead/index.html out/product-lead-v2/index.html out/product-lead-loadmap/index.html
+```
+
+Expected: 세 경로 전부 출력된다. 안 나오면 라우트가 아직 이기고 있는 것이다.
+
+⚠️ `pages/product-lead-loadmap`을 지우면 `components/roadmap-domain.tsx`와 `data/product-lead-*.ts`가 고아가 되지만 **여기서는 지우지 않는다.** T14가 호출자 0건을 증명한 뒤 한꺼번에 지운다. `tsc`는 미사용 파일을 오류로 보지 않으므로 이 상태로 통과한다.
+
+- [ ] **Step 6: 커밋**
+
+```bash
+git add -A
 git commit -m "feat(routes): 제거되는 product-lead 9 URL 에 스텁
 
 설계서 §4. sitemap EXCLUDE 때문에 색인된 것은 /product-lead/ 와 -v2 둘뿐이라
@@ -2303,7 +2340,10 @@ SEO 만 보면 스텁 2개면 된다. 그래도 9개를 덮는 이유는 비용�
 [slug].tsx 본문만 갈아끼우면 6 URL 이 파일 하나로 덮인다.
 
 wiki 라우트는 지우지 않고 본문만 스텁으로 바꿨다. 지우면 6 URL 이 404 가 된다.
-slug 목록을 파일 안에 박아 lib/wiki.ts 의존을 끊었다 — T14 에서 지울 수 있게."
+slug 목록을 파일 안에 박아 lib/wiki.ts 의존을 끊었다 — T14 에서 지울 수 있게.
+
+product-lead · -v2 · -loadmap 라우트는 같은 커밋에서 지운다. public/ 의 스텁과
+경로를 다퉈서, 살려 두면 스텁이 산출물에 나오지 않는다."
 ```
 
 ---
@@ -2311,10 +2351,11 @@ slug 목록을 파일 안에 박아 lib/wiki.ts 의존을 끊었다 — T14 에�
 ### Task 14: 고아 자산 삭제 + 기준선 1회 갱신
 
 **Files:**
-- Delete: `pages/product-lead/index.tsx` · `pages/product-lead-v2/index.tsx` · `pages/product-lead-loadmap/index.tsx`
 - Delete: `lib/wiki.ts` · `components/wiki-shell.tsx` · `components/roadmap-domain.tsx`
 - Delete: `data/product-lead-domains.ts` · `data/product-lead-roadmap.ts`
 - Modify: `scripts/baseline.json` (`--update --force`로 1회)
+
+> `pages/product-lead/` · `-v2/` · `-loadmap/`은 **T13에서 이미 지워졌다** — 스텁과 경로를 다투기 때문이다. 이 태스크는 그것들만 부르던 자산을 치운다.
 
 **Interfaces:**
 - Consumes: T13의 스텁
@@ -2333,7 +2374,6 @@ Expected: **출력 없음.** 있으면 그 자리를 먼저 정리한다.
 - [ ] **Step 2: 지운다**
 
 ```bash
-git rm -r pages/product-lead pages/product-lead-v2 pages/product-lead-loadmap
 git rm lib/wiki.ts components/wiki-shell.tsx components/roadmap-domain.tsx
 git rm data/product-lead-domains.ts data/product-lead-roadmap.ts
 ```
@@ -2381,9 +2421,9 @@ Expected: 두 번째 명령이 **종료 코드 0**.
 
 ```bash
 git add -A
-git commit -m "chore: product-lead 원본 라우트와 고아 자산 삭제 + 기준선 1회 갱신
+git commit -m "chore: 고아 자산 5종 삭제 + 기준선 1회 갱신
 
-라우트를 스텁으로 대체했으므로 원본과, 그것만 부르던 자산 5종을 지운다 —
+T13 이 라우트를 스텁으로 대체했으므로 그것만 부르던 자산을 지운다 —
 lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-domains · -roadmap.
 지우기 전에 grep 으로 호출자 0건을 확인했다.
 
