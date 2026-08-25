@@ -72,6 +72,21 @@ const RAMP_TOKENS = [
 
 const AA = 4.5;
 
+/**
+ * `var(--x)` 별칭을 따라가 실제 색까지 내려간다.
+ *
+ * shadcn 토큰은 램프의 별칭이라(설계서 §5.3 안 B) 값이 hex 가 아니라 `var(--n3)` 이다.
+ * 한 단계만 따라가면 되지만, 별칭의 별칭이 생겨도 깨지지 않게 반복으로 둔다.
+ */
+function resolve(vars: Record<string, string>, name: string, depth = 0): string {
+  const value = vars[name];
+  expect(value, `--${name} 가 없다`).toBeDefined();
+  const alias = /^var\(--([\w-]+)\)$/.exec(value.trim());
+  if (!alias) return value.trim();
+  expect(depth, `--${name} 의 별칭이 너무 깊다 — 순환 가능성`).toBeLessThan(4);
+  return resolve(vars, alias[1], depth + 1);
+}
+
 describe("검사기 자체 증명 — 알려진 미달 값을 잡아내는가", () => {
   // 스펙 2판의 다크 n6 값. 이 검사기가 실제로 잡아냈던 결함이다.
   it("2판 #71717a 는 다크 배경에서 AA 미달로 판정된다", () => {
@@ -229,4 +244,32 @@ describe("다크 램프의 텍스트 계열은 단조 증가한다", () => {
       expect(lums[i], `${steps[i]} 가 ${steps[i - 1]} 보다 어둡다`).toBeGreaterThan(lums[i - 1]);
     }
   });
+});
+
+const SHADCN_PAIRS: Array<[string, string]> = [
+  ["background", "foreground"],
+  ["card", "card-foreground"],
+  ["popover", "popover-foreground"],
+  ["primary", "primary-foreground"],
+  ["secondary", "secondary-foreground"],
+  ["muted", "muted-foreground"],
+  ["accent", "accent-foreground"],
+  ["destructive", "destructive-foreground"],
+];
+
+describe("shadcn 토큰의 짝은 서로 위에서 읽힌다", () => {
+  // shadcn 의 의미 계약이다 — X-foreground 는 X 위에 얹으라고 있는 색이다.
+  // 별칭으로 바꾸면서 이 계약이 깨질 수 있고, 깨져도 빌드·타입·기존 테스트는 전부 통과한다.
+  // 실제로 --muted: var(--n3) 일 때 n6 on n3 = 4.25 로 미달이었다.
+  for (const theme of [
+    { name: "라이트", vars: LIGHT },
+    { name: "다크", vars: DARK },
+  ]) {
+    for (const [bg, fg] of SHADCN_PAIRS) {
+      it(`${theme.name}: ${fg} 가 ${bg} 위에서 AA 를 넘는다`, () => {
+        const ratio = contrastRatio(resolve(theme.vars, fg), resolve(theme.vars, bg));
+        expect(ratio, `${fg} on ${bg} = ${ratio.toFixed(2)}:1`).toBeGreaterThanOrEqual(AA);
+      });
+    }
+  }
 });

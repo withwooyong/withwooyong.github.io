@@ -76,7 +76,7 @@
     --primary-foreground: var(--n0);
     --secondary: var(--n3);
     --secondary-foreground: var(--n9);
-    --muted: var(--n3);
+    --muted: var(--n0);
     --muted-foreground: var(--n6);
     --accent: var(--n3);
     --accent-foreground: var(--n9);
