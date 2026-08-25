@@ -4,7 +4,16 @@ import { SiteHeader } from "@/components/site-header";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-n0 text-n7">
+    /*
+      data-site-shell 은 E2E 게이트의 표지다(e2e/shell-gate.ts). 지우지 마라.
+      셸이 붙은 페이지에서만 도는 검사들이 이 속성 하나로 켜지고 꺼진다.
+
+      ⚠️ 「aria-label 이나 스킵 링크로 판정하면 되지 않나」— 안 된다.
+         구 components/portfolio-nav.tsx 가 aria-label="주요 메뉴" 를 **똑같이** 쓰고,
+         구 index 산출물에 「본문으로 건너뛰기」도 이미 들어 있다(2026-08-26 실측).
+         둘 다 오탐한다. 그래서 겹칠 수 없는 전용 속성을 둔다.
+    */
+    <div data-site-shell className="min-h-screen bg-n0 text-n7">
       <a
         href="#main"
         className="sr-only break-keep focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-signal focus:text-signal-ink focus:px-4 focus:py-2 focus:rounded"

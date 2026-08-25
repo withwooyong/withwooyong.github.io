@@ -9,6 +9,8 @@
     "lint": "next lint",
     "prepare": "git config core.hooksPath .githooks",
     "test": "vitest run",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
     "dup-scan": "node scripts/dup-scan.mjs",
     "dup-scan:verify": "node scripts/dup-scan.mjs --self-test",
     "check-forbidden": "node scripts/check-forbidden.mjs",
@@ -41,6 +43,7 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -48,6 +51,7 @@
     "eslint": "^8",
     "eslint-config-next": "^14.2.35",
     "postcss": "^8",
+    "serve": "^14.2.6",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
     "vitest": "^4.1.10"
