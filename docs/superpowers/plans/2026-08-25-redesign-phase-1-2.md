@@ -1450,6 +1450,39 @@ dev 서버로 검사하면 실제 배포물이 아닌 것을 보게 된다.
 /work · /about 이 없어 실패하는 상태다 — T10~T12 의 목표다."
 ```
 
+#### 실제 구현에서 위 브리프와 달라진 것 (2026-08-26 · 커밋 `e8a4ce6`)
+
+브리프를 실행하며 실측으로 드러난 것들이다. **위 코드 블록을 그대로 믿지 마라 — 아래가 현재 상태다.**
+
+| 브리프 | 실제 | 이유 |
+| --- | --- | --- |
+| 테마 검사 2개 | **4개** | T6의 수동 확인 표가 4행이다. 「번쩍임 없음」·「저장소 차단」이 빠져 있었다 |
+| `e2e/smoke.spec.ts` 하나 | `smoke` · `shell` · `shell-gate` · `raw-html` · `global-setup` | 셸 의존 검사를 게이트로 분리했다(아래) |
+| 셸 테스트가 T8에서 **실패** | 게이트로 **skip**, 센티넬만 실패 | 「아직 안 붙었다」와 「붙였는데 깨졌다」가 같은 빨강이면 T10에서 구분이 안 된다 |
+| `retries: CI ? 1 : 0` | **`retries: 0`** | 재시도가 있으면 두 번째에 통과한 것이 `flaky`로 집계되고 **종료 코드가 0**이 된다(실측) |
+| `--no-clean-urls` 검토 | **안 붙임** | 실측: 기본값에서 `/en/`·`/en`이 둘 다 리다이렉트 없이 200. `cleanUrls`는 `trailingSlash` 변환이 아니다 |
+| — | `components/site-shell.tsx`에 `data-site-shell` 1속성 | 게이트 표지. `aria-label="주요 메뉴"`와 「본문으로 건너뛰기」는 **구 `portfolio-nav.tsx`에도 있어** 둘 다 오탐한다 |
+| — | `e2e/global-setup.ts` 신선도 가드 | 빌드 없이 `npm run e2e`만 돌리면 **어제 산출물**을 상대로 전부 초록이 난다 |
+
+**T10에서 할 일:** `pages/index.tsx`를 `<SiteShell>`로 감싸면 `e2e/shell.spec.ts`가 **저절로 켜진다.**
+플래그를 켜는 절차는 없다. `npm run build && npm run e2e`로 확인하고, 켜진 뒤 빨간 것이 있으면 그게 진짜 결함이다.
+**T11에서 `/work/`를 만들 때도 같다** — `shell.spec.ts`의 `SHELL_PATHS`에 `/work/`가 이미 들어 있다.
+
+**리뷰가 잡은 것 (실증된 거짓 초록 3건):**
+
+| 결함 | 어떻게 드러났나 |
+| --- | --- |
+| canonical을 DOM으로만 쟀다 | 산출물에서 태그를 지워도 **초록**이었다 — `next/head`가 하이드레이션 때 다시 꽂는다 |
+| 센티넬이 `/` 하나만 봤다 | `/work/`에 셸이 안 붙으면 asPath 검사가 **영원히 조용한 skip** |
+| 센티넬이 다른 파일에 있었다 | `playwright test e2e/shell.spec.ts` 단독 실행 시 **16 skip · 종료 코드 0** |
+
+콘솔의 React 하이드레이션 오류로 불일치를 잡던 코드는 **지웠다.** 실측: `did not match`는 개발
+번들에만 있고(`react-dom.development.js` 2건 · `production.min.js` 0건), 축약 코드 #418·#425는
+**텍스트** 불일치용이다. 이 검사의 주제인 `aria-current`는 **속성**이라 프로덕션에서 아무 흔적도 안 남긴다.
+있으나 마나가 아니라 **있으면 해로운** 검사였다 — 「하이드레이션 오류도 본다」는 안심을 주면서 아무것도 안 보므로.
+
+**CI 연결은 T14다.** T8~T12 동안은 의도적으로 빨가서 붙일 수 없다. T14 Step 5를 보라.
+
 ---
 
 ### Task 9: 히어로 B — 아틀라스 점등
@@ -2398,12 +2431,16 @@ product-lead · -v2 · -loadmap 라우트는 같은 커밋에서 지운다. publ
 - Delete: `lib/wiki.ts` · `components/wiki-shell.tsx` · `components/roadmap-domain.tsx`
 - Delete: `data/product-lead-domains.ts` · `data/product-lead-roadmap.ts`
 - Modify: `scripts/baseline.json` (`--update --force`로 1회)
+- Modify: `.github/workflows/deploy.yml` (e2e 스텝 추가 — T8에서 만든 스위트를 여기서 게이트로 승격)
 
 > `pages/product-lead/` · `-v2/` · `-loadmap/`은 **T13에서 이미 지워졌다** — 스텁과 경로를 다투기 때문이다. 이 태스크는 그것들만 부르던 자산을 치운다.
 
 **Interfaces:**
-- Consumes: T13의 스텁
-- Produces: 기준선이 다시 게이트로 동작한다
+- Consumes: T13의 스텁, T8의 `npm run e2e`
+- Produces: 기준선이 다시 게이트로 동작한다, **e2e가 CI에서 돈다**
+
+> **이 태스크가 「게이트를 되살리는 자리」다.** 기준선 갱신과 e2e의 CI 연결은 성격이 같다 —
+> 둘 다 단계 2 동안 의도적으로 꺼 두었던 것을 끝에서 한 번에 켠다. 그래서 한 태스크에 묶는다.
 
 - [ ] **Step 1: 지우기 전에 호출자가 없는지 증명한다**
 
@@ -2461,11 +2498,53 @@ npm run check-baseline
 
 Expected: 두 번째 명령이 **종료 코드 0**.
 
-- [ ] **Step 5: 커밋**
+- [ ] **Step 5: e2e를 CI에 붙인다 — 여기가 그 자리다**
+
+**왜 T8이 아니라 여기인가.** T8에서 스위트를 만들 때는 `/work/`·`/about/`이 없어 **12개가 의도적으로 빨갛다.**
+그 상태로 `deploy.yml`에 붙이면 T12까지 `main` 배포가 막힌다. 비차단(`continue-on-error`)으로
+붙이는 것도 답이 아니다 — 몇 태스크 동안 상시 빨간 잡은 「무시해도 되는 빨강」을 학습시키고,
+그러면 스펙 §11이 라이트하우스를 경고로 둔 것과 정반대의 결과가 된다.
+**T13이 끝나면 스위트가 전부 초록이 된다. 초록이 된 그 순간에 붙인다.**
+
+⚠️ 붙이기 전에 **T8~T13 사이에 이 연결이 잊히지 않았는지**가 이 단계의 존재 이유다.
+   T8 리뷰에서 실측된 사실: `.github/workflows/`에 `playwright`·`e2e` 문자열이 **0건**이었고,
+   T15는 `lighthouse.yml`만 만들며 `deploy.yml`을 건드리지 않는다고 명시돼 있다.
+   즉 이 단계가 없으면 **게이트를 만들어 놓고 아무 데서도 안 돌리는 상태**로 끝난다.
+
+`.github/workflows/deploy.yml`의 `Scan built output` **뒤**, `Upload artifact` **앞**에 넣는다.
+빌드 산출물(`out/`)을 서빙해 검사하므로 빌드 뒤여야 하고, 실패하면 배포 아티팩트를 올리지 않아야 한다.
+
+```yaml
+      # T8에서 만든 스위트를 단계 2가 끝난 여기서 게이트로 승격한다.
+      # out/ 을 serve 로 띄워 검사하므로 Build 뒤에 와야 하고, 실패 시 아티팩트를 올리지 않도록
+      # Upload artifact 앞에 온다.
+      #
+      # --with-deps 는 리눅스에서 OS 패키지까지 깐다. CI는 ubuntu 이므로 필요하고,
+      # 로컬(Windows)에서는 `npx playwright install chromium` 만 쓴다.
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E
+        run: npm run e2e
+```
+
+⚠️ `continue-on-error`를 붙이지 마라. `playwright.config.ts`가 `retries: 0`인 것과 같은 이유다 —
+   **조용히 통과하는 게이트는 게이트가 아니다.** 실측(T8): `retries: 1`이면 두 번째에 통과한 것이
+   `flaky`로 집계되고 **종료 코드가 0**이 된다.
+
+```bash
+npm run build
+npm run e2e
+```
+
+Expected: **종료 코드 0.** 하나라도 빨가면 붙이지 말고 원인을 먼저 없앤다 —
+빨간 채로 붙이는 순간 이 게이트는 첫날부터 「끄고 싶은 것」이 된다.
+
+- [ ] **Step 6: 커밋**
 
 ```bash
 git add -A
-git commit -m "chore: 고아 자산 5종 삭제 + 기준선 1회 갱신
+git commit -m "chore: 고아 자산 5종 삭제 + 기준선 1회 갱신 + e2e 를 CI 게이트로
 
 T13 이 라우트를 스텁으로 대체했으므로 그것만 부르던 자산을 지운다 —
 lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-domains · -roadmap.
@@ -2473,7 +2552,11 @@ lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-domains · -roadmap.
 
 기준선은 이번 배치에서 여기 한 번만 갱신한다(설계서 §11.1).
 단계마다 갱신하면 --update 가 습관이 되고 이 검사는 죽는다.
-갱신 전 확인: 스텁 9개 존재 · en/notion/404 불변 · work·about 신규."
+갱신 전 확인: 스텁 9개 존재 · en/notion/404 불변 · work·about 신규.
+
+T8 에서 만든 e2e 스위트를 deploy.yml 에 붙인다. T8~T12 동안은 /work/ · /about/ 이
+없어 의도적으로 빨갰으므로 붙일 수 없었고, T13 에서 전부 초록이 된 지금이 그 자리다.
+continue-on-error 는 쓰지 않는다 — 조용히 통과하는 게이트는 게이트가 아니다."
 ```
 
 ---
@@ -2642,7 +2725,7 @@ npm run e2e
 | §5.4 타이포 | T5 | |
 | §5.5 테마·여백·모션 | T5 T6 T7 T9 | |
 | §6 히어로 안 B | T9 | |
-| §11 Playwright | T8 T9 T13 | |
+| §11 Playwright | T8 T9 T13 **T14** | T8 은 스위트만. **CI 게이트로 승격은 T14** — 그때까지는 의도적으로 빨갛다 |
 | §11 Lighthouse | T15 | |
 | §11.1 기준선 | T1 T4 T14 | |
 | §12 단계 1 완료 판정 | T4 Step 4 | |
