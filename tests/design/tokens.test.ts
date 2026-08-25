@@ -318,3 +318,40 @@ describe("구분돼야 하는 면은 실제로 다른 색이다", () => {
     }
   }
 });
+
+describe("fontSize 이름이 shadcn 색 이름과 겹치지 않는다", () => {
+  // 겹치면 .text-<이름> 하나가 font-size 와 color 를 동시에 갖게 되고,
+  // 짝지은 색이 이길지 질지가 알파벳 순서로 정해진다. text-card 가 그랬다.
+  const CONFIG = fs.readFileSync(path.join(process.cwd(), "tailwind.config.js"), "utf8");
+
+  it("소스 어디에도 text-card 단독 사용이 없다", () => {
+    const roots = ["components", "pages"];
+    const hits: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(full);
+        } else if (/\.(tsx?|jsx?)$/.test(entry.name)) {
+          // text-card-foreground · text-card-title 은 제외한다.
+          if (/\btext-card\b(?![-\w])/.test(fs.readFileSync(full, "utf8"))) hits.push(full);
+        }
+      }
+    };
+    for (const root of roots) walk(path.join(process.cwd(), root));
+    expect(hits, `text-card 는 색 유틸리티로도 존재한다 — text-card-title 을 써라: ${hits.join(", ")}`)
+      .toEqual([]);
+  });
+
+  it("fontSize 키에 shadcn 색 이름이 없다", () => {
+    const block = /fontSize:\s*\{([\s\S]*?)\n {6}\}/.exec(CONFIG);
+    expect(block, "tailwind.config.js 에서 fontSize 블록을 못 찾았다").not.toBeNull();
+    const keys = Array.from(block![1].matchAll(/^\s*"?([\w-]+)"?\s*:/gm)).map((m) => m[1]);
+    const SHADCN_COLOR_NAMES = [
+      "card", "background", "foreground", "primary", "secondary",
+      "muted", "accent", "popover", "destructive", "border", "input", "ring",
+    ];
+    const collisions = keys.filter((k) => SHADCN_COLOR_NAMES.includes(k));
+    expect(collisions, `fontSize 키가 색 이름과 겹친다: ${collisions.join(", ")}`).toEqual([]);
+  });
+});

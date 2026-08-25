@@ -72,24 +72,27 @@ module.exports = {
           foreground: "var(--card-foreground)",
         },
       },
-      // text-card 는 shadcn 의 colors.card 와 이름이 겹친다. Tailwind 가 두 규칙을 합쳐
-      // .text-card 에 font-size 와 color: var(--card) 를 함께 넣는다. fontSize 패스가
-      // textColor 패스보다 먼저라 짝지어진 text-n* 가 색을 이기지만, 색 없이 단독으로 쓰면
-      // 글자가 카드 배경색이 되어 보이지 않는다. text-card 는 항상 색 클래스와 함께 쓴다.
+      // fontSize 키에 shadcn 색 이름(card, background, foreground, primary, secondary,
+      // muted, accent, popover, destructive, border, input, ring)을 쓰지 마라.
+      // Tailwind 는 fontSize 와 textColor 의 text-* 를 중복 제거하지 않고 한 규칙에 합치며,
+      // 어느 색이 이길지는 textColor 패스 안의 알파벳 순서로 정해진다. 즉 짝지은 색이
+      // 이길지 질지가 그 색의 이름 철자에 달린다 — 가르칠 수 없는 규칙이다.
+      // card 는 card-title 로 피했다. 아래 tests/design/tokens.test.ts 가 재발을 막는다.
       fontSize: {
         hero: ["var(--fs-hero)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
         section: ["var(--fs-section)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
-        card: ["var(--fs-card)", { lineHeight: "1.35" }],
+        "card-title": ["var(--fs-card)", { lineHeight: "1.35" }],
         body: ["var(--fs-body)", { lineHeight: "1.75" }],
         label: ["var(--fs-label)", { lineHeight: "1.2", letterSpacing: "0.08em" }],
       },
       fontFamily: {
-        // 한글은 Pretendard, 영문·숫자는 Inter 가 먼저 잡는다
         sans: [
+          // 설계서 §5.4 — 한글은 Pretendard, 영문·숫자는 Inter.
+          // Inter 에는 한글 글리프가 없어서 한글은 자동으로 Pretendard 로 떨어진다.
+          // 반대로 Pretendard 를 앞에 두면 라틴 글리프까지 갖고 있어 Inter 가 죽는다.
+          "var(--font-inter, 'Inter')",
           "Pretendard Variable",
           "Pretendard",
-          "var(--font-inter)",
-          "Inter",
           "system-ui",
           "sans-serif",
         ],
