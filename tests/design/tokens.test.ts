@@ -355,3 +355,31 @@ describe("fontSize 이름이 shadcn 색 이름과 겹치지 않는다", () => {
     expect(collisions, `fontSize 키가 색 이름과 겹친다: ${collisions.join(", ")}`).toEqual([]);
   });
 });
+
+describe("임계 인라인 스타일이 램프와 어긋나지 않는다", () => {
+  const DOC = fs.readFileSync(path.join(process.cwd(), "pages", "_document.tsx"), "utf8");
+
+  function criticalBg(selector: string): string {
+    const re = new RegExp(`${selector}\\{background-color:(#[0-9a-fA-F]{6});`);
+    const m = re.exec(DOC);
+    expect(m, `_document.tsx 의 CRITICAL_STYLE 에서 ${selector} 규칙을 못 찾았다`).not.toBeNull();
+    return m![1].toLowerCase();
+  }
+
+  it("추출기 자체 증명 — 없는 선택자는 못 찾는다", () => {
+    expect(() => criticalBg("html\\.nonexistent")).toThrow();
+  });
+
+  it("라이트 임계 배경 = :root 의 --n0", () => {
+    expect(criticalBg("html")).toBe(resolve(collectVars(CSS, ":root"), "n0").toLowerCase());
+  });
+
+  it("다크 임계 배경 = .dark 의 --n0", () => {
+    expect(criticalBg("html\\.dark")).toBe(resolve(collectVars(CSS, ".dark"), "n0").toLowerCase());
+  });
+
+  it("양쪽 color-scheme 이 선언돼 있다", () => {
+    expect(DOC).toMatch(/html\{[^}]*color-scheme:light/);
+    expect(DOC).toMatch(/html\.dark\{[^}]*color-scheme:dark/);
+  });
+});
