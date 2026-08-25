@@ -7,16 +7,28 @@
  * 고치는 순간 `check-baseline` 이 「추출이 틀렸다」와 「고친 게 맞다」를 구분하지 못한다.
  *
  * ⚠️ 색상은 이름이 아니라 **완성된 Tailwind 클래스 문자열**로 담는다.
- *    Tailwind 는 소스를 정적으로 훑어 클래스를 만들기 때문에 `text-${accent}-500` 같은
- *    조립식 이름은 CSS 가 생성되지 않는다. `tailwind.config.js` 의 content 에
- *    `./data/**` 가 이미 들어 있어 이 파일의 문자열은 정상적으로 수집된다.
+ *    Tailwind 는 소스를 정적으로 훑어 클래스를 만들기 때문에, 색 이름을 템플릿 문자열로
+ *    끼워 넣어 조립하면 그 클래스의 CSS 가 생성되지 않는다.
+ *    `tailwind.config.js` 의 content 에 `./data` 가 이미 들어 있어
+ *    이 파일에 리터럴로 적힌 문자열은 정상적으로 수집된다.
+ *
+ *    같은 이유로 이 주석에는 클래스처럼 보이는 예시를 적지 않는다 —
+ *    스캐너는 주석도 텍스트로 읽어서, 예시로 적은 것까지 실제 CSS 로 만들어 버린다.
+ *    (실측: `data/projects.ts` 주석에 조립식 예시를 적었더니 빌드가 죽었다)
  */
 export type ExperienceItem = {
   /** 직책. 「커머스개발실장」처럼 정식 표기를 그대로 옮긴다 */
   role: string;
   /** 회사 라벨 — Global Constraints 문구 규칙을 따른다 */
   company: string;
-  /** 회사 라벨에 붙는 완성된 Tailwind 클래스 — 예: "text-blue-600 dark:text-blue-400" */
+  /**
+   * ⚠️ **과도기 필드 — 콘텐츠가 아니라 구 디자인의 표현이다.**
+   * 회사 라벨에 붙는 완성된 Tailwind 클래스 — 예: "text-blue-600 dark:text-blue-400".
+   * 카드마다 다른 4색 액센트(blue/green/purple/orange)는 신규 단일 시그널 토큰 체계
+   * (`text-signal`·`text-hero` 등)에 존재하지 않는다. 새 디자인으로 옮겨갈 때 **제거 대상**이며,
+   * 그때까지는 지금 마크업이 이 값을 쓴다. 새 컴포넌트에서 이 값을 그대로 소비하지 마라 —
+   * 토큰 체계를 조용히 우회하게 된다.
+   */
   companyClass: string;
   /** 예: "2022.02 - 2026.07" */
   period: string;
@@ -24,7 +36,12 @@ export type ExperienceItem = {
   duration: string;
   /** 카드 본문 한 문단 */
   summary: string;
-  /** 불릿 기호에 붙는 완성된 Tailwind 클래스 — 예: "text-blue-500 dark:text-blue-400" */
+  /**
+   * ⚠️ **과도기 필드 — 콘텐츠가 아니라 구 디자인의 표현이다.**
+   * 불릿 기호에 붙는 완성된 Tailwind 클래스 — 예: "text-blue-500 dark:text-blue-400".
+   * `companyClass` 와 같은 4색 액센트의 500 단계다. 신규 토큰 체계에 없으므로
+   * 새 디자인으로 옮겨갈 때 **제거 대상**이며, 그때까지는 지금 마크업이 이 값을 쓴다.
+   */
   bulletClass: string;
   /** 불릿 목록 */
   highlights: string[];
