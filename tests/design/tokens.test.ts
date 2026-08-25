@@ -30,7 +30,10 @@ function collectVars(selector: string): Record<string, string> {
       i += 1;
     }
     const body = CSS.slice(start, i - 1);
-    for (const decl of body.matchAll(/--([\w-]+)\s*:\s*([^;]+);/g)) {
+    // for...of 로 matchAll 을 직접 돌면 target: es5 에서 TS2802 가 난다.
+    // tsconfig 는 동결이므로 호출부에서 배열로 받는다.
+    const decls = Array.from(body.matchAll(/--([\w-]+)\s*:\s*([^;]+);/g));
+    for (const decl of decls) {
       out[decl[1]] = decl[2].trim();
     }
   }
@@ -84,9 +87,11 @@ describe("다크 램프는 상속이 아니라 자기 손으로 정의돼 있다
   // 그 구멍을 여기서 막는다.
   for (let i = 0; i <= 9; i += 1) {
     it(`.dark 블록이 --n${i} 를 직접 정의한다`, () => {
-      expect(DARK_OWN[`n${i}`], `--n${i} 가 .dark 에 없다 — 라이트 값을 상속하고 있다`).toMatch(
-        /^#[0-9a-fA-F]{6}$/,
-      );
+      const value = DARK_OWN[`n${i}`];
+      // toMatch 를 먼저 걸면 커스텀 메시지를 붙이기 전에 vitest 가 자체 TypeError 를 던져
+      // 「어느 토큰이 없는지」가 사라진다. 존재를 먼저 확인해야 메시지가 살아남는다.
+      expect(value, `--n${i} 가 .dark 에 없다 — 라이트 값을 상속하고 있다`).toBeDefined();
+      expect(value, `--n${i} 가 hex 가 아니다: ${value}`).toMatch(/^#[0-9a-fA-F]{6}$/);
     });
   }
 
