@@ -39,6 +39,10 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  // ⚠️ <header> 가 아니라 **안쪽 바 컨테이너**에 단다. <header> 는 드로어까지 품고 있어서
+  //    거기에 달면 드로어 링크가 두 번 수집되고 indexOf 가 첫 번째만 찾아 순환이 어긋난다.
+  //    바 컨테이너와 드로어는 <header> 아래 형제라 서로를 포함하지 않는다.
+  const headerBarRef = useRef<HTMLDivElement>(null);
 
   // NAV 의 href 는 전부 `/…/` 로 끝난다(next.config.js 의 trailingSlash: true).
   // 그래서 `/blog/foo/` 같은 글 상세에서도 Blog 가 활성으로 잡힌다.
@@ -71,17 +75,29 @@ export function SiteHeader() {
       if (wide.matches) setMenuOpen(false);
     };
     closeIfWide(); // 마운트 시점의 현재 폭도 한 번 확인한다
-    wide.addEventListener("change", closeIfWide);
-    return () => wide.removeEventListener("change", closeIfWide);
+
+    // MediaQueryList.addEventListener 는 Safari/iOS 14+ 다. 구형은 addListener 뿐인데,
+    // 없는 메서드를 부르면 useEffect 안에서 TypeError 가 나고 React 가 루트를 언마운트한다.
+    // 이 컴포넌트는 site-shell 을 통해 전 페이지에 붙고 저장소에 에러 바운더리가 0건이므로,
+    // 그 결과는 「가둠」이 아니라 전 페이지 백지다. package.json 에 browserslist 가 없어
+    // Next 14 기본 타깃이 Safari 12 를 포함하고, SWC 는 DOM API 를 폴리필하지 않는다.
+    if (typeof wide.addEventListener === "function") {
+      wide.addEventListener("change", closeIfWide);
+      return () => wide.removeEventListener("change", closeIfWide);
+    }
+    wide.addListener(closeIfWide);
+    return () => wide.removeListener(closeIfWide);
   }, []);
 
   /**
    * 드로어가 열려 있는 동안에만 붙는다.
    *
-   * `fixed inset-0` 은 시각적으로만 덮을 뿐이라 뒤 콘텐츠(로고·테마 토글·EN)는
-   * 여전히 Tab 으로 닿는다. 그래서 순환 목록을 직접 만들어 가둔다.
-   * 목록은 [햄버거 버튼, …드로어 안의 a/button] 순 — DOM 순서와 같다.
-   * 버튼을 포함시키는 이유는 그것이 드로어 위에 떠서(z-50) 유일한 닫기 수단이기 때문이다.
+   * `fixed inset-0` 은 시각적으로만 덮을 뿐이라 페이지 본문은 여전히 Tab 으로 닿는다.
+   * 그래서 순환 목록을 직접 만들어 가둔다.
+   *
+   * 목록은 [헤더 바 안의 보이는 a/button, …드로어 안의 a/button] 순 — DOM 순서와 같다.
+   * 헤더를 포함시키는 이유는 sticky z-50 이 드로어(z-40) 위에 떠서 로고·테마 토글·EN 이
+   * **실제로 보이기** 때문이다. 보이면 순환에 있어야 한다.
    */
   useEffect(() => {
     if (!menuOpen) return;
@@ -99,15 +115,25 @@ export function SiteHeader() {
      */
     const isVisible = (el: HTMLElement) => el.offsetParent !== null;
 
-    const focusables = () => {
-      const drawer = drawerRef.current;
-      const inDrawer = drawer
-        ? Array.from(drawer.querySelectorAll<HTMLElement>("a, button"))
-        : [];
-      const button = menuButtonRef.current;
-      const all = button ? [button as HTMLElement].concat(inDrawer) : inDrawer;
-      return all.filter(isVisible);
-    };
+    const collect = (root: HTMLElement | null) =>
+      root ? Array.from(root.querySelectorAll<HTMLElement>("a, button")) : [];
+
+    /**
+     * 헤더 바와 드로어 **양쪽**에서 모은다.
+     *
+     * 드로어는 z-40 인데 헤더는 sticky z-50 이라 헤더가 드로어 **위에** 뜬다.
+     * 그래서 드로어가 열려 있어도 로고 · 테마 토글 · EN 링크(640–767px 에서 sm:inline)가
+     * 화면에 보인다. 보이는데 탭으로 못 가는 컨트롤을 남기지 않는다.
+     *
+     * 폭별 분기를 손으로 짜지 않는다 — isVisible 이 대신 걸러 준다.
+     * 데스크톱 내비는 `hidden md:flex` 라 모바일에서, EN 링크는 `hidden sm:inline` 이라
+     * 640px 미만에서, 햄버거는 `md:hidden` 이라 768px 이상에서 저절로 빠진다.
+     *
+     * 순서는 DOM 순서 그대로다 — 헤더 바 결과 뒤에 드로어 결과를 잇는다.
+     * 햄버거 버튼은 헤더 바 **안에** 있으므로 따로 앞에 붙이지 않는다(붙이면 중복된다).
+     */
+    const focusables = () =>
+      collect(headerBarRef.current).concat(collect(drawerRef.current)).filter(isVisible);
 
     // 열릴 때는 드로어 안 첫 항목으로 옮긴다(버튼이 아니라).
     const first = drawerRef.current?.querySelector<HTMLElement>("a, button");
@@ -171,7 +197,10 @@ export function SiteHeader() {
         scrolled ? "bg-n2 border-b border-n4" : "bg-transparent border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div
+        ref={headerBarRef}
+        className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
+      >
         <Link
           href="/"
           className={cn(
