@@ -8,7 +8,9 @@ import { ThesisSummaryDialog } from "@/components/thesis-summary-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { experiences } from "@/data/experience";
 import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
+import { projects } from "@/data/projects";
 import { getPostSummaries } from "@/lib/blog/loader";
 import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
 import type { PostSummary } from "@/lib/blog/types";
@@ -248,137 +250,33 @@ export default function Home({ featuredPosts }: HomeProps) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">경력</h2>
             <div className="space-y-8">
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <CardTitle className="text-xl">커머스개발실장</CardTitle>
-                      <CardDescription className="text-blue-600 dark:text-blue-400 font-medium">(주)야나두 a kakao company (구 카카오키즈)</CardDescription>
+              {experiences.map((exp) => (
+                <Card key={`${exp.company}-${exp.period}`} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <CardTitle className="text-xl">{exp.role}</CardTitle>
+                        <CardDescription className={`${exp.companyClass} font-medium`}>{exp.company}</CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Badge variant="secondary">{exp.period}</Badge>
+                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{exp.duration}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="secondary">2022.02 - 2026.07</Badge>
-                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 6개월</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">기획, UI/UX, 프론트, 백엔드, 앱, 데브옵스 포지션의 인력(20~30명)으로 야나두 전반적인 서비스 개발 총괄</p>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-                    <li className="flex items-start">
-                      <span className="text-blue-500 dark:text-blue-400 mr-2">•</span>
-                      다양한 챗봇 형태의 AI 기술 서비스 개발 및 런칭
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-500 dark:text-blue-400 mr-2">•</span>
-                      교육&커머스 도메인 서비스 개발 총괄
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-500 dark:text-blue-400 mr-2">•</span>
-                      풀스택 개발팀 리딩 및 프로젝트 관리
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <CardTitle className="text-xl">Senior 엔지니어 & PM</CardTitle>
-                      <CardDescription className="text-green-600 dark:text-green-400 font-medium">SK Broadband (AI 서비스 개발스쿼드/미디어클라우드스쿼드)</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="secondary">2017.04 - 2021.06</Badge>
-                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 3개월</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">BTV 백엔드 개발 매니저 (PM)로 검색, 딥메타, NUGU 음성 AI 연동, CMS, 로그연동 개인화, 통합이미지플랫폼 등 다양한 서비스 개발</p>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-                    <li className="flex items-start">
-                      <span className="text-green-500 dark:text-green-400 mr-2">•</span>
-                      N-Screen 백엔드 연동 서비스를 위한 Spring Boot / Elasticsearch 기반 API 개발
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 dark:text-green-400 mr-2">•</span>
-                      검색 시스템 개발 / 추천 서비스 API 개발 및 ELK Stack 구축
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 dark:text-green-400 mr-2">•</span>
-                      대용량 데이터 처리 및 분석을 위한 Kafka Consumer, ELK 구성 데이터 연동 적재모듈 개발
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 dark:text-green-400 mr-2">•</span>
-                      차세대 CMS(NCMS) 재구축 발주사 PM — MSA 설계·검토 및 오픈 조율
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <CardTitle className="text-xl">CMS 개발 파트 리드</CardTitle>
-                      <CardDescription className="text-purple-600 dark:text-purple-400 font-medium">CJ Hellovision (TVING 서비스개발팀)</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="secondary">2012.06 - 2017.04</Badge>
-                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">4년 11개월</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">TVING CMS 개발 파트 리드로 CMS, 검색, 이미지, 미디어트랜스코딩 등 N-Screen 서비스 개발</p>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-                    <li className="flex items-start">
-                      <span className="text-purple-500 dark:text-purple-400 mr-2">•</span>
-                      Spring Framework 기반 CMS 개발
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-purple-500 dark:text-purple-400 mr-2">•</span>
-                      검색 시스템 / 랭킹추천 서비스 API 개발
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-purple-500 dark:text-purple-400 mr-2">•</span>
-                      N-Screen 통합API 개발을 위한 MongoDB 기반 API 개발
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-purple-500 dark:text-purple-400 mr-2">•</span>
-                      이미지 resizing 서버 개발
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <CardTitle className="text-xl">시스템 개발</CardTitle>
-                      <CardDescription className="text-orange-600 dark:text-orange-400 font-medium">쌍용정보통신 (통신연구소/뉴미디어기술팀)</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="secondary">2005.11 - 2012.06</Badge>
-                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">6년 8개월</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">KT 가입자계 통합보안 관제시스템 개발 및 KT QOOK TV A-MOC 플랫폼 개발</p>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-                    <li className="flex items-start">
-                      <span className="text-orange-500 dark:text-orange-400 mr-2">•</span>
-                      KT 가입자계 통합보안관리시스템(ISM) 프로젝트 수행
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-orange-500 dark:text-orange-400 mr-2">•</span>
-                      KT QOOK TV A-MOC 플랫폼 개발 프로젝트 수행
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">{exp.summary}</p>
+                    <ul className="space-y-2 text-slate-600 dark:text-slate-300">
+                      {exp.highlights.map((highlight) => (
+                        <li key={highlight} className="flex items-start">
+                          <span className={`${exp.bulletClass} mr-2`}>•</span>
+                          {highlight}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
           </SectionReveal>
@@ -389,93 +287,45 @@ export default function Home({ featuredPosts }: HomeProps) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">주요 프로젝트</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="absolute inset-0 bg-[url('/images/yanadoo-logo.png')] bg-center bg-no-repeat bg-contain opacity-40"></div>
-                  <span className="text-white text-2xl font-bold relative z-10 drop-shadow-lg">야나두</span>
-                </div>
-                <CardHeader>
-                  <CardTitle>야나두 AI 서비스</CardTitle>
-                  <CardDescription>교육&커머스 도메인의 AI 챗봇 서비스 개발</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary">커머스</Badge>
-                    <Badge variant="secondary">AI</Badge>
-                    <Badge variant="secondary">챗봇</Badge>
-                    <Badge variant="secondary">교육</Badge>
-                    <Badge variant="secondary">B2B</Badge>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button asChild variant="outline" className="w-full">
-                      <a href="https://www.yanadoo.co.kr/AIYanadoo" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        AI 맞춤학습
-                      </a>
-                    </Button>
-                    <Button asChild variant="outline" className="w-full">
-                      <a href="https://www.yanadoo.co.kr/AIContents" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        서비스 보기
-                      </a>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="h-48 bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="absolute inset-0 bg-[url('/images/skb-logo.png')] bg-center bg-no-repeat bg-contain opacity-40"></div>
-                  <span className="text-white text-2xl font-bold relative z-10 drop-shadow-lg">BTV</span>
-                </div>
-                <CardHeader>
-                  <CardTitle>SK Broadband BTV</CardTitle>
-                  <CardDescription>BTV 백엔드 연동 CMS/검색/추천/이미지 시스템 개발</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary">OTT</Badge>
-                    <Badge variant="secondary">검색</Badge>
-                    <Badge variant="secondary">추천</Badge>
-                    <Badge variant="secondary">이미지</Badge>
-                    <Badge variant="secondary">CMS</Badge>
-                  </div>
-                  <Button asChild variant="outline" className="w-full">
-                    <a href="https://www.bworld.co.kr/product/btv/mobile_btv.do?menu_id=P03050200" target="_blank" rel="noopener noreferrer">
+              {projects.map((project) => {
+                // 링크가 2개면 grid-cols-2 로 감싸고, 1개면 감싸지 않는다 — 기존 마크업 그대로다.
+                const linkButtons = project.links.map((link) => (
+                  <Button key={link.href} asChild variant="outline" className="w-full">
+                    <a href={link.href} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-4 w-4 mr-2" />
-                      서비스 보기
+                      {link.label}
                     </a>
                   </Button>
-                </CardContent>
-              </Card>
+                ));
 
-              <Card className="hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="h-48 bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="absolute inset-0 bg-[url('/images/tving-logo.png')] bg-center bg-no-repeat bg-contain opacity-40"></div>
-                  <span className="text-white text-2xl font-bold relative z-10 drop-shadow-lg">TVING</span>
-                </div>
-                <CardHeader>
-                  <CardTitle>TVING</CardTitle>
-                  <CardDescription>N-Screen 통합 CMS 및 검색/추천 서비스 개발</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary">N-Screen</Badge>
-                    <Badge variant="secondary">CMS</Badge>
-                    <Badge variant="secondary">검색</Badge>
-                    <Badge variant="secondary">API</Badge>
-                  </div>
-                  <Button asChild variant="outline" className="w-full">
-                    <a href="https://www.tving.com" target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      서비스 보기
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
+                return (
+                  <Card key={project.title} className="hover:shadow-lg transition-shadow overflow-hidden">
+                    <div className={`h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center relative overflow-hidden`}>
+                      <div className="absolute inset-0 bg-black/10"></div>
+                      {project.logoClass ? (
+                        <div className={`absolute inset-0 ${project.logoClass} bg-center bg-no-repeat bg-contain opacity-40`}></div>
+                      ) : null}
+                      <span className="text-white text-2xl font-bold relative z-10 drop-shadow-lg">{project.label}</span>
+                    </div>
+                    <CardHeader>
+                      <CardTitle>{project.title}</CardTitle>
+                      <CardDescription>{project.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary">{tag}</Badge>
+                        ))}
+                      </div>
+                      {project.links.length > 1 ? (
+                        <div className="grid grid-cols-2 gap-2">{linkButtons}</div>
+                      ) : (
+                        linkButtons
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
           </SectionReveal>
