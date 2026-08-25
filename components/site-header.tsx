@@ -38,7 +38,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const drawerRef = useRef<HTMLElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   // NAV 의 href 는 전부 `/…/` 로 끝난다(next.config.js 의 trailingSlash: true).
   // 그래서 `/blog/foo/` 같은 글 상세에서도 Blog 가 활성으로 잡힌다.
@@ -54,6 +54,28 @@ export function SiteHeader() {
   }, []);
 
   /**
+   * md 경계를 넘어가면 드로어를 강제로 닫는다. (근본 수정)
+   *
+   * 드로어도 햄버거 버튼도 `md:hidden` 이라, 모바일 폭에서 연 채로 기기를 회전하거나
+   * (iPhone Pro Max 랜드스케이프 932px) 창을 넓히면 **둘 다 동시에 display:none 이 되는데
+   * menuOpen 은 true 로 남는다.** 그러면 body.overflow = "hidden" 이 유지돼 전 사이트
+   * 스크롤이 잠기고, 닫을 수 있는 보이는 컨트롤이 하나도 없어진다. 탈출구가 Escape 뿐이라
+   * 마우스·터치 사용자는 갇힌다.
+   *
+   * ⚠️ 768px 은 Tailwind 기본 `md` 브레이크포인트다. tailwind.config.js 는 지금
+   *    screens 를 재정의하지 않는다 — 재정의하는 순간 이 값도 같이 바꿔야 한다.
+   */
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 768px)");
+    const closeIfWide = () => {
+      if (wide.matches) setMenuOpen(false);
+    };
+    closeIfWide(); // 마운트 시점의 현재 폭도 한 번 확인한다
+    wide.addEventListener("change", closeIfWide);
+    return () => wide.removeEventListener("change", closeIfWide);
+  }, []);
+
+  /**
    * 드로어가 열려 있는 동안에만 붙는다.
    *
    * `fixed inset-0` 은 시각적으로만 덮을 뿐이라 뒤 콘텐츠(로고·테마 토글·EN)는
@@ -64,13 +86,27 @@ export function SiteHeader() {
   useEffect(() => {
     if (!menuOpen) return;
 
+    /**
+     * 보이는 요소만 센다. (방어 수정 — 위 matchMedia 가 실패해도 Tab 을 죽이지 않는다)
+     *
+     * `offsetParent === null` 이면 조상 어딘가가 display:none 이다. 리사이즈로
+     * 드로어와 버튼이 함께 감춰진 순간에도 안 보이는 요소에 focus() 하지 않게 된다.
+     *
+     * offsetParent 가 null 이 되는 다른 경우는 「요소 자신이 position: fixed」인데
+     * 여기 해당하는 요소가 없다 — 드로어 안 항목은 fixed 조상 **안의 static 자식**이라
+     * offsetParent 가 그 fixed 요소이고, 햄버거 버튼은 sticky 헤더 안의 relative 요소라
+     * offsetParent 가 헤더다. 둘 다 non-null 이다.
+     */
+    const isVisible = (el: HTMLElement) => el.offsetParent !== null;
+
     const focusables = () => {
       const drawer = drawerRef.current;
       const inDrawer = drawer
         ? Array.from(drawer.querySelectorAll<HTMLElement>("a, button"))
         : [];
       const button = menuButtonRef.current;
-      return button ? [button as HTMLElement].concat(inDrawer) : inDrawer;
+      const all = button ? [button as HTMLElement].concat(inDrawer) : inDrawer;
+      return all.filter(isVisible);
     };
 
     // 열릴 때는 드로어 안 첫 항목으로 옮긴다(버튼이 아니라).
@@ -85,6 +121,8 @@ export function SiteHeader() {
       if (event.key !== "Tab") return;
 
       const items = focusables();
+      // 보이는 항목이 하나도 없다 → preventDefault() 하지 않고 브라우저 기본 동작에 넘긴다.
+      // 여기서 가두면 Tab 이 전역에서 죽는다. 죽은 Tab 보다 기본 동작이 낫다.
       if (items.length === 0) return;
 
       const head = items[0];
@@ -166,6 +204,9 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           {/* 설계서 §4 의 우측 순서는 「검색(⌘K) · 테마 토글 · /en」이다.
               검색은 단계 3까지 미노출이므로 이 자리(토글 왼쪽)를 비워 둔다. */}
+          {/* ⓘ ThemeToggle 은 props 를 받지 않아 FOCUS_RING 을 넘길 수 없다. 그래서 이것만
+              Button 기본값인 ring-1 ring-ring(= n6)이고 나머지는 ring-2 ring-signal 이다.
+              램프 안이라 위반은 아니고 일관성 문제다 — 이걸 위해 인터페이스를 바꾸지 않는다. */}
           <ThemeToggle />
           <Link
             href="/en/"
@@ -206,37 +247,46 @@ export function SiteHeader() {
            항상 렌더하고 열림 여부는 클래스로만 감춘다.
         z-40 은 스킵 링크(z-[60])보다 낮다 — 스킵 링크가 드로어에 가리면 안 된다.
       */}
-      <nav
+      <div
         id="mobile-nav"
         ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
         aria-label="모바일 메뉴"
         className={cn(
           "fixed inset-0 z-40 bg-n0 md:hidden",
           menuOpen ? "block" : "hidden",
         )}
       >
-        <ul className="mx-auto max-w-6xl space-y-4 px-4 pb-8 pt-24 sm:px-6">
-          {/* 좁은 화면에서는 헤더의 EN 링크가 숨으므로(sm:inline) 드로어 안에 있어야 한다. */}
-          {[...NAV, { href: "/en/", label: "EN" }].map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                className={cn(
-                  "block rounded-sm border-l-2 pl-4 text-card-title transition-interactive break-keep",
-                  FOCUS_RING,
-                  isActive(item.href)
-                    ? "border-signal text-n9"
-                    : "border-transparent text-n7 hover:text-n9",
-                )}
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        {/*
+          dialog 를 <nav> 에 직접 얹지 않고 바깥 <div> 로 감쌌다.
+          role 을 덮어쓰면 navigation 랜드마크가 사라져 랜드마크 목록에서 메뉴를 못 찾는다.
+          감싸면 「대화 상자 안의 탐색」이라는 두 의미가 다 산다.
+        */}
+        <nav aria-label="모바일 메뉴">
+          <ul className="mx-auto max-w-6xl space-y-4 px-4 pb-8 pt-24 sm:px-6">
+            {/* 좁은 화면에서는 헤더의 EN 링크가 숨으므로(sm:inline) 드로어 안에 있어야 한다. */}
+            {[...NAV, { href: "/en/", label: "EN" }].map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={cn(
+                    "block rounded-sm border-l-2 pl-4 text-card-title transition-interactive break-keep",
+                    FOCUS_RING,
+                    isActive(item.href)
+                      ? "border-signal text-n9"
+                      : "border-transparent text-n7 hover:text-n9",
+                  )}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 }
