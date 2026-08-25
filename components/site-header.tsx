@@ -252,7 +252,8 @@ export function SiteHeader() {
         ref={drawerRef}
         role="dialog"
         aria-modal="true"
-        aria-label="모바일 메뉴"
+        /* 안쪽 <nav> 와 이름이 겹치면 스크린리더가 같은 문구를 두 번 읽는다. */
+        aria-label="메뉴"
         className={cn(
           "fixed inset-0 z-40 bg-n0 md:hidden",
           menuOpen ? "block" : "hidden",
