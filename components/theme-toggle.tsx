@@ -10,17 +10,14 @@ function applyTheme(mode: "light" | "dark") {
 }
 
 export function ThemeToggle() {
-  const [mode, setMode] = useState<"light" | "dark">("light");
+  const [mode, setMode] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const stored = typeof window !== "undefined" ? (localStorage.getItem(STORAGE_KEY) as "light" | "dark" | null) : null;
-    const prefersDark =
-      typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initial = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
-    setMode(initial);
-    applyTheme(initial);
+    // 기본값 판단은 _document.tsx 의 THEME_SCRIPT 가 이미 끝냈다.
+    // 여기서 다시 계산하면 두 곳의 규칙이 어긋난다. DOM 을 읽는다.
+    setMode(document.documentElement.classList.contains("dark") ? "dark" : "light");
   }, []);
 
   const toggle = useCallback(() => {
