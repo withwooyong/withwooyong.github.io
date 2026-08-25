@@ -31,7 +31,7 @@ export function ThemeToggle() {
       type="button"
       variant="outline"
       size="icon"
-      className="shrink-0 border-slate-200 dark:border-slate-600"
+      className="shrink-0"
       onClick={toggle}
     >
       <Sun className="hidden h-4 w-4 dark:block" />
