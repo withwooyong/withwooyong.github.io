@@ -57,49 +57,43 @@
     --signal-soft: rgba(251, 191, 36, 0.15);
   }
 
+  /* ── shadcn 토큰 — 위 램프의 별칭이다 (설계서 §5.3 안 B) ───────────
+   *
+   * 값을 두 벌 두지 않는다. --n* 가 .dark 에서 재정의되므로 별칭은 저절로 따라온다.
+   * 그래서 이 블록은 :root 한 벌뿐이고, .dark 에는 램프에 없는 것만 적는다.
+   *
+   * ⚠ --accent 는 Signal 이 아니다. shadcn 에서 outline·ghost 버튼의
+   *    호버 배경으로 쓰인다(components/ui/button.tsx).
+   */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --background: var(--n0);
+    --foreground: var(--n9);
+    --card: var(--n1);
+    --card-foreground: var(--n9);
+    --popover: var(--n1);
+    --popover-foreground: var(--n9);
+    --primary: var(--n9);
+    --primary-foreground: var(--n0);
+    --secondary: var(--n3);
+    --secondary-foreground: var(--n9);
+    --muted: var(--n3);
+    --muted-foreground: var(--n6);
+    --accent: var(--n3);
+    --accent-foreground: var(--n9);
+    --destructive: #dc2626;
+    --destructive-hover: #b91c1c;
+    --destructive-foreground: #fafafa;
+    --border: var(--n4);
+    --input: var(--n4);
+    --ring: var(--n6);
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    /* 램프에 없는 것만. 나머지는 --n* 재정의로 따라온다. */
+    --destructive: #7f1d1d;
+    --destructive-hover: #991b1b;
+    --destructive-foreground: #fafafa;
   }
 }
 

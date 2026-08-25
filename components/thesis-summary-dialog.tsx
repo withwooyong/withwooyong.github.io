@@ -77,7 +77,7 @@ export function ThesisSummaryDialog() {
             </DialogDescription>
           </DialogHeader>
           <div
-            className="rounded-md border border-border/80 bg-muted/30 px-4 py-3 text-sm leading-relaxed text-foreground"
+            className="rounded-md border border-n4 bg-n3 px-4 py-3 text-sm leading-relaxed text-foreground"
             aria-live="polite"
             aria-busy={typing}
           >
