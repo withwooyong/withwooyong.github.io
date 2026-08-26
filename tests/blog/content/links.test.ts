@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readPosts } from "@/lib/blog/loader";
 import { headingIds } from "@/lib/toc";
-import type { Post } from "@/lib/blog/types";
+import { outboundKeys, postKey } from "@/lib/atlas/links";
 
 /**
  * 링크 지형 검사.
@@ -12,29 +12,14 @@ import type { Post } from "@/lib/blog/types";
  */
 
 /**
- * 본문의 /blog/<category>/<slug>/ 링크를 뽑는다. 앵커(#)와 질의(?)는 떼어 낸다.
- *
- * 꼬리의 `(?:[#?][^)]*)?` 를 지우지 마라. `[^)#?]` 가 #·? 를 배제하므로 이 그룹이 없으면
- * 앵커 링크는 「떼어 내지는」 것이 아니라 **매칭 자체가 실패해 통째로 사라진다.**
- * 그러면 죽은 링크 검사와 inbound 계수가 그 링크를 조용히 빠뜨린다.
- *
- * tsconfig의 `target`이 es5라 이터레이터를 for-of로 직접 돌면 TS2802가 난다.
- * vitest는 esbuild로 타입을 벗겨 내 통과시키지만 `tsc --noEmit`은 잡는다 —
- * 그래서 이 파일의 순회는 전부 Array.from으로 배열화한 뒤 돈다.
+ * ⚠️ `outboundKeys` · `postKey` 는 2026-08-26 에 `lib/atlas/links.ts` 로 승격됐다.
+ *    아틀라스의 엣지 생성이 **같은 함수**를 쓴다 — 따로 구현하면 그때부터
+ *    검사와 엣지가 어긋날 수 있다(설계서 §7.4). 정규식을 고칠 일이 있으면 그쪽에서 고쳐라.
+ *    여기서 다시 정의하지 마라.
  */
-function outboundKeys(post: Post): string[] {
-  const keys: string[] = [];
-  for (const m of Array.from(post.body.matchAll(/\]\(\/blog\/([^)#?]+?)\/?(?:[#?][^)]*)?\)/g))) {
-    const target = m[1].replace(/\/$/, "");
-    // <category>/<slug> 두 조각이 아닌 것은 카테고리 인덱스 링크다. 편 대 편 관계가 아니다.
-    if (target.split("/").length === 2) keys.push(target);
-  }
-  return keys;
-}
 
 const posts = readPosts();
-const key = (p: Post) => `${p.categorySlug}/${p.slug}`;
-const published = new Set(posts.map(key));
+const published = new Set(posts.map(postKey));
 
 describe("링크 무결성", () => {
   it("발행본을 읽었다", () => {
@@ -46,7 +31,7 @@ describe("링크 무결성", () => {
     const dead: string[] = [];
     for (const post of posts) {
       for (const target of outboundKeys(post)) {
-        if (!published.has(target)) dead.push(`${key(post)} -> ${target}`);
+        if (!published.has(target)) dead.push(`${postKey(post)} -> ${target}`);
       }
     }
     expect(dead, `죽은 링크 ${dead.length}건`).toEqual([]);
@@ -63,7 +48,7 @@ describe("링크 무결성", () => {
         const href = m[1];
         const path = href.split(/[#?]/)[0];
         // 판정은 경로부로, 보고는 원본 전체로. 경로부만 적으면 파일에서 찾지 못한다.
-        if (!path.endsWith("/")) bad.push(`${key(post)}: ${href}`);
+        if (!path.endsWith("/")) bad.push(`${postKey(post)}: ${href}`);
       }
     }
     expect(bad, `슬래시 누락 ${bad.length}건`).toEqual([]);
@@ -72,18 +57,18 @@ describe("링크 무결성", () => {
 
 describe("링크 고립", () => {
   it("들어오는 링크가 없는 편이 없다 (지도편 제외)", () => {
-    const inbound = new Map<string, number>(posts.map((p) => [key(p), 0]));
+    const inbound = new Map<string, number>(posts.map((p) => [postKey(p), 0]));
 
     for (const post of posts) {
       // 같은 편을 여러 번 가리켜도 관계는 하나다.
       for (const target of Array.from(new Set(outboundKeys(post)))) {
-        if (target === key(post)) continue;
+        if (target === postKey(post)) continue;
         if (inbound.has(target)) inbound.set(target, inbound.get(target)! + 1);
       }
     }
 
     // 지도편은 카테고리 전체를 가리키는 것이 목적이라 inbound 0이 정상이다.
-    const maps = new Set(posts.filter((p) => p.role === "map").map(key));
+    const maps = new Set(posts.filter((p) => p.role === "map").map(postKey));
     const isolated = Array.from(inbound)
       .filter(([k, n]) => n === 0 && !maps.has(k))
       .map(([k]) => k);
@@ -185,7 +170,7 @@ describe("카테고리 고립", () => {
   it("모든 카테고리가 바깥과 양방향으로 이어져 있다", () => {
     const nodes: Node[] = posts.map((p) => ({
       cat: p.categorySlug,
-      id: key(p),
+      id: postKey(p),
       links: outboundKeys(p).filter((t) => published.has(t)),
     }));
 
@@ -332,7 +317,7 @@ describe("앵커 실존", () => {
   });
 
   it("모든 앵커 링크가 대상 편의 헤딩에 닿는다", () => {
-    const docs: Doc[] = posts.map((p) => ({ id: key(p), body: p.body }));
+    const docs: Doc[] = posts.map((p) => ({ id: postKey(p), body: p.body }));
 
     // 하나도 못 뽑았다면 아래 「0건」은 깨끗하다는 뜻이 아니라 **안 봤다**는 뜻이다.
     // 자기검사는 합성 링크만 쓰므로 실제 문법을 놓치는 경우를 잡지 못한다.
