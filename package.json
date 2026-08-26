@@ -18,6 +18,8 @@
     "check-forbidden:built": "node scripts/check-forbidden.mjs --built",
     "check-pagefind": "node scripts/check-pagefind.mjs",
     "check-pagefind:verify": "node scripts/check-pagefind.mjs --self-test",
+    "probe-search": "node scripts/probe-search.mjs",
+    "probe-search:verify": "node scripts/probe-search.mjs --self-test",
     "check-baseline": "node scripts/check-baseline.mjs",
     "check-baseline:update": "node scripts/check-baseline.mjs --update",
     "check-counts": "node scripts/check-counts.mjs",

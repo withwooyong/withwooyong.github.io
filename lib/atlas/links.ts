@@ -11,9 +11,10 @@ import type { Post } from "@/lib/blog/types";
  * vitest는 esbuild로 타입을 벗겨 내 통과시키지만 `tsc --noEmit`은 잡는다 —
  * 그래서 이 파일의 순회는 전부 Array.from으로 배열화한 뒤 돈다.
  *
- * ⚠️ 이 함수는 링크 무결성 검사(tests/blog/content/links.test.ts)와
- *    아틀라스 엣지 생성(lib/atlas/build.ts)이 **함께 쓴다.**
- *    두 곳이 같은 코드를 보므로 엣지와 검사가 어긋날 수 없다 — 그게 승격한 이유다(설계서 §7.4).
+ * ⚠️ 지금 이 함수를 쓰는 곳은 링크 무결성 검사(tests/blog/content/links.test.ts) **하나뿐이다.**
+ *    승격한 이유는 앞으로 생길 아틀라스 엣지 생성(lib/atlas/build.ts, T8)이 **같은 코드를 보게**
+ *    하기 위해서다 — 따로 구현하면 그때부터 엣지와 검사가 어긋날 수 있다(설계서 §7.4).
+ *    T8 이 끝나면 이 문단을 「두 곳이 함께 쓴다」로 고쳐라. 그전까지는 이게 사실이 아니다.
  */
 export function outboundKeys(post: Post): string[] {
   const keys: string[] = [];

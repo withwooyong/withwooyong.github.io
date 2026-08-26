@@ -13,22 +13,43 @@ const MOBILE = { width: 390, height: 844 }; // iPhone 14 세로
 const LANDSCAPE = { width: 932, height: 430 }; // iPhone 14 Pro Max 가로 — md(768) 를 넘는다
 
 /**
- * 게이트가 여는 경로 전부.
+ * 셸 검사들이 방문하는 경로. **아래 `gotoWithShell` 호출은 전부 이 상수를 넘긴다.**
  *
- * ⚠️ `gotoWithShell` 에 새 경로를 넘길 때는 **반드시 여기에도 넣어라.**
- *    2026-08-26 실측: 센티넬이 `/` 하나만 볼 때, `/work/` 에 셸을 안 붙이면
- *    asPath 검사가 **영원히 조용한 skip** 이 되고 빨간 것이 하나도 없었다.
- *    (`/` 표지 주입 + `/work/` 를 표지 없이 만든 상태 → 센티넬 초록, asPath skip.)
- *    셸이 붙는 시점이 경로마다 다르므로 센티넬도 경로마다 있어야 한다.
+ * ⚠️ 경로를 문자열로 직접 적지 마라. 센티넬(`SHELL_PATHS`)과 검사가 **서로 다른 경로**를
+ *    보는 순간 이 파일의 안전장치가 통째로 무력해진다. 상수 하나를 공유하는 것이
+ *    그 사고를 **구조적으로** 막는 유일한 방법이다.
  *
- *    2026-08-26: `/` 와 `/work/` 를 빼고 `/atlas/` 하나로 옮겼다.
- *    - `/` 는 아틀라스·검색 계획서의 GC-11 이 `pages/index.tsx` 수정을 금지해 셸이 안 붙는다.
- *    - `/work/` 는 선행 계획서 T11 로 이월돼 라우트 자체가 없다.
- *    셸이 처음 붙는 곳은 `/atlas/` 이고 그 태스크는 아틀라스·검색 계획서 T11 이다.
- *    그때까지 이 센티넬 2건(desktop·mobile)이 빨간 것이 정상이며, 그 빨강이
- *    아래 검사들이 조용히 skip 되고 있다는 사실을 드러내는 유일한 장치다.
+ * 이 리포는 그 사고를 두 방향으로 다 겪었다.
+ *   - 2026-08-26 ①: 센티넬이 `/` 하나만 볼 때 `/work/` 에 셸을 안 붙이면
+ *     asPath 검사가 **영원히 조용한 skip** 이 되고 빨간 것이 하나도 없었다.
+ *   - 2026-08-26 ②: 센티넬만 `/atlas/` 로 옮기고 검사 8곳은 `/`·`/work/` 에 두었다.
+ *     이러면 `/atlas/` 에 셸이 붙는 순간 **센티넬 2건이 초록이 되는데 검사 8건은 그대로 잠든다** —
+ *     초록이 「다 켜졌다」는 거짓 신호를 준다. ①의 방향만 뒤집은 같은 사고다.
+ *
+ * 셸이 처음 붙는 곳은 `/atlas/` 이고 그 태스크는 아틀라스·검색 계획서 T11 이다.
+ * 그때까지 센티넬 2건(desktop·mobile)이 빨간 것이 정상이며, 그 빨강이
+ * 아래 검사들이 조용히 skip 되고 있다는 사실을 드러내는 유일한 장치다.
+ *
+ * `/` 는 후보가 될 수 없다 — GC-11 이 `pages/index.tsx` 수정을 금지해 셸이 붙지 않는다.
  */
-const SHELL_PATHS = ["/atlas/"];
+const SHELL_HOME = "/atlas/";
+const SHELL_PATHS = [SHELL_HOME];
+
+/**
+ * 지금 내비에 있어야 하는 것과 없어야 하는 것. `components/site-header.tsx` 의 `NAV` 와 짝이다.
+ *
+ * ⚠️ `NAV` 를 고치면 **여기도 고쳐라.** 2026-08-26 에 `NAV` 에서 Work·About 을 뺐는데
+ *    이 검사가 여전히 셋을 요구하고 있었다 — 셸이 붙는 순간 빨개질 시한폭탄이었고,
+ *    skip 중이라 아무에게도 안 보였다.
+ *
+ * 라우트가 생겨 내비에 올릴 때는 `ABSENT` 에서 `PRESENT` 로 **옮기기만** 하면 된다.
+ */
+const NAV_PRESENT = ["Blog"];
+const NAV_ABSENT = [
+  "Work", // 선행 계획서 T11 로 이월
+  "About", // 선행 계획서 T12 로 이월
+  "Atlas", // 아틀라스·검색 계획서 T12 에서 올린다
+];
 
 /**
  * 게이트를 통과하지 **않는** 유일한 검사들. 이 파일의 skip 을 감시하는 것이 임무다.
@@ -50,32 +71,45 @@ test.describe("셸 센티넬 (게이트를 통과하지 않는다)", () => {
 });
 
 test.describe("헤더 (셸 부착 시 켜짐)", () => {
-  test("내비가 Work · Blog · About 셋을 노출한다", async ({ page }) => {
-    await gotoWithShell(page, "/");
+  /**
+   * ⚠️ 항목을 여기에 문자열로 적지 마라. `NAV_PRESENT` 를 돈다.
+   *    2026-08-26 실측: `site-header.tsx` 의 `NAV` 에서 Work·About 을 뺐는데 이 검사는
+   *    여전히 셋을 요구하고 있었다. skip 중이라 아무도 못 봤고, 셸이 붙는 순간
+   *    빨개질 시한폭탄이었다 — **skip 은 초록의 얼굴을 하고 있다.**
+   */
+  test("내비가 NAV 배열대로 노출한다", async ({ page }) => {
+    await gotoWithShell(page, SHELL_HOME);
     const nav = page.getByRole("navigation", { name: "주요 메뉴" });
-    await expect(nav.getByRole("link", { name: "Work" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Blog" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "About" })).toBeVisible();
+    for (const label of NAV_PRESENT) {
+      await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
+    }
   });
 
   /**
-   * 미완성 라우트는 내비에 없다. `/atlas` 는 단계 4, 검색은 단계 3 이다.
+   * 미완성·이월 라우트는 내비에 없다.
    *
    * ⚠️ 이건 **0 을 기대하는 검사**라 페이지가 통째로 비어도 통과한다.
    *    게이트가 없으면 「셸이 없어서 0」과 「Atlas 가 없어서 0」이 같은 초록이 된다.
-   *    이 테스트가 의미를 갖는 것은 게이트를 통과했을 때뿐이다.
+   *    이 테스트가 의미를 갖는 것은 게이트를 통과했을 때뿐이다. 그래서 위 검사와 **쌍이다** —
+   *    위가 「있어야 할 것이 있다」를 보므로 「페이지가 비어서 0」이면 위가 빨개진다.
    *
    * ⚠️ `<header>` 로 스코프한다. 페이지 전체를 보면 **본문**에 Atlas 를 소개하는 링크가
    *    생기는 순간 거짓 빨강이 된다 — 이 규칙이 막으려는 것은 죽은 **내비 항목**이지
    *    아틀라스라는 단어가 아니다.
+   *
+   * ⚠️ `exact: true` 를 지우지 마라. `getByRole(role, { name })` 은 기본이 **부분 문자열**이라
+   *    접근명이 길어져도 초록이다(2026-08-26 대조군 실측).
    */
-  test("미완성 라우트는 내비에 없다", async ({ page }) => {
-    await gotoWithShell(page, "/");
-    await expect(page.locator("header").getByRole("link", { name: "Atlas" })).toHaveCount(0);
+  test("미완성·이월 라우트는 내비에 없다", async ({ page }) => {
+    await gotoWithShell(page, SHELL_HOME);
+    const header = page.locator("header");
+    for (const label of NAV_ABSENT) {
+      await expect(header.getByRole("link", { name: label, exact: true })).toHaveCount(0);
+    }
   });
 
   test("본문 건너뛰기 링크가 포커스에서 드러난다", async ({ page }) => {
-    await gotoWithShell(page, "/");
+    await gotoWithShell(page, SHELL_HOME);
     await page.keyboard.press("Tab");
     const skip = page.getByRole("link", { name: "본문으로 건너뛰기" });
     await expect(skip).toBeFocused();
@@ -94,7 +128,7 @@ test.describe("테마 토글 버튼 (셸 부착 시 켜짐)", () => {
    *    실제 원인은 CSS 다. 2026-08-26 실측으로 두 규칙이 산출물 CSS 에 있는 것은 확인했다.
    */
   test("누르면 라이트가 되고 리로드해도 유지된다", async ({ page }) => {
-    await gotoWithShell(page, "/");
+    await gotoWithShell(page, SHELL_HOME);
     await page.getByRole("button", { name: "라이트 모드로 전환" }).click();
     await expect(page.locator("html")).not.toHaveClass(/dark/);
     await page.reload();
@@ -125,7 +159,7 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
     page,
   }) => {
     await page.setViewportSize(MOBILE);
-    await gotoWithShell(page, "/");
+    await gotoWithShell(page, SHELL_HOME);
 
     await page.getByRole("button", { name: "메뉴 열기" }).click();
     await expect(page.locator("#mobile-nav")).toBeVisible();
@@ -171,7 +205,7 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
    */
   test("드로어가 열리면 Tab 이 헤더 바와 드로어를 한 바퀴로 묶는다", async ({ page }) => {
     await page.setViewportSize(MOBILE);
-    await gotoWithShell(page, "/");
+    await gotoWithShell(page, SHELL_HOME);
     await page.getByRole("button", { name: "메뉴 열기" }).click();
 
     // 열릴 때 포커스는 버튼이 아니라 드로어 첫 항목으로 간다
@@ -233,13 +267,18 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
   test("정적 HTML 과 하이드레이션 후의 활성 표시가 같다 (asPath 표류)", async ({ page }) => {
     // ⚠️ 게이트를 **맨 앞에** 둔다. 아래 단정을 먼저 쓰면 셸이 없는 동안 skip 이 아니라
     //    실패가 나고, 「아직 안 붙었다」가 「asPath 가 틀렸다」로 둔갑한다. 실제로 그렇게 났었다.
-    await gotoWithShell(page, "/work/");
+    //
+    // ⚠️ 이 검사만은 게이트를 통과해도 조건이 하나 더 필요하다 — `SHELL_HOME` 이 **NAV 에도**
+    //    있어야 활성 링크가 생긴다. 셸 부착(T11)과 NAV 등재(T12) 사이 한 구간에서는
+    //    이 1건이 **빨갛고 그것이 정상**이다. 그 빨강의 뜻은 「asPath 가 틀렸다」가 아니라
+    //    「셸은 붙였는데 NAV 에 아직 안 올렸다」다. T12 를 끝내면 초록이 된다.
+    await gotoWithShell(page, SHELL_HOME);
 
     // ① 하이드레이션 전 — JS 를 태우지 않고 문서 그대로 받는다
-    const res = await page.request.get("/work/");
+    const res = await page.request.get(SHELL_HOME);
     // ⚠️ 상태 코드를 먼저 본다. serve 는 404 에도 404.html 본문을 돌려주므로, 이게 없으면
     //    「페이지가 없다」가 「서버의 asPath 가 어긋난다」로 오진된다.
-    expect(res.ok(), "/work/ 가 200 이 아니다 — asPath 이전에 페이지가 없다").toBe(true);
+    expect(res.ok(), `${SHELL_HOME} 가 200 이 아니다 — asPath 이전에 페이지가 없다`).toBe(true);
 
     // 헤더는 데스크톱 내비와 드로어 **양쪽**에 같은 항목을 렌더한다. 그래서 개수가 아니라
     // 「활성으로 표시된 href 의 집합」을 본다 — 렌더 위치가 늘어도 안 깨지고,
@@ -250,14 +289,14 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
       "정적 HTML 에 활성 링크가 없다 — 서버의 asPath 가 NAV href 와 어긋난다",
     ).toBeGreaterThan(0);
     expect(
-      active.filter((href) => href !== "/work/"),
-      "활성으로 표시됐는데 /work/ 가 아닌 링크",
+      active.filter((href) => href !== SHELL_HOME),
+      `활성으로 표시됐는데 ${SHELL_HOME} 가 아닌 링크`,
     ).toEqual([]);
 
     // ② 하이드레이션 후 — 앞과 같은 값이어야 한다
     const current = page.locator('nav[aria-label="주요 메뉴"] a[aria-current="page"]');
     await expect(current).toHaveCount(1);
-    await expect(current).toHaveAttribute("href", "/work/");
+    await expect(current).toHaveAttribute("href", SHELL_HOME);
   });
 
   /**
@@ -269,7 +308,7 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
    */
   test("Escape 로 닫으면 스크롤이 풀리고 포커스가 햄버거로 돌아온다", async ({ page }) => {
     await page.setViewportSize(MOBILE);
-    await gotoWithShell(page, "/");
+    await gotoWithShell(page, SHELL_HOME);
 
     await page.getByRole("button", { name: "메뉴 열기" }).click();
     /*

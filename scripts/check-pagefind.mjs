@@ -21,8 +21,24 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-/** 글 수(156)보다 적으면 무언가 빠진 것이다. 목록 페이지까지 잡히므로 실제로는 242 근처다. */
-const MIN_PAGES = 100;
+/**
+ * 인덱스가 담아야 할 최소 페이지 수.
+ *
+ * 글이 156 편이고 카테고리·태그·페이지네이션까지 잡히므로 실제로는 242 다(2026-08-26 실측).
+ * **하한을 글 수에 맞춘다** — 이 값이 100 이던 시절에는 156 편 중 56 편이 인덱스에서
+ * 사라져도 초록이었고, 에러 메시지만 「글이 156 편이므로」라고 말하고 있었다.
+ * 근거로 든 숫자가 판정식에 없으면 그 메시지는 설명이 아니라 장식이다.
+ */
+const MIN_PAGES = 156;
+
+/**
+ * 조각 하나의 최소 바이트.
+ *
+ * ⚠️ 개수만 세면 **0바이트 조각도 초록**이다(2026-08-26 실측: 10,853→0 바이트로 비웠는데
+ *    `✔ … 조각 242 건` 에 exit 0). pagefind 조각은 gzip 이라 빈 파일이 될 수 없고,
+ *    실제 최소값은 수백 바이트다. 32 는 「gzip 헤더조차 없다」를 잡는 하한이다.
+ */
+const MIN_FRAGMENT_BYTES = 32;
 
 /**
  * 인덱스 하나를 검사한다. 부수효과 없이 판정만 돌려준다 — self-test 가 같은 함수를 부른다.
@@ -65,28 +81,48 @@ export function checkIndex(dir) {
 
   const pages = langs[ko].page_count ?? 0;
   if (pages < MIN_PAGES) {
-    return { code: 1, message: `✖ 한국어 페이지가 ${pages} 건뿐이다. 글이 156 편이므로 너무 적다.` };
+    return {
+      code: 1,
+      message: `✖ 한국어 페이지가 ${pages} 건뿐이다. 글만 156 편이므로 하한 ${MIN_PAGES} 에 못 미친다.`,
+    };
   }
 
   /**
-   * 조각 파일이 실제로 있는지도 본다.
+   * 조각 파일이 실제로 **내용까지** 있는지 본다.
    *
-   * page_count 는 entry JSON 안의 **자기 신고 값**이다. 조각이 하나도 안 쓰였는데
+   * page_count 는 entry JSON 안의 **자기 신고 값**이다. 조각이 없거나 비었는데
    * 숫자만 남아 있으면 검색은 전부 0건을 내는데 이 검증기는 초록이 된다 —
    * 「소스가 깨끗한 것이 산출물이 깨끗하다는 뜻은 아니다」와 같은 구조다.
+   *
+   * ⚠️ 개수만 세던 판이 실제로 이 구멍에 빠졌다. 조각 하나를 0바이트로 비워도 초록이었다.
+   *    확장자로 거르는 것도 함께 한다 — 잔여 파일이나 하위 디렉터리가 조각으로 계수됐다.
    */
   const fragmentDir = path.join(dir, "fragment");
-  const fragments = fs.existsSync(fragmentDir) ? fs.readdirSync(fragmentDir).length : 0;
-  if (fragments === 0) {
+  const entries = fs.existsSync(fragmentDir)
+    ? fs.readdirSync(fragmentDir, { withFileTypes: true }).filter((e) => e.isFile() && e.name.endsWith(".pf_fragment"))
+    : [];
+  if (entries.length === 0) {
     return {
       code: 1,
-      message: `✖ ${fragmentDir} 에 조각이 0 건이다. page_count 는 ${pages} 라고 말하지만 실물이 없다.`,
+      message: `✖ ${fragmentDir} 에 .pf_fragment 조각이 0 건이다. page_count 는 ${pages} 라고 말하지만 실물이 없다.`,
+    };
+  }
+
+  const tiny = entries.filter(
+    (e) => fs.statSync(path.join(fragmentDir, e.name)).size < MIN_FRAGMENT_BYTES,
+  );
+  if (tiny.length > 0) {
+    return {
+      code: 1,
+      message:
+        `✖ 조각 ${tiny.length} 건이 ${MIN_FRAGMENT_BYTES} 바이트 미만이다 — 개수는 맞는데 속이 비었다.\n` +
+        `  예: ${tiny.slice(0, 3).map((e) => e.name).join(", ")}`,
     };
   }
 
   return {
     code: 0,
-    message: `✔ pagefind 인덱스 정상 — 언어 ${names.join(", ")} / ${ko} 페이지 ${pages} 건 / 조각 ${fragments} 건`,
+    message: `✔ pagefind 인덱스 정상 — 언어 ${names.join(", ")} / ${ko} 페이지 ${pages} 건 / 조각 ${entries.length} 건`,
   };
 }
 
@@ -99,8 +135,13 @@ export function checkIndex(dir) {
 function selfTest() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagefind-selftest-"));
 
-  /** 정상 인덱스 하나를 만든다. mutate 로 원하는 곳만 망가뜨린다. */
-  const make = (name, entry, fragmentCount) => {
+  /**
+   * 인덱스 하나를 만든다. 인자를 바꿔 원하는 곳만 망가뜨린다.
+   *
+   * `bytes` 는 조각 하나의 크기다. 이게 인자인 이유는 「개수는 맞는데 속이 빈」 경우가
+   * 실제로 검증기를 통과했기 때문이다 — 픽스처가 항상 정상 크기면 그 구멍을 영원히 못 잡는다.
+   */
+  const make = (name, entry, fragmentCount, bytes = 64, ext = ".pf_fragment") => {
     const dir = path.join(root, name);
     fs.mkdirSync(dir, { recursive: true });
     if (entry !== null) fs.writeFileSync(path.join(dir, "pagefind-entry.json"), entry, "utf8");
@@ -108,7 +149,7 @@ function selfTest() {
       const fragDir = path.join(dir, "fragment");
       fs.mkdirSync(fragDir, { recursive: true });
       for (let i = 0; i < fragmentCount; i++) {
-        fs.writeFileSync(path.join(fragDir, `f${i}.pf_fragment`), "x", "utf8");
+        fs.writeFileSync(path.join(fragDir, `f${i}${ext}`), "x".repeat(bytes), "utf8");
       }
     }
     return dir;
@@ -127,7 +168,12 @@ function selfTest() {
       1,
     ],
     ["페이지 수가 하한 미달", make("too-few", ok(3), 3), 1],
+    ["페이지 수가 하한 바로 아래", make("edge-below", ok(MIN_PAGES - 1), 3), 1],
+    ["페이지 수가 하한 정확히", make("edge-exact", ok(MIN_PAGES), 3), 0],
     ["page_count 는 있는데 조각이 0 건", make("no-fragment", ok(242), 0), 1],
+    // ↓ 개수만 세던 시절 조용히 통과하던 두 구간. 이 둘이 이 자기검사의 존재 이유다.
+    ["조각은 있는데 0 바이트", make("empty-fragment", ok(242), 5, 0), 1],
+    ["조각 확장자가 다르다 (잔여 파일)", make("wrong-ext", ok(242), 5, 64, ".bak"), 1],
     ["정상", make("healthy", ok(242), 5), 0],
   ];
 
