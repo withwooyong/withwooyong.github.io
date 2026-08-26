@@ -2,7 +2,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { SearchButton } from "@/components/search/search-button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { lockScroll } from "@/lib/ui/scroll-lock";
 import { cn } from "@/lib/utils";
 
 type NavItem = { href: string; label: string };
@@ -144,6 +146,15 @@ export function SiteHeader() {
     first?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
+      /*
+        팔레트가 열려 있으면 트랩의 주인은 팔레트다.
+        이 리스너는 document 레벨이라 팔레트 안 요소가 포커스여도 발동하는데,
+        focusables() 는 헤더 바와 드로어만 모으므로 팔레트 안 요소는
+        indexOf === -1 이 되어 「샜다」고 오판하고 포커스를 헤더로 끌어간다.
+        팔레트는 닫히면 언마운트되므로 이 셀렉터가 곧 「열려 있는가」다.
+      */
+      if (document.querySelector("[data-search-palette]")) return;
+
       if (event.key === "Escape") {
         setMenuOpen(false);
         return;
@@ -177,9 +188,15 @@ export function SiteHeader() {
 
     document.addEventListener("keydown", onKeyDown);
 
-    // 드로어 뒤가 스크롤되면 전체화면의 의미가 없다.
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    /*
+      드로어 뒤가 스크롤되면 전체화면의 의미가 없다.
+
+      ⚠️ body.style.overflow 를 손으로 저장·복원하지 마라. 드로어와 ⌘K 팔레트가
+         겹쳐 열렸다 닫히면 나중에 정리되는 쪽이 저장해 둔 "hidden" 을 되돌려
+         페이지가 **영구히** 잠긴다(새로고침 외 탈출구 없음). 참조 계수가 필요하고,
+         그것이 lockScroll 안에 있다.
+    */
+    const unlock = lockScroll();
 
     // 정리 함수 안에서 ref.current 를 직접 읽으면 react-hooks/exhaustive-deps 가 경고한다.
     // 햄버거 버튼은 헤더가 마운트된 동안 늘 렌더되는 같은 노드라 여기서 붙잡아도 안전하고,
@@ -188,7 +205,7 @@ export function SiteHeader() {
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
+      unlock();
       // 닫힐 때 포커스를 버튼으로 되돌린다(요구 5).
       button?.focus();
     };
@@ -236,7 +253,22 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           {/* 설계서 §4 의 우측 순서는 「검색(⌘K) · 테마 토글 · /en」이다.
-              검색은 단계 3까지 미노출이므로 이 자리(토글 왼쪽)를 비워 둔다. */}
+              팔레트(CommandPalette)는 SiteShell 이 한 번만 마운트하고 단축키를 스스로 듣는다.
+              그래서 이 버튼은 열림 상태를 들고 있지 않고 keydown 을 합성해 보낸다 —
+              상태를 두 곳에 두지 않는 가장 단순한 방법이다. */}
+          <SearchButton
+            onOpen={() =>
+              window.dispatchEvent(
+                // bubbles: true 는 지금은 없어도 동작한다(window 에 직접 dispatch 하므로).
+              // 팔레트가 리스너를 document 나 다른 노드로 옮기는 순간 조용히 죽으므로 붙여 둔다.
+              new KeyboardEvent("keydown", {
+                key: "k",
+                ctrlKey: true,
+                bubbles: true,
+              }),
+              )
+            }
+          />
           {/* ⓘ ThemeToggle 은 props 를 받지 않아 FOCUS_RING 을 넘길 수 없다. 그래서 이것만
               Button 기본값인 ring-1 ring-ring(= n6)이고 나머지는 ring-2 ring-signal 이다.
               램프 안이라 위반은 아니고 일관성 문제다 — 이걸 위해 인터페이스를 바꾸지 않는다. */}

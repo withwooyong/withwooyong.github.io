@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CommandPalette } from "@/components/search/command-palette";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
@@ -31,6 +32,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <SiteFooter />
+      {/*
+        팔레트는 헤더가 아니라 셸에 둔다. 헤더 안에 두면 데스크톱·모바일 두 벌이
+        렌더될 위험이 있고, 전역 단축키 리스너가 둘이 되면 다이얼로그가 겹친다.
+        여기서는 한 번만 마운트된다.
+
+        쌓임 순서: 헤더 sticky 50, 모바일 드로어 40, 스킵 링크 60.
+        팔레트는 그 전부보다 위인 70 을 컴포넌트 안에서 쓴다.
+        이 <div data-site-shell> 은 transform·filter·z-index 가 없어 쌓임 맥락을
+        만들지 않는다 — 그래서 형제인 헤더와 같은 맥락에서 비교된다.
+      */}
+      <CommandPalette />
     </div>
   );
 }
