@@ -98,6 +98,11 @@ export function stripParticle(query: string): string {
  * 글의 제목·요약을 그대로 싣기 때문이다. 정보를 0 만큼 더하면서 서로 다른 글을 그만큼 밀어낸다.
  * 원문보다 위로 온 적은 한 번도 없으므로 **랭킹이 아니라 중복이 문제**이고, 그래서
  * 랭킹 조정이 아니라 제외로 푼다.
+ *
+ * ⚠️ 이 함수는 `scripts/generate-sitemap.mjs` 의 EXCLUDE 와 **같은 목록이 아니다.** 저쪽은
+ *    `product-lead-wiki`·`product-lead-loadmap`·`notion` 도 빼는데 여기서는 그 8건을 남긴다 —
+ *    sitemap 은 **검색엔진 노출**을, 이 함수는 **사이트 내부 검색**을 정하고, 그 8건은
+ *    사이트 안에서는 갈 만한 곳이기 때문이다. 한쪽을 고칠 때 다른 쪽을 따라 고치지 마라.
  */
 export function isIndexNoise(url: string): boolean {
   if (!url) return false;
@@ -107,7 +112,8 @@ export function isIndexNoise(url: string): boolean {
   if (url === "/404/" || url === "/404.html") return true;
   if (url.indexOf("/blog/tags/") === 0) return true;
   // 아틀라스는 **노드 상세만** 뺀다. `/atlas/` 목록 자체는 1건뿐이고 넓은 쿼리에서 좋은
-  // 목적지라 남긴다 — `scripts/generate-sitemap.mjs` 의 `/^atlas\/.+/` 와 같은 판정이다.
+  // 목적지라 남긴다 — **아틀라스에 한해서는** `scripts/generate-sitemap.mjs` 의
+  // `/^atlas\/.+/` 와 같은 경계다(그 파일의 나머지 EXCLUDE 와는 다르다 — 위 주석 참조).
   // 접두에 슬래시를 붙여 두면 `/atlas-postmortem/` 같은 슬러그가 생겨도 걸리지 않는다.
   if (url.indexOf("/atlas/") === 0 && url !== "/atlas/") return true;
   return false;

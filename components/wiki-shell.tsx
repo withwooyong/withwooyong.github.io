@@ -90,7 +90,14 @@ export function WikiShell({ docs, activeSlug, toc, children }: WikiShellProps) {
         </aside>
 
         {/* 본문 */}
-        <main id="main" className="min-w-0 flex-1 py-6 sm:py-8">
+        {/*
+          tabIndex={-1} 이 없으면 <main> 은 포커스를 받을 수 없고 focus() 가 **조용한 무동작**이 된다.
+          검색 팔레트는 이동 뒤 document.getElementById("main").focus() 를 부르는데
+          (components/search/command-palette.tsx), 이 페이지들은 pagefind 인덱스에 실려 있어
+          ⌘K 로 실제로 도달한다 — 2026-08-27 실측: product-lead* 9장이 인덱스에 있다.
+          components/site-shell.tsx 의 <main> 과 같은 이유로 같은 속성을 단다.
+        */}
+        <main id="main" tabIndex={-1} className="min-w-0 flex-1 py-6 sm:py-8 focus:outline-none">
           {children}
         </main>
 

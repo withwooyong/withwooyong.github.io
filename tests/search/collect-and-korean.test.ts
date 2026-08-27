@@ -169,13 +169,16 @@ describe("isIndexNoise", () => {
 
   it("아틀라스 목록 자체는 남긴다", () => {
     // 1건뿐이라 결과를 뒤덮지 못하고, 넓은 쿼리에서는 좋은 목적지다.
-    // `scripts/generate-sitemap.mjs` 가 `/^atlas\/.+/` 로 상세만 뺀 것과 같은 판정이다.
+    // `scripts/generate-sitemap.mjs` 가 `/^atlas\/.+/` 로 상세만 뺀 것과 **아틀라스에
+    // 한해서는** 같은 경계다(그 파일은 notion·product-lead* 도 빼지만 이 함수는 남긴다).
     expect(isIndexNoise("/atlas/")).toBe(false);
   });
 
   it("atlas 로 시작할 뿐인 정상 슬러그는 삼키지 않는다", () => {
-    // 접두에 슬래시가 없으면(`indexOf("/atlas") === 0`) 이 둘이 조용히 사라진다.
+    // ① 접두에 슬래시가 없으면(`indexOf("/atlas") === 0`) 이 글이 조용히 사라진다.
     expect(isIndexNoise("/atlas-postmortem/")).toBe(false);
+    // ② 이쪽은 다른 뮤턴트를 잡는다 — 접두 매칭을 `url.includes("/atlas/")` 로 바꾸는
+    //    리팩터다. ① 은 그 뮤턴트에 살아남으므로 두 줄이 서로를 대신하지 못한다.
     expect(isIndexNoise("/blog/ai-agent/atlas/")).toBe(false);
   });
 

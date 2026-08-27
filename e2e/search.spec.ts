@@ -196,7 +196,8 @@ test.describe("검색 팔레트 (셸 부착 시 켜짐)", () => {
    *      빌드 끝의 `npx pagefind --site out` 이 노드 상세 162 장을 자동 색인해 인덱스가
    *      242 → 405 가 됐고, 실측 2026-08-27 (Task 12) 쿼리 8종의 상위 10 에 들어온
    *      `/atlas/…` 17 건은 **전부** 같은 목록에 `/blog/…` 원문을 가진 중복이었다
-   *      (최대 40% · 「임베딩」은 2위). `isIndexNoise` 가 노드 상세를 빼면서 해소됐다.
+   *      (최대 40% — 「RAG」·「컨텍스트」. 「임베딩」은 2위였다). `isIndexNoise` 가
+   *      노드 상세를 빼면서 해소됐다.
    *      (필터를 통과하면서 `/blog/` 로 시작하지 않는 페이지는 이미 12건 있다 —
    *       `/`·`/en/`·`/notion/`·`/product-lead*` 등. 오늘은 그 12건이 「임베딩」 0회라 통과한다.)
    *
@@ -259,7 +260,13 @@ test.describe("검색 팔레트 (셸 부착 시 켜짐)", () => {
     await page.waitForURL(`**${href}`);
 
     // ③ 포커스는 헤더 검색 버튼이 아니라 본문으로 간다.
-    //    `site-shell.tsx` 의 `<main id="main" tabIndex={-1}>` 가 그것을 받는 자리다.
+    //
+    // ⚠️ 여기서 재는 `#main` 은 **도착지의 것**이다. 이 검사는 `/atlas/`(SiteShell) 에서
+    //    검색해 `/blog/…` 로 가는데, 블로그 라우트는 전부 `BlogShell` 만 쓴다 — 즉 실제로
+    //    포커스를 받는 자리는 `components/blog/blog-shell.tsx` 의 `<main tabIndex={-1}>` 이고
+    //    `site-shell.tsx` 의 것은 이 경로에 등장하지 않는다. 2026-08-27 실측: 전자를 지우면
+    //    이 검사가 2건 빨개지고, 후자를 지워도 **62 passed** 로 살아남았다.
+    //    `site-shell.tsx` 쪽 `<main>` 의 방어는 `e2e/atlas.spec.ts` 의 스킵 링크 검사가 한다.
     await expect(
       page.locator("#main"),
       "포커스가 #main 에 없다 — 키보드 사용자가 새 글이 아니라 이전 위치 앞에 서게 된다",

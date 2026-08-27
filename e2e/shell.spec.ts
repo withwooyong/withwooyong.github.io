@@ -123,11 +123,24 @@ test.describe("헤더 (셸 부착 시 켜짐)", () => {
    *    생기는 순간 거짓 빨강이 된다 — 이 규칙이 막으려는 것은 죽은 **내비 항목**이지
    *    아틀라스라는 단어가 아니다.
    *
+   * ⚠️ **모바일에서는 드로어를 열어야 한다.** 390px 에서 데스크톱 내비는 `display:none`
+   *    이고 항목은 닫힌 드로어 안에 있어, 열지 않으면 `header.getByRole("link")` 가
+   *    **무엇을 넣어도 0** 이다. 2026-08-27 실측: `NAV` 에 `Work` 를 되살렸더니
+   *    `[desktop]` 만 빨갛고 `[mobile]` 은 통과했다 — 드로어에만 렌더되는 죽은 링크는
+   *    아무도 못 잡는 상태였다. 위 검사와의 「쌍」 논증도 그 폭에서 끊긴다.
+   *
    * ⚠️ `exact: true` 를 지우지 마라. `getByRole(role, { name })` 은 기본이 **부분 문자열**이라
    *    접근명이 길어져도 초록이다(2026-08-26 대조군 실측).
    */
   test("미완성·이월 라우트는 내비에 없다", async ({ page }) => {
     await gotoWithShell(page, SHELL_HOME);
+
+    // 드로어는 `<header>` 안에 있으므로 열어 두면 아래 스코프가 그대로 덮는다.
+    if (!(await page.getByRole("navigation", { name: "주요 메뉴" }).isVisible())) {
+      await page.getByRole("button", { name: "메뉴 열기" }).click();
+      await expect(page.getByRole("navigation", { name: "모바일 메뉴" })).toBeVisible();
+    }
+
     const header = page.locator("header");
     for (const label of NAV_ABSENT) {
       await expect(header.getByRole("link", { name: label, exact: true })).toHaveCount(0);

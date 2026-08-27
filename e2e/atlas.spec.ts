@@ -36,6 +36,26 @@ function articleButtons(page: Page): Locator {
   return listRegion(page).getByRole("listitem").getByRole("button");
 }
 
+/**
+ * 원시 HTML 과 `innerText` 를 맞대기 전에 양쪽을 같은 자리로 옮긴다.
+ *
+ * ⚠️ React 는 본문을 이스케이프해서 내보낸다. 「Q&A」 는 산출물에 `Q&amp;A` 로 있고
+ *    `innerText` 로는 `Q&A` 다. 2026-08-27 실측: `out/atlas/index.html` 의 목록 항목 중
+ *    **13건**이 `&amp;` 를 포함한다. 오늘의 첫 글에는 `&` 가 없어 그냥도 통과하지만,
+ *    `listSections` 순서가 바뀌어 첫 글이 Q&A 계열이 되는 날 **회귀가 아닌 빨강**이 난다 —
+ *    이 파일이 스스로 내건 「코퍼스가 바뀌어도 산다」는 보증이 거기서 깨진다.
+ *
+ * 엔티티를 되돌리는 쪽이 아니라 **양쪽에 같은 이스케이프를 거는** 쪽을 골랐다. 되돌리기는
+ * 어느 엔티티까지 아는지가 곧 커버리지가 되지만, 거는 쪽은 목록이 유한하고 닫혀 있다.
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 /** 선택한 노드가 뜨는 우측 패널. `pages/atlas/index.tsx` 의 `<aside aria-label="선택한 노드">`. */
 function nodePanel(page: Page): Locator {
   return page.getByRole("complementary", { name: "선택한 노드", exact: true });
@@ -125,7 +145,10 @@ test.describe("아틀라스", () => {
     //    「정적으로 존재한다」로 오독한다 — 정적 내보내기가 이 경로를 안 냈어도 초록이 된다.
     const res = await page.request.get(detailHref);
     expect(res.status(), `${detailHref} 가 200 이 아니다 — 정적 산출물에 이 노드가 없다`).toBe(200);
-    expect(await res.text(), `${detailHref} 본문에 「${title}」 이 없다`).toContain(title);
+    expect(
+      await res.text(),
+      `${detailHref} 본문에 「${title}」 이 없다`,
+    ).toContain(escapeHtml(title));
   });
 
   /** R2 의 뒤쪽 — 아틀라스가 글로 되돌아가는 길. */
@@ -141,6 +164,35 @@ test.describe("아틀라스", () => {
     await expect(source).toHaveAttribute("href", /^\/blog\//);
   });
 
+  /**
+   * 스킵 링크가 **포커스까지** 본문으로 옮긴다.
+   *
+   * `shell.spec.ts` 의 「본문 건너뛰기 링크가 포커스에서 드러난다」는 링크가 **드러나는지**만
+   * 본다. 눌렀을 때 무슨 일이 일어나는지는 아무도 안 봤고, 그 결과
+   * `components/site-shell.tsx` 의 `<main id="main" tabIndex={-1}>` 는 커버리지가 **0** 이었다 —
+   * 2026-08-27 실측: 그 속성을 지워도 `62 passed` 로 전 스위트가 초록이었다.
+   *
+   * ⚠️ `<main>` 은 원래 포커스를 받을 수 없다. `tabIndex={-1}` 이 없으면 브라우저는
+   *    스크롤만 시키고 포커스를 헤더에 남기며, **그 실패는 아무 오류도 내지 않는다.**
+   *    이 검사가 잡는 것이 정확히 그것이다(지우면 desktop·mobile 2건이 빨개진다 — 실측).
+   *
+   * 검색 팔레트가 이동 후 부르는 `focus()` 도 같은 속성에 기댄다. 다만 그쪽의 도착지는
+   * 블로그라 `blog-shell.tsx` 의 `<main>` 을 재고, 그 검사는 `e2e/search.spec.ts` 에 있다.
+   */
+  test("스킵 링크를 누르면 포커스가 본문으로 간다", async ({ page }) => {
+    await page.goto(SHELL_HOME);
+
+    await page.keyboard.press("Tab");
+    const skip = page.getByRole("link", { name: "본문으로 건너뛰기", exact: true });
+    await expect(skip, "첫 Tab 이 스킵 링크에 닿지 않았다").toBeFocused();
+
+    await page.keyboard.press("Enter");
+
+    await expect(
+      page.locator("#main"),
+      "스킵 링크를 눌렀는데 포커스가 #main 에 없다 — <main> 에 tabIndex={-1} 이 없으면 스크롤만 되고 포커스는 헤더에 남는다",
+    ).toBeFocused();
+  });
   /**
    * 노드 상세 162 장이 sitemap 에 새면 검색엔진이 글 본문의 **요약 조각**을 원문과 함께
    * 색인한다. `scripts/generate-sitemap.mjs` 의 제외가 살아 있는지 본다.
