@@ -97,7 +97,7 @@ CI 에서 터졌다. 빠져나갈 길은 둘이고 실패 메시지가 둘 다 �
 | [13](docs/TOOL-TRAPS.md#t13) | 아무도 import 하지 않은 파일을 가리키며 빌드가 죽는다 | **주석에 Tailwind 대괄호 임의값 클래스를 넣지 마라** — Tailwind 는 주석도 훑는다 |
 | [8](docs/TOOL-TRAPS.md#t8) | 히어독 안의 정규식이 `SyntaxError` — `\\` 가 `\` 로 도착한다 | `Write`/`Edit` 로 파일에 쓰거나 `String.fromCharCode(92)` |
 | [19](docs/TOOL-TRAPS.md#t19) | Playwright 가 0 인데 통과가 아니고, 1 인데 실패가 아니다 | `$?` 말고 요약 줄을 읽는다. `retries: 0` 유지 |
-| [23](docs/TOOL-TRAPS.md#t23) | `declare module "/pagefind/pagefind.js"` 를 넣어도 TS2307 이 남는다 | `/` 접두는 모듈명이 아니라 루트 경로다. `new Function('return import("/path.js")')()` |
+| [35](docs/TOOL-TRAPS.md#t35) | **Git Bash 가 `node` 인자 안의 `/atlas/` 를 `C:/Program Files/Git/atlas/` 로 바꾼다** — 홑따옴표도 못 막는다. 뮤턴트가 엉뚱한 문자열로 주입돼 **「사멸」이 거짓이 된다** | 치환 문자열은 인자 말고 **스크립트 파일**에. 넘겨야 하면 `MSYS_NO_PATHCONV=1`. 주입 뒤 그 줄을 `grep` 으로 본다 |
 | [1](docs/TOOL-TRAPS.md#t1) | 파이프를 거친 명령이 항상 성공으로 보인다 — `$?` 는 마지막 명령의 것이다 | 종료 코드를 읽을 명령은 파이프 없이 단독 실행 |
 
 **새 함정을 추가할 때** — 먼저 위 원칙으로 흡수되는지 본다. 흡수되면 `docs/TOOL-TRAPS.md` 에만 적는다.

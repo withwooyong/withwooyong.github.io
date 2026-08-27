@@ -37,15 +37,29 @@
 | 리뷰 A2 반영 — 링크 추출의 산문 전처리 | ✅ | `7d12581` | `proseOnly` 를 export 해 **세 곳**(아틀라스 엣지 · 슬래시 검사 · 앵커 검사)이 같은 전처리를 본다. `tests/atlas/links.test.ts` 신규 17건. 테스트 **248 → 265** |
 | T9 — 그래프 무결성 게이트 | ✅ | `8ba39e5` | 초안 코드의 **다섯 곳**을 고쳤다. 뮤테이션 **18종**으로 실행 검증 — 「inbound 0 으로 바꿔라」는 지시를 따르고도 **죽은 검사가 안 살아났다**(M7: `instantiates` 를 통째로 지워도 exit 0). 검사를 셋으로 나눴다. `pre-commit` 에 `tests/atlas` 를 얹었다. 테스트 **265 → 289** |
 | 부수 — 소스의 생 NUL 2개 | ✅ | `73d0425` | `tests/atlas/build.test.ts` 를 **ripgrep 이 통째로 건너뛰고 있었다.** 「없다」와 「못 읽었다」가 같은 침묵이었다 |
-| T10 이후 | ⬜ 미착수 | — | — |
+| T10 레이아웃 + SVG 렌더러 + 목록 뷰 | ✅ | `3137e99` · 기록 `050a10c` | `lib/atlas/layout.ts`(순수 함수) · SVG 는 포인터 전용, 키보드·SR 경로는 목록 뷰로. **노드 162 는 Dot 임계(≤300) 안이라 힘 기반 시뮬레이션을 쓰지 않는다** — 시뮬레이션은 빌드마다 결과가 달라 기준선 해시를 흔든다. WCAG 1.4.11 을 배경 3종 × 2테마 × 6항목 = 36칸으로 잰다 |
+| T11 `/atlas` + 노드 상세 + GC-6 게이트 정규화 | ✅ | `d217827` · 기록 `d7385d3`·`40ee14c` | `pages/atlas/[...id].tsx`(**catch-all — 노드 id 에 슬래시가 있다**) · `lib/atlas/neighbors.ts`. 노드 상세는 `graph` 를 싣지 않는다(그대로 넘기면 산출물 **+70.5 MB**). `isTarget` 에 `atlas/` 제외를 더해 기준선 감시 대상을 14 개로 유지 |
+| T12 헤더 등재 · 아틀라스 E2E · 접근성 (12a) | ✅ | `3ba2e33` → `530da98` → `7e9bcfc` → `ca61f1f` | NAV 에 Atlas 등재 · `e2e/atlas.spec.ts` 신규 · 검색 인덱스 필터 · **셸 밖 도착지 4곳의 `<main tabIndex={-1}>`**. 이중 리뷰 2축 × 2라운드 통과 |
+| T12 기준선 · 역반영 (12b) | ✅ | 이 커밋 | `scripts/baseline.json` **1회 갱신**(9건 전부 `product-lead*`) · 스펙 D-1·D-2 역반영 · 계획서 낡은 칸 · `TOOL-TRAPS.md` 3건 |
 
 **T6 을 시작하기 전에 반드시 읽을 것:** §「T5 실측 기록」. T6 스펙 초안이 검사하는 접근명·로케이터가 실제 구현과 맞는지 **실측으로 확인해 뒀다** — 그중 하나는 「깨질 것」이라 판단했다가 측정에서 뒤집혔다.
 
-### 지금 초록이 아닌 것 — 전부 의도된 것이다
+### ~~지금 초록이 아닌 것 — 전부 의도된 것이다~~ → ✅ **해소됨 (2026-08-27, `ca61f1f`)**
 
-실측 2026-08-27 (`npm run build` 직후 `npm run e2e`).
+> **이 절의 전제가 사라졌다. `npm run e2e` 는 이제 `74 passed · 0 failed · 0 skipped` 다**
+> (2026-08-27 실측, `npm run build` 직후). **그 빨강을 만날 사람이 더는 없다는 것이 이 계획서의 결과다.**
+>
+> | 이 절이 예약했던 빨강 | 무엇이 해소했나 |
+> | --- | --- |
+> | `/atlas/` 셸 센티넬 **4 failed** (× 2파일 × 2프로젝트) | **T11 `d217827`** — `pages/atlas/index.tsx` · `[...id].tsx` 가 `SiteShell` 을 감쌌다. 센티넬이 초록이 되면서 **skip 26건이 동시에 깨어났다** |
+> | `shell.spec.ts` 의 asPath 검사 (skip 26건에 포함) | **T12/12a `3ba2e33`** — `components/site-header.tsx` 의 `NAV` 에 Atlas 를 등재했다 |
+>
+> **절을 지우지 않는 이유** — 「의도된 빨강」과 「회귀」를 어떻게 갈랐는지가 이 계획서에서 가장
+> 재사용 가능한 부분이다. 아래 ⚠️ 세 개는 **지금도 유효하다**(센티넬 중복의 근거 · 낡은 수치 금지 · `out/` 낡음의 exit 1).
+>
+> 아래는 **해소 전 원문**이다.
 
-| 검사 | 상태 | 언제 초록이 되나 |
+| 검사 | 상태(2026-08-27, 해소 전) | 언제 초록이 되나 |
 | --- | --- | --- |
 | `npm run e2e` | **4 failed** (18 passed · 26 skipped) — 총 **48건** | `/atlas/` 셸 센티넬이 `shell.spec.ts`·`search.spec.ts` **양쪽에** 있고 각각 desktop·mobile 이라 4건이다. **T13**(「/atlas 조립 · 셸 부착」)에서 셸이 붙으면 초록이 되고 skip 26건이 동시에 깨어난다 |
 | `shell.spec.ts` 의 asPath 검사 | 위 26건에 포함돼 skip | **T16**(헤더 노출)에서 `/atlas/` 를 NAV 에 올려야 한다. **T13~T16 은 태스크 세 개 길이고, 그 구간 내내 이 1건 × 2프로젝트가 빨간 것이 정상이다.** 그 빨강의 뜻은 「asPath 가 틀렸다」가 아니라 「셸은 붙였는데 NAV 에 안 올렸다」다 |
@@ -3392,20 +3406,29 @@ npm run check-pagefind
 npm run e2e
 ```
 
-Expected:
+Expected — **아래는 T11 이전에 쓰인 초안이었다. 2026-08-27 T12 종료 시점 실측으로 갈아 끼웠다.**
 
-| 검사 | 기대 |
-| --- | --- |
-| `npm test` | **190 passed** (기존 165 + 매핑 10 + 실데이터 1 + 무결성 6 + 자기검사 4 + 레이아웃 4) |
-| `tsc` · `lint` | 종료코드 0 |
-| `check-pagefind` | `✔` |
-| `npm run e2e` | **failed 0.** T1에서 6건이던 빨강이 전부 초록이 된다 — 셸이 `/atlas/`에 붙었기 때문이다 |
+| 검사 | ~~초안의 기대~~ | 실측 (2026-08-27, `ca61f1f`) |
+| --- | --- | --- |
+| `npm test` | ~~190 passed~~ | **354 passed / 15 파일** |
+| `npx vitest run tests/blog tests/atlas` (훅 범위) | — | **200 passed / 11 파일** |
+| `tsc` · `lint` | 종료코드 0 | **0 · 0** (`✔ No ESLint warnings or errors`) |
+| `check-pagefind` | `✔` | **`✔` ko 페이지 405 · 조각 405** |
+| `npm run e2e` | ~~failed 0~~ | **74 passed · 0 failed · 0 skipped** |
+| `check-counts` | — | **`✅` 156편 / 6개 카테고리** |
+| `probe-search` | — | **`✔` 기본형 8/8** |
 
 ⚠️ `npm run e2e`의 요약 줄을 읽어라. skip이 남아 있다면 **어느 게이트가 아직 안 열렸는지** 확인한다.
+**skip 은 0 이 됐다** — 무엇이 그것을 열었는지는 위쪽 §「지금 초록이 아닌 것 → 해소됨」에 있다.
 
 - [ ] **Step 4: 기준선을 갱신한다 — 사람이 1회만**
 
-`check-baseline`은 T1 이전부터 exit 1이다(선행 계획서 단계 1의 토큰 변경). **이 계획서가 끝나는 지금이 갱신 시점이다.**
+~~`check-baseline`은 T1 이전부터 exit 1이다(선행 계획서 단계 1의 토큰 변경).~~
+**⚠️ 정정 (2026-08-27) — 그때의 exit 1 과 원인이 다르다.** T11 `d217827` 이 `isTarget` 에 `atlas/` 제외를
+더하면서 이미 한 번 갱신해 exit 0 이 됐고, **여기서 본 9건은 12a 의 접근성 수정(`<main tabIndex={-1}>`)이
+새로 만든 것**이다. 「T1 이전부터 빨갛다」를 그대로 믿었다면 **델타를 보지 않고 눌렀을 것**이다.
+
+**이 계획서가 끝나는 지금이 갱신 시점이다.**
 
 누르기 전에 셋을 눈으로 본다(스펙 §11.1).
 
@@ -3413,11 +3436,12 @@ Expected:
 npm run check-baseline
 ```
 
-| 확인 | 기대값 |
-| --- | --- |
-| 변경된 항목 | `index.html` + `product-lead*` 9개. **`en/index.html`·`notion/index.html`·`404` 계열이 목록에 없어야 한다** |
-| 새 항목 | **없어야 한다.** `atlas/`가 보이면 T11 Step 4의 제외가 안 먹은 것이다 |
-| 사라진 항목 | 없어야 한다 |
+| 확인 | 기대값 | 실측 (2026-08-27) |
+| --- | --- | --- |
+| 변경된 항목 | `index.html` + `product-lead*` 9개. **`en/index.html`·`notion/index.html`·`404` 계열이 목록에 없어야 한다** | **9건 · 전부 `product-lead*`**(`product-lead/`·`-v2/`·`-loadmap/` + `-wiki/` 6장). `index.html`·`en`·`notion`·`404` **0건** |
+| 새 항목 | **없어야 한다.** `atlas/`가 보이면 T11 Step 4의 제외가 안 먹은 것이다 | **0.** `baseline.json` diff 가 `9 insertions / 9 deletions` — 항목 수 14 불변 |
+| 사라진 항목 | 없어야 한다 | **0** |
+| 델타의 내용 | — | `<main id="main">` 한 줄에 `tabindex="-1"` + `focus:outline-none` 이 붙은 것뿐 |
 
 `en`·`notion`이 목록에 있으면 **갱신하지 말고 원인을 먼저 찾는다.** 재설계 대상이 아니므로 그 둘이 바뀌었다면 의도치 않은 회귀다.
 
@@ -3467,13 +3491,14 @@ git commit -m "feat(atlas): 헤더 노출 + E2E + 기준선 갱신
 | --- | --- | --- |
 | 타입 | `npx tsc --noEmit` | 0 |
 | 린트 | `npm run lint` | 0 |
-| 단위 | `npm test` | **289 + 남은 태스크가 더한 수.** 289 는 T9 직후 실측치다(2026-08-27 · T7 직후 229 → T8 이 14 → 이중 리뷰가 5 → A2 가 17 → **T9 가 24** 추가). T10 이 `tests/atlas/` 를 더 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
-| 단위 (훅) | `npx vitest run tests/blog tests/atlas` | **138.** `.githooks/pre-commit` 이 실제로 부르는 명령이다. T9 가 `tests/atlas` 를 훅 범위에 넣었다 — 새 글의 링크 누락을 커밋 시점에 잡기 위해서다 |
+| 단위 | `npm test` | **354 passed / 15 파일** — 2026-08-27 T12 종료 시점 실측(T9 직후 289 → T10·T11·T12 가 65 추가). 낡은 숫자는 회귀와 구분되지 않으므로 **각 태스크가 끝날 때 실측으로 갱신한다** |
+| 단위 (훅) | `npx vitest run tests/blog tests/atlas` | **200 passed / 11 파일** — 같은 시점 실측. `.githooks/pre-commit` 이 실제로 부르는 명령이다. T9 가 `tests/atlas` 를 훅 범위에 넣었다 — 새 글의 링크 누락을 커밋 시점에 잡기 위해서다 |
 | 빌드 | `npm run build` | 0 |
-| 검색 인덱스 | `npm run check-pagefind` | `✔` |
-| 기준선 | `npm run check-baseline` | **0** (T12 Step 4에서 갱신 후) |
-| E2E | `npm run e2e` | **failed 0** |
-| 한글 검색 | `node scripts/probe-search.mjs` | `✔ 관문 통과` |
+| 검색 인덱스 | `npm run check-pagefind` | `✔` — 실측 **ko 페이지 405 · 조각 405** |
+| 기준선 | `npm run check-baseline` | **0** — T12 Step 4(12b)에서 갱신 완료. `✅ GC-6 — 비블로그 산출물 14개 불변` |
+| E2E | `npm run e2e` | **failed 0** — 실측 **74 passed · 0 failed · 0 skipped**. `$?` 가 아니라 **요약 줄**을 읽어라 |
+| 발행본 수 | `npm run check-counts` | `✅` — 실측 **156편 / 6개 카테고리** |
+| 한글 검색 | `node scripts/probe-search.mjs` | `✔ 관문 통과` — 실측 **기본형 8/8** |
 | GC-11 | `git diff --name-only <시작커밋>..HEAD \| grep -c '^pages/index.tsx'` | **0** |
 | GC-12 | `git diff --name-only <시작커밋>..HEAD \| grep -c '^\(pages/blog/\|content/blog/\)'` | **0** |
 
@@ -3495,6 +3520,15 @@ git commit -m "feat(atlas): 헤더 노출 + E2E + 기준선 갱신
 | `claim`·`procedure` 노드 (LLM 원자노트) | §7.9 · 단계 5 | 1차 데이터의 실물 |
 | 히어로 재설계 | §6 | 이 계획서 §「이월된 것」의 실측 4건 |
 | `/work` · `/about` · `product-lead*` 스텁 | §4 | 선행 계획서 T11~T13 그대로 |
+
+### T12 이중 리뷰가 남긴 범위 밖 관찰 2건 — 이월
+
+12a 의 리뷰가 잡았지만 **이번 범위가 아니라 손대지 않은 것**이다. 고치지 않기로 한 이유까지 남긴다.
+
+| # | 관찰 | 왜 이번에 안 고쳤나 | 후속에서 볼 것 |
+| --- | --- | --- | --- |
+| 1 | **`/en/` · `/` · `/notion/` 3장이 `tabIndex` 커버리지 0** — `<main id="main">` 에 `tabIndex={-1}` 이 없어 검색 팔레트의 `focus()` 가 조용한 무동작이 된다 | `/en/`·`/notion/` 은 **기준선 금지 대상**(바뀌면 회귀로 판정된다), `/` 는 **GC-11** 로 이 계획서가 건드리지 않기로 약속한 파일이다 | 히어로 재설계(§6)로 `/` 를 다시 만들 때 함께. `/en/`·`/notion/` 은 기준선 갱신을 동반하므로 **델타를 눈으로 확인하는 절차와 묶어서** |
+| 2 | **`renderedMarkup` 이 `<script` 의 닫는 태그를 못 찾으면 그 이후를 통째로 버릴 수 있다** | **현 산출물에 해당 사례가 없다.** 없는 사례를 상대로 고치면 「고쳤다」는 증거를 만들 수 없다 — 이 리포가 반복해서 데인 「증명되지 않은 0」과 같은 구조다 | 대조군을 먼저 만든다 — 닫는 태그 없는 `<script` 를 넣은 픽스처에서 **지금 코드가 실제로 버리는지** 재고, 그 다음에 고친다 |
 
 **후속 계획서를 쓰기 전에 이 계획서의 「실측 기록」 절과 T8 Step 5의 출력을 먼저 읽어라.**
 
