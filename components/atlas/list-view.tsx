@@ -1,6 +1,38 @@
+import Link from "next/link";
 import { useMemo } from "react";
 import { listSections, neighborsOf } from "@/lib/atlas/layout";
 import type { AtlasGraph } from "@/lib/atlas/types";
+
+/**
+ * 선택된 항목 옆에만 뜨는 상세 페이지 링크.
+ *
+ * **왜 필요한가.** 선택하면 우측 `<aside>` 패널에 요약과 이웃 링크가 뜨는데, 그 패널은
+ * DOM 상 이 목록보다 **앞**에 있다. 마지막 구획에서 고르면 패널에 닿는 데 Shift+Tab 이
+ * 최대 156 회다 — 라이브 영역이 낭독은 해도 **이웃 링크로 가는 경로가 없다.**
+ *
+ * 고른 해법과 버린 해법:
+ *
+ * | 안 | 내용 | 왜 안 골랐나 |
+ * | --- | --- | --- |
+ * | (a) | 선택 시 `<aside>` 로 포커스를 옮긴다 | 포커스 이동만으로도 낭독이 일어나 라이브 영역과 **두 번 낭독**된다. 목록 탐색 흐름도 끊긴다 |
+ * | (b) | 패널을 DOM 상 목록 뒤로 옮기고 시각 배치만 CSS 로 유지 | DOM 순서와 시각 순서가 갈린다. 그리드 재구성 범위도 크다 |
+ * | (c) | **선택된 항목에만** 상세 링크를 붙인다 ← 채택 | 정지점이 156 → 157 로 **1개만** 는다. 포커스를 뺏지 않아 낭독이 겹치지 않는다 |
+ *
+ * (c) 를 **모든** 항목에 붙이면 정지점이 312 개가 된다 — `dot-renderer.tsx` 가 SVG 에
+ * 정지점을 두지 않기로 한 것과 같은 이유로 그건 피한다.
+ */
+function DetailLink({ id, title }: { id: string; title: string }) {
+  return (
+    <Link
+      href={`/atlas/${id}/`}
+      // 「상세 →」 만으로는 링크 목록에서 어느 글인지 분간되지 않는다.
+      aria-label={`${title} 상세 페이지로 이동`}
+      className="ml-2 whitespace-nowrap text-label text-n6 underline underline-offset-4 hover:text-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-n0"
+    >
+      상세 →
+    </Link>
+  );
+}
 
 /**
  * 목록 뷰. 설계서 §7.7 — `prefers-reduced-motion` 과 저사양의 기본값이다.
@@ -59,40 +91,77 @@ export function ListView({
       <div className="sr-only" role="status" aria-live="polite">
         {announcement}
       </div>
-      {sections.map((section) => (
-        <section key={section.key} aria-labelledby={`atlas-topic-${section.key}`}>
-          <h3
-            id={`atlas-topic-${section.key}`}
-            className="text-card-title font-semibold text-n9 break-keep"
-          >
-            {section.title} <span className="text-label text-n6">{section.members.length}편</span>
-          </h3>
-          <ul className="mt-3 space-y-1">
-            {section.members.map((m) => {
-              const isSelected = selected != null && m.id === selected;
-              return (
-                <li key={m.id}>
-                  <button
-                    type="button"
-                    onClick={() => onSelect(m.id)}
-                    // 선택된 항목만 aria-current 를 갖는다. 스크린리더가 「현재 항목」으로
-                    // 읽고, 시각적으로도 액센트로 구분된다.
-                    aria-current={isSelected ? "true" : undefined}
-                    className={[
-                      "text-left text-body break-keep",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
-                      "focus-visible:ring-offset-2 focus-visible:ring-offset-n0",
-                      isSelected ? "font-semibold text-signal" : "text-n7 hover:text-signal",
-                    ].join(" ")}
-                  >
-                    {m.title}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
+      {sections.map((section) => {
+        /*
+          토픽 노드도 **선택 가능해야 한다.** `dot-renderer.tsx` 의 `<circle onClick>` 은
+          162 개 전부를 고를 수 있는데 여기서 토픽 6 개를 제목으로만 두면
+          「마우스로 되는 선택 6 건이 키보드로 안 되는」 상태가 된다(WCAG 2.1.1 위반).
+          실측으로 잡혔다 — cursor-pointer 원 162 개 vs 목록 버튼 156 개.
+
+          `<h3>` 은 그대로 둔다. 구획 제목이라는 의미와 `aria-labelledby` 대상이
+          바뀌면 안 되므로, 제목을 버튼으로 **바꾸지 않고** 제목 **안에** 버튼을 넣는다.
+
+          `section.topic` 이 null 인 구획(「그 밖의 글」)은 대응하는 노드가 없어
+          고를 것이 없다 — 그때만 평문으로 남긴다.
+        */
+        const topic = section.topic;
+        const topicSelected = topic != null && selected === topic.id;
+        return (
+          <section key={section.key} aria-labelledby={`atlas-topic-${section.key}`}>
+            <h3
+              id={`atlas-topic-${section.key}`}
+              className="text-card-title font-semibold text-n9 break-keep"
+            >
+              {topic ? (
+                <button
+                  type="button"
+                  onClick={() => onSelect(topic.id)}
+                  aria-current={topicSelected ? "true" : undefined}
+                  className={[
+                    "text-left break-keep",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
+                    "focus-visible:ring-offset-2 focus-visible:ring-offset-n0",
+                    // 선택 표시는 글 항목과 같은 방식이다 — 액센트 색.
+                    // 굵기는 h3 가 이미 font-semibold 라 여기서 더 주지 않는다.
+                    topicSelected ? "text-signal" : "text-n9 hover:text-signal",
+                  ].join(" ")}
+                >
+                  {section.title}
+                </button>
+              ) : (
+                section.title
+              )}{" "}
+              <span className="text-label text-n6">{section.members.length}편</span>
+              {topic && topicSelected ? <DetailLink id={topic.id} title={topic.title} /> : null}
+            </h3>
+            <ul className="mt-3 space-y-1">
+              {section.members.map((m) => {
+                const isSelected = selected != null && m.id === selected;
+                return (
+                  <li key={m.id}>
+                    <button
+                      type="button"
+                      onClick={() => onSelect(m.id)}
+                      // 선택된 항목만 aria-current 를 갖는다. 스크린리더가 「현재 항목」으로
+                      // 읽고, 시각적으로도 액센트로 구분된다.
+                      aria-current={isSelected ? "true" : undefined}
+                      className={[
+                        "text-left text-body break-keep",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
+                        "focus-visible:ring-offset-2 focus-visible:ring-offset-n0",
+                        isSelected ? "font-semibold text-signal" : "text-n7 hover:text-signal",
+                      ].join(" ")}
+                    >
+                      {m.title}
+                    </button>
+                    {isSelected ? <DetailLink id={m.id} title={m.title} /> : null}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
     </div>
   );
 }
