@@ -11,10 +11,12 @@ import type { Post } from "@/lib/blog/types";
  * vitest는 esbuild로 타입을 벗겨 내 통과시키지만 `tsc --noEmit`은 잡는다 —
  * 그래서 이 파일의 순회는 전부 Array.from으로 배열화한 뒤 돈다.
  *
- * ⚠️ 지금 이 함수를 쓰는 곳은 링크 무결성 검사(tests/blog/content/links.test.ts) **하나뿐이다.**
- *    승격한 이유는 앞으로 생길 아틀라스 엣지 생성(lib/atlas/build.ts, T8)이 **같은 코드를 보게**
- *    하기 위해서다 — 따로 구현하면 그때부터 엣지와 검사가 어긋날 수 있다(설계서 §7.4).
- *    T8 이 끝나면 이 문단을 「두 곳이 함께 쓴다」로 고쳐라. 그전까지는 이게 사실이 아니다.
+ * ⚠️ 이 함수를 **두 곳이 함께 쓴다** — 링크 무결성 검사(tests/blog/content/links.test.ts)와
+ *    아틀라스 엣지 생성(lib/atlas/build.ts). 승격한 이유가 그것이다: 따로 구현하면 그때부터
+ *    엣지와 검사가 어긋날 수 있다(설계서 §7.4).
+ *    효과는 실측됐다 — T2 가 이 함수로 센 extends 798 과, 중복 제거·자기참조 제외 규칙을
+ *    새로 정한 T8 의 buildGraph 가 낸 798 이 같다(2026-08-27). 추출을 따로 구현했다면
+ *    그 두 수가 같을 이유가 없다.
  */
 export function outboundKeys(post: Post): string[] {
   const keys: string[] = [];
