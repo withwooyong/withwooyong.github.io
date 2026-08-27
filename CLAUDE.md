@@ -44,8 +44,9 @@
 | Pagefind 색인 | `check-pagefind:verify` → `check-pagefind`. **`pagefind` 는 아무것도 색인하지 않아도 0 으로 종료한다.** 검색 동작을 바꿨다면 `probe-search` 로 실제 색인에 한국어 질의를 쏜다(갓 만든 `out/` 필요) |
 | 발행본 수 · 산출물 불변 | `check-counts:verify` → `check-counts` (CI). `npm run build && npm run check-baseline` (**로컬 전용**, CI 에서는 주석 처리) |
 
-**산출물의 문자열로 「렌더됐다」를 증명하지 마라.** Next 는 props 를 `__NEXT_DATA__` 에, 제목을 `<title>`·`og:title`
-에 중복해 싣는다 — 본문을 통째로 비워도 초록이다. `</head>` 이후만 보고, **파싱 실패는 빈 문자열로 빨개지게** 하라.
+**「있다」는 세 단계다 — 산출물에 문자열이 있다 ≠ 렌더됐다 ≠ 보인다. 각각 따로 증명하라.** Next 는 props 를
+`__NEXT_DATA__` 에, 제목을 `<title>`·`og:title` 에 중복해 싣는다 — `</head>` 이후만 보고 **파싱 실패는 빨개지게** 하라.
+화면은 **열어서 그려진 요소를 세라** — `/atlas` 는 엣지 1,053 중 156 만 그리는데 E2E 74건이 전부 통과했다.
 
 `npm test` 는 타입을 검사하지 않는다(esbuild/oxc 가 벗겨낸다). **`npx tsc --noEmit` 을 별도 단계로 돌린다.**
 
@@ -108,9 +109,8 @@ CI 에서 터졌다. 빠져나갈 길은 둘이고 실패 메시지가 둘 다 �
 ## 배포
 
 `.github/workflows/deploy.yml` 이 `main` 으로의 모든 푸시에서 돈다. 프리뷰 환경은 없다 — **`main` 이 곧 프로덕션이다.**
-CI 는 빌드만 하지 않는다. lint → `tsc --noEmit` → 금칙어 자체 검사 → 전체 vitest → 금칙어 → 발행본 수 → 빌드 →
-Pagefind 검사 → 산출물 금칙어가 `deploy` 앞에 순서대로 서 있고(정본은 워크플로 파일), `deploy` 는 `needs: build`
-뒤라 **하나라도 실패하면 배포되지 않는다.**
+CI 는 빌드만 하지 않는다 — lint·타입·금칙어·테스트·발행본 수·Pagefind 가 `deploy` 앞에 선다(정본은 워크플로
+파일). `deploy` 는 `needs: build` 뒤라 **하나라도 실패하면 배포되지 않는다.**
 
 ## 이 파일을 고칠 때
 
