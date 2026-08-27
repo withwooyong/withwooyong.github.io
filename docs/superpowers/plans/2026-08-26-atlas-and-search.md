@@ -32,7 +32,8 @@
 | T6 이중 리뷰 반영 | ✅ | `053f37c`(동일 커밋) | 채택 8 · 기각 1. **거짓 보증 1건** 포함 — 아래 §「T6 실측 기록」 |
 | 계획서 결함 4건 반영 | ✅ | `7b7a7f5` | 번호 매핑 표 · `[...id]` 정정 · 낡은 기대치 · T10 조건 확정. §「결함」 아래쪽 4행 |
 | T7 노드·엣지 zod 스키마 | ✅ | `9e57604` | `lib/atlas/types.ts` · `tests/atlas/types.test.ts`(**24건, 전부 거부 검사**). 테스트 **205 → 229** |
-| T8 이후 | ⬜ 미착수 | — | — |
+| T8 MDX → 그래프 매핑 | ✅ | `eeac2af` | `lib/atlas/build.ts` · `tests/atlas/build.test.ts`(**14건**). **노드 162 · 엣지 1,053 — T2 실측과 네 항목 모두 일치.** 테스트 **229 → 243** |
+| T9 이후 | ⬜ 미착수 | — | — |
 
 **T6 을 시작하기 전에 반드시 읽을 것:** §「T5 실측 기록」. T6 스펙 초안이 검사하는 접근명·로케이터가 실제 구현과 맞는지 **실측으로 확인해 뒀다** — 그중 하나는 「깨질 것」이라 판단했다가 측정에서 뒤집혔다.
 
@@ -82,8 +83,14 @@
 | **T10 의 ⚠️** (2026-08-27 발견) | 「T8 의 실측 엣지 수를 먼저 보라. 300 을 크게 넘으면 …그때는 규칙을 함께 넣는다」 | **T2 가 이미 쟀다 — 엣지 1,053 이다.** 임계의 **3.5 배**라 조건은 T2 시점에 이미 발동했다. 「보고 정한다」로 남겨 두면 T10 실행자가 조건 없이 만들고 화면이 뭉갠 뒤에야 발견한다 — T10 본문에 **확정 규칙**으로 옮겼다 |
 | **File Structure 표가 본문과 또 갈렸다** (2026-08-27 T7 직후 발견) | `scripts/build-atlas.mjs`(T8) · `scripts/check-atlas.mjs`(T9) · `package.json` 에 `build:atlas`·`check-atlas` 스크립트 | **셋 다 만들지 않는다.** T8 본문이 §「왜 CLI 스크립트를 만들지 않나」에서 이미 철회했고(`.mjs` 는 `@/` 별칭 TypeScript 를 못 읽는다), T9 본문은 `tests/atlas/integrity.test.ts` 다. 표에는 그 대체물이 **아예 없었다.** 위 `[id].tsx` 행과 **같은 유형**이다 — 본문은 고쳐졌는데 표가 안 따라왔다 |
 
-**위 두 행이 한 가지를 말한다 — 이 계획서에서 가장 자주 틀리는 곳은 File Structure 표다.**
-본문을 고칠 때 표를 같이 고치지 않은 흔적이 세 군데(`[id].tsx` · `build-atlas.mjs` · `check-atlas.mjs`)에서 나왔다.
+| **File Structure 표가 또 갈렸다 — 네 번째** (2026-08-27 T8 착수 전 발견) | `scripts/count-edges.mjs` — 「엣지 수 실측 (1회용 계측기, 커밋한다)」 (T2) | **존재한 적이 없다.** `git log --all -- scripts/count-edges.mjs` → **0건**. T2 Step 4 본문은 이 `.mjs` 초안을 싣자마자 *「⚠️ 위 import 는 동작하지 않는다」* 로 **그 자리에서 철회하고** `tests/atlas/count-edges.test.ts` 로 바꾼 뒤 마지막에 `rm` 한다. §「D-2가 바꾸는 수치」도 그렇게 적었다. 즉 계측기는 테스트로 만들어졌고 쓰고 버려졌는데 **표만 `.mjs` 로 남았다.** T8 Step 5 가 「T2 에서 적어 둔 수치와 대조한다」고 지시하므로, 실행자가 이 표를 믿고 없는 파일을 쫓는다 |
+| **T8 Step 3 코드 — 토픽 노드의 title·summary** (2026-08-27 T8 착수 전 발견) | `title: c` (slug) · `summary` 가 「N편」 | **화면에 그대로 나간다.** T10 은 `{t.title}` 을(2583 행), T11 은 `title={`${node.title} — Atlas`}` · `description={node.summary}` 를(2826 행) 렌더하므로, 한글 사이트의 아틀라스에 「rag」·「search-engineering」이 뜨고 노드 상세의 meta description 이 「12편」이 된다. `content/blog/categories.ts` 에 `name`(「RAG · 검색증강생성」)과 `description` 이 이미 있고 `findCategory(slug)` 도 있다 — **데이터는 있는데 안 읽었다.** 미등록 slug 폴백과 함께 T8 에서 고쳤다 |
+| **T8 Step 1 코드 — draft 테스트의 사각** (2026-08-27 T8 착수 전 발견) | `draft 는 그래프에 들어가지 않는다` 가 `artifact` 개수만 본다 | 카테고리 목록을 **필터 전** 배열(`all`)에서 뽑아도 **초록이다.** 그러면 엣지가 하나도 없는 고아 토픽 노드가 남는데, 이것이 정확히 T7 실측 기록 ②가 T8 로 넘긴 「글 0 편 카테고리」 문제다 — **계획서가 문제를 넘겨 놓고 그것을 잡는 테스트는 안 썼다.** 「초안만 있는 카테고리는 토픽 노드도 만들지 않는다」를 추가했다 |
+
+**이 표가 한 가지를 말한다 — 이 계획서에서 가장 자주 틀리는 곳은 File Structure 표다.**
+본문을 고칠 때 표를 같이 고치지 않은 흔적이 **네 군데**(`[id].tsx` · `build-atlas.mjs` · `check-atlas.mjs` · `count-edges.mjs`)에서 나왔다.
+넷 다 같은 모양이다 — **본문이 결정을 바꿨고, 표는 초안 그대로다.** 표가 더 눈에 띄므로 실행자는 표를 먼저 믿는다.
+T9 이후를 시작하기 전에 File Structure 표의 해당 행을 **본문과 대조한 뒤** 착수하라.
 표가 먼저 읽히고 더 눈에 띄므로 **실행자는 본문이 아니라 표를 따른다.** 태스크를 끝낼 때 표를 함께 갱신하라.
 
 **T6 의 다섯 행이 한 방향을 가리킨다.** 스펙 초안은 *스펙을 쓰던 시점의 리포*를 상대로 정확했고,
@@ -208,7 +215,7 @@ git diff --name-only HEAD | grep -E '^(pages/index\.tsx|pages/blog/|content/blog
 | `e2e/smoke.spec.ts` · `e2e/shell.spec.ts` | **수정** — 사라진 라우트 검사 정리 | T1 |
 | `lib/atlas/links.ts` | 본문 내부 링크 추출 — `links.test.ts`에서 승격 | T2 |
 | `tests/blog/content/links.test.ts` | **수정** — 승격된 함수를 호출하도록 | T2 |
-| `scripts/count-edges.mjs` | 엣지 수 실측 (1회용 계측기, 커밋한다) | T2 |
+| ~~`scripts/count-edges.mjs`~~ | ~~엣지 수 실측 (1회용 계측기, 커밋한다)~~ — **존재한 적이 없다.** T2 는 `tests/atlas/count-edges.test.ts` 로 세고 그 파일을 지웠다(T2 Step 4 · §「D-2가 바꾸는 수치」). 지금 이 수치를 다시 내려면 `tests/atlas/build.test.ts` 의 §「실데이터」를 `--reporter=verbose` 로 돌린다 | ~~T2~~ |
 | `package.json` | **수정** — T3 은 `pagefind`·`check-pagefind` 스크립트, T7 은 `zod` 의존 추가 | T3·T7 |
 | `lib/search/pagefind-loader.ts` | Pagefind 런타임 동적 로드 + 타입 | T5 |
 | `components/search/command-palette.tsx` | `⌘K` 팔레트 UI | T5 |
@@ -1876,7 +1883,7 @@ T7 본문이 *「`topic` 이 카테고리 slug 와 충돌하지 않는지 확인
 | --- | --- |
 | 글 0 편 카테고리의 토픽 노드 처리 | 위 ②. `buildGraph` 가 노드를 만드는 곳이 T8 이다 |
 | `meta.latest` 의 실제 값 | 「글의 최신 `updated`」라고 스키마에 적었지만 그 값을 **읽는 코드가 T8** 이다. 빌드 시각을 넣으면 `check-baseline` 이 영원히 빨개진다 |
-| 엣지 1,053 의 재확인 | T2 의 `count-edges.mjs` 출력이다. `buildGraph` 의 중복 제거·자기참조 제외 규칙이 T8 에서 정해지므로 **같은 수가 나온다는 보장이 없다.** T10 의 렌더링 규칙이 이 수에 걸려 있다 |
+| 엣지 1,053 의 재확인 | T2 의 실측 출력이다. `buildGraph` 의 중복 제거·자기참조 제외 규칙이 T8 에서 정해지므로 **같은 수가 나온다는 보장이 없다.** T10 의 렌더링 규칙이 이 수에 걸려 있다 → **✅ T8 에서 네 항목 모두 일치 확인**(§「T8 실측 기록」①) |
 
 ---
 
@@ -2009,6 +2016,10 @@ Expected: **FAIL** — `Cannot find module '@/lib/atlas/build'`.
 
 - [ ] **Step 3: 구현한다**
 
+⚠️ **아래 코드는 초안이다. 실제 구현은 2 곳이 다르다** — 토픽 노드의 `title`·`summary` 를
+`content/blog/categories.ts` 에서 가져온다. 근거는 §「T8 실측 기록」②. 이 블록을 그대로
+복사하면 아틀라스에 「rag」가 뜬다.
+
 ```ts
 // lib/atlas/build.ts
 import { outboundKeys, postKey } from "@/lib/atlas/links";
@@ -2129,7 +2140,7 @@ export function buildGraph(all: Post[]): AtlasGraph {
 npx vitest run tests/atlas/build.test.ts
 ```
 
-Expected: **10 passed**.
+Expected: **10 passed**. (실제로는 착수 전 리뷰가 3 건을 더해 **13**, Step 5 를 더하면 **14** 였다 — §「T8 실측 기록」②③)
 
 ```bash
 npx tsc --noEmit
@@ -2177,6 +2188,90 @@ lib/blog/loader.ts 가 TS + @/ 별칭이라 순수 Node 스크립트가 못 읽�
 meta.latest 는 빌드 시각이 아니라 글의 최신 updated 다. 빌드마다 바뀌면
 산출물 해시가 매번 달라져 check-baseline 이 영원히 빨개진다."
 ```
+
+---
+
+### T8 실측 기록
+
+실측 2026-08-27 · 커밋 `eeac2af`.
+
+| 검사 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | **0** — `target: es5` 이터레이터 함정 없음. Map·Set 순회를 전부 `Array.from` 으로 배열화했다 |
+| `npm run lint` | **0** |
+| `npm test` | **243 passed** (T7 직후 229 → T8 이 14 건 추가) |
+| 규모 | **노드 162 · 엣지 1,053** |
+
+#### ① T2 의 실측치와 **네 항목 모두** 일치했다 — 우연이 아니라 T2 의 설계다
+
+```
+artifact 156 · concept 6            → 노드 162
+extends 798 · instantiates 156 · sequence 99 → 엣지 1,053
+```
+
+T7 실측 기록 ④가 *「`buildGraph` 의 중복 제거·자기참조 제외 규칙이 T8 에서 정해지므로
+**같은 수가 나온다는 보장이 없다**」* 고 적어 둔 항목이다. 같은 수가 나왔고, 이유는 T2 가
+`outboundKeys` 를 `lib/atlas/links.ts` 로 **승격해 검사기와 생성기가 같은 함수를 보게 했기**
+때문이다(설계서 §7.4). 추출을 따로 구현했다면 규칙을 새로 정하는 이 시점에 갈렸을 것이다.
+
+⇒ **T10 의 렌더러 임계 판정은 그대로다.** 1,053 은 §7.5 의 「Dot ≤300」의 3.5 배이고,
+Canvas 가 후속 계획서로 빠졌으므로 T10 은 여전히 SVG 하나로 이 수를 감당할 방법을 정해야 한다.
+
+`lib/atlas/links.ts` 의 「T8 이 끝나면 이 문단을 「두 곳이 함께 쓴다」로 고쳐라」 지시를 이행했다.
+
+#### ② 계획서 Step 3 코드를 2 곳 고쳤다 — 둘 다 착수 전 리뷰에서 나왔다
+
+| 고친 곳 | 계획서 | 실제 |
+| --- | --- | --- |
+| 토픽 노드 `title` | `c` (slug) | `findCategory(c)?.name ?? c` — 미등록 slug 만 폴백 |
+| 토픽 노드 `summary` | 「N편」 | `findCategory(c)?.description` — 미등록이면 「N편」으로 폴백 |
+
+근거는 §「결함」의 해당 행에 있다. 요약하면 **T10·T11 이 이 두 값을 그대로 렌더한다** —
+slug 를 넣으면 한글 사이트에 「rag」가 뜨고 노드 상세의 meta description 이 「12편」이 된다.
+데이터(`content/blog/categories.ts` 의 `name`·`description`)와 조회 함수(`findCategory`)가
+**이미 있는데 안 읽은 것**이다.
+
+#### ③ 글 0 편 카테고리 — **토픽 노드를 만들지 않는다**로 확정
+
+T7 실측 기록 ②가 T8 로 넘긴 결정이다. 등록 12 개 중 글이 있는 것은 6 개다.
+
+| 선택지 | 결과 | 판정 |
+| --- | --- | --- |
+| 12 개 전부 노드로 | 엣지가 하나도 없는 **고아 노드 6 개**. T9 무결성 검사가 이것을 결함으로 볼지 정상으로 볼지도 함께 정해야 한다 | ✗ |
+| 글이 1 편 이상인 것만 | 노드 162 = 156 + 6. `getPublishedCategories` 와 같은 규칙 | ✅ |
+
+`buildGraph(posts: Post[])` 가 글 목록만 받으므로 **구조적으로도 전자가 불가능하다.**
+다만 그 성질에 기대면 카테고리 목록을 `draft` 필터 **전** 배열에서 뽑는 순간 조용히 깨진다 —
+계획서의 draft 테스트는 `artifact` 개수만 봐서 그 경우에도 초록이었다.
+「초안만 있는 카테고리는 토픽 노드도 만들지 않는다」를 추가해 내렸다.
+
+#### ④ vitest 기본 리포터는 비-TTY 에서 `console.log` 를 삼킨다
+
+Step 5 의 목적은 규모를 **출력해서 T2 와 대조하는 것**인데, 첫 실행에서 출력이 안 나왔다.
+
+```
+npx vitest run tests/atlas/build.test.ts | grep 노드   → 0건
+npx vitest run tests/atlas/build.test.ts --reporter=verbose > f  → 「노드 162 · 엣지 1053」
+```
+
+**0 은 「출력이 없다」가 아니라 「못 읽었다」였다.** 이 리포 `CLAUDE.md` 의 Pagefind gzip·
+이모지 로케일 행과 같은 유형이다 — 대조군 없는 0 은 증거가 아니다.
+그대로 믿었으면 「T2 와 대조했다」가 거짓 기록으로 남았다.
+테스트 파일 주석에 명령을 적어 두었다.
+
+#### ⑤ `meta.latest` 검사기를 대조군으로 증명했다
+
+「빌드 시각을 넣으면 안 된다」는 T7 이 넘긴 항목이라 **검사가 실제로 잡는지** 확인했다.
+`const latest = new Date().toISOString()` 을 심으니 합성·실데이터 **2 건이 함께 빨개졌다.**
+실데이터 쪽 단언은 `toMatch(/^\d{4}-\d{2}-\d{2}$/)` 다 — 내용이 늘어도 안 썩는다.
+
+#### ⑥ T9 로 넘긴 것
+
+| 항목 | 왜 T8 에서 안 했나 |
+| --- | --- |
+| 노드 `id` 중복 검사 | 스키마는 배열만 보고 유일성을 모른다. T9 가 무결성 게이트다 |
+| 엣지 양끝이 실재하는 노드인지 | `extends` 는 `published` 로 걸렀지만 `instantiates`·`sequence` 는 안 걸렀다. 지금은 구조상 항상 성립하지만 **검사는 없다** |
+| 고아 노드(엣지 0) 판정 | 위 ③에서 토픽 노드는 막았다. `artifact` 쪽 고아는 `role: "map"` 예외와 얽혀 있어 T9 의 판단이다 |
 
 ---
 
@@ -2342,7 +2437,10 @@ git commit -m "test(atlas): 그래프 무결성 게이트 + 자기검사
 | 선택 없음(초기) | 없음 또는 토픽↔글 엣지만 | 1,053개를 겹쳐 그리면 노드가 선에 묻힌다 |
 | 노드 선택됨 | 그 노드에 붙은 엣지만(1-hop) | 「이 글이 무엇과 이어지나」가 아틀라스의 질문이다 |
 
-**이 표의 수치를 T10 구현 전에 실측으로 다시 확인하라** — 1,053은 T2의 `scripts/count-edges.mjs` 출력이고, T8의 `graph.json`이 같은 수를 낸다는 보장이 없다(중복 제거·자기참조 제외 규칙이 T8에서 정해진다).
+~~**이 표의 수치를 T10 구현 전에 실측으로 다시 확인하라** — 1,053은 T2의 `scripts/count-edges.mjs` 출력이고, T8의 `graph.json`이 같은 수를 낸다는 보장이 없다(중복 제거·자기참조 제외 규칙이 T8에서 정해진다).~~
+
+✅ **확인됐다 (2026-08-27 · T8 `eeac2af`).** `buildGraph` 가 낸 값이 T2 실측과 **네 항목 모두 일치**한다 — extends 798 · instantiates 156 · sequence 99 · 노드 162. 근거는 §「T8 실측 기록」①.
+위 문장의 `scripts/count-edges.mjs` 와 `graph.json` 은 **둘 다 존재하지 않는 파일이다**(§「결함」 참조) — 그래서 취소선으로 남긴다. 지금 이 수치를 다시 내는 방법은 `npx vitest run tests/atlas/build.test.ts --reporter=verbose` 하나다.
 
 - [ ] **Step 1: 레이아웃 테스트를 먼저 쓴다**
 
@@ -3059,7 +3157,7 @@ git commit -m "feat(atlas): 헤더 노출 + E2E + 기준선 갱신
 | --- | --- | --- |
 | 타입 | `npx tsc --noEmit` | 0 |
 | 린트 | `npm run lint` | 0 |
-| 단위 | `npm test` | **229 + 남은 태스크가 더한 수.** 229 는 T7 직후 실측치다(2026-08-27 · T6 직후 205 → T7 이 24 건 추가). T8·T10 이 `tests/atlas/` 를 더 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
+| 단위 | `npm test` | **243 + 남은 태스크가 더한 수.** 243 은 T8 직후 실측치다(2026-08-27 · T7 직후 229 → T8 이 14 건 추가). T9·T10 이 `tests/atlas/` 를 더 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
 | 빌드 | `npm run build` | 0 |
 | 검색 인덱스 | `npm run check-pagefind` | `✔` |
 | 기준선 | `npm run check-baseline` | **0** (T12 Step 4에서 갱신 후) |
