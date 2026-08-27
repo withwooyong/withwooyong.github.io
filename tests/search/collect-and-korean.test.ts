@@ -160,6 +160,25 @@ describe("isIndexNoise", () => {
     expect(isIndexNoise("/blog/tags-and-more/")).toBe(false);
   });
 
+  it("아틀라스 노드 상세는 잡음이다 — 글의 제목·요약을 그대로 실은 중복이다", () => {
+    // 실측 2026-08-27: 쿼리 8종의 상위 10 에 들어온 `/atlas/…` 17건이 **전부**
+    // 같은 목록 안에 `/blog/…` 원문을 가진 중복이었다(최대 40%).
+    expect(isIndexNoise("/atlas/rag/rag-pipeline-retrieval/")).toBe(true);
+    expect(isIndexNoise("/atlas/topic/rag/")).toBe(true);
+  });
+
+  it("아틀라스 목록 자체는 남긴다", () => {
+    // 1건뿐이라 결과를 뒤덮지 못하고, 넓은 쿼리에서는 좋은 목적지다.
+    // `scripts/generate-sitemap.mjs` 가 `/^atlas\/.+/` 로 상세만 뺀 것과 같은 판정이다.
+    expect(isIndexNoise("/atlas/")).toBe(false);
+  });
+
+  it("atlas 로 시작할 뿐인 정상 슬러그는 삼키지 않는다", () => {
+    // 접두에 슬래시가 없으면(`indexOf("/atlas") === 0`) 이 둘이 조용히 사라진다.
+    expect(isIndexNoise("/atlas-postmortem/")).toBe(false);
+    expect(isIndexNoise("/blog/ai-agent/atlas/")).toBe(false);
+  });
+
   it("글·카테고리 목록·인덱스·일반 페이지는 남긴다", () => {
     expect(isIndexNoise("/blog/rag/rag-pipeline-retrieval/")).toBe(false);
     expect(isIndexNoise("/blog/ai-agent/")).toBe(false);

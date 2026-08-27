@@ -273,7 +273,11 @@ export function CommandPalette() {
       skipRestoreRef.current = true;
       close();
       void router.push(url).then(() => {
-        // site-shell.tsx 의 <main id="main" tabIndex={-1}> 로 보낸다.
+        // 도착한 페이지의 <main id="main" tabIndex={-1}> 로 보낸다.
+        // ⚠️ **tabIndex={-1} 이 없는 <main> 에서는 이 focus() 가 조용한 무동작이다.**
+        //    2026-08-27 실측: components/blog/blog-shell.tsx 의 <main> 에 그 속성이 없어
+        //    검색으로 글에 도달한 뒤 activeElement 가 body 였다. 셸을 새로 만들 때마다
+        //    같은 속성을 달아라 — 여기서는 그것이 있는지 알 방법이 없다.
         const main = document.getElementById("main");
         if (main && typeof main.focus === "function") main.focus();
       });

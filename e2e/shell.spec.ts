@@ -40,17 +40,17 @@ const SHELL_PATHS = [SHELL_HOME];
  *
  * 라우트가 생겨 내비에 올릴 때는 `ABSENT` 에서 `PRESENT` 로 **옮기기만** 하면 된다.
  */
-const NAV_PRESENT = ["Blog"];
+const NAV_PRESENT = [
+  // ⚠️ 이 항목은 아래 「asPath 표류」 검사와 **한 쌍이다.** `SHELL_HOME`(=`/atlas/`) 이 NAV 에
+  //    있어야 그 검사가 볼 활성 링크가 생긴다. 다시 `NAV_ABSENT` 로 내리면 asPath 1건이
+  //    빨개지는데, 그 빨강의 뜻은 「asPath 가 틀렸다」가 아니라 「NAV 에서 내렸다」다.
+  //    T16(=Task 12) 에서 `NAV_ABSENT` → 여기로 옮겼다.
+  "Atlas",
+  "Blog",
+];
 const NAV_ABSENT = [
   "Work", // 선행 계획서 T11 로 이월
   "About", // 선행 계획서 T12 로 이월
-  // ⚠️ 이 항목은 아래 「asPath 표류」 검사와 **한 구간 동안 서로 배타적이다.** 여기 있으면
-  //    헤더에 Atlas 링크가 0이어야 하는데, asPath 검사는 `/atlas/` 가 **활성 링크로 있어야**
-  //    통과한다. 그래서 셸 부착(T13) 뒤 헤더 등재(T16) 전까지 asPath 1건이 빨갛고,
-  //    **그것이 정상이다.** T16 에서 이 줄을 `NAV_ABSENT` → `NAV_PRESENT` 로 옮기면 둘 다 초록이 된다.
-  //    (2026-08-27 리뷰가 이걸 「어느 쪽으로도 전부 초록이 될 수 없는 결함」으로 읽었다 —
-  //     두 주석이 서로를 가리키지 않아 생긴 오독이라 여기에 명시한다.)
-  "Atlas", // 아틀라스·검색 계획서 T16(헤더 노출) 에서 올린다
 ];
 
 /**
@@ -91,7 +91,21 @@ test.describe("헤더 (셸 부착 시 켜짐)", () => {
    */
   test("내비가 NAV 배열대로 노출한다", async ({ page }) => {
     await gotoWithShell(page, SHELL_HOME);
-    const nav = page.getByRole("navigation", { name: "주요 메뉴" });
+
+    /*
+     * ⚠️ 항목이 **어느 내비에 있는지가 폭에 따라 다르다.** 데스크톱 내비는 `hidden md:flex`
+     *    라 390px 에서 통째로 안 보이고, 그 폭에서 항목이 사는 곳은 햄버거가 여는 드로어다.
+     *    2026-08-27 실측: 「주요 메뉴」 하나만 보던 이 검사는 **mobile 프로젝트에서 반드시
+     *    실패**했다. NAV 가 ["Blog"] 뿐이던 때부터 그랬는데, 셸 미부착으로 skip 중이라
+     *    아무에게도 안 보였다 — skip 은 초록의 얼굴을 하고 있다.
+     */
+    const desktopNav = page.getByRole("navigation", { name: "주요 메뉴" });
+    let nav = desktopNav;
+    if (!(await desktopNav.isVisible())) {
+      await page.getByRole("button", { name: "메뉴 열기" }).click();
+      nav = page.getByRole("navigation", { name: "모바일 메뉴" });
+    }
+
     for (const label of NAV_PRESENT) {
       await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
     }
@@ -212,8 +226,12 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
    * 순서를 그대로 못박는다. 이 테스트가 지키는 것이 바로 **DOM 순서**이기 때문이다.
    * NAV 가 바뀌면 여기도 같이 바뀌어야 하는 게 맞다.
    *
-   * 390px 에서 순환에 드는 것: 헤더 바의 [로고 · 토글 · 햄버거] + 드로어의 [Work · Blog · About · EN].
+   * 390px 에서 순환에 드는 것: 헤더 바의 [로고 · 검색 · 토글 · 햄버거] + 드로어의 [Atlas · Blog · EN].
    * 데스크톱 내비(`hidden md:flex`)와 헤더의 EN(`hidden sm:inline`)은 offsetParent 필터가 걸러 낸다.
+   *
+   * ⚠️ 아래 두 배열은 **실측으로 갱신한다.** 2026-08-27 에 두 곳이 한꺼번에 낡아 있었다 —
+   *    NAV 가 [Work·Blog·About] 로, 헤더 바에 T5 가 넣은 「검색 열기」가 빠진 채로.
+   *    둘 다 skip 중이라 드러나지 않았다.
    */
   test("드로어가 열리면 Tab 이 헤더 바와 드로어를 한 바퀴로 묶는다", async ({ page }) => {
     await page.setViewportSize(MOBILE);
@@ -230,28 +248,34 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
     }
 
     expect(seen).toEqual([
-      "Work",
+      "Atlas",
       "Blog",
-      "About",
       "EN",
       "허우용 Ted", // ← 헤더 바. 여기가 빠지면 T7 의 누수가 되살아난 것이다
+      "검색 열기",
       "라이트 모드로 전환",
       "메뉴 닫기",
-      "Work", // 여덟 번째에 처음으로 돌아온다 = 한 바퀴가 정확히 7
+      "Atlas", // 여덟 번째에 처음으로 돌아온다 = 한 바퀴가 정확히 7
     ]);
 
     /*
-     * 역방향의 경계. 지금 포커스는 Work 이고, head 는 로고다.
-     * Work → 햄버거 → 토글 → 로고(head) 까지는 브라우저 기본 동작이고,
-     * **네 번째**에서 비로소 핸들러가 개입해 tail(드로어의 EN)로 감아야 한다.
-     * 앞의 셋만 눌러 보면 경계를 한 번도 안 밟는다.
+     * 역방향의 경계. 지금 포커스는 Atlas 이고, head 는 로고다.
+     * Atlas → 햄버거 → 토글 → 검색 → 로고(head) 까지는 브라우저 기본 동작이고,
+     * **다섯 번째**에서 비로소 핸들러가 개입해 tail(드로어의 EN)로 감아야 한다.
+     * 앞의 넷만 눌러 보면 경계를 한 번도 안 밟는다.
      */
     const back = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       await page.keyboard.press("Shift+Tab");
       back.push(await focusedLabel(page));
     }
-    expect(back).toEqual(["메뉴 닫기", "라이트 모드로 전환", "허우용 Ted", "EN"]);
+    expect(back).toEqual([
+      "메뉴 닫기",
+      "라이트 모드로 전환",
+      "검색 열기",
+      "허우용 Ted",
+      "EN",
+    ]);
   });
 
   /**
@@ -281,14 +305,10 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
     //    실패가 나고, 「아직 안 붙었다」가 「asPath 가 틀렸다」로 둔갑한다. 실제로 그렇게 났었다.
     //
     // ⚠️ 이 검사만은 게이트를 통과해도 조건이 하나 더 필요하다 — `SHELL_HOME` 이 **NAV 에도**
-    //    있어야 활성 링크가 생긴다. 셸 부착(**T13**)과 헤더 등재(**T16**) 사이 한 구간에서는
-    //    이 1건이 **빨갛고 그것이 정상**이다. 그 빨강의 뜻은 「asPath 가 틀렸다」가 아니라
-    //    「셸은 붙였는데 NAV 에 아직 안 올렸다」다. T16 을 끝내면 초록이 된다.
-    //
-    // ⚠️ 그 구간은 **태스크 3개 길이다**(T13→T14→T15→T16). 그동안 이 1건 × 2프로젝트가
-    //    계속 빨간데, `shell-gate.ts` 의 skip 메시지는 「T13 에서 켜진다」라고만 말해
-    //    전부 초록이 될 것처럼 읽힌다. T13 을 끝낸 사람은 **빨강 2건이 남는 것이 정상**임을
-    //    여기서 확인하라. 정상 빨강의 개수는 계획서 §「지금 초록이 아닌 것」에 적혀 있다.
+    //    있어야 활성 링크가 생긴다. 셸 부착(**T13**)과 헤더 등재(**T16**=Task 12) 사이의
+    //    한 구간에서는 이 1건이 빨갰고 그것이 정상이었다. **그 구간은 끝났다** —
+    //    지금 이 검사가 빨가면 뜻은 하나다: `NAV` 에서 `/atlas/` 가 사라졌거나
+    //    서버가 그린 정적 HTML 의 활성 판정이 클라이언트와 어긋난다.
     await gotoWithShell(page, SHELL_HOME);
 
     // ① 하이드레이션 전 — JS 를 태우지 않고 문서 그대로 받는다

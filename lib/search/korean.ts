@@ -91,6 +91,13 @@ export function stripParticle(query: string): string {
  *
  * 카테고리 목록(`/blog/ai-agent/`)과 `/blog/` 인덱스는 **남긴다** — 합쳐 7건뿐이라
  * 결과를 뒤덮지 못하고, 넓은 쿼리에서는 오히려 좋은 목적지다.
+ *
+ * 아틀라스 노드 상세도 같은 이유로 뺀다. 실측 2026-08-27 (인덱스 242 → 405, `/atlas/` 163 편입):
+ * 쿼리 8종의 상위 10 에 들어온 `/atlas/…` 는 **17건이고 그 17건 전부**가 같은 목록 안에
+ * `/blog/…` 원문을 이미 가진 중복이었다(최대 40% · 「RAG」·「컨텍스트」). 노드 상세가
+ * 글의 제목·요약을 그대로 싣기 때문이다. 정보를 0 만큼 더하면서 서로 다른 글을 그만큼 밀어낸다.
+ * 원문보다 위로 온 적은 한 번도 없으므로 **랭킹이 아니라 중복이 문제**이고, 그래서
+ * 랭킹 조정이 아니라 제외로 푼다.
  */
 export function isIndexNoise(url: string): boolean {
   if (!url) return false;
@@ -99,5 +106,9 @@ export function isIndexNoise(url: string): boolean {
   // 정상 글을 조용히 삼킨다.
   if (url === "/404/" || url === "/404.html") return true;
   if (url.indexOf("/blog/tags/") === 0) return true;
+  // 아틀라스는 **노드 상세만** 뺀다. `/atlas/` 목록 자체는 1건뿐이고 넓은 쿼리에서 좋은
+  // 목적지라 남긴다 — `scripts/generate-sitemap.mjs` 의 `/^atlas\/.+/` 와 같은 판정이다.
+  // 접두에 슬래시를 붙여 두면 `/atlas-postmortem/` 같은 슬러그가 생겨도 걸리지 않는다.
+  if (url.indexOf("/atlas/") === 0 && url !== "/atlas/") return true;
   return false;
 }

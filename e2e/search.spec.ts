@@ -5,12 +5,12 @@ import { SHELL_HOME, SHELL_MARKER, gotoWithShell, shellIsMounted } from "./shell
  * `⌘K` 검색 E2E.
  *
  * 팔레트는 `components/site-shell.tsx` 에 마운트되므로 **셸이 붙은 페이지에서만** 존재한다.
- * 아틀라스·검색 계획서 **T13**(「/atlas 조립 · 셸 부착」)에서 `/atlas/` 에 셸이 붙기 전까지
- * 아래 팔레트 검사 5종은 전부 skip 되고 센티넬만 빨갛다.
+ * 아틀라스·검색 계획서 **T13**(「/atlas 조립 · 셸 부착」)이 `/atlas/` 에 셸을 붙였으므로
+ * 아래 팔레트 검사는 지금 전부 돈다. **skip 이 하나라도 보이면 셸이 사라진 것이다.**
  *
- * ⚠️ 「T13 전이니까 그냥 빨갛게 둔다」로 하지 마라. 원인과 무관한 빨강은 아무 정보도 주지 않는다.
- *    이 파일의 빨강은 **정확히 하나**를 뜻해야 한다 — 「셸이 아직 안 붙었고, 그래서 검색 검사
- *    10건이 잠들어 있다」. 그 대응이 `shell-gate.ts` 의 게이트와 아래 센티넬의 쌍이다.
+ * ⚠️ 게이트를 지우지 마라. 「셸이 없어서 조용하다」와 「팔레트가 고장났다」는 다른 실패이고,
+ *    이 파일의 빨강은 **정확히 하나**를 뜻해야 한다. 그 대응이 `shell-gate.ts` 의 게이트와
+ *    아래 센티넬의 쌍이다 — 게이트가 skip 을 내면 센티넬이 대신 빨개진다.
  *
  * ⚠️ `shell.spec.ts` 에도 같은 모양의 셸 센티넬이 있다. **중복이 아니라 의도다.**
  *    센티넬의 임무는 「이 파일의 skip 이 정당한가」를 그 파일 안에서 답하는 것이라,
@@ -74,7 +74,7 @@ function resultLinks(page: Page): Locator {
 }
 
 test.describe("검색 센티넬 (게이트를 통과하지 않는다)", () => {
-  test(`셸이 ${SHELL_HOME} 에 붙어 있다 — 이게 빨간 동안 이 파일의 팔레트 검사 5종은 skip 된다`, async ({
+  test(`셸이 ${SHELL_HOME} 에 붙어 있다 — 이게 빨간 동안 이 파일의 팔레트 검사 6종은 skip 된다`, async ({
     page,
   }) => {
     await page.goto(SHELL_HOME);
@@ -130,22 +130,20 @@ test.describe("검색 센티넬 (게이트를 통과하지 않는다)", () => {
 });
 
 /**
- * ⚠️ **이 스위트 전체가 공유하는 미검증 위험 — T13 직후 반드시 확인하라.**
+ * ⚠️ **하이드레이션 경합 — 쟀다. 결론: 대기를 넣지 않는다.**
  *
- * 아래 5개는 전부 `page.goto` 직후에 키를 친다. 그런데 팔레트의 `keydown` 리스너는
+ * 아래 검사들은 전부 `page.goto` 직후에 키를 친다. 그런데 팔레트의 `keydown` 리스너는
  * `command-palette.tsx` 의 `useEffect` 안에서 `window` 에 붙는다 — 즉 **하이드레이션 후에야
  * 존재한다.** 반면 게이트가 보는 `data-site-shell` 은 **SSR 산출물에 이미 있어
- * 하이드레이션을 전혀 증명하지 않는다.** React 18 이 concurrent 하게 hydrate 하는 창에
- * keydown 이 떨어지면 유실되고, 5개가 **동시에** 「팔레트가 안 열린다」로 빨개진다.
+ * 하이드레이션을 전혀 증명하지 않는다.** 이론상 그 창에 keydown 이 떨어지면 유실된다.
  *
- * 「안 열리면 다시 누른다」로 방어할 수 **없다** — `Ctrl+K` 가 토글이라 두 번째 입력이
- * 팔레트를 닫는다. 기다릴 대상(하이드레이션 후에만 참인 무언가)도 셸이 붙기 전에는
- * 존재하지 않아 지금은 코드로 고칠 수 없다. 검증할 수 없는 방어를 넣는 것은
- * 이 리포가 반복해서 데인 「검증되지 않은 안심」과 같은 얼굴이라 넣지 않았다.
+ * 실측 2026-08-27 (Task 12) — `npx playwright test e2e/search.spec.ts --repeat-each=30`,
+ * desktop·mobile 합계 **480 회 중 479 통과**. 유일한 실패는 keydown 유실이 아니라
+ * `page.goto` 가 `/atlas/` 의 `load` 를 30 초 안에 못 받은 **정적 서버 포화**였다
+ * (같은 조건에서 `atlas.spec.ts` 360 회도 같은 서명으로 1 건). 즉 **키 유실 0/840.**
  *
- * **T13 직후 확인법:** `--repeat-each=30` 을 desktop·mobile 양쪽에 돌려 실패율을 잰다.
- * 0이 아니면 `gotoWithShell` 뒤에 하이드레이션 완료 대기
- * (예: 헤더 검색 버튼이 `toBeEnabled` 가 될 때까지)를 넣고 같은 방법으로 재측정한다.
+ * 그래서 대기를 넣지 않는다. 「안 열리면 다시 누른다」는 어차피 못 쓴다 —
+ * `Ctrl+K` 가 토글이라 두 번째 입력이 팔레트를 닫는다. 재측정이 필요하면 위 명령 그대로다.
  */
 test.describe("검색 팔레트 (셸 부착 시 켜짐)", () => {
   test("Ctrl+K 로 열리고 Escape 로 닫힌다", async ({ page }) => {
@@ -194,10 +192,11 @@ test.describe("검색 팔레트 (셸 부착 시 켜짐)", () => {
    *      **그 보증은 성립한 적이 없다.** 필터의 회귀 방어는 `tests/search/` 의
    *      `isIndexNoise` 단위 테스트가 이미 경계 케이스까지 들고 있다. E2E 가 흉내 낼 일이 아니다.
    *
-   *   ② **T13 이 만들 `/atlas/` 가 이 검사를 깨뜨릴 수 있다.** 빌드 끝의
-   *      `npx pagefind --site out` 은 새 페이지를 자동으로 색인하고 `isIndexNoise` 는
-   *      `/atlas/` 를 모른다. 아틀라스가 글 제목·요약의 집합이라면 「임베딩」에서 상위에
-   *      오를 수 있고, 그러면 **셸이 붙는 바로 그 태스크에서** 이 검사가 빨개진다.
+   *   ② **T13 이 만든 `/atlas/` 는 실제로 상위를 잠식했다 — 그리고 필터로 막았다.**
+   *      빌드 끝의 `npx pagefind --site out` 이 노드 상세 162 장을 자동 색인해 인덱스가
+   *      242 → 405 가 됐고, 실측 2026-08-27 (Task 12) 쿼리 8종의 상위 10 에 들어온
+   *      `/atlas/…` 17 건은 **전부** 같은 목록에 `/blog/…` 원문을 가진 중복이었다
+   *      (최대 40% · 「임베딩」은 2위). `isIndexNoise` 가 노드 상세를 빼면서 해소됐다.
    *      (필터를 통과하면서 `/blog/` 로 시작하지 않는 페이지는 이미 12건 있다 —
    *       `/`·`/en/`·`/notion/`·`/product-lead*` 등. 오늘은 그 12건이 「임베딩」 0회라 통과한다.)
    *
@@ -222,6 +221,49 @@ test.describe("검색 팔레트 (셸 부착 시 켜짐)", () => {
       hrefs.some((href) => href.startsWith("/blog/")),
       `결과에 글로 가는 링크가 없다. 받은 href: ${hrefs.join(" · ") || "(0건)"}`,
     ).toBe(true);
+  });
+
+  /**
+   * **주 이동 모델** — 화살표로 고르고 Enter 로 간다. `command-palette.tsx` 는 포커스를
+   * 입력에 고정한 채 `aria-activedescendant` 로만 선택을 옮기므로(§8.4), 이 경로가 깨지면
+   * 키보드 사용자에게 결과 목록은 **읽을 수만 있고 갈 수는 없는** 것이 된다.
+   *
+   * 이 1종만 E2E 에 둔다(계획서 T6 실측 ⑥ 이 미검증 6종 중 이것만 「반드시」로 지정했다).
+   * `router.push` **후** 포커스를 옮기는 코드라 셸과 라우트가 둘 다 있어야 의미가 있는데,
+   * T13 이 `/atlas/` 에 셸을 붙이고 T16 이 헤더에 올린 지금이 그 시점이다.
+   * 나머지 5종(Tab 트랩 순환 · 조사 제안 · `safeExcerpt` · axe · 합성 `KeyboardEvent`)은
+   * ⑥ 이 「단위 테스트가 맞다」·「검사하지 않기로」로 분류했다.
+   *
+   * ⚠️ 「두 번째 결과로 간다」로 쓰지 마라. `sel` 초기값이 바뀌면 조용히 다른 것을 검사한다.
+   *    지금 선택된 것이 무엇인지 `aria-selected` 로 읽고 **그것**에 도달했는지를 본다.
+   */
+  test("ArrowDown → Enter 로 글에 도달하고 포커스가 #main 으로 간다", async ({ page }) => {
+    await gotoWithShell(page, SHELL_HOME);
+    await page.keyboard.press("Control+k");
+    await searchInput(page).fill("임베딩");
+
+    await expect(resultLinks(page).first()).toBeVisible({ timeout: 10_000 });
+    await page.keyboard.press("ArrowDown");
+
+    const selectedLink = palette(page)
+      .getByRole("option", { selected: true })
+      .getByRole("link");
+    const href = await selectedLink.getAttribute("href");
+    expect(href, "선택된 결과가 없다 — ArrowDown 이 선택을 옮기지 않았다").toBeTruthy();
+    expect(href, `선택된 결과가 글이 아니다: ${href}`).toMatch(/^\/blog\//);
+
+    await page.keyboard.press("Enter");
+
+    // ① 팔레트는 닫히고 ② **고른 그 글**에 도달한다.
+    await expect(palette(page)).toHaveCount(0);
+    await page.waitForURL(`**${href}`);
+
+    // ③ 포커스는 헤더 검색 버튼이 아니라 본문으로 간다.
+    //    `site-shell.tsx` 의 `<main id="main" tabIndex={-1}>` 가 그것을 받는 자리다.
+    await expect(
+      page.locator("#main"),
+      "포커스가 #main 에 없다 — 키보드 사용자가 새 글이 아니라 이전 위치 앞에 서게 된다",
+    ).toBeFocused();
   });
 
   test("`/` 단독으로도 열린다", async ({ page }) => {

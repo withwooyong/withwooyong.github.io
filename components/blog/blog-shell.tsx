@@ -123,7 +123,15 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
         </aside>
 
         {/* 본문 */}
-        <main id="main" className="min-w-0 flex-1 py-6 sm:py-8">
+        {/*
+          tabIndex={-1} 이 없으면 <main> 은 포커스를 받을 수 없고 focus() 가 **조용한 무동작**이 된다.
+          스킵 링크가 스크롤만 시키고 포커스는 헤더에 남는 브라우저·보조기술 조합이 있고,
+          검색 팔레트가 이동 후 부르는 document.getElementById("main").focus()
+          (components/search/command-palette.tsx) 도 마찬가지로 아무 일도 하지 않는다.
+          2026-08-27 실측: 팔레트로 글에 도달한 뒤 activeElement 가 body 였다.
+          components/site-shell.tsx 의 <main> 과 같은 이유로 같은 속성을 단다.
+        */}
+        <main id="main" tabIndex={-1} className="min-w-0 flex-1 py-6 sm:py-8 focus:outline-none">
           {children}
         </main>
 
