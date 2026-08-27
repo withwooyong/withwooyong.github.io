@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readPosts } from "@/lib/blog/loader";
 import { headingIds } from "@/lib/toc";
-import { outboundKeys, postKey } from "@/lib/atlas/links";
+import { outboundKeys, postKey, proseOnly } from "@/lib/atlas/links";
 
 /**
  * 링크 지형 검사.
@@ -44,7 +44,9 @@ describe("링크 무결성", () => {
       // 링크 전체를 잡은 뒤 경로부와 앵커·질의부를 갈라 본다. #·? 를 문자 클래스에서
       // 배제하면(구판 `[^)#?]*`) 앵커 링크는 매칭 자체가 실패해 검사를 통째로 빠져나간다 —
       // `/blog/rag/foo#s` 같은 진짜 위반이 조용히 통과한다.
-      for (const m of Array.from(post.body.matchAll(/\]\((\/blog\/[^)]*)\)/g))) {
+      // proseOnly — 코드 펜스 안의 「슬래시 빠뜨리면 안 된다」 예시가 가짜 위반으로 잡히면
+      // 고칠 수 없는 빨강이 된다. outboundKeys 와 같은 전처리를 본다.
+      for (const m of Array.from(proseOnly(post.body).matchAll(/\]\((\/blog\/[^)]*)\)/g))) {
         const href = m[1];
         const path = href.split(/[#?]/)[0];
         // 판정은 경로부로, 보고는 원본 전체로. 경로부만 적으면 파일에서 찾지 못한다.
@@ -204,7 +206,9 @@ function anchorLinks(docs: Doc[]): AnchorLink[] {
   const out: AnchorLink[] = [];
 
   for (const d of docs) {
-    for (const m of Array.from(d.body.matchAll(/\]\(\/blog\/([^)#?]+?)\/?#([^)]+)\)/g))) {
+    // proseOnly 는 **링크를 뽑는 이쪽에만** 넣는다. 대상 헤딩 쪽(brokenAnchors 의 headingIds)에
+    // 넣으면 인라인 코드가 든 헤딩의 id 가 바뀐다 — 아래 「모든 앵커 링크가…」 주석 참조.
+    for (const m of Array.from(proseOnly(d.body).matchAll(/\]\(\/blog\/([^)#?]+?)\/?#([^)]+)\)/g))) {
       // 브라우저는 %-인코딩된 앵커도 디코드해 맞춘다. 한글 앵커가 인코딩된 채
       // 적혀 있으면 원문과 글자가 달라 보이므로 여기서도 디코드한다.
       // 망가진 인코딩(`%zz`)은 throw하므로 원문 그대로 두고 불일치로 잡히게 둔다.
@@ -317,6 +321,10 @@ describe("앵커 실존", () => {
   });
 
   it("모든 앵커 링크가 대상 편의 헤딩에 닿는다", () => {
+    // ⚠️ 여기서 proseOnly 를 쓰지 마라. `headingIds` 가 **헤딩 텍스트 그대로** id 를 만드는데,
+    //    인라인 코드를 지우면 id 가 바뀐다 — 실측으로 확인했다:
+    //    `## `master`/`slave` 표기는…` → `#master--slave-표기는-…` 이 계산되지 않아 앵커 2건이
+    //    가짜로 끊겼다. 전처리는 **링크를 뽑는 쪽**(anchorLinks)에만 넣는다.
     const docs: Doc[] = posts.map((p) => ({ id: postKey(p), body: p.body }));
 
     // 하나도 못 뽑았다면 아래 「0건」은 깨끗하다는 뜻이 아니라 **안 봤다**는 뜻이다.
