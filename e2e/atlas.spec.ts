@@ -37,6 +37,29 @@ function renderedMarkup(html: string): string {
     .join("");
 }
 
+/**
+ * 그려진 마크업에서 **`<head>` 까지 잘라내고 본문만** 남긴다.
+ *
+ * ⚠️ 「본문이 렌더됐다」를 재려면 이것을 써야 한다. `renderedMarkup` 만으로는 부족하다 —
+ *    `components/site-head.tsx` 가 `<title>` 과 `og:title` 에 **노드 제목을 그대로 싣기**
+ *    때문이다(`RAG 파이프라인 … — 지식 아틀라스`). 그래서 body 를 통째로 지워도
+ *    문서 어딘가에는 제목이 남는다.
+ *
+ *    2026-08-27 실측: `pages/atlas/[...id].tsx` 의 `<SiteShell>` 안을 `<div />` 로 비워도
+ *    이 파일이 **16 passed** 로 전부 초록이었다. `__NEXT_DATA__` 구멍을 막은 것과 같은
+ *    유형이 한 계단 위(`<head>`)에 남아 있었던 것이다 — 증명하려는 것은 「본문이 렌더됐다」인데
+ *    재고 있던 것은 「문자열이 문서 어딘가 있다」였다.
+ *
+ * ⚠️ `</head>` 를 못 찾으면 **빈 문자열**을 돌려준다. 관측 범위가 조용히 넓어지는 것보다
+ *    빨개지는 편이 낫다 — 이 리포가 반복해서 데인 「거짓 초록」이 정확히 그 조용한 확대다.
+ */
+function renderedBody(html: string): string {
+  const markup = renderedMarkup(html);
+  const CLOSE = "</" + "head>";
+  const at = markup.indexOf(CLOSE);
+  return at === -1 ? "" : markup.slice(at + CLOSE.length);
+}
+
 /** 목록 구획. `pages/atlas/index.tsx` 의 `<section aria-labelledby="atlas-list-heading">` 이다. */
 function listRegion(page: Page): Locator {
   return page.getByRole("region", { name: "전체 목록", exact: true });
@@ -175,11 +198,12 @@ test.describe("아틀라스", () => {
     //    「정적으로 존재한다」로 오독한다 — 정적 내보내기가 이 경로를 안 냈어도 초록이 된다.
     const res = await page.request.get(detailHref);
     expect(res.status(), `${detailHref} 가 200 이 아니다 — 정적 산출물에 이 노드가 없다`).toBe(200);
-    // ⚠️ `__NEXT_DATA__` 를 걷어내고 본다. 그러지 않으면 화면에 아무것도 안 그려져도
-    //    props JSON 안의 제목이 이 단정을 통과시킨다.
+    // ⚠️ `__NEXT_DATA__` 와 `<head>` 를 **둘 다** 걷어내고 본다. 그러지 않으면 화면에
+    //    아무것도 안 그려져도 props JSON 이나 `<title>`·`og:title` 이 이 단정을 통과시킨다.
+    //    둘 다 실측으로 확인된 구멍이다(`renderedBody` 주석).
     expect(
-      renderedMarkup(await res.text()),
-      `${detailHref} 의 그려진 마크업에 「${title}」 이 없다`,
+      renderedBody(await res.text()),
+      `${detailHref} 의 **본문**에 「${title}」 이 없다 — head 나 props JSON 에만 있는 것은 렌더가 아니다`,
     ).toContain(escapeHtml(title));
   });
 
