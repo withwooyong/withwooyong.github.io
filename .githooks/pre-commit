@@ -14,8 +14,11 @@ echo "[gate] content/blog 변경 감지 — 소스 검사를 실행한다"
 echo "[gate] 1/3 금칙어 검사기 자기 증명"
 node scripts/check-forbidden.mjs --self-test || exit 1
 
-echo "[gate] 2/3 콘텐츠 불변식"
-npx vitest run tests/blog || exit 1
+echo "[gate] 2/3 콘텐츠·아틀라스 불변식"
+# tests/atlas 를 함께 도는 이유 — 아틀라스 그래프는 글의 함수다. 새 글이 어느 글에서도
+# 인용되지 않으면 tests/atlas/integrity.test.ts 가 「아무도 인용하지 않는 글」로 잡는다.
+# 여기서 안 잡으면 커밋·푸시를 통과해 CI 의 배포 단계에서 터진다(deploy.yml 의 needs: build).
+npx vitest run tests/blog tests/atlas || exit 1
 
 echo "[gate] 3/3 금칙어 스캔"
 node scripts/check-forbidden.mjs || exit 1
