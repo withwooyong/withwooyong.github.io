@@ -104,6 +104,23 @@ export function buildGraph(all: Post[]): AtlasGraph {
     }
   }
 
+  // ── 정준 순서 — 리뷰 A1 ─────────────────────────────────────
+  //
+  // 시계를 안 보는 것만으로는 결정론이 안 된다. **입력 순서도 입력이다.**
+  // 실측: 156 편 중 154 편이 날짜 동률이라 사실상 전체 순서를 `lib/blog/loader.ts` 의
+  // `title.localeCompare(t, "ko")` 가 정한다. 타이브레이커를 코드포인트로 바꾸자
+  // 156 칸 중 125 칸이 이동했다 — 로컬 Windows 와 CI Linux 의 ICU 데이터가 다르면
+  // 내용이 같아도 산출물 해시가 달라지고 `check-baseline` 이 흔들린다.
+  //
+  // ⚠️ 여기서 `localeCompare` 를 쓰면 막으려던 것을 다시 들인다. 코드포인트 비교여야 한다.
+  nodes.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  edges.sort((a, b) => {
+    if (a.type !== b.type) return a.type < b.type ? -1 : 1;
+    if (a.from !== b.from) return a.from < b.from ? -1 : 1;
+    if (a.to !== b.to) return a.to < b.to ? -1 : 1;
+    return 0;
+  });
+
   const latest = posts.reduce((m, p) => {
     const d = p.updated ?? p.date;
     return d > m ? d : m;
