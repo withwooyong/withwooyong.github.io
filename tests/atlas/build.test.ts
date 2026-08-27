@@ -228,7 +228,7 @@ describe("buildGraph", () => {
     ]);
     const ids = g.nodes.map((n) => n.id);
     expect(ids).toEqual([...ids].sort());
-    const keys = g.edges.map((e) => `${e.type} ${e.from} ${e.to}`);
+    const keys = g.edges.map((e) => `${e.type}\u0000${e.from}\u0000${e.to}`);
     expect(keys).toEqual([...keys].sort());
   });
 
