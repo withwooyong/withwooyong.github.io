@@ -1,0 +1,182 @@
+<style>
+  .atlas { border:1px solid rgba(255,255,255,.14); border-radius:12px; overflow:hidden; background:#08080a; margin:22px 0 10px; }
+  .atlas-top { display:flex; align-items:center; gap:14px; padding:10px 14px; border-bottom:1px solid rgba(255,255,255,.1); background:#121216; font-size:12px; color:#a1a1aa; }
+  .atlas-top .brand { color:#fafafa; font-weight:650; letter-spacing:-.01em; }
+  .atlas-top .sp { flex:1 }
+  .atlas-search { background:#08080a; border:1px solid rgba(255,255,255,.14); border-radius:6px; padding:4px 9px; color:#71717a; font-size:11px; width:150px; }
+  .atlas-body { display:grid; grid-template-columns: 180px 1fr 190px; height:430px; }
+  .pane { overflow-y:auto; scrollbar-width:thin; }
+  .pane::-webkit-scrollbar{width:5px} .pane::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:3px}
+  .left { border-right:1px solid rgba(255,255,255,.1); padding:14px 12px; background:#0b0b0d; }
+  .right { border-left:1px solid rgba(255,255,255,.1); padding:14px 12px; background:#0b0b0d; }
+  .grp { font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:#71717a; margin:0 0 9px; }
+  .grp:not(:first-child){ margin-top:20px }
+  .row { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#d4d4d8; padding:4px 6px; border-radius:5px; cursor:pointer; }
+  .row:hover { background:rgba(255,255,255,.06); color:#fafafa }
+  .row.on { background:rgba(125,211,252,.14); color:#7dd3fc }
+  .row .c { font-size:10px; color:#71717a; font-variant-numeric:tabular-nums }
+  .center { position:relative; background:#08080a; }
+  .center svg { width:100%; height:100%; display:block; cursor:crosshair }
+  .lens { font-size:12px; color:#d4d4d8; padding:5px 7px; border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:7px }
+  .lens:hover{ background:rgba(255,255,255,.06) }
+  .lens.on { background:rgba(125,211,252,.14); color:#7dd3fc }
+  .dot { width:7px;height:7px;border-radius:50%;flex:0 0 auto }
+  .legend { font-size:10px; color:#71717a; line-height:1.7; margin-top:8px }
+  .legend span { display:inline-flex; align-items:center; gap:5px; margin-right:9px }
+  .detail { position:absolute; right:0; top:0; bottom:0; width:258px; background:#0f0f12; border-left:1px solid rgba(255,255,255,.14); padding:15px 14px; transform:translateX(100%); transition:transform .22s ease; overflow-y:auto; }
+  .detail.open { transform:translateX(0) }
+  .detail h4 { margin:0 0 4px; font-size:14px; color:#fafafa; letter-spacing:-.01em; line-height:1.35 }
+  .badge { display:inline-block; font-size:9px; letter-spacing:.08em; text-transform:uppercase; padding:2px 6px; border-radius:4px; margin:0 4px 8px 0 }
+  .b-mine{ background:rgba(125,211,252,.16); color:#7dd3fc }
+  .b-ext{ background:rgba(250,204,21,.14); color:#facc15 }
+  .b-type{ background:rgba(255,255,255,.08); color:#a1a1aa }
+  .detail p { font-size:11.5px; color:#a1a1aa; line-height:1.6; margin:8px 0 }
+  .detail .lbl { font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:#71717a; margin:15px 0 6px }
+  .link { font-size:11.5px; color:#d4d4d8; padding:4px 0; display:flex; gap:7px; line-height:1.45 }
+  .link em { font-style:normal; color:#7dd3fc; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; flex:0 0 62px; padding-top:1px }
+  .cta { margin-top:16px; font-size:11px; color:#08080a; background:#7dd3fc; border-radius:6px; padding:7px 10px; text-align:center; font-weight:650 }
+  .hintbar { text-align:center; font-size:11px; color:#71717a; padding:8px 0 2px }
+</style>
+
+<h2>아틀라스 페이지 레이아웃</h2>
+<p class="subtitle"><b>노드를 클릭</b>해 보세요. 우측 상세 패널이 열립니다. 좌측 토픽과 우측 렌즈도 눌러볼 수 있습니다.</p>
+
+<div class="atlas">
+  <div class="atlas-top">
+    <span class="brand">지식 아틀라스</span>
+    <span>노드 156 · 연결 412</span>
+    <span class="sp"></span>
+    <span class="atlas-search">⌘K  검색…</span>
+  </div>
+  <div class="atlas-body">
+
+    <div class="pane left">
+      <p class="grp">토픽</p>
+      <div class="row on" onclick="pick(this)">AI 에이전트 <span class="c">51</span></div>
+      <div class="row" onclick="pick(this)">에이전틱 코딩 <span class="c">31</span></div>
+      <div class="row" onclick="pick(this)">백엔드 엔지니어링 <span class="c">32</span></div>
+      <div class="row" onclick="pick(this)">RAG <span class="c">25</span></div>
+      <div class="row" onclick="pick(this)">AI 전환 조직 <span class="c">11</span></div>
+      <div class="row" onclick="pick(this)">검색 엔지니어링 <span class="c">6</span></div>
+      <p class="grp">태그</p>
+      <div class="row" onclick="pick(this)">mcp <span class="c">18</span></div>
+      <div class="row" onclick="pick(this)">observability <span class="c">14</span></div>
+      <div class="row" onclick="pick(this)">multi-agent <span class="c">12</span></div>
+      <div class="row" onclick="pick(this)">elasticsearch <span class="c">9</span></div>
+    </div>
+
+    <div class="center">
+      <svg id="g" viewBox="0 0 560 430"></svg>
+      <div class="detail" id="det">
+        <h4 id="dTitle">한 커맨드를 세 곳에서 부른다</h4>
+        <span class="badge b-type" id="dType">ARTIFACT</span><span class="badge b-mine" id="dOrigin">내 생각</span>
+        <p id="dSum">에이전트 하나를 5필드 JD로 정의하고, Hook·Cron·수동 세 트리거가 같은 커맨드 하나를 호출하게 만든다.</p>
+        <p class="lbl">연결</p>
+        <div class="link"><em>extends</em> 자동화 범위 판단 기준</div>
+        <div class="link"><em>supports</em> 에이전트는 조직처럼 세운다</div>
+        <div class="link"><em>instantiates</em> 에이전틱 코딩</div>
+        <div class="link"><em>sequence</em> agent-operations 2/4편</div>
+        <p class="lbl">출처</p>
+        <div class="link" style="color:#a1a1aa">/notes/agentic-coding/one-command-three-callers</div>
+        <div class="cta">글 전문 읽기 →</div>
+      </div>
+    </div>
+
+    <div class="pane right">
+      <p class="grp">렌즈</p>
+      <div class="lens on" onclick="pickLens(this,'all')"><span class="dot" style="background:#7dd3fc"></span>전체</div>
+      <div class="lens" onclick="pickLens(this,'topic')"><span class="dot" style="background:#a78bfa"></span>토픽별</div>
+      <div class="lens" onclick="pickLens(this,'cluster')"><span class="dot" style="background:#34d399"></span>클러스터별</div>
+      <div class="lens" onclick="pickLens(this,'claim')"><span class="dot" style="background:#fb923c"></span>주장만</div>
+      <div class="lens" onclick="pickLens(this,'origin')"><span class="dot" style="background:#facc15"></span>외부 vs 내 생각</div>
+      <p class="grp">노드 유형</p>
+      <div class="legend">
+        <span><i class="dot" style="background:#7dd3fc"></i>artifact 글</span><br>
+        <span><i class="dot" style="background:#a78bfa"></i>concept 개념</span><br>
+        <span><i class="dot" style="background:#fb923c"></i>claim 주장</span><br>
+        <span><i class="dot" style="background:#34d399"></i>procedure 절차</span>
+      </div>
+      <p class="grp">엣지 유형</p>
+      <div class="legend" style="color:#a1a1aa">supports · extends<br>instantiates · contradicts<br>depends_on · sequence</div>
+    </div>
+
+  </div>
+</div>
+<p class="hintbar">↑ 노드 클릭 · 렌즈 전환 모두 동작합니다</p>
+
+<div class="options" style="margin-top:26px">
+  <div class="option" data-choice="ok" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content"><h3>이 레이아웃으로 간다</h3><p>3분할 + 노드 상세 패널. 참고 사이트 구조를 따르되 노드 유형·출처 배지를 추가한 형태입니다.</p></div>
+  </div>
+  <div class="option" data-choice="change" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content"><h3>고칠 곳이 있다</h3><p>터미널에 어디를 바꿀지 알려주세요. 다음 버전을 띄우겠습니다.</p></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var svg = document.getElementById('g'), ns = 'http://www.w3.org/2000/svg';
+  var COL = { artifact:'#7dd3fc', concept:'#a78bfa', claim:'#fb923c', procedure:'#34d399' };
+  var TYPES = ['artifact','concept','claim','procedure'];
+  var TITLES = ['한 커맨드를 세 곳에서 부른다','에이전트 운영 체크인 사이클','RAG 파이프라인 — 왜 RAG인가','한글 검색 — Nori와 초성','사내 AI 확산과 통제','상용 검색엔진에서 Elasticsearch로','컨텍스트는 기억장치가 아니다','서브에이전트는 방화벽이다','토큰 예산은 적분값이다','리뷰는 위험 축별로 나눈다'];
+  var SUMS = ['에이전트 하나를 5필드 JD로 정의하고, Hook·Cron·수동 세 트리거가 같은 커맨드를 호출하게 만든다.','아침에 할 일을 확인하고 저녁에 한 일을 정리하는 사이클을 자동화한다.','도큐먼트 로드와 텍스트 분할부터 시작해 왜 RAG가 필요한지 되짚는다.','분석기·Nori·초성·자동완성·무결과 처리까지 한글 검색의 실제 구성.','금지가 아니라 설계로 막는다 — 사내 AI 통제의 실무 구조.','검색을 두 번 구축하며 배운 것. 상용 엔진에서 자체 구축으로.','컨텍스트가 유일한 상태 저장소면 그게 진짜 문제다.','탐색 과정이 컨트롤러 컨텍스트에 들어오지 않는다는 성질을 쓴다.','496k를 한 번 찍는 것보다 250k를 100턴 유지하는 쪽이 비싸다.','한 명에게 전부 맡기면 계획대로 구현됨으로 승인한다.'];
+  var nodes = [], seed = 7;
+  function rnd(){ seed = (seed*9301+49297)%233280; return seed/233280; }
+  for (var i=0;i<52;i++){
+    var t = i<20?'artifact':(i<34?'concept':(i<45?'claim':'procedure'));
+    nodes.push({ x:38+rnd()*484, y:32+rnd()*366, t:t, r:t==='artifact'?5.2:(t==='concept'?4.2:3.4),
+      title:TITLES[i%TITLES.length], sum:SUMS[i%SUMS.length], origin: i%5===0?'ext':'mine' });
+  }
+  var edges = [];
+  for (var j=1;j<nodes.length;j++){
+    var k = Math.floor(rnd()*j);
+    edges.push([j,k]);
+    if (rnd()>0.72) edges.push([j, Math.floor(rnd()*nodes.length)]);
+  }
+  var eEls=[], nEls=[];
+  edges.forEach(function(e){
+    var l=document.createElementNS(ns,'line');
+    l.setAttribute('x1',nodes[e[0]].x); l.setAttribute('y1',nodes[e[0]].y);
+    l.setAttribute('x2',nodes[e[1]].x); l.setAttribute('y2',nodes[e[1]].y);
+    l.setAttribute('stroke','#ffffff'); l.setAttribute('stroke-width','0.6'); l.setAttribute('opacity','0.13');
+    svg.appendChild(l); eEls.push(l);
+  });
+  nodes.forEach(function(n,i){
+    var c=document.createElementNS(ns,'circle');
+    c.setAttribute('cx',n.x); c.setAttribute('cy',n.y); c.setAttribute('r',n.r);
+    c.setAttribute('fill',COL[n.t]); c.setAttribute('opacity','0.85');
+    c.style.cursor='pointer'; c.style.transition='r .15s, opacity .15s';
+    c.addEventListener('mouseenter',function(){ c.setAttribute('r',n.r*1.6); });
+    c.addEventListener('mouseleave',function(){ c.setAttribute('r',n.r); });
+    c.addEventListener('click',function(ev){ ev.stopPropagation(); open(n); });
+    svg.appendChild(c); nEls.push(c);
+  });
+  var det=document.getElementById('det');
+  function open(n){
+    document.getElementById('dTitle').textContent=n.title;
+    document.getElementById('dSum').textContent=n.sum;
+    var ty=document.getElementById('dType'); ty.textContent=n.t.toUpperCase();
+    var og=document.getElementById('dOrigin');
+    og.textContent = n.origin==='mine' ? '내 생각' : '외부 출처';
+    og.className = 'badge ' + (n.origin==='mine'?'b-mine':'b-ext');
+    det.classList.add('open');
+  }
+  svg.addEventListener('click',function(){ det.classList.remove('open'); });
+
+  window.pick=function(el){ el.parentNode.querySelectorAll('.row').forEach(function(r){r.classList.remove('on')}); el.classList.add('on'); };
+  window.pickLens=function(el,mode){
+    el.parentNode.querySelectorAll('.lens').forEach(function(r){r.classList.remove('on')}); el.classList.add('on');
+    nEls.forEach(function(c,i){
+      var n=nodes[i], o=0.85, f=COL[n.t];
+      if(mode==='claim'){ o = n.t==='claim'?0.95:0.08; }
+      else if(mode==='origin'){ f = n.origin==='mine'?'#7dd3fc':'#facc15'; }
+      else if(mode==='cluster'){ f = ['#34d399','#f472b6','#7dd3fc','#facc15'][i%4]; }
+      else if(mode==='topic'){ f = ['#a78bfa','#7dd3fc','#34d399','#fb923c','#facc15','#f472b6'][i%6]; }
+      c.setAttribute('fill',f); c.setAttribute('opacity',o);
+    });
+    eEls.forEach(function(l){ l.setAttribute('opacity', mode==='claim'?'0.05':'0.13'); });
+  };
+})();
+</script>

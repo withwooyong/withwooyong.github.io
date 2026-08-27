@@ -84,6 +84,17 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
 | `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
+| `npm run e2e` | Playwright E2E. **개발 서버가 아니라 빌드된 `out/`을 서빙**하므로 `npm run build`를 먼저 돌립니다. `out/`이 소스보다 오래되면 **테스트를 하나도 돌리지 않고 종료 코드 1**을 내는데, 그것이 진짜 실패와 똑같이 보입니다 — `$?`가 아니라 **첫 줄**을 읽으세요 |
+| `npm run e2e:ui` | 위를 Playwright UI 모드로. 로컬 디버깅용 |
+| `npm run check-pagefind` | 검색 인덱스가 실제로 만들어졌는지 검사. 빌드 뒤에 돌립니다 |
+| `npm run check-pagefind:verify` | 위 검사의 자체 검사. **먼저 돌리세요** — `pagefind`는 아무것도 색인하지 않아도 종료 코드 0을 냅니다 |
+| `npm run probe-search` | 갓 만든 인덱스에 **한국어 질의를 실제로 쏴서** 결과 수를 잽니다. 검색 동작을 바꿨다면 이걸로 확인하세요 (갓 만든 `out/` 필요) |
+| `npm run probe-search:verify` | 위 프로브의 자체 검사 |
+| `npm run check-counts` | 발행본 수가 기대치와 맞는지 검사 (CI 게이트) |
+| `npm run check-counts:verify` | 위 검사의 자체 검사 |
+| `npm run check-counts:print` | 현재 발행본 수를 출력만 합니다 (판정하지 않음) |
+| `npm run compose` | 문서의 도식과 코드 블록 분리 도구 |
+| `npm run compose:verify` | 위 도구의 자체 검사 |
 
 ## 페이지 구성
 

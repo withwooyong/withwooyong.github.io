@@ -1,55 +1,43 @@
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 const STORAGE_KEY = "portfolio-theme";
 
-function applyTheme(mode: "light" | "dark") {
-  if (typeof document === "undefined") return;
-  document.documentElement.classList.toggle("dark", mode === "dark");
-}
-
+/**
+ * 테마 토글 — 상태를 들고 있지 않다.
+ *
+ * 진실은 <html> 의 dark 클래스 하나뿐이고 그건 _document.tsx 의 THEME_SCRIPT 가
+ * 첫 페인트 전에 정한다. 여기서 useState 로 같은 사실을 복제하면 하이드레이션
+ * 전까지 두 값이 어긋나고, 그 사이 아이콘이 틀리게 나온다.
+ *
+ * 그래서 아이콘은 둘 다 렌더하고 어느 쪽을 보일지는 CSS 가 정한다.
+ * CSS 는 하이드레이션을 기다리지 않으므로 첫 프레임부터 맞다.
+ */
 export function ThemeToggle() {
-  const [mode, setMode] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const stored = typeof window !== "undefined" ? (localStorage.getItem(STORAGE_KEY) as "light" | "dark" | null) : null;
-    const prefersDark =
-      typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initial = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
-    setMode(initial);
-    applyTheme(initial);
-  }, []);
-
   const toggle = useCallback(() => {
-    setMode((prev) => {
-      const next = prev === "dark" ? "light" : "dark";
+    const root = document.documentElement;
+    const next = root.classList.contains("dark") ? "light" : "dark";
+    root.classList.toggle("dark", next === "dark");
+    try {
       localStorage.setItem(STORAGE_KEY, next);
-      applyTheme(next);
-      return next;
-    });
+    } catch {
+      // 사생활 보호 모드 등에서 막힌다. 이번 세션에만 적용하고 저장은 포기한다.
+    }
   }, []);
-
-  if (!mounted) {
-    return (
-      <Button type="button" variant="outline" size="icon" className="shrink-0" disabled aria-label="테마 전환">
-        <Sun className="h-4 w-4" />
-      </Button>
-    );
-  }
 
   return (
     <Button
       type="button"
       variant="outline"
       size="icon"
-      className="shrink-0 border-slate-200 dark:border-slate-600"
+      className="shrink-0"
       onClick={toggle}
-      aria-label={mode === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환"}
     >
-      {mode === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      <Sun className="hidden h-4 w-4 dark:block" />
+      <Moon className="h-4 w-4 dark:hidden" />
+      <span className="sr-only dark:hidden">다크 모드로 전환</span>
+      <span className="sr-only hidden dark:inline">라이트 모드로 전환</span>
     </Button>
   );
 }

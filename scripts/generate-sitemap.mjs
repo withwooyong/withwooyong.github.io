@@ -13,7 +13,11 @@ const ORIGIN = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://
  * (product-lead-wiki/cms)만 걸러지고 인덱스 라우트(product-lead-wiki) 자체는 통과해
  * noindex 페이지가 sitemap에 실린다.
  */
-const EXCLUDE = [/^product-lead-wiki(\/|$)/, /^product-lead-loadmap(\/|$)/, /^notion(\/|$)/, /^404$/];
+// 아틀라스는 목록(/atlas/)만 남기고 노드 상세 162개는 뺀다.
+// 노드 상세는 글의 요약과 연결만 담아 원문(/blog/**)과 중복 색인되기 때문이다.
+//
+// ⚠️ `/^atlas\/.+/` 다. `/^atlas(\/|$)/` 로 쓰면 꼬리가 빈 `atlas` 자신까지 걸려 목록마저 사라진다.
+const EXCLUDE = [/^product-lead-wiki(\/|$)/, /^product-lead-loadmap(\/|$)/, /^notion(\/|$)/, /^404$/, /^atlas\/.+/];
 
 /**
  * 경로별 우선순위. 앞에서 매칭되는 첫 규칙을 쓴다.
