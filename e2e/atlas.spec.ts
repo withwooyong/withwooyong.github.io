@@ -14,6 +14,29 @@ import { SHELL_HOME, SHELL_MARKER } from "./shell-gate";
  * 적으면 두 파일이 서로 다른 곳을 보게 되므로 상수를 그대로 쓴다.
  */
 
+/**
+ * 응답 본문에서 **그려진 마크업만** 남긴다 — `<script>` 블록을 걷어낸다.
+ *
+ * ⚠️ 이것 없이 원문 전체를 `includes` 하면 **거의 모든 단정이 거짓 초록이 된다.**
+ *    Next.js 는 `__NEXT_DATA__` 스크립트에 `getStaticProps` 의 결과를 JSON 으로 통째로
+ *    싣고, JSON 문자열 안에서는 `'` 도 `&` 도 이스케이프되지 않는다. 그래서 제목이
+ *    화면에 하나도 안 그려져도, 이스케이프가 통째로 틀려도 원문에는 그 문자열이 있다.
+ *    2026-08-27 실측: 이 헬퍼를 넣기 전에는 `escapeHtml` 에서 `'` 를 지워도 초록이었다.
+ */
+function renderedMarkup(html: string): string {
+  // ⚠️ 정규식을 쓰지 않는다. 이 줄은 히어독을 거치며 백슬래시가 통째로 벗겨진 전력이 있다
+  //    (`[\s\S]` → `[sS]`, `\b` → 백스페이스 바이트). 문자열만 쓰면 그 함정이 사라진다.
+  const CLOSE = "</" + "script>";
+  return html
+    .split("<" + "script")
+    .map((part, index) => {
+      if (index === 0) return part;
+      const at = part.indexOf(CLOSE);
+      return at === -1 ? "" : part.slice(at + CLOSE.length);
+    })
+    .join("");
+}
+
 /** 목록 구획. `pages/atlas/index.tsx` 의 `<section aria-labelledby="atlas-list-heading">` 이다. */
 function listRegion(page: Page): Locator {
   return page.getByRole("region", { name: "전체 목록", exact: true });
@@ -46,14 +69,21 @@ function articleButtons(page: Page): Locator {
  *    이 파일이 스스로 내건 「코퍼스가 바뀌어도 산다」는 보증이 거기서 깨진다.
  *
  * 엔티티를 되돌리는 쪽이 아니라 **양쪽에 같은 이스케이프를 거는** 쪽을 골랐다. 되돌리기는
- * 어느 엔티티까지 아는지가 곧 커버리지가 되지만, 거는 쪽은 목록이 유한하고 닫혀 있다.
+ * 어느 엔티티까지 아는지가 곧 커버리지가 되지만, 거는 쪽은 목록이 유한하고 닫혀 있다 —
+ * React 의 텍스트 이스케이프는 아래 다섯 자가 전부다(`react-dom` 의 `escapeTextForBrowser`).
+ *
+ * ⚠️ **다섯 자를 다 걸어야 그 문장이 참이다.** 처음에 `'` 를 빠뜨렸고, 실측하니
+ *    `out/atlas/index.html` 의 버튼 텍스트 162개에 실제로 나오는 엔티티가 정확히 셋이었다 —
+ *    `&amp;` 13건 · `&quot;` 2건 · `&#x27;` 2건. 그중 하나가 빠져 있었던 것이다.
+ *    엔티티를 하나 더 만나면 여기에 더하기 전에 **React 가 그것을 내는지부터** 확인하라.
  */
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
 }
 
 /** 선택한 노드가 뜨는 우측 패널. `pages/atlas/index.tsx` 의 `<aside aria-label="선택한 노드">`. */
@@ -145,12 +175,43 @@ test.describe("아틀라스", () => {
     //    「정적으로 존재한다」로 오독한다 — 정적 내보내기가 이 경로를 안 냈어도 초록이 된다.
     const res = await page.request.get(detailHref);
     expect(res.status(), `${detailHref} 가 200 이 아니다 — 정적 산출물에 이 노드가 없다`).toBe(200);
+    // ⚠️ `__NEXT_DATA__` 를 걷어내고 본다. 그러지 않으면 화면에 아무것도 안 그려져도
+    //    props JSON 안의 제목이 이 단정을 통과시킨다.
     expect(
-      await res.text(),
-      `${detailHref} 본문에 「${title}」 이 없다`,
+      renderedMarkup(await res.text()),
+      `${detailHref} 의 그려진 마크업에 「${title}」 이 없다`,
     ).toContain(escapeHtml(title));
   });
 
+  /**
+   * `escapeHtml` 이 **이 코퍼스 전체에서** 닫혀 있는지 본다.
+   *
+   * 위 검사는 목록의 **첫 글 하나**만 맞대므로, 오늘의 첫 글에 없는 문자는 영원히 안 밟힌다 —
+   * 실제로 `'` 를 빠뜨린 채 초록이었다. 여기서는 156개 제목 전부를 돌려 그 구멍을 없앤다.
+   *
+   * 개수를 기대하지 않고 **각 제목의 이스케이프 결과가 원문에 있는지**만 본다. 글이 늘어도
+   * 빨개지지 않고, `escapeHtml` 이 React 가 내는 문자를 하나라도 빠뜨리면 빨개진다.
+   * (실측 2026-08-27: 제목에 나오는 엔티티는 `&amp;` 13 · `&quot;` 2 · `&#x27;` 2 건.)
+   */
+  test("목록 제목의 이스케이프가 코퍼스 전체에서 닫혀 있다", async ({ page }) => {
+    await page.goto(SHELL_HOME);
+
+    const titles = await articleButtons(page).evaluateAll((els) =>
+      els.map((el) => (el as HTMLElement).innerText.trim()),
+    );
+    expect(titles.length, "목록에 글이 하나도 없다 — 이 검사가 0건을 돌 뻔했다").toBeGreaterThan(100);
+
+    const res = await page.request.get(SHELL_HOME);
+    expect(res.status()).toBe(200);
+    const html = await res.text();
+
+    const markup = renderedMarkup(html);
+    const missing = titles.filter((t) => !markup.includes(escapeHtml(t)));
+    expect(
+      missing,
+      `이스케이프가 원문과 안 맞는 제목: ${missing.slice(0, 3).join(" | ")}`,
+    ).toHaveLength(0);
+  });
   /** R2 의 뒤쪽 — 아틀라스가 글로 되돌아가는 길. */
   test("글 노드 상세가 원문으로 이어진다", async ({ page }) => {
     await page.goto(SHELL_HOME);

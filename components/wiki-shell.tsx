@@ -95,6 +95,13 @@ export function WikiShell({ docs, activeSlug, toc, children }: WikiShellProps) {
           검색 팔레트는 이동 뒤 document.getElementById("main").focus() 를 부르는데
           (components/search/command-palette.tsx), 이 페이지들은 pagefind 인덱스에 실려 있어
           ⌘K 로 실제로 도달한다 — 2026-08-27 실측: product-lead* 9장이 인덱스에 있다.
+          이 페이지에는 스킵 링크도 SiteShell 도 없으므로 그 경로가 <main> 에 포커스가
+          닿는 **유일한** 길이다.
+
+          이 속성을 지우면 e2e/search.spec.ts 의
+          "검색으로 … 에 가면 포커스가 #main 으로 간다" 가 빨개진다. 그 검사는 셸 밖
+          도착지 4곳을 소스 파일별로 하나씩 밟는다 — 처음 이 속성을 넣었을 때는 그 검사가
+          없어 뮤턴트가 전 스위트를 초록으로 통과했다(2026-08-27 실측).
           components/site-shell.tsx 의 <main> 과 같은 이유로 같은 속성을 단다.
         */}
         <main id="main" tabIndex={-1} className="min-w-0 flex-1 py-6 sm:py-8 focus:outline-none">

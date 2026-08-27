@@ -273,6 +273,52 @@ test.describe("검색 팔레트 (셸 부착 시 켜짐)", () => {
     ).toBeFocused();
   });
 
+  /**
+   * **셸 밖 도착지의 `<main>` 도 포커스를 받는다.**
+   *
+   * 위 검사는 `/blog/…` 에서 끝나므로 `components/blog/blog-shell.tsx` 의 `<main>` 만 지킨다.
+   * 그런데 팔레트는 셸도 스킵 링크도 없는 페이지로도 보낸다 — 그 페이지들에서 `focus()` 가
+   * 닿는 자리는 **오직 이 경로 하나**다. 2026-08-27 실측: `pages/product-lead/index.tsx` 의
+   * `tabIndex={-1}` 을 지워도 전 스위트가 초록이었다(뮤턴트 생존). 그 구멍을 여기서 막는다.
+   *
+   * ⚠️ 아래 넷은 **서로 다른 소스 파일**이 그리는 `<main>` 이다. 하나로 줄이면 나머지 셋의
+   *    커버리지가 0 이 된다 — 그것이 바로 이 검사가 생긴 이유다.
+   *
+   * ⚠️ 순위를 기대하지 않는다. **href 로 링크를 지목**하므로 랭킹이 흔들려도 살아 있고,
+   *    `collect.ts` 의 `DEFAULT_MAX_LOAD = 24` 안에만 들면 된다(실측 최저 순위 4).
+   *    그 대신 결과가 아예 없으면 로케이터가 못 찾아 빨개진다 — 조용한 초록이 되지 않는다.
+   *
+   * ⚠️ 좌클릭이어야 한다. `command-palette.tsx` 의 `<a onClick>` 은 수식키·보조 버튼 클릭을
+   *    브라우저에 넘기므로(새 탭 열기 보존), 그때는 `go()` 가 불리지 않아 포커스도 안 옮겨진다.
+   */
+  const OUTSIDE_SHELL_TARGETS = [
+    { query: "커머스", href: "/product-lead/", source: "pages/product-lead/index.tsx" },
+    { query: "커머스", href: "/product-lead-v2/", source: "pages/product-lead-v2/index.tsx" },
+    { query: "어드민", href: "/product-lead-loadmap/", source: "pages/product-lead-loadmap/index.tsx" },
+    { query: "어드민", href: "/product-lead-wiki/admin/", source: "components/wiki-shell.tsx" },
+  ];
+
+  for (const { query, href, source } of OUTSIDE_SHELL_TARGETS) {
+    test(`검색으로 ${href} 에 가면 포커스가 #main 으로 간다 (${source})`, async ({ page }) => {
+      await gotoWithShell(page, SHELL_HOME);
+      await page.keyboard.press("Control+k");
+      await searchInput(page).fill(query);
+
+      const link = resultLinks(page).and(page.locator(`a[href="${href}"]`));
+      await expect(
+        link,
+        `「${query}」 결과에 ${href} 가 없다 — 인덱스에서 빠졌거나 상위 24 밖으로 밀렸다`,
+      ).toBeVisible({ timeout: 10_000 });
+
+      await link.click();
+      await page.waitForURL(`**${href}`);
+
+      await expect(
+        page.locator("#main"),
+        `${href} 의 <main> 이 포커스를 못 받았다 — ${source} 의 tabIndex={-1} 이 없으면 focus() 가 조용한 무동작이다`,
+      ).toBeFocused();
+    });
+  }
   test("`/` 단독으로도 열린다", async ({ page }) => {
     await gotoWithShell(page, SHELL_HOME);
     await page.keyboard.press("/");
