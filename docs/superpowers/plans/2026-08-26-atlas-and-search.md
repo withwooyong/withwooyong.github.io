@@ -30,7 +30,9 @@
 | T5 이중 리뷰 반영 | ✅ | `3645778`(동일 커밋) | CRITICAL 1 · HIGH 3 · MEDIUM 7 · LOW 8 |
 | T6 검색 E2E | ✅ | `053f37c` | `e2e/search.spec.ts` 신규(센티넬 2 · 게이트 5). E2E **46 → 48건** |
 | T6 이중 리뷰 반영 | ✅ | `053f37c`(동일 커밋) | 채택 8 · 기각 1. **거짓 보증 1건** 포함 — 아래 §「T6 실측 기록」 |
-| T7 이후 | ⬜ 미착수 | — | — |
+| 계획서 결함 4건 반영 | ✅ | `7b7a7f5` | 번호 매핑 표 · `[...id]` 정정 · 낡은 기대치 · T10 조건 확정. §「결함」 아래쪽 4행 |
+| T7 노드·엣지 zod 스키마 | ✅ | `9e57604` | `lib/atlas/types.ts` · `tests/atlas/types.test.ts`(**24건, 전부 거부 검사**). 테스트 **205 → 229** |
+| T8 이후 | ⬜ 미착수 | — | — |
 
 **T6 을 시작하기 전에 반드시 읽을 것:** §「T5 실측 기록」. T6 스펙 초안이 검사하는 접근명·로케이터가 실제 구현과 맞는지 **실측으로 확인해 뒀다** — 그중 하나는 「깨질 것」이라 판단했다가 측정에서 뒤집혔다.
 
@@ -78,6 +80,11 @@
 | **File Structure 표** (2026-08-27 발견) | `pages/atlas/[id].tsx` | **이대로 만들면 동작하지 않는다.** T7 이 글 노드 id 를 `<category>/<slug>` 로 정하는 순간 id 에 `/` 가 들어가는데, Next.js 의 `[id]` 는 **한 세그먼트만** 받는다 — 노드 162 개 중 글 **156 개가 전부 404** 다. T11 본문(`- Create:` 줄과 코드 블록)은 `[...id].tsx` 로 옳게 적혀 있어 **같은 문서 안에서 두 갈래**였고, 표가 더 눈에 띈다 |
 | **완료 판정 `npm test`** (2026-08-27 실측) | `190 passed` | **205 passed** 다. T5 가 20 건을 더했다(185→205). 낡은 기대치는 **회귀와 구분되지 않는다** — 이 리포의 `CLAUDE.md` 가 E2E 수치에 대해 같은 말을 한다 |
 | **T10 의 ⚠️** (2026-08-27 발견) | 「T8 의 실측 엣지 수를 먼저 보라. 300 을 크게 넘으면 …그때는 규칙을 함께 넣는다」 | **T2 가 이미 쟀다 — 엣지 1,053 이다.** 임계의 **3.5 배**라 조건은 T2 시점에 이미 발동했다. 「보고 정한다」로 남겨 두면 T10 실행자가 조건 없이 만들고 화면이 뭉갠 뒤에야 발견한다 — T10 본문에 **확정 규칙**으로 옮겼다 |
+| **File Structure 표가 본문과 또 갈렸다** (2026-08-27 T7 직후 발견) | `scripts/build-atlas.mjs`(T8) · `scripts/check-atlas.mjs`(T9) · `package.json` 에 `build:atlas`·`check-atlas` 스크립트 | **셋 다 만들지 않는다.** T8 본문이 §「왜 CLI 스크립트를 만들지 않나」에서 이미 철회했고(`.mjs` 는 `@/` 별칭 TypeScript 를 못 읽는다), T9 본문은 `tests/atlas/integrity.test.ts` 다. 표에는 그 대체물이 **아예 없었다.** 위 `[id].tsx` 행과 **같은 유형**이다 — 본문은 고쳐졌는데 표가 안 따라왔다 |
+
+**위 두 행이 한 가지를 말한다 — 이 계획서에서 가장 자주 틀리는 곳은 File Structure 표다.**
+본문을 고칠 때 표를 같이 고치지 않은 흔적이 세 군데(`[id].tsx` · `build-atlas.mjs` · `check-atlas.mjs`)에서 나왔다.
+표가 먼저 읽히고 더 눈에 띄므로 **실행자는 본문이 아니라 표를 따른다.** 태스크를 끝낼 때 표를 함께 갱신하라.
 
 **T6 의 다섯 행이 한 방향을 가리킨다.** 스펙 초안은 *스펙을 쓰던 시점의 리포*를 상대로 정확했고,
 그 뒤 T1~T5 가 바꿔 놓은 것(공유 게이트 모듈 · 조사 제안 버튼 · 노이즈 필터 · 토글)을 모른다.
@@ -202,16 +209,18 @@ git diff --name-only HEAD | grep -E '^(pages/index\.tsx|pages/blog/|content/blog
 | `lib/atlas/links.ts` | 본문 내부 링크 추출 — `links.test.ts`에서 승격 | T2 |
 | `tests/blog/content/links.test.ts` | **수정** — 승격된 함수를 호출하도록 | T2 |
 | `scripts/count-edges.mjs` | 엣지 수 실측 (1회용 계측기, 커밋한다) | T2 |
-| `package.json` | **수정** — `pagefind`·`build:atlas`·`check-atlas` 스크립트 | T3·T7·T9 |
+| `package.json` | **수정** — T3 은 `pagefind`·`check-pagefind` 스크립트, T7 은 `zod` 의존 추가 | T3·T7 |
 | `lib/search/pagefind-loader.ts` | Pagefind 런타임 동적 로드 + 타입 | T5 |
 | `components/search/command-palette.tsx` | `⌘K` 팔레트 UI | T5 |
 | `components/search/search-button.tsx` | 헤더 우측 검색 버튼 | T5 |
 | `e2e/search.spec.ts` | 검색 E2E (게이트 + 센티넬) | T6 |
 | `lib/atlas/types.ts` | 노드·엣지 타입 + zod 스키마 | T7 |
+| `tests/atlas/types.test.ts` | 스키마 **거부** 검사 + 토픽 접두사 충돌 | T7 |
 | `lib/atlas/build.ts` | MDX → 노드·엣지 매핑 (순수 함수) | T8 |
-| `scripts/build-atlas.mjs` | `graph.json` 생성 CLI | T8 |
+| ~~`scripts/build-atlas.mjs`~~ | ~~`graph.json` 생성 CLI~~ — **만들지 않는다.** T8 본문 §「왜 CLI 스크립트를 만들지 않나」 참조 | ~~T8~~ |
 | `tests/atlas/build.test.ts` | 매핑 단위 테스트 | T8 |
-| `scripts/check-atlas.mjs` | 스키마 검증 게이트 + `--self-test` | T9 |
+| ~~`scripts/check-atlas.mjs`~~ | ~~스키마 검증 게이트 + `--self-test`~~ — **만들지 않는다.** 아래 줄로 대체됐다 | ~~T9~~ |
+| `tests/atlas/integrity.test.ts` | 그래프 무결성 게이트 — `npm test` 에 얹힌다 | T9 |
 | `components/atlas/graph-view.tsx` | 렌더러 추상화 — 레이아웃·상태·상호작용 | T10 |
 | `components/atlas/dot-renderer.tsx` | SVG 렌더러 (≤300 노드 · reduce · 저사양) | T10 |
 | `components/atlas/list-view.tsx` | 목록 뷰 (reduce 기본값) | T10 |
@@ -1804,6 +1813,71 @@ UI 를 고치지 않아도 되게 하는 것이 하이브리드 스키마를 고
 태그는 노드가 아니다 — 최대 허브가 44편을 이어 레이아웃을 지배한다."
 ```
 
+### T7 실측 기록
+
+실측 2026-08-27 · 커밋 `9e57604`.
+
+| 검사 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | **0** — `target: es5` 에서 zod 가 문제를 일으키지 않았다 |
+| `npm run lint` | **0** |
+| `npm test` | **229 passed** (T6 직후 205 → T7 이 24 건 추가) |
+| `npm run build` | **0** · Pagefind 242p (변동 없음) |
+
+#### ① `zod` 는 **v4.4.3** 이다 — 계획서 코드는 v3 시절인데 그대로 통과했다
+
+`npm install zod` 가 v4 를 가져온다. 계획서 본문의 `z.object` · `z.enum(ARR as const)` ·
+`z.number().int().nonnegative()` · `z.infer` 는 **v4 에서도 그대로 동작했다** — 한 글자도 고치지 않았다.
+운이 좋았던 것이지 검증된 것이 아니다. **T8·T9 가 새 zod API 를 쓸 때는 v4 문서를 봐라** —
+v3 기준으로 기억하고 있는 것(`.refine` 의 시그니처, `errorMap`, `z.record` 의 인자 수)이 갈린 지점이다.
+
+#### ② 카테고리는 **6 개가 아니라 12 개**다 — 계획서는 디렉터리만 셌다
+
+T7 본문이 *「`topic` 이 카테고리 slug 와 충돌하지 않는지 확인했다 — 6개는 …」* 이라고 적었다.
+그 6 개는 `content/blog/` 의 **디렉터리**이고, `content/blog/categories.ts` 의 **등록은 12 개**다.
+
+```
+등록 12: ai-transformation · agentic-coding · ai-agent · rag · search-engineering ·
+         high-traffic · backend-engineering · platform-architecture · python-ml-serving ·
+         product-management · ai-product-planning · glossary
+글 있음 6: agentic-coding · ai-agent · ai-transformation · backend-engineering ·
+         rag · search-engineering
+```
+
+충돌은 **12 개 전부에 대해 없다** — 결론은 같지만 근거의 범위가 달랐다.
+손으로 확인한 주장이라 카테고리가 늘면 조용히 썩는다. `tests/atlas/types.test.ts` 로 내렸다.
+
+⚠️ **T8 이 여기에 걸린다.** 글이 0 편인 카테고리 6 개를 토픽 노드로 만들지 말지 정해야 한다.
+만들면 **엣지가 하나도 없는 고아 노드 6 개**가 그래프에 뜨고, T9 의 무결성 검사가 그것을
+결함으로 볼지 정상으로 볼지도 함께 정해야 한다. 이 리포에는 이미
+`fix/hide-empty-categories` 브랜치가 있다 — **화면에서는 빈 카테고리를 빼기로 한 전례**다.
+
+#### ③ `zod` 는 브라우저 번들에 실리지 않았다 — 대조군과 함께 잰 값이다
+
+`zod` 를 `dependencies` 에 넣으면 클라이언트 컴포넌트가 `lib/atlas/types.ts` 에서
+**값**을 가져오는 순간 번들에 실린다. 지금은 소비자가 없어 0 이다.
+
+```
+청크 93 개 중
+  useState  (대조군) → 13 개   ← 검사기가 살아 있다
+  ZodError            →  0 개
+  _zod                →  0 개
+```
+
+**대조군 없는 0 은 증거가 아니다** — 경로가 틀려도 같은 0 이 나온다.
+
+⇒ **T10 이 `components/atlas/*` 를 만들 때 이 측정을 다시 하라.** 규칙은 `lib/atlas/types.ts` 상단
+주석에 적어 뒀다: 클라이언트에서는 `import type` 만 쓴다. `isolatedModules: true` 라
+`import type` 이 아니면 트랜스파일러가 타입 전용 import 를 지우지 못하고 모듈이 통째로 딸려온다.
+
+#### ④ T8 로 넘긴 것
+
+| 항목 | 왜 T7 에서 안 했나 |
+| --- | --- |
+| 글 0 편 카테고리의 토픽 노드 처리 | 위 ②. `buildGraph` 가 노드를 만드는 곳이 T8 이다 |
+| `meta.latest` 의 실제 값 | 「글의 최신 `updated`」라고 스키마에 적었지만 그 값을 **읽는 코드가 T8** 이다. 빌드 시각을 넣으면 `check-baseline` 이 영원히 빨개진다 |
+| 엣지 1,053 의 재확인 | T2 의 `count-edges.mjs` 출력이다. `buildGraph` 의 중복 제거·자기참조 제외 규칙이 T8 에서 정해지므로 **같은 수가 나온다는 보장이 없다.** T10 의 렌더링 규칙이 이 수에 걸려 있다 |
+
 ---
 
 ## Task 8: MDX → 그래프 매핑
@@ -2985,7 +3059,7 @@ git commit -m "feat(atlas): 헤더 노출 + E2E + 기준선 갱신
 | --- | --- | --- |
 | 타입 | `npx tsc --noEmit` | 0 |
 | 린트 | `npm run lint` | 0 |
-| 단위 | `npm test` | **205 + 이 계획서가 더한 수.** 205 는 T6 직후 실측치다(2026-08-27). T8·T10 이 `tests/atlas/` 를 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
+| 단위 | `npm test` | **229 + 남은 태스크가 더한 수.** 229 는 T7 직후 실측치다(2026-08-27 · T6 직후 205 → T7 이 24 건 추가). T8·T10 이 `tests/atlas/` 를 더 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
 | 빌드 | `npm run build` | 0 |
 | 검색 인덱스 | `npm run check-pagefind` | `✔` |
 | 기준선 | `npm run check-baseline` | **0** (T12 Step 4에서 갱신 후) |
