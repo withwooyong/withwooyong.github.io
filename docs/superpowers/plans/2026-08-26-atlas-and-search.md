@@ -35,7 +35,9 @@
 | T8 MDX → 그래프 매핑 | ✅ | `eeac2af` | `lib/atlas/build.ts` · `tests/atlas/build.test.ts`(**14건**). **노드 162 · 엣지 1,053 — T2 실측과 네 항목 모두 일치.** 테스트 **229 → 243** |
 | T8 이중 리뷰 반영 | ✅ | `f7ef37c` | 위험 축 3개 병렬. **코드 결함 1건**(정준 순서 없음) + **테스트 구멍 13건**(뮤테이션 27종 중 13종 생존). 재주입으로 13/14 사멸 확인. 테스트 **243 → 248** |
 | 리뷰 A2 반영 — 링크 추출의 산문 전처리 | ✅ | `7d12581` | `proseOnly` 를 export 해 **세 곳**(아틀라스 엣지 · 슬래시 검사 · 앵커 검사)이 같은 전처리를 본다. `tests/atlas/links.test.ts` 신규 17건. 테스트 **248 → 265** |
-| T9 이후 | ⬜ 미착수 | — | — |
+| T9 — 그래프 무결성 게이트 | ✅ | `8ba39e5` | 초안 코드의 **다섯 곳**을 고쳤다. 뮤테이션 **18종**으로 실행 검증 — 「inbound 0 으로 바꿔라」는 지시를 따르고도 **죽은 검사가 안 살아났다**(M7: `instantiates` 를 통째로 지워도 exit 0). 검사를 셋으로 나눴다. `pre-commit` 에 `tests/atlas` 를 얹었다. 테스트 **265 → 289** |
+| 부수 — 소스의 생 NUL 2개 | ✅ | `73d0425` | `tests/atlas/build.test.ts` 를 **ripgrep 이 통째로 건너뛰고 있었다.** 「없다」와 「못 읽었다」가 같은 침묵이었다 |
+| T10 이후 | ⬜ 미착수 | — | — |
 
 **T6 을 시작하기 전에 반드시 읽을 것:** §「T5 실측 기록」. T6 스펙 초안이 검사하는 접근명·로케이터가 실제 구현과 맞는지 **실측으로 확인해 뒀다** — 그중 하나는 「깨질 것」이라 판단했다가 측정에서 뒤집혔다.
 
@@ -91,7 +93,7 @@
 
 | **T11 이 그래프 전체를 페이지마다 심는다** (2026-08-27 T8 이중 리뷰 B-F1 · **최대 발견**) | `pages/atlas/index.tsx` 와 `pages/atlas/[...id].tsx` 가 `props: { graph, node }` | **산출물이 2.3 배가 된다.** 실측: `JSON.stringify(graph)` = **226,605 B**. Next 는 props 를 **두 번** 쓴다 — `__NEXT_DATA__` 인라인 + `_next/data/*.json`. 163 페이지(목록 1 + 노드 162) × 2 ≈ **73.9 MB** 증가. 현재 `du -sk out` = 57,696 KB. `lib/blog/types.ts` 가 **정확히 같은 이유**로 `PostSummary`(body·toc 제거)를 만든 전례가 있는데 아틀라스는 안 따랐다. 실측 축약 여지: 슬림 노드(id/type/title/topics)만 **30,296 B**. 노드 상세는 `{ node, neighbors }` 면 최대 차수 51 기준 페이지당 **~3 KB** |
 | **T11 NodePanel 이 상호 링크를 두 줄로 낸다** (2026-08-27 T8 이중 리뷰 B-F3) | `graph.edges.filter((e) => e.from === node.id \|\| e.to === node.id)` | **양방향 `extends` 쌍이 179 개다**(실측). 같은 이웃이 「이어짐」으로 두 번 나오는데 key 가 `from\|to\|type` 이라 **React 경고도 안 뜬다** — 조용히 중복된다. T8 은 (from,to) 쌍만 dedupe 하므로 무방향 dedupe 은 소비자 책임이다. 최대 차수: `topic/ai-agent` 51 · `topic/backend-engineering` 32 |
-| **T9 의 「고립된 artifact 노드가 없다」는 죽은 검사다** (2026-08-27 T8 이중 리뷰 B-F7) | 차수 0 인 artifact 를 센다 | **구조적으로 항상 0 이다** — `buildGraph` 가 모든 글에 `instantiates` 를 하나씩 붙인다. 자기검사 ①~④ 에 고아 케이스가 없어 **그 사실조차 드러나지 않는다.** 대상을 **inbound 0** 으로 바꾸면 실측 4편이 나오고, 그 4편이 전부 `role: "map"` 이면서 최대 허브다(outbound 30·26·22·6) — 이웃 탐색 UI 로는 **절대 도달할 수 없는 최상위 노드**다(리뷰 A4) |
+| **T9 의 「고립된 artifact 노드가 없다」는 죽은 검사다** (2026-08-27 T8 이중 리뷰 B-F7) | 차수 0 인 artifact 를 센다 | **구조적으로 항상 0 이다** — `buildGraph` 가 모든 글에 `instantiates` 를 하나씩 붙인다. 자기검사 ①~④ 에 고아 케이스가 없어 **그 사실조차 드러나지 않는다.** 대상을 **inbound 0** 으로 바꾸면 실측 4편이 나오고, 그 4편이 전부 `role: "map"` 이면서 최대 허브다(outbound ~~30·26·22·6~~ → **31·23·12·7**, T9 실측으로 갱신 — A4 수치는 A2(`7d12581`) 이전이라 낡았다) — ~~이웃 탐색 UI 로는 **절대 도달할 수 없는 최상위 노드**다(리뷰 A4)~~ ⇒ ⚠️ **이 문장은 틀렸다**(T9 리뷰). `## Task 11` 의 `NodePanel` 은 무방향이라 하위 글 상세에서 그 4편이 뜬다. 영구히 비는 것은 **방향을 따르는 자리**(백링크 목록)다. ⇒ ⚠️ **그리고 대상을 바꾸는 것만으로는 죽은 검사가 살아나지 않았다** — `instantiates` 는 `to` 가 토픽이라 글의 inbound 에 기여하지 않는다. 뮤테이션 M7 실측: `instantiates` 를 통째로 지워도 게이트가 초록이었다. T9 가 검사를 **셋**으로 나눈 이유다(§「Task 9」①) |
 | **`outboundKeys` 가 마크다운 구조를 모른다** (2026-08-27 T8 이중 리뷰 A2) | `links.ts` 의 정규식이 raw text 를 훑는다 | **코드 펜스·인라인 코드·HTML 주석 안의 예시 링크가 진짜 `extends` 엣지가 된다.** 실측(합성 입력): 셋 다 `["rag/a"]` 를 반환한다. 이미지 `![alt](...)` 와 이스케이프 `\[x\](...)` 도 마찬가지. 실데이터 오늘 incidence **0** 이지만 — **이 리포는 지금 「아틀라스는 이렇게 링크한다」는 글을 쓰는 중이다.** 잠복이 아니라 예정된 사고다. ⇒ **✅ 해결 `7d12581`.** `proseOnly` 를 export 해 세 곳이 같은 전처리를 본다. **거울상 결함이 더 아팠다** — 슬래시 검사와 앵커 검사도 raw body 를 읽어 펜스 안 예시가 **가짜 위반**이 됐다(고칠 수 없는 빨강). extends 798 유지 확인. §「A2 실측 기록」 |
 
 **이 표가 한 가지를 말한다 — 이 계획서에서 가장 자주 틀리는 곳은 File Structure 표다.**
@@ -239,11 +241,11 @@ git diff --name-only HEAD | grep -E '^(pages/index\.tsx|pages/blog/|content/blog
 | `components/atlas/graph-view.tsx` | 렌더러 추상화 — 레이아웃·상태·상호작용 | T10 |
 | `components/atlas/dot-renderer.tsx` | SVG 렌더러 (≤300 노드 · reduce · 저사양) | T10 |
 | `components/atlas/list-view.tsx` | 목록 뷰 (reduce 기본값) | T10 |
-| `components/atlas/canvas-renderer.tsx` | Canvas 2D 렌더러 (데스크톱 기본) | T11 |
-| `lib/atlas/use-renderer-choice.ts` | 렌더러 자동 선택 + 수동 토글 저장 | T11 |
-| `components/atlas/lens-picker.tsx` | 렌즈 3종 | T12 |
-| `components/atlas/topic-sidebar.tsx` | 좌측 토픽·태그 필터 (D-2) | T12 |
-| `components/atlas/node-panel.tsx` | 노드 상세 패널 | T12 |
+| ~~`components/atlas/canvas-renderer.tsx`~~ | ~~Canvas 2D 렌더러 (데스크톱 기본)~~ — **이월.** §「후속 계획서로 넘긴 것」 | ~~T11~~ |
+| ~~`lib/atlas/use-renderer-choice.ts`~~ | ~~렌더러 자동 선택 + 수동 토글 저장~~ — **이월** | ~~T11~~ |
+| ~~`components/atlas/lens-picker.tsx`~~ | ~~렌즈 3종~~ — **이월** | ~~T12~~ |
+| ~~`components/atlas/topic-sidebar.tsx`~~ | ~~좌측 토픽·태그 필터 (D-2)~~ — **이월** | ~~T12~~ |
+| `components/atlas/node-panel.tsx` | 노드 상세 패널 — 무방향 dedupe 계약을 함께 진다(T9 실측 기록 참조) | **T13** (`## Task 11`) |
 | `pages/atlas/index.tsx` | 아틀라스 페이지 — 3분할 | T13 |
 | `pages/atlas/[...id].tsx` | 노드 상세 162개 정적 생성 | T14 |
 | `scripts/check-baseline.mjs` | **수정** — `atlas/` 제외 규칙 | T14 |
@@ -2314,9 +2316,9 @@ C 축의 보고와 겹쳐 보여 그럴듯했다. 대조군(이미 「잡힘」�
 | 노드 `id` 유일성 | 0 | ✗ | **검사한다** |
 | `instantiates` 양끝 실재 | 0 | **보장됨** — 토픽 노드를 같은 `posts` 에서 뽑는다 | 회귀 감시용으로만 |
 | `sequence` 양끝 실재 | 0 | **보장됨** — 같은 `posts` 배열 안에서만 잇는다 | 회귀 감시용으로만 |
-| 고아 artifact(차수 0) | 0 | **보장됨** — 모든 글이 `instantiates` 를 하나 갖는다 | ⚠️ **죽은 검사다.** 대상을 **inbound 0** 으로 바꿔라 |
-| 같은 타입 엣지 중복 | 0 | ✗ — `extends` 만 dedupe | **검사한다** |
-| 무방향 중복 | **179 쌍** | ✗ | T11 표시 계약으로 넘긴다(아래) |
+| 고아 artifact(차수 0) | 0 | **보장됨** — 모든 글이 `instantiates` 를 하나 갖는다 | ⚠️ **죽은 검사다.** 대상을 **inbound 0** 으로 바꿔라 → ⚠️ **바꿔도 안 살아난다.** T9 실측 기록 ① |
+| 같은 타입 엣지 중복 | 0 | ✗ — `extends` 만 dedupe | **검사한다** ✅ |
+| 무방향 중복 | **179 쌍** | ✗ | **`## Task 11`(T13+T14) 의 `NodePanel` 이 진다.** 그 본문 Step 1 에 계약을 적어 두었다 — 초안은 「(아래)」라고만 적었고 **수신처가 없었다.** 실제 기록은 2,760 줄 **위쪽** B-F3 행 하나뿐이라 T11 실행자가 볼 수 없었다 |
 | id 의 URL 안전성 | 0 | ✗ | `encodeURI(id) !== id` 로 검사한다 |
 
 **T8 이 새로 보장하는 것 2건** — `instantiates` 의 방향(글 → 토픽)과 노드·엣지의 정준 순서.
@@ -2387,149 +2389,145 @@ C 축의 보고와 겹쳐 보여 그럴듯했다. 대조군(이미 「잡힘」�
 ## Task 9: 그래프 무결성 게이트
 
 **Files:**
-- Create: `tests/atlas/integrity.test.ts`
+- Create: `tests/atlas/integrity.test.ts` ✅
+- Modify: `.githooks/pre-commit` ✅ — 훅의 vitest 범위에 `tests/atlas` 를 더한다
 
 **Interfaces:**
 - Consumes: T8의 `buildGraph`
-- Produces: 회귀 게이트. `npm test`에 자동으로 들어간다
+- Produces: 회귀 게이트. **`pre-commit` 과 CI 양쪽**에서 돈다
 
 **왜 별도 태스크인가 (스펙 §11):** *「스키마 검증을 빌드 중단으로 두는 이유는 **깨진 엣지가 화면에 보이지 않기 때문**이다. 노드가 하나 덜 그려져도 사람 눈은 잡지 못한다. 사람이 못 잡는 오류는 기계가 막아야 한다.」*
 
-- [ ] **Step 1: 무결성 검사를 쓴다**
+- [x] **Step 1** — 무결성 11 + 자기검사 13 을 쓴다
+- [x] **Step 2** — `.githooks/pre-commit` 의 vitest 범위에 `tests/atlas` 를 더한다
+- [x] **Step 3** — 전체 게이트 확인 후 커밋
 
-```ts
-// tests/atlas/integrity.test.ts
-import { describe, expect, it } from "vitest";
-import { buildGraph } from "@/lib/atlas/build";
-import { atlasGraphSchema } from "@/lib/atlas/types";
-import { readPosts } from "@/lib/blog/loader";
-import type { AtlasGraph } from "@/lib/atlas/types";
+⚠️ **초안 코드 블록은 삭제했다.** 실구현과 **다섯 곳**이 달랐고, 그중 둘은 초안대로 쓰면
+**아무것도 막지 못하는 검사**가 된다. 남겨 두면 다음 사람이 그것을 옮겨 쓴다 — 이 계획서에서
+가장 자주 일어난 사고가 정확히 그 모양이다(§「착수 전 발견」의 File Structure 표 네 건).
+**정본은 `tests/atlas/integrity.test.ts` 다.**
 
-const graph = buildGraph(readPosts());
+### 완료 실측 (2026-08-27)
 
-/**
- * 그래프 무결성. 설계서 §11.
- *
- * ⚠️ 아래 「자기검사」 묶음을 지우지 마라. 검사기가 실제로 잡는지 증명하지 않은 초록은
- *    이 리포에서 반복해서 거짓 0 을 만들었다 — 검사 자체가 고장 나도 초록이 나오기 때문이다.
- */
-describe("그래프 무결성", () => {
-  it("스키마를 통과한다", () => {
-    expect(() => atlasGraphSchema.parse(graph)).not.toThrow();
-  });
+| 항목 | 값 |
+| --- | --- |
+| `npm test` | **265 → 289** (+24 · 무결성 11 + 자기검사 13) |
+| `npx tsc --noEmit` | 0 |
+| `npm run lint` | 0 |
+| 훅이 실제로 부르는 `npx vitest run tests/blog tests/atlas` | **138 passed** · exit 0 |
+| `sh -n .githooks/pre-commit` · `git config core.hooksPath` | 0 · `.githooks` |
+| `.githooks/pre-commit` CR/LF | **26 / 26** — CRLF 유지 |
 
-  it("id 가 중복되지 않는다", () => {
-    const ids = graph.nodes.map((n) => n.id);
-    const dup = ids.filter((id, i) => ids.indexOf(id) !== i);
-    expect(dup, `중복 id: ${dup.join(", ")}`).toHaveLength(0);
-  });
+전부 `verifier` 가 구현자와 별개로 단독 실행해 잰 값이다.
 
-  it("모든 엣지의 양끝이 실재하는 노드다", () => {
-    const ids = new Set(graph.nodes.map((n) => n.id));
-    const dangling = graph.edges.filter((e) => !ids.has(e.from) || !ids.has(e.to));
-    expect(dangling.map((e) => `${e.from}->${e.to}`), "없는 노드를 가리키는 엣지").toHaveLength(0);
-  });
+### 초안이 틀린 다섯 곳
 
-  // ⚠️ **이 검사는 구조적으로 항상 초록이다 — 죽은 검사다** (T8 리뷰 B-F7, 2026-08-27 실측).
-  //    `buildGraph` 가 모든 글에 instantiates 엣지를 하나씩 push 하므로 차수 0 인 artifact 는
-  //    나올 수가 없다. 자기검사 ①~④ 에 고아 케이스가 없어 그 사실조차 드러나지 않는다.
-  //    쓸모 있게 만들려면 대상을 바꿔라 — **inbound 0** 을 세면 실측 4편이 나오고
-  //    그 4편이 전부 `role: "map"` 이면서 최대 허브다(outbound 30·26·22·6, 리뷰 A4).
-  //    이웃 탐색 UI 로는 그 4편에 절대 도달할 수 없다 — T10·T11 이 알아야 할 사실이다.
-  it("고립된 artifact 노드가 없다", () => {
-    // 모든 글은 최소한 카테고리로 instantiates 엣지를 갖는다. 0 이면 매핑이 깨진 것이다.
-    const deg = new Map<string, number>(graph.nodes.map((n) => [n.id, 0]));
-    for (const e of graph.edges) {
-      deg.set(e.from, (deg.get(e.from) ?? 0) + 1);
-      deg.set(e.to, (deg.get(e.to) ?? 0) + 1);
-    }
-    const orphans = graph.nodes.filter((n) => n.type === "artifact" && (deg.get(n.id) ?? 0) === 0);
-    expect(orphans.map((n) => n.id), "엣지가 하나도 없는 글").toHaveLength(0);
-  });
+| # | 초안 | 실구현 | 초안대로 두면 |
+| --- | --- | --- | --- |
+| 1 | 「고립된 artifact」 = **차수 0** | **inbound 0 이면서 `role: "map"` 이 아닌 글** + `instantiates` 개수 검사 + 빈 토픽 검사 | 구조적으로 항상 초록 — **죽은 검사** |
+| 2 | `/[\s?#]/` 로 id 검사 | `encodeURI(id) !== id` | 한글 slug 를 통과시킨다 |
+| 3 | `counts` **3 필드** 비교 | **5 필드 전부** | `instantiatesEdges`·`sequenceEdges` 를 0 으로 박아도 초록 |
+| 4 | (없음) | `(from,to,type)` **중복 엣지** 검사 | ⑦ 표가 「검사한다」로 지정했는데 코드에 없었다 |
+| 5 | 자기검사가 판정식을 **복붙** | 헬퍼를 무결성·자기검사가 **공유** | 무결성 로직을 고치면 자기검사가 **옛 로직**을 증명한다 |
 
-  // ⚠️ `/[\s?#]/` 는 **비ASCII 를 통과시킨다** (T8 리뷰 B-F5). 오늘은 162 노드 전부
-  //    `encodeURI(id) === id` 라 문제가 없지만, 한글 slug 가 1편만 들어와도
-  //    `source.ref`(build.ts)와 `getStaticPaths` 가 갈린다. `encodeURI(id) !== id` 로 바꿔라.
-  it("id 가 URL 로 쓸 수 있는 모양이다", () => {
-    // /atlas/[...id] 의 경로 조각이 된다. 공백·물음표·해시가 있으면 안 된다.
-    const bad = graph.nodes.filter((n) => /[\s?#]/.test(n.id));
-    expect(bad.map((n) => n.id), "URL 에 못 쓰는 id").toHaveLength(0);
-  });
+**5 번이 가장 조용한 결함이다.** 자기검사는 「검사기가 정말 잡는가」를 증명하려고 있는데,
+판정식을 복사해 갖고 있으면 그 증명이 실물과 무관해진다. 초록은 그대로라 발각되지 않는다.
 
-  // ⚠️ counts 는 **5 필드인데 3 개만 본다** (T8 리뷰 B-F7). `instantiatesEdges`·`sequenceEdges`
-  //    가 빠졌다. T8 뮤테이션 실측에서 그 두 필드를 0 으로 고정해도 단위 테스트는 초록이었다.
-  it("counts 가 실제 배열 길이와 맞는다", () => {
-    expect(graph.meta.counts.artifact).toBe(graph.nodes.filter((n) => n.type === "artifact").length);
-    expect(graph.meta.counts.concept).toBe(graph.nodes.filter((n) => n.type === "concept").length);
-    expect(graph.meta.counts.extendsEdges).toBe(graph.edges.filter((e) => e.type === "extends").length);
-  });
-});
+---
 
-/**
- * 자기검사 — 검사기가 정말 잡는지 증명한다.
- *
- * 일부러 깨뜨린 그래프를 넣어 **위 검사와 같은 판정 로직**이 실패를 내는지 본다.
- * 이게 없으면 「발견 0건」이 참인지 검사가 고장 난 것인지 구분할 수 없다.
- */
-describe("자기검사 — 깨진 그래프를 잡는가", () => {
-  const broken = (over: Partial<AtlasGraph>): AtlasGraph => ({ ...graph, ...over });
+### ① 대상을 바꿔도 죽은 검사는 살아나지 않았다 — 뮤테이션 M7
 
-  it("① 없는 노드를 가리키는 엣지를 잡는다", () => {
-    const g = broken({ edges: [...graph.edges, { from: graph.nodes[0].id, to: "없는/노드", type: "extends" }] });
-    const ids = new Set(g.nodes.map((n) => n.id));
-    expect(g.edges.filter((e) => !ids.has(e.to)).length).toBeGreaterThan(0);
-  });
+착수 시점의 지시는 *「차수 0 은 죽은 검사다. **inbound 0** 으로 바꿔라」* 였다. 바꿨고, 실측 4 편이
+나왔다. 살아난 것처럼 보였다. **아니었다.**
 
-  it("② 중복 id 를 잡는다", () => {
-    const g = broken({ nodes: [...graph.nodes, graph.nodes[0]] });
-    const ids = g.nodes.map((n) => n.id);
-    expect(ids.filter((id, i) => ids.indexOf(id) !== i).length).toBeGreaterThan(0);
-  });
+`instantiates` 엣지는 `from` = 글, `to` = 토픽이다. 그래서 **글의 inbound 에 1도 기여하지 않는다.**
 
-  it("③ 스키마 위반을 잡는다", () => {
-    const g = broken({ nodes: [...graph.nodes, { ...graph.nodes[0], id: "x", type: "없는타입" as never }] });
-    expect(() => atlasGraphSchema.parse(g)).toThrow();
-  });
+| 뮤테이션 M7 — `instantiates` 생성을 통째로 제거 | 결과 |
+| --- | --- |
+| 엣지 총수 | 1,053 → **897** |
+| artifact 중 inbound 0 | 4 → **4 (불변)** |
+| concept 중 inbound 0 | 0 → **6** (토픽 6 개가 통째로 고아) |
+| 게이트 | **exit 0 · 전부 초록** |
 
-  it("④ URL 로 못 쓰는 id 를 잡는다", () => {
-    const g = broken({ nodes: [...graph.nodes, { ...graph.nodes[0], id: "공백 있는/id" }] });
-    expect(g.nodes.filter((n) => /[\s?#]/.test(n.id)).length).toBeGreaterThan(0);
-  });
-});
+매핑이 완전히 붕괴했는데 게이트가 아무 말도 하지 않았다. `n.type === "artifact"` 필터가
+노드의 나머지 절반을 구조적으로 안 보기 때문이다 — **초안의 죽은 검사와 같은 계열의 사각이
+자리만 옮겨 살아남았다.**
+
+```mermaid
+flowchart LR
+    subgraph G["buildGraph 가 내는 엣지"]
+        I["instantiates<br/>글 → 토픽"]
+        X["extends · sequence<br/>글 → 글"]
+    end
+    I -->|"to 가 토픽이라<br/>글의 inbound 에 0 기여"| A["artifact inbound 0<br/>= 아무도 인용 안 함"]
+    X --> A
+    I --> B["concept inbound 0<br/>= 글 없는 토픽"]
+    A -.->|"M7 이 통과한 구멍"| N["초안 + inbound 전환만"]
+    B --> C["emptyTopicIds ✅"]
+    I --> D["instantiatesArityErrors ✅"]
 ```
 
-- [ ] **Step 2: 돌린다**
+⇒ 검사를 **셋**으로 나눴다. 자기검사 ⑨ 가 그 관계를 코드로 못 박는다 — M7 그래프에서
+앞의 둘은 빨갛고 `strandedNonMapIds` 는 **초록임을 단언한다.** 그 줄이 없으면 다음 사람이
+「비슷하니 합치자」로 되돌린다.
+
+| 검사 | 무엇을 막나 | 새 글에 영향 |
+| --- | --- | --- |
+| `instantiatesArityErrors` | 글의 소속 매핑 붕괴 (0 개도 2 개도) | 없음 |
+| `emptyTopicIds` | 글 0 편인 토픽 노드 | 없음 |
+| `strandedNonMapIds` | 아무도 인용하지 않는 글 | **있다 — ③ 참조** |
+
+### ② 자기검사도 공회전한다 — `not.toContain` 은 픽스처가 틀려도 참이다
+
+초안 자기검사는 픽스처를 `graph.nodes[0]` 으로 잡았다. 오늘은 정렬 결과가 우연히 artifact 라
+동작하지만, 뮤테이션 M8 로 첫 노드가 concept 가 되자 **⑦ 만 초록을 유지했다** —
+`not.toContain` 은 픽스처 타입이 틀려도 항상 참이기 때문이다.
+
+⇒ 픽스처를 `filter((n) => n.type === "artifact")[0]` 로 **타입으로** 고르고, ⑦ 을 **차등 대조**로
+바꿨다 — `role` 을 주기 **전에는 반드시 잡힌다**를 먼저 단언한다. 이제 픽스처가 어긋나면
+그 줄이 빨개진다.
+
+**모든 자기검사에 대조군을 붙였다.** 「깨진 쪽이 빨갛다」만 재면 픽스처가 엉뚱해서 빨간 경우와
+구분되지 않는다.
+
+### ③ 새 글은 이 게이트에 걸린다 — 그것이 의도다
+
+`strandedNonMapIds` 는 콘텐츠 정책이다. **새 글은 정의상 인용해 줄 글이 없어 inbound 0 으로
+시작하므로**, `role: map` 이 아니면 빨개진다. 실측: 156 편 중 시리즈 없는 글 20 편 + 시리즈
+첫 글 37 편 = **57 편(37%)** 이 본문 인용으로만 inbound 를 얻는다.
+
+이것을 게이트로 **유지**하기로 정했다 — 「누가 이 글로 들어오는가」를 정하지 않은 글은
+아틀라스에서 떠 있는 점이 된다. 대신 두 가지를 했다.
+
+| 문제 | 조치 |
+| --- | --- |
+| 로컬 `pre-commit` 은 `tests/blog` 만 돌아 **커밋·푸시가 통과하고 CI 배포 단계에서 터졌다** | 훅의 vitest 범위에 **`tests/atlas` 를 더했다.** 훅은 `content/blog/` 를 건드리는 커밋에만 도니 새 글을 쓰는 바로 그 순간 빨개진다. 실측 부담 +396ms |
+| 에러가 id 만 던져 **무엇을 해야 하는지** 말하지 않았다 | 메시지에 조치 두 갈래를 넣었다 — ① 인용하는 글을 만든다(권장) ② 최상위 지도면 `role: map`. 그리고 **②는 빨강을 끄는 스위치가 아니라 선언이다**를 메시지 안에 적었다 |
+
+⚠️ 훅의 `tests/atlas` 를 지우면 이 게이트는 **배포 단계로 되돌아간다.** 파일 헤더 주석이 그 사실을 진다.
+
+### ④ 부수 발견 — 소스에 박힌 생 NUL 2 개가 리포 전역 검색을 갈라놓았다
+
+`tests/atlas/build.test.ts` 바이트 11273·11283 에 **실제 NUL 바이트**가 있었다
+(`` `${e.type}\0${e.from}` `` 의 `\0` 이 이스케이프가 아니라 진짜 NUL 로 들어갔다).
+
+**ripgrep 은 NUL 을 만나면 그 파일을 바이너리로 보고 조용히 건너뛴다.** 리포 전역
+`Grep '정준|결정론'` 이 23 개 파일을 찾으면서 이 파일을 뺐고, 아무 표시도 남지 않았다 —
+**「이 파일에는 그 말이 없다」와 「이 파일을 읽지 않았다」가 같은 침묵이다.**
+`\u0000` 이스케이프로 치환했다. 런타임 동작은 같고 파일은 다시 텍스트다.
+
+### T10·T11 이 이어받을 것
+
+| 사실 | 실측 | 받는 곳 |
+| --- | --- | --- |
+| inbound 0 인 글 **4 편** · 전부 `role: "map"` · outbound **31 · 23 · 12 · 7** | 2026-08-27 | 리뷰 A4 의 `30·26·22·6` 은 **낡았다** — A2(`7d12581`)가 펜스 안 예시 링크를 걷어낸 뒤 값이 달라졌다 |
+| 그 4 편은 **방향을 따르는 자리에서 영구히 빈다** | — | 「도달 불가」가 아니다. `## Task 11` 의 `NodePanel` 은 무방향이라 하위 글에서 뜬다. 비는 것은 **백링크 목록**이다 |
+| 무방향 `extends` 중복 **179 쌍** | — | **`## Task 11` Step 1** 에 dedupe 를 넣어 두었다 |
+| `AtlasNode` 에 **`role` 이 없다** | — | 그래프만으로 지도 글을 식별할 수 없다. 진입점·강조를 그래프에서 뽑으려면 **T7 스키마에 올려야 한다** |
 
 ```bash
-npx vitest run tests/atlas/integrity.test.ts
-```
-
-Expected: **10 passed** (무결성 6 + 자기검사 4).
-
-⚠️ **자기검사가 하나라도 실패하면 그 검사기는 아무것도 막지 못한다.** 무결성 쪽이 초록이어도 멈추고 고친다.
-
-- [ ] **Step 3: 전체 게이트 확인 후 커밋**
-
-```bash
-npm test
-```
-
-~~Expected: **186 passed** (기존 165 + 매핑 10 + 실데이터 1 + 무결성 6 + 자기검사 4).~~
-
-⚠️ **낡았다 — 57 만큼(T8 리뷰 B-F2).** 초안은 T8 이 11 건을 더한다고 셈했는데 실제로는 **19** 건이다
-(착수 전 리뷰 3 + 이중 리뷰 5 + 계획서 10 + 실데이터 1). 거기에 리뷰 A2 가 `tests/atlas/links.test.ts`
-**17 건**을 더했다. 2026-08-27 실측 `npm test` = **265**.
-⇒ Expected: **275 passed** (265 + 무결성 6 + 자기검사 4). **T9 를 끝낼 때 이 칸을 실측으로 다시 갱신하라.**
-
-```bash
-git add tests/atlas/integrity.test.ts
-git commit -m "test(atlas): 그래프 무결성 게이트 + 자기검사
-
-설계서 §11 — 깨진 엣지는 화면에 보이지 않는다. 노드가 하나 덜 그려져도
-사람 눈은 잡지 못하므로 기계가 막아야 한다.
-
-자기검사 4건을 함께 넣는다. 검사기가 실제로 잡는지 증명하지 않은 초록은
-이 리포에서 반복해서 거짓 0 을 만들었다 — 검사가 고장 나도 초록이 나오기 때문이다."
+git add tests/atlas/integrity.test.ts .githooks/pre-commit
+git commit -m "test(atlas): 그래프 무결성 게이트 + 자기검사"
 ```
 
 ---
@@ -2888,12 +2886,28 @@ const EDGE_LABEL: Record<AtlasEdge["type"], string> = {
 
 /** 선택된 노드의 상세. 그래프에서는 우측 패널, 노드 상세 페이지에서는 본문으로 쓴다. */
 export function NodePanel({ graph, node }: { graph: AtlasGraph; node: AtlasNode }) {
+  // ⚠️ **무방향 dedupe 는 여기 책임이다.** ⑦ 표가 T9 에서 이 자리로 넘긴 계약이다.
+  //    실측 양방향 `extends` 쌍 **179 개**. 아래 필터는 방향을 안 보므로 A↔B 가 둘 다 걸려
+  //    같은 이웃이 「이어짐」으로 **두 번** 나오고, key 가 `from|to|type` 이라
+  //    **React 경고도 안 뜬다** — 조용히 중복된다(T8 이중 리뷰 B-F3).
+  //    T8 은 (from,to) 쌍만 dedupe 한다. 무방향은 그래프의 성질이 아니라 **표시 계약**이라
+  //    소비자 몫이다 — 빌더에서 지우면 방향이 필요한 화면이 정보를 잃는다.
+  //
+  // ⚠️ **inbound 0 인 글 4 편이 있다**(T9 실측 · 전부 `role: "map"` · outbound 31·23·12·7).
+  //    이 패널은 무방향이라 그 4 편도 하위 글 상세에서 「이어짐」으로 뜬다 — 도달은 된다.
+  //    영구히 비는 것은 **방향을 따르는 자리**다. 「이 글을 인용한 글」 같은 백링크 목록을
+  //    만든다면 그 4 편에서 항상 빈칸이고, 그것이 정상이라는 표시가 필요하다.
+  const seen = new Set<string>();
   const linked = graph.edges
     .filter((e) => e.from === node.id || e.to === node.id)
-    .map((e) => ({
-      edge: e,
-      other: graph.nodes.find((n) => n.id === (e.from === node.id ? e.to : e.from)),
-    }))
+    .map((e) => ({ edge: e, otherId: e.from === node.id ? e.to : e.from }))
+    .filter((x) => {
+      const k = `${x.edge.type}|${[node.id, x.otherId].sort().join("~")}`;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    })
+    .map((x) => ({ edge: x.edge, other: graph.nodes.find((n) => n.id === x.otherId) }))
     .filter((x): x is { edge: AtlasEdge; other: AtlasNode } => Boolean(x.other));
 
   return (
@@ -3282,7 +3296,8 @@ git commit -m "feat(atlas): 헤더 노출 + E2E + 기준선 갱신
 | --- | --- | --- |
 | 타입 | `npx tsc --noEmit` | 0 |
 | 린트 | `npm run lint` | 0 |
-| 단위 | `npm test` | **265 + 남은 태스크가 더한 수.** 265 는 리뷰 A2 반영 직후 실측치다(2026-08-27 · T7 직후 229 → T8 이 14 → 이중 리뷰가 5 → A2 가 17 추가). T9·T10 이 `tests/atlas/` 를 더 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
+| 단위 | `npm test` | **289 + 남은 태스크가 더한 수.** 289 는 T9 직후 실측치다(2026-08-27 · T7 직후 229 → T8 이 14 → 이중 리뷰가 5 → A2 가 17 → **T9 가 24** 추가). T10 이 `tests/atlas/` 를 더 더하므로 **각 태스크가 끝날 때 이 칸을 실측으로 갱신한다** — 낡은 숫자는 회귀와 구분되지 않는다 |
+| 단위 (훅) | `npx vitest run tests/blog tests/atlas` | **138.** `.githooks/pre-commit` 이 실제로 부르는 명령이다. T9 가 `tests/atlas` 를 훅 범위에 넣었다 — 새 글의 링크 누락을 커밋 시점에 잡기 위해서다 |
 | 빌드 | `npm run build` | 0 |
 | 검색 인덱스 | `npm run check-pagefind` | `✔` |
 | 기준선 | `npm run check-baseline` | **0** (T12 Step 4에서 갱신 후) |
