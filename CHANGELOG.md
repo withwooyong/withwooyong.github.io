@@ -18,9 +18,14 @@
 >
 > ✅ PR [#2](https://github.com/withwooyong/withwooyong.github.io/pull/2) 에서 실제로 돌았다 — 5 URL × 3회 수집.
 > 🔴 **첫 실행에서 결함 1건.** `upload-artifact` 가 숨김 파일을 기본 제외해
-> 리포트 15개를 쓰고 **0개를 올렸는데 두 스텝 모두 초록이었다.** 고쳤고 검사기가 지킨다.
+> 리포트 15개를 쓰고 **0개를 올렸는데 두 스텝 모두 초록이었다.** 고쳤고 검사기가 지킨다 —
+> 재실행에서 아티팩트를 받아 **62파일 · 5라우트 × 3회**를 파일명으로 확인했다.
 >
-> 경위: [`docs/superpowers/reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R65)
+> ⚠️ **회귀 탐지용으로는 아직 못 쓴다.** 페이지가 한 바이트도 안 바뀐 두 실행 사이에서
+> 경고가 **3 → 4 건**으로 변했다. 러너 변동이 예산 폭보다 크다 —
+> 지금 쓸 수 있는 것은 **자릿수**와 낙관적 집계에서도 넘긴 **확실한 초과**뿐이다.
+>
+> 경위: [`docs/superpowers/reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R66)
 
 ## 2026-08-28 — 고아 자산 4종 삭제 · 기준선 게이트 복구 · **E2E 를 배포 게이트로 승격**
 

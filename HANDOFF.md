@@ -9,7 +9,9 @@
 >
 > 🔴 **PR [#2](https://github.com/withwooyong/withwooyong.github.io/pull/2) 가 열려 있다. merge 는 승인 대기다.**
 > T15 워크플로는 거기서 처음 돌았고 **첫 실행에서 결함 1건**이 나왔다(§R65 — 리포트 15개를 쓰고 0개를 올렸다).
-> 고쳤고 재실행 결과는 **아티팩트 목록을 눈으로 확인해야 한다** — 「스텝이 초록」은 그때도 초록이었다.
+> 고쳤고 **재실행에서 받아서 셌다**(§R66) — 아티팩트 18.8MB · 62파일 · 5라우트 × 3회를 파일명으로 확인.
+> ⚠️ 그러다 **같은 페이지인데 경고가 3 → 4 로 늘었다.** 러너 변동이 예산 폭보다 크다 —
+> **이 워크플로를 회귀 탐지에 쓰면 안 된다.** 쓸 수 있는 것은 자릿수와 확실한 초과뿐이다.
 >
 > 🔴 **`deploy.yml` 은 PR 에서 돌지 않는다**(트리거가 `push: [main]` 뿐). lint · tsc · vitest ·
 > 금칙어 · 발행본 수 · **T14 가 승격시킨 E2E 게이트**가 PR 단계에서 하나도 돌지 않는다는 뜻이다.
@@ -73,7 +75,7 @@
 | ~~**12**~~ | `/about` 신규 | `pages/about/index.tsx` · `e2e/about.spec.ts` | ✅ **완료.** ⚠️ **리뷰 축 0개** — T9·T10 은 2축, T11 은 3축이었다. 대조가 없다. 검증: vitest **406** · e2e **154/154 · skip 0** · 뮤턴트 **9/9 사멸**. 경위는 [`reports/2026-08-28-t12-about.md`](docs/superpowers/reports/2026-08-28-t12-about.md) (R45·R46·R47) |
 | ~~**13**~~ | `product-lead*` 스텁 — 9 URL → **파일 5개**(4가 아니다) | `public/product-lead*/index.html` · `pages/product-lead-wiki/*` · `e2e/redirects.spec.ts` | ✅ **완료.** `/ted-run` 풀 파이프라인, 리뷰 **3축**. 계획서 오류 3건 발견(R48)·**T14 결함 봉인**(R49). 검증: vitest **406** · e2e **238/238 · skip 0** · 뮤턴트 **10/10 사멸**(1차 8/10) · Pagefind 407→**398, 스텁 0**. 경위는 [`reports/2026-08-28-t13-stubs.md`](docs/superpowers/reports/2026-08-28-t13-stubs.md) (R48~R54) |
 | ~~**14**~~ | 고아 자산 삭제 + 기준선 1회 갱신 + **E2E 를 CI 게이트로** | 삭제 `lib/wiki.ts`·`wiki-shell`·`roadmap-domain`·`product-lead-roadmap` · `tests/ci/deploy-workflow.test.ts` 신규 · `scripts/baseline.json` · `.github/workflows/deploy.yml` | ✅ **완료.** 리뷰 **2축**(품질 → HIGH 1·MED 2·LOW 2 전부 반영 / 검사 유효성 → PASS). 검증: vitest **411** · e2e **238/238 · skip 0** · 뮤턴트 **7/7 사멸** · `check-baseline` **종료 0**(16개 불변). 경위는 [`reports/2026-08-28-t14-orphans.md`](docs/superpowers/reports/2026-08-28-t14-orphans.md) (R55~R61) |
-| ~~**15**~~ | Lighthouse CI — 경고로만 | `lighthouserc.json` · `.github/workflows/lighthouse.yml` · `tests/ci/lighthouse-workflow.test.ts` 신규 · `.gitignore` | ✅ **완료.** `deploy.yml` 불변. 검증: tsc 0 · lint 0 · vitest **430** · e2e **238/238 · skip 0** · 뮤턴트 **15/15 사멸**(1차 10/11). 계획서와 **4곳 다르다**(공개 업로드 차단 · URL 5개 · 액션 v6 · 검사기 신설). ✅ **PR #2 에서 실제로 돌았다** — 5 URL × 3회 수집. 🔴 **첫 실행에서 결함 1건**(리포트 15개를 쓰고 0개를 올렸다 · §R65). 경위는 [`reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R65) |
+| ~~**15**~~ | Lighthouse CI — 경고로만 | `lighthouserc.json` · `.github/workflows/lighthouse.yml` · `tests/ci/lighthouse-workflow.test.ts` 신규 · `.gitignore` | ✅ **완료.** `deploy.yml` 불변. 검증: tsc 0 · lint 0 · vitest **430** · e2e **238/238 · skip 0** · 뮤턴트 **15/15 사멸**(1차 10/11). 계획서와 **4곳 다르다**(공개 업로드 차단 · URL 5개 · 액션 v6 · 검사기 신설). ✅ **PR #2 에서 실제로 돌았다** — 5 URL × 3회 수집. 🔴 **첫 실행에서 결함 1건**(리포트 15개를 쓰고 0개를 올렸다 · §R65). 경위는 [`reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R66) |
 
 ~~**순서를 바꾸지 마라.** 9 → 10 → 11 → 12 → 13 → 14 → 15.~~ **전부 끝났다.**
 
