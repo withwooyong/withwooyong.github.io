@@ -5,12 +5,19 @@ import { buildToc, type TocEntry } from "@/lib/toc";
 /**
  * 프로덕트 로드맵 위키 — 원문 마크다운 로더 (빌드 타임 전용).
  *
- * 원문은 pages/product-lead-loadmap/*.md 다섯 개. mermaid 도식·ERD·SQL을 그대로 살리기 위해
- * 요약하지 않고 마크다운 자체를 렌더링한다. 다만 면접 대비 목적의 섹션은 여기서 제거한다.
+ * 🔴 **이 파일은 죽어 있다. T14 의 삭제 대상이다.**
+ *    T13 이 `pages/product-lead-loadmap/` 을 라우트째 지우면서 아래 `DOCS_DIR` 이 가리키는
+ *    디렉터리가 **없어졌다.** 호출자가 0건이라(`pages/product-lead-wiki/*` 는 스텁이 되면서
+ *    이 모듈 의존을 끊었다) 빌드는 그대로 통과하지만, `getDoc()` 을 지금 부르면 `fs` 가 던진다.
+ *    새로 부르지 마라. 지우는 것은 T14 가 「호출자 0건」을 증명한 뒤 한꺼번에 한다.
+ *
+ * 원문은 pages/product-lead-loadmap/*.md 다섯 개였다. mermaid 도식·ERD·SQL을 그대로 살리기 위해
+ * 요약하지 않고 마크다운 자체를 렌더링했다. 다만 면접 대비 목적의 섹션은 여기서 제거했다.
  *
  * getStaticProps에서만 호출할 것. 클라이언트 번들에 fs가 들어가면 안 된다.
  */
 
+/** ⚠️ T13 이후 **존재하지 않는 디렉터리**다. 위 주석 참조. */
 const DOCS_DIR = path.join(process.cwd(), "pages", "product-lead-loadmap");
 
 export type WikiDoc = {

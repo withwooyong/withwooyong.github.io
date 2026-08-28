@@ -12,7 +12,12 @@
  *    `/work` 를 만드는 사람은 이 파일을 먼저 읽어라 — 홈에서 무엇이 무슨 말로
  *    그 클러스터를 소개하고 있었는지가 여기 있다.
  *
- * ⚠️ `href` 는 T13 이 9 URL 을 파일 4개로 접을 때 바뀔 수 있다. 그때 여기도 함께 고친다.
+ * ⚠️ **`ctaHref` 는 T13 에서 `/work/` 로 바꿨다.** 원래 값은 `/product-lead-v2/` 였고,
+ *    T13 이 `product-lead*` 9 URL 을 **파일 5개**(정적 스텁 3 + wiki 라우트 2)로 접으면서
+ *    그 경로는 `/work/` 로 보내는 리다이렉트 스텁이 됐다. 사이트 안에서 스텁을 거쳐 가게
+ *    둘 이유가 없으므로 여기서 바로 목적지를 가리킨다.
+ *    (초안에 「파일 4개」로 적혀 있었는데 산술이 틀렸다 — `[slug].tsx` 가 덮는 것은 6 URL 이
+ *     아니라 하위 **5 URL** 이고, 인덱스 1개는 `index.tsx` 가 따로 덮는다.)
  */
 export const productLeadTeaser = {
   eyebrow: "플랫폼 · 프로덕트 리더십",
@@ -20,5 +25,5 @@ export const productLeadTeaser = {
   lead: "OTT·커머스 플랫폼의 코어 엔진 설계부터 CMS 재구축·현대화, AI, 그리고 조직까지 — 20년의 경험을 제품 관점으로 정리한 한 장 요약입니다.",
   chips: ["콘텐츠 코어 엔진", "CMS 재구축·현대화", "커머스 + AI", "크로스펑셔널 조직"],
   ctaLabel: "플랫폼 프로덕트 리더로 보기",
-  ctaHref: "/product-lead-v2/",
+  ctaHref: "/work/",
 } as const;

@@ -1,8 +1,13 @@
 /**
  * TVING Platform Product Lead — "어떻게 일할 것인가" 실행 설계 콘텐츠.
  *
- * 원문: pages/product-lead-loadmap/*.md (허브 + 4개 도메인 문서)
- * 이 모듈은 렌더링에 필요한 순수 데이터만 담는다. JSX는 pages/product-lead-loadmap/index.tsx.
+ * 원문: pages/product-lead-loadmap/*.md (허브 + 4개 도메인 문서) — **T13 이 라우트째 지웠다.**
+ * 이 모듈에 옮겨 적은 데이터가 그 내용의 유일한 사본이다.
+ *
+ * ⚠️ **import 하는 파일이 0건이다(2026-08-28 실측).** 유일한 소비자였던 JSX
+ *    pages/product-lead-loadmap/index.tsx 를 T13 이 지웠기 때문이다 — 그 URL 은 이제
+ *    public/product-lead-loadmap/index.html 스텁이 /work/ 로 보낸다.
+ *    이 파일은 T14 의 고아 정리 대상이다 — 새로 import 하지 마라.
  *
  * 주의: 모든 As-Is 서술은 공개정보에서 추론한 가설이며, 로드맵의 기간·목표치는 전부 가정이다.
  */

@@ -2457,8 +2457,24 @@ product-lead · -v2 · -loadmap 라우트는 같은 커밋에서 지운다. publ
 
 **Files:**
 - Delete: `lib/wiki.ts` · `components/wiki-shell.tsx` · `components/roadmap-domain.tsx`
-- Delete: `data/product-lead-domains.ts` · `data/product-lead-roadmap.ts`
+- Delete: `data/product-lead-roadmap.ts`
+- ~~Delete: `data/product-lead-domains.ts`~~ — 🔴 **지우지 마라. 고아가 아니다.** (아래 경고)
 - Modify: `scripts/baseline.json` (`--update --force`로 1회)
+
+> ### 🔴 이 목록은 T11 **이전**에 쓰였다 — 그대로 실행하면 `/work` 가 빌드 불가가 된다
+>
+> `data/product-lead-domains.ts` 는 **살아 있다.** T13 리뷰(2026-08-28)의 실측:
+>
+> | 소비처 | 무엇 |
+> | --- | --- |
+> | `components/work/section-domains.tsx:1` | T11 이 만든 `/work` 의 도메인 섹션 |
+> | `e2e/work.spec.ts:5` | 그 섹션의 개수 대조 |
+> | `components/roadmap-domain.tsx:3` | `type Domain` 만 — 이 파일은 지워도 된다 |
+>
+> **삭제 목록은 작성 시점에 화석이 된다.** T11 이 `/work` 를 만들며 이 파일을 새 소비처로
+> 끌어다 쓰는 동안 목록은 그대로 남았다. HANDOFF 가 경고한 `SystemDiagramCard` 와 같은 함정인데,
+> **경고했던 심볼이 아니라 다른 심볼에서 터졌다** — 진짜 교훈은 「그 심볼을 조심하라」가 아니라
+> **「T11 이 옮긴 것 전부가 같은 함정」** 이다. 목록을 읽지 말고 **매번 다시 세라.**
 - Modify: `.github/workflows/deploy.yml` (e2e 스텝 추가 — T8에서 만든 스위트를 여기서 게이트로 승격)
 
 > `pages/product-lead/` · `-v2/` · `-loadmap/`은 **T13에서 이미 지워졌다** — 스텁과 경로를 다투기 때문이다. 이 태스크는 그것들만 부르던 자산을 치운다.
@@ -2476,16 +2492,24 @@ product-lead · -v2 · -loadmap 라우트는 같은 커밋에서 지운다. publ
 grep -rn 'lib/wiki\|wiki-shell\|roadmap-domain\|product-lead-domains\|product-lead-roadmap' pages/ components/ data/ lib/ tests/ e2e/
 ```
 
-Expected: **출력 없음.** 있으면 그 자리를 먼저 정리한다.
+Expected: `product-lead-domains` 만 남고 나머지 넷은 출력 없음.
+
+⚠️ **출력이 있다고 「호출부를 정리한다」로 가지 마라.** 그것이 이 태스크에서 가장 비싼 오독이다 —
+`section-domains.tsx` 는 지워야 할 잔재가 아니라 **`/work` 의 살아 있는 섹션**이다.
+출력이 나오면 먼저 묻는 것은 **「이 파일이 정말 고아인가」**지 「호출부를 어떻게 없애나」가 아니다.
 
 ⚠️ 이 grep은 **파이프 없이 단독으로** 실행한다.
 
-- [ ] **Step 2: 지운다**
+- [ ] **Step 2: 지운다** — 4개다(5개가 아니다)
 
 ```bash
 git rm lib/wiki.ts components/wiki-shell.tsx components/roadmap-domain.tsx
-git rm data/product-lead-domains.ts data/product-lead-roadmap.ts
+git rm data/product-lead-roadmap.ts
+# data/product-lead-domains.ts 는 지우지 않는다 — /work 가 쓴다
 ```
+
+`roadmap-domain.tsx` 를 먼저 지워야 `product-lead-domains.ts` 의 소비처가 `/work` 쪽 둘만 남는다.
+지운 뒤 그 둘이 그대로인지 다시 세라.
 
 - [ ] **Step 3: 전부 돌린다**
 

@@ -2,6 +2,11 @@
  * 플랫폼 코어 4개 도메인의 실행 설계 상세.
  *
  * 원문: pages/product-lead-loadmap/01_CMS.md · 02_결제정산.md · 03_공통어드민.md · 04_거버넌스_글로벌.md
+ * — **T13 이 그 라우트를 지우면서 원문 md 도 함께 사라졌다.** 여기 옮겨 적은 것이 유일한 사본이다.
+ *
+ * ✅ **이 파일은 살아 있다. 지우지 마라.** `components/work/section-domains.tsx` 가 `/work` 에서
+ *    렌더하고 `e2e/work.spec.ts` 가 이 데이터로 화면을 검사한다. 같은 폴더의
+ *    `product-lead-roadmap.ts`(import 0건, T14 삭제 대상)와 운명이 다르다.
  * 네 문서가 같은 뼈대(도메인 정의 → As-Is 가설 → 검증 → 원칙 → To-Be → 결정 → 빌드/바이 → 로드맵 → 지표 → 중단 기준)를
  * 공유하므로 하나의 Domain 타입으로 모델링한다.
  *

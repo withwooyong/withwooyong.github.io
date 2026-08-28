@@ -99,10 +99,24 @@ export function stripParticle(query: string): string {
  * 원문보다 위로 온 적은 한 번도 없으므로 **랭킹이 아니라 중복이 문제**이고, 그래서
  * 랭킹 조정이 아니라 제외로 푼다.
  *
- * ⚠️ 이 함수는 `scripts/generate-sitemap.mjs` 의 EXCLUDE 와 **같은 목록이 아니다.** 저쪽은
- *    `product-lead-wiki`·`product-lead-loadmap`·`notion` 도 빼는데 여기서는 그 8건을 남긴다 —
- *    sitemap 은 **검색엔진 노출**을, 이 함수는 **사이트 내부 검색**을 정하고, 그 8건은
- *    사이트 안에서는 갈 만한 곳이기 때문이다. 한쪽을 고칠 때 다른 쪽을 따라 고치지 마라.
+ * ⚠️ 이 함수는 `scripts/generate-sitemap.mjs` 의 EXCLUDE 와 **같은 목록이 아니다.**
+ *    sitemap 은 **검색엔진 노출**을, 이 함수는 **사이트 내부 검색**을 정한다.
+ *    한쪽을 고칠 때 다른 쪽을 따라 고치지 마라.
+ *
+ * ⚠️ **2026-08-28(T13) 에 이 문단의 전제가 깨졌다. 낡은 근거를 남기지 않으려고 사실대로 적는다.**
+ *    원래는 「저쪽이 빼는 `product-lead-wiki`·`product-lead-loadmap`·`notion` 8건을 여기서는
+ *    남긴다 — 사이트 안에서는 갈 만한 곳이기 때문」이라고 돼 있었다. T13 이 `product-lead*`
+ *    9 URL 을 `/work/` 로 보내는 리다이렉트 스텁으로 접으면서 그 8건 중 7건이 **갈 만한 곳이
+ *    아니게 됐다** — 결과를 눌러 봐야 즉시 `/work/` 로 튕긴다.
+ *
+ *    그럼에도 **이 함수는 그 7건을 모르고, 알 필요도 없다.** 차단이 상류로 올라갔기 때문이다 —
+ *    스텁 5개(정적 3 + wiki 2)가 `data-pagefind-ignore="all"` 을 달아 **Pagefind 색인에
+ *    아예 들어오지 않는다.** 실측(2026-08-28, `npm run build` 직후): 색인 페이지 407 → 398,
+ *    `out/pagefind/fragment` 안의 `/product-lead*` URL 0건.
+ *    여기에 `/product-lead/` 규칙을 더하면 **이미 비어 있는 것을 거르는 죽은 가지**가 된다.
+ *
+ *    남아서 이 함수를 통과하는 리다이렉트는 `/notion/` 1건뿐이고, 그것은 그대로 남긴다 —
+ *    외부 경력기술서로 가는 정상 목적지라 검색 결과에 있어도 손해가 아니다.
  */
 export function isIndexNoise(url: string): boolean {
   if (!url) return false;
