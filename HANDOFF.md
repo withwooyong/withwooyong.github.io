@@ -47,28 +47,36 @@
 | --- | --- | --- | --- |
 | ~~**9**~~ | 히어로 B — 아틀라스 점등 | `components/hero.tsx` · `hero-atlas.tsx` · `lib/hero/*` · `lib/use-scroll-progress.ts` · `lib/design/accent-area.ts` | ✅ **완료** — 커밋 `9c28aca`. 리뷰 두 축 FAIL → 8건 수정 → PASS. 검증: vitest 382 · 차단 서드파티 스타일시트 0 · 뮤턴트 8/8 사멸. 경위는 [`reports/2026-08-28-t9-hero-b.md`](docs/superpowers/reports/2026-08-28-t9-hero-b.md) (R35·R36·R37) |
 | ~~**10**~~ | 메인 5섹션 재작성 | `components/home/section-*.tsx` · `pages/index.tsx` · `data/{about,education,product-lead-teaser}.ts` | ✅ **완료** — `index.tsx` 537 → 82줄. 리뷰 두 축(품질 / 접근성·R34) HIGH 3 → 수정 1라운드 → 0. 검증: e2e **84/84**, `hero.spec.ts` **5/5 첫 초록**. 경위는 [`reports/2026-08-28-t10-main-sections.md`](docs/superpowers/reports/2026-08-28-t10-main-sections.md) (R38·R39·R40) |
-| **11** | `/work` — `product-lead*` 4갈래 통합 | `pages/work/index.tsx` | ❌ 없음. ⚠️ **`/product-lead-v2` 인바운드가 T10 에서 0건이 됐다 — 아래 2-2** |
+| ~~**11**~~ | `/work` — `product-lead*` 4갈래 통합 | `pages/work/index.tsx` · `components/work/*` · `data/work.ts` | ✅ **완료.** 리뷰 **세 축**(품질/접근성/**검사 유효성**) → CRITICAL 1·HIGH 4 → 2라운드 → 0. 검증: vitest **406** · e2e **130/130 · skip 0** · 뮤턴트 2차 **9/9 사멸**. 경위는 [`reports/2026-08-28-t11-work.md`](docs/superpowers/reports/2026-08-28-t11-work.md) (R41·R42·R43·R44) |
 | **12** | `/about` 신규 | `pages/about/index.tsx` | ❌ 없음 |
 | **13** | `product-lead*` 스텁 — 9 URL → 파일 4개 | `public/product-lead*/index.html` · `e2e/redirects.spec.ts` | ❌ 구 라우트 5개(1,425줄) 그대로 |
 | **14** | 고아 자산 삭제 + 기준선 1회 갱신 | `lib/wiki.ts` 등 5개 제거 | ❌ 5개 전부 존재. **`--update` 는 여기서만** |
 | **15** | Lighthouse CI — 경고로만 | 워크플로 단계 | ❌ 설정·워크플로 둘 다 없음 |
 
 **순서를 바꾸지 마라.** T13 이 지우는 라우트를 T11 이 흡수하고, T14 는 T13 이 라우트를 지워야
-호출자 0건이 증명된다 — ~~9~~ → ~~10~~ → **11** → 12 → 13 → 14 → 15.
+호출자 0건이 증명된다 — ~~9~~ → ~~10~~ → ~~11~~ → **12** → 13 → 14 → 15.
 
-### 2-2. ⚠️ **T11 전에 `main` 에 머지하지 마라** — T10 이 만든 조건
+> ### 🔴 **T14 는 이것을 모르면 멀쩡한 파일을 지운다**
+>
+> T11 이 `pages/work/index.tsx` 를 **53줄 조립 코드**로 만들면서 마크업을 `components/work/section-*.tsx` 6개로 옮겼다.
+> **`SystemDiagramCard` 의 소비처가 `pages/work/index.tsx` → `components/work/section-systems.tsx` 로 바뀌었다.**
+> 옛 경로로 `grep` 하면 **0건**이 나오고, 그것은 「고아라 지워도 된다」가 아니라 **「엉뚱한 데를 봤다」** 다.
+> 이 리포의 「거짓 0」이 정확히 이 모양이다 — 삭제 판정 전에 `grep -rn 'SystemDiagramCard' components/ pages/` 로
+> **리포 전체**를 훑어라. 근거: [`reports/2026-08-28-t11-work.md` §R44](docs/superpowers/reports/2026-08-28-t11-work.md).
 
-T10 이 구 `pages/index.tsx` 를 걷어내면서 **홈에서 `/product-lead-v2` 로 가는 유일한 진입점이 끊겼다.**
-인바운드 링크는 리포 전역 0건이고(product-lead 클러스터 내부는 제외), 사이트맵에만 남아 있다.
+### 2-2. ~~⚠️ **T11 전에 `main` 에 머지하지 마라**~~ (**해소** — 2026-08-28 T11)
 
-**이것은 사고가 아니라 계획된 공백이다** — T11 `/work` 가 그 진입점을 받고 T13 이 9 URL 을 파일 4개로 접는다.
-임시 링크를 넣지 않은 것도 그래서다. 두 태스크가 곧 지울 링크를 지금 만들면 churn 만 남는다.
+T10 이 구 `pages/index.tsx` 를 걷어내면서 홈에서 `/product-lead-v2` 로 가는 유일한 진입점이 끊겨 있었다.
+**T11 이 그 조건을 닫았다** — `/work` 가 신설되고 헤더 `NAV` 에 `Work` 가 올라가, 사이트 어느 페이지에서도
+도달 가능하다(`e2e/work.spec.ts` 가 `aria-current="page"` 까지 검사한다).
 
-**그러나 `main` 은 프리뷰 없는 프로덕션이다.** T11 이전에 `feat/redesign-stage2` 를 머지하면
-빌드도 링크 검사기도 E2E 도 전부 초록인 채 **실사용자가 도달할 수 없는 페이지**가 배포된다.
-빌드가 이 조건을 막지 않으므로 사람이 지켜야 한다.
+다만 **해소된 것은 「도달 불가」 하나뿐이다.** 구 라우트 5개(`product-lead`·`-v2`·`-loadmap`·`-wiki`)는
+그대로 살아 있고 T13 이 9 URL 을 파일 4개로 접는다. `main` 은 여전히 프리뷰 없는 프로덕션이므로
+머지 시점은 T13 이후가 자연스럽다 — **금지 조건은 아니고 판단 사항이다.**
 
-> **머지 순서가 이 공백의 수명을 정한다.** 브랜치에 쌓아 두는 동안은 아무 일도 일어나지 않는다.
+> 아래는 기록으로 남긴다. 「계획된 공백」과 「사고」가 같은 초록을 낸다는 것이 이 항목의 요점이었다 —
+> 빌드도 링크 검사기도 E2E 도 전부 통과하는데 실사용자는 도달할 수 없었다.
+> 빌드가 이 조건을 막지 못하므로 사람이 지켜야 했고, 실제로 지켜졌다.
 
 ### 2-1. ~~⚠️ T9 는 코드부터 쓰면 안 된다 — 선결 4건~~ (해소 — 아래는 기록으로 남긴다)
 
@@ -93,14 +101,24 @@ T10 이 구 `pages/index.tsx` 를 걷어내면서 **홈에서 `/product-lead-v2`
 - **`opacity-0` 은 텍스트 선택·`Ctrl+F` 에서 빠지지 않는다.** h1 을 드래그하면 84자 세 문장이 딸려 나온다.
   숨기려면 `visibility: hidden` 이 함께 필요하다.
 
-### 2-2. 착수 전 읽을 것 — **`T10` 기준**
+### 2-3. 착수 전 읽을 것 — **`T12` (`/about`) 기준**
 
 | 순서 | 무엇 | 왜 |
 | --- | --- | --- |
-| 1 | 계획서 `§Task 10` (L1796~1993) | 브리프 정본 |
-| 2 | [`docs/superpowers/reports/2026-08-28-t9-hero-b.md`](docs/superpowers/reports/2026-08-28-t9-hero-b.md) — R35·R36·R37 | **히어로가 T10 의 첫 화면이다.** 무엇이 왜 그렇게 돼 있는지가 거기 있다 |
-| 3 | `e2e/hero.spec.ts` 머리 주석 | **이 파일은 T10 이 끝나야 처음 초록이 된다.** 부착 직후 가장 먼저 돌릴 것 |
-| 4 | `.superpowers/sdd/2026-08-25-redesign-phase-1-2/task-7*-report.md` | 셸이 히어로의 상단 제약이다 |
+| 1 | 계획서 `§Task 12` (L2167~2278) | 브리프 정본. **단, 그 안의 「이미 있다」류 사실 주장은 검증하고 써라** — T11 에서 계획서가 없는 검사를 있다고 했다 (R38·R44) |
+| 2 | [`reports/2026-08-28-t11-work.md`](docs/superpowers/reports/2026-08-28-t11-work.md) — R41~R44 | **`/about` 은 `/work` 와 같은 형태로 만든다.** 리뷰 3축·검사 설계·접근성 계약이 전부 거기서 정해졌다 |
+| 3 | [`plans/2026-08-25-work-merge-notes.md`](docs/superpowers/plans/2026-08-25-work-merge-notes.md) | 문구 규칙의 현재 판정(§3) — 「`-v2` 확정본 우선」이 사용자 결정이다 |
+| 4 | `e2e/work.spec.ts` · `components/work/section-*.tsx` | **복제할 원본.** 섹션마다 개수 대조 + 접근명 계약이 한 벌이다 |
+| 5 | `e2e/shell.spec.ts` 의 `NAV_ABSENT` | `"About"` 이 거기 남아 있다. T12 가 `NAV_PRESENT` 로 올리고 **Tab 순환을 8→9 로** 갱신해야 한다 |
+
+**T12 에서 되풀이하지 말 것** (T11 이 실제로 겪었다):
+
+| 함정 | 대응 |
+| --- | --- |
+| 섹션 하나만 개수 대조를 빼먹는다 | **0개 렌더 뮤턴트가 생존한다.** 다섯 중 넷만 검사하면 초록이 커버리지를 증명하지 않는다 |
+| `getByRole(role, {name})` 에 `exact` 를 안 붙인다 | 접근명이 길어져도 초록이다. 계약으로 삼는 검사에는 전부 붙인다 |
+| 파일을 쓰는 에이전트(뮤테이션)를 리뷰어와 **병렬**로 띄운다 | 리뷰어가 뮤턴트를 진짜 결함으로 보고한다. **단독 실행** (R41) |
+| 새 창 링크에 예고를 안 단다 | 지금 예고가 있는 곳은 `/work` **뿐**이다 — `/about` 이 두 번째가 되어야 한다 |
 
 ---
 
@@ -280,16 +298,16 @@ flowchart LR
 
 | 항목 | 값 |
 | --- | --- |
-| 브랜치 | **`feat/redesign-stage2`** — T9·T10 이 여기 쌓여 있다. `main` 은 미변경 |
+| 브랜치 | **`feat/redesign-stage2`** — T9·T10·T11 이 여기 쌓여 있다. `main` 은 미변경 |
 | 미커밋 변경 · stash | **없음 · 없음** |
 | `feat/site-renewal` | `cef8743` — 병합 완료. 새 작업은 **새 브랜치**로 |
 | `npm run lint` · `npx tsc --noEmit` | **0 · 0** |
-| `npm test` | **395 passed** (18파일) |
+| `npm test` | **406 passed** (19파일) ← T11 이 `tests/work/` 추가 |
 | `check-forbidden` (소스) | 자기검사 15/15 → **HARD 0** (158파일) |
 | `check-counts` | 자기검사 14/14 → **156편 / 6개 카테고리** |
 | `check-pagefind` · `probe-search` | ko **405/405** · 기본형 **8/8** (T9 시점 측정 — T10 은 블로그를 건드리지 않았다) |
 | `check-baseline` | **돌리지 마라 — 오라클이 아니다.** T3 에서 토큰이 바뀌며 CSS 파일명 해시가 HTML 에 박혀 기준선은 T1 이후로 이미 죽었다(계획서 157줄). 갱신(`--update`)은 **T14 에서만** |
-| `npm run e2e` | **84 passed · 0 failed** ← T10 으로 `hero.spec.ts` 5건이 처음 초록 |
+| `npm run e2e` | **130 passed · 0 failed · 0 skipped** ← T11 이 `work.spec.ts` 를 더했고, `/work/` 에 셸이 붙으며 **게이트로 잠들어 있던 검사들이 함께 깨어났다**. 84 → 130 의 증가분이 전부 신규 spec 은 아니다 |
 | CI (2회) | 모두 **success** (T9 시점) |
 
 **`out/` 은 직전 세션 빌드다 — 신선도를 믿지 말고 `npm run build` 를 먼저 돌려라.** 단 `scripts/`·`components/` 를 건드리면 mtime 이 무효가 되니

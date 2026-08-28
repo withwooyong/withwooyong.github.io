@@ -47,9 +47,9 @@ const NAV_PRESENT = [
   //    T16(=Task 12) 에서 `NAV_ABSENT` → 여기로 옮겼다.
   "Atlas",
   "Blog",
+  "Work", // 2026-08-28 T11 에서 `NAV_ABSENT` → 여기로 옮겼다 (`/work/` 신설)
 ];
 const NAV_ABSENT = [
-  "Work", // 선행 계획서 T11 로 이월
   "About", // 선행 계획서 T12 로 이월
 ];
 
@@ -239,7 +239,7 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
    * 순서를 그대로 못박는다. 이 테스트가 지키는 것이 바로 **DOM 순서**이기 때문이다.
    * NAV 가 바뀌면 여기도 같이 바뀌어야 하는 게 맞다.
    *
-   * 390px 에서 순환에 드는 것: 헤더 바의 [로고 · 검색 · 토글 · 햄버거] + 드로어의 [Atlas · Blog · EN].
+   * 390px 에서 순환에 드는 것: 헤더 바의 [로고 · 검색 · 토글 · 햄버거] + 드로어의 [Work · Atlas · Blog · EN].
    * 데스크톱 내비(`hidden md:flex`)와 헤더의 EN(`hidden sm:inline`)은 offsetParent 필터가 걸러 낸다.
    *
    * ⚠️ 아래 두 배열은 **실측으로 갱신한다.** 2026-08-27 에 두 곳이 한꺼번에 낡아 있었다 —
@@ -255,12 +255,13 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
     await expect(page.locator("#mobile-nav a").first()).toBeFocused();
 
     const seen = [await focusedLabel(page)];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       await page.keyboard.press("Tab");
       seen.push(await focusedLabel(page));
     }
 
     expect(seen).toEqual([
+      "Work", // 2026-08-28 T11 에서 NAV 맨 앞에 들어왔다
       "Atlas",
       "Blog",
       "EN",
@@ -268,12 +269,12 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
       "검색 열기",
       "라이트 모드로 전환",
       "메뉴 닫기",
-      "Atlas", // 여덟 번째에 처음으로 돌아온다 = 한 바퀴가 정확히 7
+      "Work", // 아홉 번째에 처음으로 돌아온다 = 한 바퀴가 정확히 8
     ]);
 
     /*
-     * 역방향의 경계. 지금 포커스는 Atlas 이고, head 는 로고다.
-     * Atlas → 햄버거 → 토글 → 검색 → 로고(head) 까지는 브라우저 기본 동작이고,
+     * 역방향의 경계. 지금 포커스는 드로어 첫 항목(Work)이고, head 는 로고다.
+     * Work → 햄버거 → 토글 → 검색 → 로고(head) 까지는 브라우저 기본 동작이고,
      * **다섯 번째**에서 비로소 핸들러가 개입해 tail(드로어의 EN)로 감아야 한다.
      * 앞의 넷만 눌러 보면 경계를 한 번도 안 밟는다.
      */
