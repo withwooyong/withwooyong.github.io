@@ -2629,6 +2629,19 @@ continue-on-error 는 쓰지 않는다 — 조용히 통과하는 게이트는 �
 
 ### Task 15: Lighthouse CI — 경고로만
 
+> ### ⚠️ **실행본은 이 절과 4곳이 다르다** (2026-08-28 T15 봉인)
+>
+> 계획서는 T13→T14 에서 이미 한 번 화석으로 판명됐다(§R49). **읽지 말고 다시 재라.**
+>
+> | # | 아래에 적힌 것 | 실제로 만든 것 | 왜 |
+> | --- | --- | --- | --- |
+> | 1 | ~~`upload.target: "temporary-public-storage"`~~ | `filesystem` + Actions 아티팩트 | **공개 저장소에 리포트를 올린다.** 이 브랜치의 `/work`·`/about` 은 아직 `main` 에 없다 — 배포 전 화면을 외부에 먼저 공개하게 된다 |
+> | 2 | ~~URL 4개~~ | **5개** — 블로그 글 1편 추가 | 블로그 글 페이지가 220개인데 아래 목록엔 **한 편도 없다.** 가장 무거운 라우트가 측정 밖이었다 |
+> | 3 | ~~`actions/checkout@v4` · `setup-node@v4`~~ | **`@v6`** | `deploy.yml` 과 맞췄다. 이 워크플로는 PR 에서만 돌아 로컬 실증이 불가능하므로 **실제 CI 에서 돌아 본 적 있는 버전**이 유일한 근거다 |
+> | 4 | (없음) | `tests/ci/lighthouse-workflow.test.ts` — 단언 16개 | 이 잡은 `continue-on-error` + 전부 `warn` 이라 **무엇이 잘못돼도 초록**이다. 수치는 무르게 두되 **설정**은 배포 게이트 안에서 딱딱하게 막는다 |
+>
+> 경위: [`reports/2026-08-28-t15-lighthouse.md`](../reports/2026-08-28-t15-lighthouse.md) (R62·R63·R64)
+
 **Files:**
 - Create: `.github/workflows/lighthouse.yml`
 - Create: `lighthouserc.json`
@@ -2711,10 +2724,17 @@ npx @lhci/cli autorun
 
 | 라우트 | LCP | CLS | Performance |
 | --- | --- | --- | --- |
-| `/` | | | |
-| `/work/` | | | |
-| `/about/` | | | |
-| `/blog/` | | | |
+| `/` | 3864ms ⚠️ | 0.001 | 82 |
+| `/work/` | 2878ms ⚠️ | 0.000 | 94 |
+| `/about/` | 2108ms | 0.013 | 99 |
+| `/blog/` | 3398ms ⚠️ | 0.025 | 87 |
+| `/blog/agentic-coding/deploy-checklist-debugging/` | 3019ms ⚠️ | 0.227 ⚠️ | 68 ⚠️ |
+
+> **실측 (2026-08-28, T15).** 로컬 Windows · 모바일 에뮬레이션 기본값 · 1회 측정이다.
+> CI(ubuntu · `numberOfRuns: 3`) 값과 다르다 — 비교 기준이 아니라 자릿수 감각으로만 쓴다.
+>
+> **이 표가 `warn` 을 정당화한다.** `error` 였다면 5개 중 **4개가 LCP 에서 즉시 빨갛다.**
+> `/` 의 CLS 는 0.001 로 `min-h` 를 의심할 필요가 없었다 — 예산을 넘긴 것은 **블로그 글(0.227)** 이다.
 
 ⚠️ `/`의 CLS가 0.1을 넘으면 **히어로 문구 영역의 `min-h`를 의심한다**(T9 Step 3). 문구 길이가 달라 높이가 튀는 것이 가장 흔한 원인이다.
 
