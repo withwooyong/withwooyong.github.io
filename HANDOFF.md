@@ -45,7 +45,7 @@
 
 | T | 작업 | 산출물 | 실측 (2026-08-28) |
 | --- | --- | --- | --- |
-| ~~**9**~~ | 히어로 B — 아틀라스 점등 | `components/hero.tsx` · `hero-atlas.tsx` · `lib/hero/*` · `lib/use-scroll-progress.ts` · `lib/design/accent-area.ts` | ✅ **완료** — 커밋 `9c28aca`. 리뷰 두 축 FAIL → 8건 수정 → PASS. 검증: vitest 382 · 차단 서드파티 스타일시트 0 · 뮤턴트 8/8 사멸. 경위는 `progress.md` §Task 9 (R35·R36·R37) |
+| ~~**9**~~ | 히어로 B — 아틀라스 점등 | `components/hero.tsx` · `hero-atlas.tsx` · `lib/hero/*` · `lib/use-scroll-progress.ts` · `lib/design/accent-area.ts` | ✅ **완료** — 커밋 `9c28aca`. 리뷰 두 축 FAIL → 8건 수정 → PASS. 검증: vitest 382 · 차단 서드파티 스타일시트 0 · 뮤턴트 8/8 사멸. 경위는 [`reports/2026-08-28-t9-hero-b.md`](docs/superpowers/reports/2026-08-28-t9-hero-b.md) (R35·R36·R37) |
 | **10** | 메인 5섹션 재작성 | `components/home/section-*.tsx` · `pages/index.tsx` | ❌ `components/home/` 없음. `index.tsx` 는 **구 디자인 537줄** |
 | **11** | `/work` — `product-lead*` 4갈래 통합 | `pages/work/index.tsx` | ❌ 없음 |
 | **12** | `/about` 신규 | `pages/about/index.tsx` | ❌ 없음 |
@@ -84,7 +84,7 @@
 | 순서 | 무엇 | 왜 |
 | --- | --- | --- |
 | 1 | 계획서 `§Task 10` (L1796~1993) | 브리프 정본 |
-| 2 | `progress.md` §Task 9 — R35·R36·R37 | **히어로가 T10 의 첫 화면이다.** 무엇이 왜 그렇게 돼 있는지가 거기 있다 |
+| 2 | [`docs/superpowers/reports/2026-08-28-t9-hero-b.md`](docs/superpowers/reports/2026-08-28-t9-hero-b.md) — R35·R36·R37 | **히어로가 T10 의 첫 화면이다.** 무엇이 왜 그렇게 돼 있는지가 거기 있다 |
 | 3 | `e2e/hero.spec.ts` 머리 주석 | **이 파일은 T10 이 끝나야 처음 초록이 된다.** 부착 직후 가장 먼저 돌릴 것 |
 | 4 | `.superpowers/sdd/2026-08-25-redesign-phase-1-2/task-7*-report.md` | 셸이 히어로의 상단 제약이다 |
 
