@@ -48,8 +48,7 @@ function scanHeadings(md: string): Heading[] {
 /**
  * 마크다운에서 H2·H3 목차를 만든다.
  *
- * 블로그(lib/blog)가 쓴다. 위키(lib/wiki.ts)와 공유하던 것이었으나 T14 가 위키를 지웠다.
- * `fs`에 의존하지 않는다.
+ * 위키(lib/wiki.ts)와 블로그(lib/blog)가 공유한다. `fs`에 의존하지 않는다.
  */
 export function buildToc(md: string): TocEntry[] {
   const slugger = new GithubSlugger();

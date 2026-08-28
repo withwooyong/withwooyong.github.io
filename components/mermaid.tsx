@@ -5,11 +5,7 @@ import { useCallback, useEffect, useId, useMemo, useState } from "react";
 
 /** <html class="dark"> 변화를 구독한다. 이 저장소의 테마는 컨텍스트 없이 클래스만 토글한다. */
 function useIsDark(): boolean {
-  // 서버에는 document 가 없다. 클라이언트 첫 렌더는 DOM 을 읽는다 —
-  // useEffect 를 기다리면 라이트로 한 번 그린 뒤 다크로 다시 그린다.
-  const [dark, setDark] = useState(
-    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark"),
-  );
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;

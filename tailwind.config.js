@@ -15,87 +15,52 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        // 무채색 9단계 — 새 화면은 이걸 쓴다
-        n0: "var(--n0)",
-        n1: "var(--n1)",
-        n2: "var(--n2)",
-        n3: "var(--n3)",
-        n4: "var(--n4)",
-        n5: "var(--n5)",
-        n6: "var(--n6)",
-        n7: "var(--n7)",
-        n8: "var(--n8)",
-        n9: "var(--n9)",
-
-        // Signal Amber — 액센트는 이것 하나뿐이다
-        signal: {
-          DEFAULT: "var(--signal)",
-          ink: "var(--signal-ink)",
-          soft: "var(--signal-soft)",
-        },
-
-        // shadcn 토큰 — 위 램프의 별칭. hsl() 래핑을 벗겼다
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
-          hover: "var(--primary-hover)",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          50: "#f0f9ff",
+          100: "#e0f2fe",
+          200: "#bae6fd",
+          300: "#7dd3fc",
+          400: "#38bdf8",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+          800: "#075985",
+          900: "#0c4a6e",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
-          hover: "var(--secondary-hover)",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          hover: "var(--destructive-hover)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
-      // fontSize 키에 shadcn 색 이름(card, background, foreground, primary, secondary,
-      // muted, accent, popover, destructive, border, input, ring)을 쓰지 마라.
-      // Tailwind 는 fontSize 와 textColor 의 text-* 를 중복 제거하지 않고 한 규칙에 합치며,
-      // 어느 색이 이길지는 textColor 패스 안의 알파벳 순서로 정해진다. 즉 짝지은 색이
-      // 이길지 질지가 그 색의 이름 철자에 달린다 — 가르칠 수 없는 규칙이다.
-      // card 는 card-title 로 피했다. 아래 tests/design/tokens.test.ts 가 재발을 막는다.
-      fontSize: {
-        hero: ["var(--fs-hero)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
-        section: ["var(--fs-section)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
-        "card-title": ["var(--fs-card)", { lineHeight: "1.35" }],
-        body: ["var(--fs-body)", { lineHeight: "1.75" }],
-        label: ["var(--fs-label)", { lineHeight: "1.2", letterSpacing: "0.08em" }],
-      },
       fontFamily: {
-        sans: [
-          // 설계서 §5.4 — 한글은 Pretendard, 영문·숫자는 Inter.
-          // Inter 에는 한글 글리프가 없어서 한글은 자동으로 Pretendard 로 떨어진다.
-          // 반대로 Pretendard 를 앞에 두면 라틴 글리프까지 갖고 있어 Inter 가 죽는다.
-          "var(--font-inter, 'Inter')",
-          "Pretendard Variable",
-          "Pretendard",
-          "system-ui",
-          "sans-serif",
-        ],
+        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
       },
     },
   },

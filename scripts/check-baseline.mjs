@@ -26,19 +26,10 @@ import crypto from "node:crypto";
 const OUT = "out";
 const BASELINE = path.join("scripts", "baseline.json");
 
-/**
- * 블로그 산출물은 이 검사의 대상이 아니다 — 글을 더하면 당연히 바뀐다.
- *
- * 아틀라스도 같은 이유로 뺀다. 노드가 글에서 자동 생성되므로 글이 늘면 함께 늘고,
- * 제외하지 않으면 감시 대상이 **13개에서 175개로** 불어나 기준선이 사실상 무의미해진다
- * (「전부 바뀌었다」가 매번 정상인 검사는 아무것도 못 잡는다).
- *
- * ⚠️ 여기서 빼는 것은 「아틀라스를 안 본다」는 뜻이지 「아틀라스가 안전하다」는 뜻이 아니다.
- *    아틀라스 쪽 회귀는 `tests/atlas/*` 와 E2E 가 맡는다.
- */
+/** 블로그 산출물은 이 검사의 대상이 아니다 — 글을 더하면 당연히 바뀐다. */
 function isTarget(rel) {
   const norm = rel.split(path.sep).join("/");
-  return norm.endsWith(".html") && !norm.startsWith("blog/") && !norm.startsWith("atlas/");
+  return norm.endsWith(".html") && !norm.startsWith("blog/");
 }
 
 function walk(dir, base, acc) {
@@ -161,20 +152,6 @@ function hashOf(file) {
   // 찾은 뒤 그 문자열 전체를 지운다.
   const m = text.match(/"buildId":"([^"]+)"/);
   if (m) text = text.split(m[1]).join("<BUILD_ID>");
-
-  // CSS·JS 번들 파일명에 박힌 내용 해시. **공유 번들이라 다른 페이지가 클래스를 하나 더 써도 바뀐다.**
-  //
-  // 실측 2026-08-27 (T11): `/atlas` 를 새로 만들자 Tailwind 번들이 53521fca… → 5af29a8c… 로 바뀌며
-  // 감시 대상 14장이 전부 빨개졌다. 그런데 T11 소스를 도로 빼고 다시 빌드해 두 산출물을 비교하니
-  // 파일명 해시와 buildId 를 정규화한 뒤에는 **바이트 단위로 동일**했다 — 마크업은 아무것도 안 바뀌었다.
-  //
-  // 이 검사가 묻는 것은 「이 페이지 자체가 바뀌었나」다. 공유 번들의 파일명은 그 질문의 답이 아니다.
-  // 정규화하지 않으면 새 화면을 하나 만들 때마다 전량 빨강이 되고, 그 복구로 `--update` 가 습관이 되는
-  // 순간 정작 지켜야 할 product-lead* 7개가 같은 명령으로 함께 덮인다 — 아래 featuredPosts 와 같은 사고다.
-  //
-  // ⚠️ 이 정규화는 **번들의 내용 변경을 감지하지 않는다.** CSS 가 실제로 달라져 화면이 바뀌는 회귀는
-  //    이 검사가 아니라 시각 회귀 검사의 몫이다. 여기서 그것까지 잡으려 하면 둘 다 못 한다.
-  text = text.replace(/[0-9a-f]{16}\.(css|js)/g, "<BUNDLE>.$1");
 
   // featuredPosts — out/index.html 은 경로상 비블로그지만 데이터 흐름으로 블로그에 결합돼 있다.
   // pages/index.tsx 의 getStaticProps 가 featured 글의 제목·설명·슬러그를 HTML 에 박고,

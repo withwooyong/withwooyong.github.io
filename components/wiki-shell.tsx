@@ -1,72 +1,46 @@
 import { ThemeToggle } from "@/components/theme-toggle";
-import type { BlogCategory } from "@/content/blog/categories";
-import type { TocEntry } from "@/lib/blog/types";
+import type { TocEntry, WikiDoc } from "@/lib/wiki";
 import { cn } from "@/lib/utils";
-import { Menu, PenLine, X } from "lucide-react";
+import { BookOpen, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
-type BlogShellProps = {
-  /**
-   * 사이드바에 띄울 카테고리. 글이 있는 것만 담아 넘긴다(getPublishedCategories).
-   *
-   * 이 컴포넌트는 클라이언트에서도 렌더되므로 파일시스템을 읽을 수 없다 — 글 수를
-   * 스스로 알 방법이 없어 호출하는 쪽의 getStaticProps가 넘겨야 한다.
-   * **선택 인자로 두지 않는다.** 폴백을 두면 한 페이지에서 빠뜨렸을 때
-   * 그 페이지만 등록된 12개를 전부 보여주는 불일치가 조용히 생긴다.
-   * 필수로 두면 빠뜨린 곳이 타입 오류로 드러난다.
-   */
-  categories: BlogCategory[];
-  activeCategory?: string;
+type WikiShellProps = {
+  docs: WikiDoc[];
+  activeSlug?: string;
   toc?: TocEntry[];
   children: ReactNode;
 };
 
-function CategoryList({
-  categories,
-  activeCategory,
-  onNavigate,
-}: {
-  categories: BlogCategory[];
-  activeCategory?: string;
-  onNavigate?: () => void;
-}) {
+function DocList({ docs, activeSlug, onNavigate }: { docs: WikiDoc[]; activeSlug?: string; onNavigate?: () => void }) {
   return (
     <ul className="space-y-1">
-      {categories.map((c) => {
-        const active = c.slug === activeCategory;
+      {docs.map((d, i) => {
+        const active = d.slug === activeSlug;
         return (
-          <li key={c.slug}>
+          <li key={d.slug}>
             <Link
-              href={`/blog/${c.slug}/`}
+              href={`/product-lead-wiki/${d.slug}/`}
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "block rounded-md px-3 py-2 text-sm transition-colors break-keep",
+                "flex gap-2.5 rounded-md px-3 py-2 text-sm transition-colors",
                 active
                   ? "bg-blue-50 font-semibold text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
                   : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               )}
             >
-              {c.name}
+              <span className="shrink-0 tabular-nums text-slate-400 dark:text-slate-600">{String(i).padStart(2, "0")}</span>
+              <span className="break-keep leading-snug">{d.title}</span>
             </Link>
           </li>
         );
       })}
-      <li>
-        <Link
-          href="/blog/tags/"
-          onClick={onNavigate}
-          className="block rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-        >
-          태그 전체
-        </Link>
-      </li>
     </ul>
   );
 }
 
-export function BlogShell({ categories, activeCategory, toc, children }: BlogShellProps) {
+export function WikiShell({ docs, activeSlug, toc, children }: WikiShellProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -79,26 +53,21 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
               onClick={() => setOpen((v) => !v)}
               className="shrink-0 rounded-md border border-slate-200 p-2 lg:hidden dark:border-slate-700"
               aria-expanded={open}
-              aria-label={open ? "카테고리 닫기" : "카테고리 열기"}
+              aria-label={open ? "문서 목록 닫기" : "문서 목록 열기"}
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
-            <Link href="/blog/" className="flex min-w-0 items-center gap-2 font-semibold">
-              <PenLine className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />
-              <span className="truncate text-sm">기술 노트</span>
+            <Link href="/product-lead-wiki/" className="flex min-w-0 items-center gap-2 font-semibold">
+              <BookOpen className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />
+              <span className="truncate text-sm">플랫폼 코어 실행 설계 위키</span>
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            {/*
-              폭에 상관없이 항상 보여야 한다. 검색으로 포스트에 직접 들어온 방문자에게는
-              이 링크가 포트폴리오로 가는 유일한 경로다 (요구사항 FR-4.3).
-              위키(wiki-shell)는 noindex라 sm:block으로 숨겨도 됐지만 블로그는 색인된다.
-            */}
             <Link
-              href="/"
-              className="shrink-0 text-sm text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400"
+              href="/product-lead-loadmap/"
+              className="hidden text-sm text-slate-600 hover:text-blue-600 sm:block dark:text-slate-300 dark:hover:text-blue-400"
             >
-              포트폴리오
+              요약 페이지
             </Link>
             <ThemeToggle />
           </div>
@@ -107,18 +76,16 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
 
       {open ? (
         <div className="border-b border-slate-200 bg-white px-3 py-3 lg:hidden sm:px-4 dark:border-slate-800 dark:bg-slate-950">
-          <CategoryList categories={categories} activeCategory={activeCategory} onNavigate={() => setOpen(false)} />
+          <DocList docs={docs} activeSlug={activeSlug} onNavigate={() => setOpen(false)} />
         </div>
       ) : null}
 
       <div className="mx-auto flex max-w-[90rem] gap-8 px-3 sm:px-4">
-        {/* 좌측 — 카테고리 */}
-        <aside className="hidden w-56 shrink-0 lg:block">
-          <nav className="sticky top-20 py-8" aria-label="카테고리">
-            <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              카테고리
-            </p>
-            <CategoryList categories={categories} activeCategory={activeCategory} />
+        {/* 좌측 — 문서 목록 */}
+        <aside className="hidden w-60 shrink-0 lg:block">
+          <nav className="sticky top-20 py-8" aria-label="문서 목록">
+            <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">문서</p>
+            <DocList docs={docs} activeSlug={activeSlug} />
           </nav>
         </aside>
 
@@ -130,7 +97,7 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
         {/* 우측 — 목차 */}
         {toc && toc.length > 0 ? (
           <aside className="hidden w-56 shrink-0 xl:block">
-            <nav className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto py-8" aria-label="이 글의 목차">
+            <nav className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto py-8" aria-label="이 문서의 목차">
               <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">목차</p>
               <ul className="space-y-1.5 border-l border-slate-200 dark:border-slate-800">
                 {toc.map((t) => (

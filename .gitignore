@@ -8,11 +8,6 @@
 # testing
 /coverage
 
-# playwright
-/test-results/
-/playwright-report/
-/blob-report/
-
 # next.js
 /.next/
 /out/
@@ -38,6 +33,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# lighthouse ci
-/.lighthouseci/
