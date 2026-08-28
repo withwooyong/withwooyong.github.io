@@ -18,7 +18,8 @@ type NavItem = { href: string; label: string };
  *    /atlas  → 아틀라스·검색 계획서(2026-08-26) **T13** 에서 만들고 **T16**(=Task 12) 에서
  *              여기에 넣었다. 라우트가 실물로 있으므로 죽은 링크가 아니다.
  *    ⌘K 검색 → 같은 계획서 T5 에서 우측에 추가한다. NAV 가 아니라 버튼이다.
- *    /work · /about → 선행 계획서(2026-08-25) T11·T12 로 이월됐다. 그 태스크에서 되살린다.
+ *    /work   → 선행 계획서(2026-08-25) **T11** 에서 `pages/work/index.tsx` 와 함께 되살렸다.
+ *    /about  → 같은 계획서 **T12** 에서 `pages/about/index.tsx` 와 함께 되살렸다.
  *
  * ⚠️ 위 T13·T16 은 2026-08-27 까지 T11·T12 로 적혀 있었다. 그 계획서의 T11 은
  *    「Canvas + 자동선택」, T12 는 「렌즈·사이드바·패널」이라 **셸과 무관하다.**
@@ -34,8 +35,10 @@ type NavItem = { href: string; label: string };
  *    셸이 처음 붙는 T13 시점에 여기 남아 있는 것이 그대로 렌더된다.
  */
 const NAV: NavItem[] = [
+  { href: "/work/", label: "Work" },
   { href: "/atlas/", label: "Atlas" },
   { href: "/blog/", label: "Blog" },
+  { href: "/about/", label: "About" },
 ];
 
 /**

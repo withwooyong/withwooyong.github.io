@@ -76,7 +76,7 @@ export const experiences: ExperienceItem[] = [
       "N-Screen 백엔드 연동 서비스를 위한 Spring Boot / Elasticsearch 기반 API 개발",
       "검색 시스템 개발 / 추천 서비스 API 개발 및 ELK Stack 구축",
       "대용량 데이터 처리 및 분석을 위한 Kafka Consumer, ELK 구성 데이터 연동 적재모듈 개발",
-      "차세대 CMS(NCMS) 재구축 발주사 PM — MSA 설계·검토 및 오픈 조율",
+      "차세대 CMS(NCMS) 재구축 발주 PM — MSA 설계·검토 및 오픈 조율",
     ],
   },
   {

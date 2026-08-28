@@ -1,537 +1,82 @@
-import { HeroStripeBackdrop } from "@/components/hero-stripe-backdrop";
-import { PortfolioNav } from "@/components/portfolio-nav";
-import { CoinFlipDeck } from "@/components/coin-flip-deck";
-import { SectionReveal } from "@/components/section-reveal";
+import { Hero } from "@/components/hero";
+import { SectionConnect } from "@/components/home/section-connect";
+import { SectionHowILead } from "@/components/home/section-how-i-lead";
+import { SectionNow } from "@/components/home/section-now";
+import { SectionSelectedWork } from "@/components/home/section-selected-work";
 import { SiteHead } from "@/components/site-head";
-import { SystemDiagramCard } from "@/components/system-diagram-card";
-import { ThesisSummaryDialog } from "@/components/thesis-summary-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { experiences } from "@/data/experience";
-import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
-import { projects } from "@/data/projects";
-import { getPostSummaries } from "@/lib/blog/loader";
-import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
-import type { PostSummary } from "@/lib/blog/types";
-import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Users, Wrench } from "lucide-react";
-import type { GetStaticProps } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
+import { SiteShell } from "@/components/site-shell";
 
-const skillIconMap = {
-  code: Code,
-  database: Database,
-  bot: Bot,
-  wrench: Wrench,
-} as const;
-
-/** 목록에 쓰는 필드만 추린다. props는 __NEXT_DATA__로 HTML에 실리므로 안 쓰는 필드는 용량만 늘린다. */
-type FeaturedPost = Pick<PostSummary, "title" | "description" | "slug" | "categorySlug">;
-
-type HomeProps = { featuredPosts: FeaturedPost[] };
-
-export const getStaticProps: GetStaticProps<HomeProps> = () => {
-  // loader는 node:fs를 쓴다. 반드시 getStaticProps 안에서만 부른다 —
-  // 컴포넌트 본문에서 참조하면 클라이언트 번들에 fs가 딸려 들어가 빌드가 깨진다.
-  const featuredPosts = getPostSummaries()
-    .filter((p) => p.featured)
-    .map(({ title, description, slug, categorySlug }) => ({ title, description, slug, categorySlug }));
-
-  return { props: { featuredPosts } };
-};
-
-export default function Home({ featuredPosts }: HomeProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
-
-  const personJsonLd = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "Person",
-      name: "허우용",
-      alternateName: ["Ted", "Wooyong Heo"],
-      url: absoluteUrl("/"),
-      image: absoluteUrl("/images/Ted_profile.png"),
-      sameAs: ["https://github.com/withwooyong"],
-      jobTitle: "개발총괄·CTO 지향 백엔드·플랫폼 리더",
-    }),
-    []
-  );
-
-  const year = new Date().getFullYear();
-
+/**
+ * 메인 — 히어로 + 4개 섹션의 조립 코드다(설계서 §4).
+ *
+ * 구 마크업 9개 섹션(#about·#product·#experience·#projects·#systems·#skills·
+ * #writing·#education·#contact)이 여기서 사라졌다.
+ *
+ * ⚠️ **「T1 이 콘텐츠를 data/ 로 다 빼 뒀으니 소실되지 않는다」는 거짓이었다.**
+ *    계획서 1932줄이 그렇게 적었고 이 주석도 한때 그것을 복사했지만, 실측하니
+ *    `git grep 서울시립대` 가 작업트리에서 0건이었다. T1 이 옮긴 것은 경력·프로젝트·
+ *    다이어그램·스킬뿐이고 학력·철학 본문·제품 티저 카피는 **index.tsx 에만 있었다.**
+ *
+ *    그래서 재작성 전에 아래로 옮겨 보존했다. 셋 다 **지금 어디에서도 렌더되지 않는다** —
+ *    보존이 목적이고 소비는 다음 태스크의 몫이다.
+ *
+ *    | 무엇 | 어디로 | 누가 소비 |
+ *    | --- | --- | --- |
+ *    | 학력·논문 제목·논문 PDF | `data/education.ts` | T12 `/about` |
+ *    | 「개발 리더로서의 철학」 3문단 | `data/about.ts` | T12 `/about` |
+ *    | 구 `#product` 티저 카피 전문 | `data/product-lead-teaser.ts` | T11 `/work` |
+ *
+ *    나머지(경력·프로젝트·시스템 다이어그램·스킬·글 링크)는 T1 이 옮긴 `data/experience.ts`·
+ *    `projects.ts`·`portfolio.ts` 에 이미 있다. 메인은 대표만 보이고 전체는 하위 페이지가 편다.
+ *
+ * ⚠️ **`/product-lead-v2` 로 가는 사이트 내 유일한 진입점이 이 재작성으로 끊겼다.**
+ *    구 `#product` 섹션의 CTA 가 그것이었고, product-lead 클러스터 **밖에서** 오는
+ *    인바운드 링크는 이제 0건이다(클러스터 전용이던 `components/wiki-shell.tsx` 는 T14 가 지웠다).
+ *    이것은 사고가 아니라 **계획된 공백**이다 — T11 이 `/work` 로 통합하고 T13 이
+ *    9 URL 을 파일 4개로 접으므로, 지금 임시 링크를 넣으면 두 태스크가 곧 지운다.
+ *    그때까지 그 페이지들은 **사이트맵에만 남은 고아**다.
+ *
+ *    ⇒ **T11 이전에 이 브랜치를 `main` 에 머지하면 실사용자가 도달할 수 없는 페이지가
+ *      생긴다.** 머지 순서가 이 공백의 수명을 정한다.
+ *
+ * ⚠️ 구 코드가 직접 렌더하던 `PortfolioNav` 를 여기서 걷어냈다. 그것이 셸과 겹쳐
+ *    「본문으로 건너뛰기」 스킵 링크 2개, 테마 토글 마크업 2벌,
+ *    `id="main"` 2개가 한 페이지에 있었다(2026-08-26 산출물 실측).
+ *    내비게이션·스킵 링크·테마 토글·푸터는 전부 `SiteShell` 하나가 맡는다.
+ *
+ *    ⇒ 그 결과 **`components/portfolio-nav.tsx` 의 호출자는 리포 전역 0건이 됐다**
+ *      (실측: 나머지 매치는 전부 주석과 자기 정의). 「다른 페이지가 아직 쓴다」고
+ *      적혀 있던 것은 사실이 아니다. 같은 이유로 `data/portfolio.ts` 의 `navItems` 도
+ *      이제 존재하지 않는 앵커(`#about`·`#product` 등)를 가리키는 고아다.
+ *      둘 다 **T14 의 삭제 후보**이며, 여기서 지우지 않는 것은 그것이 T14 소관이기
+ *      때문이지 쓰이고 있어서가 아니다.
+ *
+ * ⚠️ 04 Atlas 섹션은 `components/home/section-atlas.tsx` 에 있지만 여기서 조립하지
+ *    않는다. 계획서가 적은 이유(「/atlas 가 없어서 죽은 링크」)는 이미 낡았다 —
+ *    `pages/atlas/` 는 실물로 있다. 렌더하지 않는 진짜 이유는 그 섹션이 약속하는
+ *    그래프 미리보기와 토픽별 노드 수 집계가 아직 없다는 것이고, 그건 단계 4다.
+ */
+export default function Home() {
   return (
     <>
+      {/*
+        path 를 반드시 넘긴다. `SiteHead` 의 기본값이 "/" 라 안 넘겨도 이 페이지만은
+        우연히 맞지만, 그 우연에 기대면 다음 페이지가 복사해 갈 때 canonical 과
+        og:url 이 조용히 홈을 가리킨다. 명시가 곧 규약이다.
+      */}
       <SiteHead
-        title="허우용 · 개발총괄·CTO 지향 20년차 백엔드·플랫폼 리더"
-        description="허우용(Ted)의 개발자 포트폴리오입니다. 20년 경력의 엔지니어링 리더이자 직전 (주)야나두(a kakao company, 구 카카오키즈) 커머스개발실장으로, KT·CJ헬로비전·SK브로드밴드에서 1,000만+ 사용자 서비스 개발과 플랫폼 구축을 주도한 플랫폼 아키텍트입니다. AI를 활용해 개발 생산성과 업무 효율을 극대화하고 있습니다."
+        title="허우용 · Ted — 백엔드 · 플랫폼 리더"
+        description="20년간 만든 것은 서비스가 아니라 조직이었다. 교육·커머스 플랫폼과 검색을 두 번 세운 기록, 그리고 글 156편."
         path="/"
-        jsonLd={personJsonLd}
       />
-
-      <main
-        id="main"
-        className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden text-slate-900 dark:text-slate-100"
-      >
-        <div className="absolute inset-0 opacity-30 dark:opacity-20">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-cyan-500/10" />
-
-        <PortfolioNav items={navItems} brand="허우용" englishHref="/en/" />
-
-        <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 relative z-10 overflow-hidden">
-          <HeroStripeBackdrop />
-          <div
-            className="pointer-events-none absolute -top-28 left-[8%] z-[1] w-[min(480px,85vw)] h-[min(480px,85vw)] rounded-full bg-blue-400/30 dark:bg-blue-500/20 blur-3xl hero-blob"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute top-8 right-[-5%] z-[1] w-[min(420px,75vw)] h-[min(420px,75vw)] rounded-full bg-purple-400/25 dark:bg-purple-500/15 blur-3xl hero-blob--alt"
-            aria-hidden
-          />
-          <div className="relative z-10 max-w-7xl mx-auto">
-            <div className={cn("text-center", isLoaded && "hero-motion")}>
-              <div className="mx-auto mb-6 flex justify-center hero-stagger-1">
-                <div className="profile-coin-group h-32 w-32">
-                  <div className="relative h-full w-full rounded-full shadow-lg ring-2 ring-white/50 dark:ring-slate-600">
-                    <div className="profile-coin-face">
-                      <Image
-                        src="/images/Ted_profile.png"
-                        alt="허우용 프로필 사진"
-                        width={128}
-                        height={128}
-                        className="h-full w-full object-cover"
-                        priority
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <h1 className="hero-hello text-5xl sm:text-6xl md:text-8xl text-slate-900 dark:text-slate-50 mb-4 hero-stagger-2">
-                <span className="hero-hello-write">
-                  안녕하세요, <span className="text-blue-600 dark:text-blue-400">허우용</span>입니다
-                </span>
-              </h1>
-              <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 hero-stagger-3">개발총괄·CTO 지향 20년차 백엔드·플랫폼 리더</p>
-              <p className="text-lg text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed mb-8 hero-stagger-4">
-                20년 이상 경력의 엔지니어링 리더.
-                <br className="hidden sm:inline" />{" "}
-직전 <strong>(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장</strong>으로 30명 규모 개발 조직과 교육·커머스 플랫폼 총괄.
-                <br className="hidden sm:inline" />{" "}
-                <strong>KT, CJ헬로비전, SK브로드밴드</strong>에서 1,000만+ 사용자 서비스 개발 및 플랫폼 구축 주도.
-                <br className="hidden sm:inline" />{" "}
-                온프레미스(IDC)와 AWS 클라우드 환경 모두 경험한 플랫폼 아키텍트.
-                <br className="hidden sm:inline" />{" "}
-                AI·플랫폼·조직을 연결해 서비스 성장과 개발 생산성 향상을 이끌어온 기술 리더.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3 hero-stagger-5">
-                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
-                  <a href={NOTION_RESUME_URL} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    경력기술서 보기
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
-                  <Link href="/product-lead-v2/">
-                    플랫폼 프로덕트 리더로 보기
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="about" className="py-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm relative z-10 border-y border-transparent dark:border-slate-800/50">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">소개</h2>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">개발 리더로서의 철학</h3>
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                  개발의 실행은 이미 AI로 옮겨가고 있습니다. 리더가 할 일은 무엇을 만들지 정하는 판단과, AI가 안전하게 일할 수 있는 틀을 세우는 것이라고 믿습니다. 좋은 코드의 기준도 사람이 읽기 좋은 코드에서,
-                  AI가 정확히 읽고 안전하게 고칠 수 있는 구조로 옮겨가고 있습니다. 20년간 개발과 리딩을 함께 해 오며, 이 기준을 팀의 표준으로 세우는 일이 결국 팀의 속도와 서비스의 안정성을 만든다고 믿습니다.
-                </p>
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                  좋은 제품은 기획·디자인·개발이 같은 그림을 볼 때 나온다고 믿습니다. 기획, UI/UX부터 프론트, 백엔드, 앱, 데브옵스까지 전 직군을 총괄하며, 요구사항을 그대로 구현하기보다 문제 정의 단계부터
-                  기획자·디자이너와 함께 고민해 사용자 경험과 기술 구조가 어긋나지 않는 접점을 찾아 왔습니다. 개발 리더가 제품과 사용자의 언어를 함께 쓸 때, 팀의 결과물은 기능을 넘어 제품이 됩니다.
-                </p>
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  기술적 결정은 팀이 감당할 수 있는 복잡도 안에서 내리고, 위임과 코드 리뷰를 통해 동료의 성장이 곧 조직의 성장이 되도록 이끕니다. 리더의 일은 아키텍처 표준과 코드 리뷰·보안 게이트, 검증 파이프라인을
-                  세워 AI가 안전하게 일하도록 만드는 것이라 보고, 야나두에서도 다양한 챗봇 형태의 AI 서비스를 직접 개발·런칭하며 이 방식을 실천해 왔습니다.
-                </p>
-              </div>
-              <CoinFlipDeck className="grid grid-cols-1 gap-6">
-                <Card className="coin-flip-card">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      직전 포지션
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">(주)야나두 a kakao company (구 카카오키즈) 커머스개발실장 (2022.02 ~ 2026.07 · 4년 6개월)</p>
-                  </CardContent>
-                </Card>
-                <Card className="coin-flip-card">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2">
-                      <Code className="h-5 w-5 text-green-600 dark:text-green-400" />
-                      전문 분야
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">AI 서비스, N-Screen, OTT, STB, CMS 개발</p>
-                  </CardContent>
-                </Card>
-                <Card className="coin-flip-card">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2">
-                      <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                      팀 규모
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">20~30명 개발팀 총괄 경험</p>
-                  </CardContent>
-                </Card>
-              </CoinFlipDeck>
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="product" className="py-16 relative z-10">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="relative overflow-hidden rounded-3xl border border-blue-100/80 dark:border-slate-700/70 bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-8 md:p-12 shadow-sm">
-                <div className="max-w-3xl mx-auto text-center">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3">플랫폼 · 프로덕트 리더십</p>
-                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 mb-4">개발 리더를 넘어, 제품을 이끄는 리더</h2>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                    OTT·커머스 플랫폼의 코어 엔진 설계부터 CMS 재구축·현대화, AI, 그리고 조직까지 — 20년의 경험을 제품 관점으로 정리한 한 장 요약입니다.
-                  </p>
-                  <ul className="flex flex-wrap justify-center gap-2 mb-8">
-                    {["콘텐츠 코어 엔진", "CMS 재구축·현대화", "커머스 + AI", "크로스펑셔널 조직"].map((chip) => (
-                      <li
-                        key={chip}
-                        className="rounded-full border border-blue-200/80 dark:border-slate-600 bg-white/70 dark:bg-slate-800/70 px-4 py-1.5 text-sm text-slate-700 dark:text-slate-200"
-                      >
-                        {chip}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    asChild
-                    size="lg"
-                    className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
-                  >
-                    <Link href="/product-lead-v2/">
-                      플랫폼 프로덕트 리더로 보기
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </SectionReveal>
-        </section>
-
-        <section id="experience" className="py-16 bg-gradient-to-r from-slate-50/80 to-blue-50/80 dark:from-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm relative z-10">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">경력</h2>
-            <div className="space-y-8">
-              {experiences.map((exp) => (
-                <Card key={`${exp.company}-${exp.period}`} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <CardTitle className="text-xl">{exp.role}</CardTitle>
-                        <CardDescription className={`${exp.companyClass} font-medium`}>{exp.company}</CardDescription>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Badge variant="secondary">{exp.period}</Badge>
-                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{exp.duration}</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">{exp.summary}</p>
-                    <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-                      {exp.highlights.map((highlight) => (
-                        <li key={highlight} className="flex items-start">
-                          <span className={`${exp.bulletClass} mr-2`}>•</span>
-                          {highlight}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="projects" className="py-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm relative z-10">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">주요 프로젝트</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((project) => {
-                // 링크가 2개면 grid-cols-2 로 감싸고, 1개면 감싸지 않는다 — 기존 마크업 그대로다.
-                const linkButtons = project.links.map((link) => (
-                  <Button key={link.href} asChild variant="outline" className="w-full">
-                    <a href={link.href} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      {link.label}
-                    </a>
-                  </Button>
-                ));
-
-                return (
-                  <Card key={project.title} className="hover:shadow-lg transition-shadow overflow-hidden">
-                    <div className={`h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center relative overflow-hidden`}>
-                      <div className="absolute inset-0 bg-black/10"></div>
-                      {project.logoClass ? (
-                        <div className={`absolute inset-0 ${project.logoClass} bg-center bg-no-repeat bg-contain opacity-40`}></div>
-                      ) : null}
-                      <span className="text-white text-2xl font-bold relative z-10 drop-shadow-lg">{project.label}</span>
-                    </div>
-                    <CardHeader>
-                      <CardTitle>{project.title}</CardTitle>
-                      <CardDescription>{project.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary">{tag}</Badge>
-                        ))}
-                      </div>
-                      {project.links.length > 1 ? (
-                        <div className="grid grid-cols-2 gap-2">{linkButtons}</div>
-                      ) : (
-                        linkButtons
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="systems" className="py-16 bg-gradient-to-r from-purple-50/80 to-pink-50/80 dark:from-slate-900/90 dark:to-slate-800/90 backdrop-blur-sm relative z-10">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">시스템 구성도</h2>
-            <div className="space-y-16">
-              {diagramGroups.map((group) => (
-                <div key={group.id}>
-                  <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-slate-200 pb-3 dark:border-slate-700">
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                      {group.company}
-                    </h3>
-                    <span className="text-sm text-slate-500 dark:text-slate-400">
-                      {group.period}
-                    </span>
-                  </div>
-                  <div className="space-y-8">
-                    {group.items.map((item) => (
-                      <SystemDiagramCard key={item.specId} item={item} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="skills" className="py-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm relative z-10">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">기술 스택</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {skillCategories.map((s) => {
-                const Icon = skillIconMap[s.icon];
-                const tone =
-                  s.icon === "code"
-                    ? "bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400"
-                    : s.icon === "database"
-                      ? "bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400"
-                      : s.icon === "bot"
-                        ? "bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400"
-                        : "bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400";
-                return (
-                  <Card key={s.title} className="text-center hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className={`w-16 h-16 mx-auto mb-4 rounded-lg flex items-center justify-center ${tone}`}>
-                        <Icon className="h-8 w-8" />
-                      </div>
-                      <CardTitle>{s.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-slate-600 dark:text-slate-300 text-sm">{s.body}</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="writing" className="py-16 bg-gradient-to-r from-slate-50/80 to-indigo-50/80 dark:from-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm relative z-10">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-4">글·링크</h2>
-            <p className="text-center text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
-              직접 정리한 기술 노트와 외부에 공개된 자료·저장소로 연결합니다.
-            </p>
-            {featuredPosts.length > 0 ? (
-              // 개수를 가정하지 않는 세로 목록. 2열 그리드로 두면 featured가 홀수일 때 칸이 빈다.
-              // 구분선을 전용 유틸리티가 아니라 인덱스로 주는 이유: 이 페이지에서 처음 쓰이는
-              // Tailwind 클래스가 생기면 CSS 번들 해시가 바뀌어 기존 페이지의 stylesheet 링크까지
-              // 전부 달라진다(GC-6). 같은 이유로 주석에도 클래스명을 적지 않는다 —
-              // Tailwind는 소스를 텍스트로 스캔해 주석 안의 토큰도 클래스로 인식한다.
-              <Card className="max-w-3xl mx-auto mb-6">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">먼저 읽어볼 글</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {featuredPosts.map((p, i) => (
-                    <div
-                      key={`${p.categorySlug}/${p.slug}`}
-                      className={cn(i > 0 && "border-t border-slate-200 pt-4 dark:border-slate-800")}
-                    >
-                      <Link
-                        href={`/blog/${p.categorySlug}/${p.slug}/`}
-                        className="font-semibold text-slate-900 transition-colors hover:text-blue-600 hover:underline dark:text-slate-100 dark:hover:text-blue-400 break-keep"
-                      >
-                        {p.title}
-                      </Link>
-                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 break-keep">{p.description}</p>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ) : null}
-            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {writingLinks.map((w) => {
-                // 같은 사이트 안의 이동(/blog/)에 target="_blank"가 붙으면 안 된다.
-                const external = /^https?:\/\//.test(w.href);
-                return (
-                  <Card key={w.href} className="hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{w.label}</CardTitle>
-                      {w.description ? <CardDescription>{w.description}</CardDescription> : null}
-                    </CardHeader>
-                    <CardContent>
-                      <Button asChild variant="outline" className="w-full">
-                        <a href={w.href} {...(external && { target: "_blank", rel: "noopener noreferrer" })}>
-                          {external ? (
-                            <ExternalLink className="h-4 w-4 mr-2" />
-                          ) : (
-                            <ArrowRight className="h-4 w-4 mr-2" />
-                          )}
-                          열기
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="education" className="py-16 bg-gradient-to-r from-green-50/80 to-teal-50/80 dark:from-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm relative z-10 scroll-mt-20">
-          <SectionReveal>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-slate-50 mb-12">학력</h2>
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">서울시립대학교 (석사)</CardTitle>
-                <CardDescription className="text-lg">
-                  <strong>논문:</strong> 시스템 통합 서비스를 위한 확장 가능한 NoSQL 설계방법 연구
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap items-center justify-center gap-3">
-                <ThesisSummaryDialog />
-                <Button asChild>
-                  <a href="https://drive.google.com/file/d/1eAv426PXVEaCpMvQAvcUHkMUZ2WggM4j/view?usp=sharing" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    논문 보기
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <section id="contact" className="py-16 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm relative z-10 scroll-mt-20">
-          <SectionReveal>
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 mb-8">연락하기</h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 mb-12">함께 일하고 싶으시다면 언제든 연락해주세요!</p>
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-950 rounded-lg flex items-center justify-center">
-                    <Mail className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <CardTitle>이메일</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <a
-                    href="mailto:withwooyong@gmail.com"
-                    className="inline-flex text-blue-600 dark:text-blue-400 hover:underline font-medium transition-colors"
-                  >
-                    이메일 보내기
-                  </a>
-                  <p className="text-xs text-muted-foreground break-all">withwooyong@gmail.com</p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                    <Github className="h-8 w-8 text-slate-600 dark:text-slate-300" />
-                  </div>
-                  <CardTitle>GitHub</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <a href="https://github.com/withwooyong" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
-                    github.com/withwooyong
-                  </a>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-          </SectionReveal>
-        </section>
-
-        <footer className="bg-slate-900 text-white py-8 relative z-10 border-t border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-300">
-            <p>
-              &copy; {year} 허우용. All rights reserved.
-            </p>
-          </div>
-        </footer>
-      </main>
+      <SiteShell>
+        <Hero />
+        <SectionSelectedWork />
+        <SectionHowILead />
+        <SectionNow />
+        {/* 04 Atlas — 노드 수 집계가 생기는 단계 4에서 켠다. 위 주석 참조 */}
+        <SectionConnect />
+      </SiteShell>
     </>
   );
 }

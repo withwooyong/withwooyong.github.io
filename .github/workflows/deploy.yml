@@ -79,6 +79,20 @@ jobs:
       - name: Scan built output
         run: npm run check-forbidden:built
 
+      # T8 에서 만든 스위트를 단계 2 가 끝난 여기서 게이트로 승격한다.
+      # out/ 을 serve 로 띄워 검사하므로 Build 뒤에 와야 하고, 실패 시 아티팩트를 올리지 않도록
+      # Upload artifact 앞에 온다.
+      #
+      # --with-deps 는 리눅스에서 OS 패키지까지 깐다. CI 는 ubuntu 이므로 필요하고,
+      # 로컬(Windows)에서는 `npx playwright install chromium` 만 쓴다.
+      #
+      # ⚠️ continue-on-error 를 붙이지 마라 — 조용히 통과하는 게이트는 게이트가 아니다.
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E
+        run: npm run e2e
+
       # GC-6 baseline — 2026-08-18 CI에서 비활성화. 로컬 검사로만 쓴다.
       #
       # 이유: 기준선(scripts/baseline.json)이 **빌드 환경에 종속**된다. Windows 로컬에서 만든

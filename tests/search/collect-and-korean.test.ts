@@ -188,7 +188,11 @@ describe("isIndexNoise", () => {
     expect(isIndexNoise("/blog/")).toBe(false);
     expect(isIndexNoise("/")).toBe(false);
     expect(isIndexNoise("/en/")).toBe(false);
-    expect(isIndexNoise("/product-lead/")).toBe(false);
+    // T13 이전에는 `/product-lead/` 였다. 그 경로는 이제 `/work/` 로 보내는 리다이렉트
+    // 스텁이고 `data-pagefind-ignore` 로 색인에 들어오지도 않는다 — 없는 경로를 검사하면
+    // 「일반 페이지를 남긴다」는 이 케이스가 아무것도 지키지 못한다. 살아 있는 페이지로 바꾼다.
+    expect(isIndexNoise("/work/")).toBe(false);
+    expect(isIndexNoise("/about/")).toBe(false);
   });
 
   it("빈 URL 은 잡음이 아니다", () => {

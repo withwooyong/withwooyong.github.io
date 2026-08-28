@@ -2,6 +2,47 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-08-28 — Lighthouse CI 도입 (**경고로만**) · 원계획 T9~T15 마감
+
+> **화면은 바뀌지 않았다.** 성능·접근성 예산을 CI 에서 측정하되 **배포는 막지 않는다.**
+>
+> - `.github/workflows/lighthouse.yml` 신규 — `main` 대상 PR 에서 돈다. **`deploy.yml` 은 불변**
+> - `lighthouserc.json` 신규 — 5 라우트(홈 · /work · /about · 블로그 목록 · 블로그 글 1편),
+>   단언 4종이 **전부 `warn`**. 리포트는 Actions 아티팩트로만 남기고 **외부로 내보내지 않는다**
+> - 실측이 이 결정을 뒷받침한다 — `error` 였다면 5개 중 **4개가 LCP 예산(2500ms)에서 즉시 빨갛다.**
+>   접근성은 5개 전부 96~100 으로 예산(95)을 넘겼다
+>
+> 새 검사기 `tests/ci/lighthouse-workflow.test.ts` 가 단언 19개로 이 설정을 지킨다.
+> 라이트하우스 잡은 `continue-on-error` 라 **무엇이 잘못돼도 초록**이므로,
+> 수치는 무르게 두되 **설정이 말이 되는지는 배포 게이트 안에서** 딱딱하게 본다.
+>
+> ✅ PR [#2](https://github.com/withwooyong/withwooyong.github.io/pull/2) 에서 실제로 돌았다 — 5 URL × 3회 수집.
+> 🔴 **첫 실행에서 결함 1건.** `upload-artifact` 가 숨김 파일을 기본 제외해
+> 리포트 15개를 쓰고 **0개를 올렸는데 두 스텝 모두 초록이었다.** 고쳤고 검사기가 지킨다 —
+> 재실행에서 아티팩트를 받아 **62파일 · 5라우트 × 3회**를 파일명으로 확인했다.
+>
+> ⚠️ **회귀 탐지용으로는 아직 못 쓴다.** 페이지가 한 바이트도 안 바뀐 두 실행 사이에서
+> 경고가 **3 → 4 건**으로 변했다. 러너 변동이 예산 폭보다 크다 —
+> 지금 쓸 수 있는 것은 **자릿수**와 낙관적 집계에서도 넘긴 **확실한 초과**뿐이다.
+>
+> 경위: [`docs/superpowers/reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R66)
+
+## 2026-08-28 — 고아 자산 4종 삭제 · 기준선 게이트 복구 · **E2E 를 배포 게이트로 승격**
+
+> **화면은 바뀌지 않았다.** 단계 2 동안 의도적으로 꺼 두었던 **게이트 둘을 끝에서 켠 것**이 요점이다.
+>
+> - `npm run e2e` 가 이제 `deploy.yml` 의 `build` 잡에서 돈다. `deploy` 는 `needs: build` 뒤라
+>   **E2E 가 빨가면 배포되지 않는다.** `continue-on-error` 는 쓰지 않았다
+> - `check-baseline` 이 T9 이후 15건 빨강이었다. 원인을 전수 규명한 뒤 **한 번만** 갱신해
+>   `✅ 16개 불변` 으로 되돌렸다. `product-lead*` 스텁 9개는 그대로 보존됐다
+> - 지운 것: `lib/wiki.ts` · `wiki-shell` · `roadmap-domain` · `product-lead-roadmap`. **4개다** —
+>   계획서 목록에 있던 `product-lead-domains.ts` 는 `/work` 가 쓰고 있어 남겼다
+>
+> 새 검사기 `tests/ci/deploy-workflow.test.ts` 가 그 게이트를 **YAML 파싱으로** 지킨다(단언 5개).
+> 문자열 grep 이었다면 「스텝을 주석 처리한」 뮤턴트가 살아남았을 것이다 — 주석 안에 같은 문자열이 남는다.
+>
+> 경위: [`docs/superpowers/reports/2026-08-28-t14-orphans.md`](docs/superpowers/reports/2026-08-28-t14-orphans.md) (R55~R61)
+
 ## 2026-08-28 — 문서 정합성 마감: 거짓 CI 보증 제거 · README 65커밋 drift 정정
 
 > **코드는 한 줄도 바뀌지 않았다.** 앞 배치가 남긴 문서 부채 둘을 닫았다.

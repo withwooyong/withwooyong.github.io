@@ -1,88 +1,74 @@
-import { SiteHead } from "@/components/site-head";
-import { Card, CardContent } from "@/components/ui/card";
-import { WikiShell } from "@/components/wiki-shell";
-import { wikiDocs, type WikiDoc } from "@/lib/wiki";
-import { AlertTriangle, ArrowRight } from "lucide-react";
+import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-type Props = { docs: WikiDoc[] };
+/**
+ * 제거된 `/product-lead-wiki/` 인덱스 라우트의 스텁 (설계서 §4 · 계획서 T13).
+ *
+ * **라우트를 남기는 이유:** 위키 6 URL 중 하위 5개는 `[slug].tsx` 가, 인덱스 1개는
+ * 이 파일이 덮는다. 라우트를 지우면 그 6개가 404 가 되고 외부 링크·기존 색인이
+ * 그대로 죽는다. 그래서 파일은 지우지 않고 **본문만 스텁으로 갈아끼운다.**
+ *
+ * `WikiShell`·`lib/wiki` import 를 전부 끊었다 — 그래서 T14 가 그 둘을 지웠다.
+ *
+ * **`SiteHead` 를 쓰지 않는 이유:** `components/site-head.tsx` 는 canonical 을 자기 경로로
+ * 박는데, 스텁의 canonical 은 목적지를 가리켜야 한다. 그래서 생 `<Head>` 다.
+ *
+ * ⚠️ **robots 메타를 일부러 넣지 않는다.** 스텁 9개가 전부 `/work/` 를 canonical 로
+ *    가리키므로, 그 무리에 `noindex` 가 있으면 구글이 무리 전체(= `/work/` 포함)에
+ *    적용할 수 있다. 색인 제외는 canonical 하나로 충분하다.
+ *    `e2e/redirects.spec.ts` 가 「robots 메타 0개」로 이 계약을 못 박고 있다.
+ *
+ * 스텁 5개(정적 3 + wiki 2)는 `public/notion/index.html` 의 선례와 같은 모양이다 —
+ * 이동을 예고하는 제목, `<main>` 랜드마크, 서술형 대체 링크, JS 보조 경로.
+ */
 
-export function getStaticProps() {
-  return { props: { docs: wikiDocs } };
-}
+/** 이동 목적지. 여기를 바꿀 때는 세 곳을 함께 고친다: meta refresh · canonical · Link href. */
+const DESTINATION = "/work/";
 
-export default function WikiIndex({ docs }: Props) {
+export default function WikiIndexStub() {
+  const router = useRouter();
+
+  /**
+   * meta refresh 가 막힌 환경을 위한 보조 경로.
+   *
+   * `replace` 여야 뒤로가기가 이 스텁으로 되돌아오는 루프를 만들지 않는다.
+   * `location.replace` 대신 `router.replace` 를 쓰는 것은 같은 Next 앱 안이라
+   * 전체 리로드 없이 넘어가기 때문이다. 주 경로는 어디까지나 `meta refresh` 다 —
+   * JS 가 꺼진 환경에서는 그쪽만 동작한다.
+   */
+  useEffect(() => {
+    void router.replace(DESTINATION);
+  }, [router]);
+
   return (
     <>
-      <SiteHead
-        title="플랫폼 코어 실행 설계 위키 | 허우용 (Ted)"
-        description="TVING Platform Product Lead 관점의 CMS·결제/정산·공통 어드민·거버넌스 실행 설계. 아키텍처 구성도·ERD·시퀀스·상태기계·로드맵 도식 74개를 포함한 원문 위키."
-        path="/product-lead-wiki/"
-        noindex
-      />
+      <Head>
+        <title>플랫폼 코어 실행 설계 위키로 이동 중… · 허우용 (Ted)</title>
+        <link rel="canonical" href={`https://withwooyong.github.io${DESTINATION}`} />
+        <meta httpEquiv="refresh" content={`0; url=${DESTINATION}`} />
+      </Head>
 
-      <WikiShell docs={docs}>
-        <div className="max-w-3xl space-y-8">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400">
-              TVING · Platform Product Lead
-            </p>
-            <h1 className="text-2xl font-bold leading-[1.3] break-keep sm:text-3xl md:text-4xl">플랫폼 코어 실행 설계 위키</h1>
-            <p className="leading-relaxed break-keep text-slate-600 sm:text-lg dark:text-slate-300">
-              CMS · 결제/정산 · 공통 어드민 · 거버넌스. 네 개 코어 도메인을 어떤 순서로, 어떤 근거로 다시 세울 것인지를 도식
-              중심으로 정리한 원문 문서군입니다. 시스템 구성도, ERD, 시퀀스, 상태기계, 로드맵 간트를 그대로 담았습니다.
-            </p>
-          </div>
-
-          <Card className="border-amber-300 bg-amber-50/70 dark:border-amber-800 dark:bg-amber-950/30">
-            <CardContent className="flex gap-3 p-4">
-              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden />
-              <div className="space-y-1.5 text-sm leading-relaxed break-keep text-amber-900 dark:text-amber-200">
-                <p className="font-semibold">이 문서군의 전제</p>
-                <p>
-                  모든 As-Is 도식은 공개정보에서 추론한 <strong>가설</strong>입니다. 티빙 내부 자료가 아닙니다. 로드맵의 기간과
-                  목표치도 전부 <strong>가정</strong>이며, 실제 순서와 기간은 부임 후 실측 결과와 조직 규모에 따라 팀과 함께
-                  재산정합니다.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-3">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">문서</h2>
-            {docs.map((d, i) => (
-              <Link key={d.slug} href={`/product-lead-wiki/${d.slug}/`} className="block">
-                <Card className="transition-all hover:border-blue-400 hover:shadow-md">
-                  <CardContent className="flex items-start gap-3 p-4 sm:gap-4 sm:p-5">
-                    <span className="shrink-0 text-xl font-bold tabular-nums text-slate-200 sm:text-2xl dark:text-slate-700">
-                      {String(i).padStart(2, "0")}
-                    </span>
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex flex-wrap items-baseline gap-x-3">
-                        <p className="font-bold break-keep">{d.title}</p>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{d.posting}</span>
-                      </div>
-                      <p className="text-sm break-keep text-slate-500 dark:text-slate-400">{d.subtitle}</p>
-                      <p className="pt-1 text-sm leading-relaxed break-keep text-slate-700 dark:text-slate-300">
-                        &ldquo;{d.essence}&rdquo;
-                      </p>
-                    </div>
-                    <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-slate-300 dark:text-slate-600" aria-hidden />
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-
-          <p className="border-t border-slate-200 pt-6 text-sm text-slate-500 break-keep dark:border-slate-800 dark:text-slate-400">
-            핵심만 빠르게 훑고 싶다면{" "}
-            <Link href="/product-lead-loadmap/" className="text-blue-600 underline underline-offset-2 dark:text-blue-400">
-              요약 페이지
-            </Link>
-            를 보세요. 이 위키는 도식과 데이터 모델까지 포함한 원문입니다.
-          </p>
-        </div>
-      </WikiShell>
+      {/*
+        data-pagefind-ignore="all" — 사이트 내부 검색(⌘K) 색인에서 이 페이지를 뺀다.
+        없으면 스텁이 검색 결과에 뜨고, 누른 사람은 곧바로 /work/ 로 튕긴다.
+        "all" 이어야 제목·메타까지 처리에서 빠진다("index" 는 제목을 여전히 집는다).
+      */}
+      <main
+        id="main"
+        tabIndex={-1}
+        data-pagefind-ignore="all"
+        className="mx-auto max-w-xl px-4 py-24 text-center leading-relaxed break-keep text-slate-600 focus:outline-none dark:text-slate-300"
+      >
+        <p className="mb-4 text-sm">
+          <strong>플랫폼 코어 실행 설계 위키</strong> 는 <strong>/work</strong> 로 합쳐졌습니다. 이동하고
+          있습니다…
+        </p>
+        <Link href={DESTINATION} className="font-semibold underline underline-offset-4">
+          자동으로 이동하지 않으면 여기를 눌러 주세요
+        </Link>
+      </main>
     </>
   );
 }

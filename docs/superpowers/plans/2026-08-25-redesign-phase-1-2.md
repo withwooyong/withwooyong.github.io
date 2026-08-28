@@ -2170,8 +2170,20 @@ git commit -m "feat(work): product-lead 4갈래를 /work 하나로 통합
 - Create: `pages/about/index.tsx`
 
 **Interfaces:**
-- Consumes: T1 `experiences`, `data/portfolio.ts`의 `skillCategories`·`thesisSummaryNarration`, T7 `SiteShell`
+- Consumes: T1 `experiences`, `data/portfolio.ts`의 `skillCategories`·`thesisSummaryNarration`, **`data/education.ts`·`data/about.ts`**, T7 `SiteShell`
 - Produces: `/about/` — 헤더 내비의 About이 여기로 온다
+
+⚠️ **`data/portfolio.ts`만 보면 「학교 이름 없는 학력 페이지」가 나온다.** T10이 구 `pages/index.tsx`를
+전면 재작성하면서 `#about`·`#education`의 문자열이 그 파일에서 사라졌고, 소실을 막으려고
+아래 두 파일로 옮겨 뒀다. **둘 다 지금 렌더하는 페이지가 없어서, 찾지 않으면 영영 안 보인다.**
+
+| 파일 | 담고 있는 것 | `portfolio.ts`에 없는 이유 |
+| --- | --- | --- |
+| `data/education.ts` | 학교명 `서울시립대학교 (석사)` · 논문 제목 · 논문 PDF 링크 | `thesisSummaryNarration`에는 **`공학석사`만** 있고 학교·제목·링크가 없다 |
+| `data/about.ts` | 「개발 리더로서의 철학」 3문단 · 구 제목 2개 · 요약 카드 3장(`aboutFacts`) | 애초에 `data/`로 추출된 적이 없다 |
+
+`aboutFacts`의 **`전문 분야`는 리포 전체에서 이 파일이 유일한 사본**이다. 문구를 다시 쓰더라도
+원문이 무엇이었는지는 여기서 확인한다.
 
 **담는 것 (스펙 §4):** 경력 전문 · 학력 · 기술. `/work`가 「무엇을 했나」라면 `/about`은 「누구인가」다. 경력 전문은 `/work`와 겹치므로 **여기서는 요약만 두고 `/work`로 보낸다.**
 
@@ -2183,6 +2195,9 @@ import Link from "next/link";
 import { SiteHead } from "@/components/site-head";
 import { SiteShell } from "@/components/site-shell";
 import { skillCategories, thesisSummaryNarration } from "@/data/portfolio";
+// 학력·철학은 portfolio.ts 가 아니라 여기 있다 — 위 ⚠️ 표 참고
+import { aboutFacts, leadershipPhilosophy } from "@/data/about";
+import { education } from "@/data/education";
 
 export default function About() {
   return (
@@ -2442,8 +2457,24 @@ product-lead · -v2 · -loadmap 라우트는 같은 커밋에서 지운다. publ
 
 **Files:**
 - Delete: `lib/wiki.ts` · `components/wiki-shell.tsx` · `components/roadmap-domain.tsx`
-- Delete: `data/product-lead-domains.ts` · `data/product-lead-roadmap.ts`
+- Delete: `data/product-lead-roadmap.ts`
+- ~~Delete: `data/product-lead-domains.ts`~~ — 🔴 **지우지 마라. 고아가 아니다.** (아래 경고)
 - Modify: `scripts/baseline.json` (`--update --force`로 1회)
+
+> ### 🔴 이 목록은 T11 **이전**에 쓰였다 — 그대로 실행하면 `/work` 가 빌드 불가가 된다
+>
+> `data/product-lead-domains.ts` 는 **살아 있다.** T13 리뷰(2026-08-28)의 실측:
+>
+> | 소비처 | 무엇 |
+> | --- | --- |
+> | `components/work/section-domains.tsx:1` | T11 이 만든 `/work` 의 도메인 섹션 |
+> | `e2e/work.spec.ts:5` | 그 섹션의 개수 대조 |
+> | `components/roadmap-domain.tsx:3` | `type Domain` 만 — 이 파일은 지워도 된다 |
+>
+> **삭제 목록은 작성 시점에 화석이 된다.** T11 이 `/work` 를 만들며 이 파일을 새 소비처로
+> 끌어다 쓰는 동안 목록은 그대로 남았다. HANDOFF 가 경고한 `SystemDiagramCard` 와 같은 함정인데,
+> **경고했던 심볼이 아니라 다른 심볼에서 터졌다** — 진짜 교훈은 「그 심볼을 조심하라」가 아니라
+> **「T11 이 옮긴 것 전부가 같은 함정」** 이다. 목록을 읽지 말고 **매번 다시 세라.**
 - Modify: `.github/workflows/deploy.yml` (e2e 스텝 추가 — T8에서 만든 스위트를 여기서 게이트로 승격)
 
 > `pages/product-lead/` · `-v2/` · `-loadmap/`은 **T13에서 이미 지워졌다** — 스텁과 경로를 다투기 때문이다. 이 태스크는 그것들만 부르던 자산을 치운다.
@@ -2461,16 +2492,24 @@ product-lead · -v2 · -loadmap 라우트는 같은 커밋에서 지운다. publ
 grep -rn 'lib/wiki\|wiki-shell\|roadmap-domain\|product-lead-domains\|product-lead-roadmap' pages/ components/ data/ lib/ tests/ e2e/
 ```
 
-Expected: **출력 없음.** 있으면 그 자리를 먼저 정리한다.
+Expected: `product-lead-domains` 만 남고 나머지 넷은 출력 없음.
+
+⚠️ **출력이 있다고 「호출부를 정리한다」로 가지 마라.** 그것이 이 태스크에서 가장 비싼 오독이다 —
+`section-domains.tsx` 는 지워야 할 잔재가 아니라 **`/work` 의 살아 있는 섹션**이다.
+출력이 나오면 먼저 묻는 것은 **「이 파일이 정말 고아인가」**지 「호출부를 어떻게 없애나」가 아니다.
 
 ⚠️ 이 grep은 **파이프 없이 단독으로** 실행한다.
 
-- [ ] **Step 2: 지운다**
+- [ ] **Step 2: 지운다** — 4개다(5개가 아니다)
 
 ```bash
 git rm lib/wiki.ts components/wiki-shell.tsx components/roadmap-domain.tsx
-git rm data/product-lead-domains.ts data/product-lead-roadmap.ts
+git rm data/product-lead-roadmap.ts
+# data/product-lead-domains.ts 는 지우지 않는다 — /work 가 쓴다
 ```
+
+`roadmap-domain.tsx` 를 먼저 지워야 `product-lead-domains.ts` 의 소비처가 `/work` 쪽 둘만 남는다.
+지운 뒤 그 둘이 그대로인지 다시 세라.
 
 - [ ] **Step 3: 전부 돌린다**
 
@@ -2500,14 +2539,27 @@ npm run check-baseline
 | 남은 항목 | `en/index.html` · `notion/index.html` · `404` 계열이 **그대로인지** |
 | 새 항목 | `work/index.html` · `about/index.html`이 추가됐는지 |
 
-⚠️ **`en`과 `notion`의 해시가 바뀌었다면 의도치 않은 회귀다.** 갱신하지 말고 원인을 먼저 찾는다. 셸을 안 붙였는데 바뀔 이유는 CSS 해시뿐이므로, CSS 외의 차이가 있으면 문제다.
+⚠️ **`en`과 `notion`의 해시가 바뀌었다면 의도치 않은 회귀다.** 갱신하지 말고 원인을 먼저 찾는다. ~~셸을 안 붙였는데 바뀔 이유는 CSS 해시뿐이므로, CSS 외의 차이가 있으면 문제다.~~
+
+> 🔴 **취소선 부분은 틀렸다** (2026-08-28 T14 실측 · [`reports/2026-08-28-t14-orphans.md` §R55](../reports/2026-08-28-t14-orphans.md)).
+> `scripts/check-baseline.mjs:175` 가 `[0-9a-f]{16}\.(css|js)` 를 이미 `<BUNDLE>` 로 정규화하므로
+> **CSS 해시는 이 검사에 도달하지 않는다.** 실제 원인은 둘이었고 둘 다 무해했다 —
+> ① `pages/_document.tsx` 변경(T9, 모든 Next 렌더 페이지에 적용) ② **webpack 청크 *번호***
+> (`chunks/3361-<BUNDLE>.js` 의 `3361`)는 정규화 대상이 아니다.
+> **확인 절차는 그대로 두되 원인 후보를 하나로 못 박지 마라.** `notion` 만 불변인 것이 대조군이다 —
+> 그것은 `public/notion/index.html` 로 Next 를 거치지 않는다.
 
 셋 다 확인했으면 갱신한다.
 
 ```bash
-npm run check-baseline:update -- --force
+npm run check-baseline:update
 npm run check-baseline
 ```
+
+> ⚠️ **`--force` 를 기본으로 붙이지 마라.** `check-baseline.mjs:223` 을 보면 그것이 뚫는 것은
+> **「파일 수가 줄었다」는 가드 하나뿐**이다. 먼저 붙이지 않고 돌려라 — 거부당하지 않았다는 것 자체가
+> 「줄어든 것이 없다」의 증명이다. 거부당하면 그때 줄어든 항목을 눈으로 확인한 뒤에만 붙인다.
+> (T14 실측: 15→16으로 늘어 `--force` 없이 종료 0)
 
 Expected: 두 번째 명령이 **종료 코드 0**.
 
@@ -2557,11 +2609,12 @@ Expected: **종료 코드 0.** 하나라도 빨가면 붙이지 말고 원인을
 
 ```bash
 git add -A
-git commit -m "chore: 고아 자산 5종 삭제 + 기준선 1회 갱신 + e2e 를 CI 게이트로
+git commit -m "chore: 고아 자산 4종 삭제 + 기준선 1회 갱신 + e2e 를 CI 게이트로
 
 T13 이 라우트를 스텁으로 대체했으므로 그것만 부르던 자산을 지운다 —
-lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-domains · -roadmap.
+lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-roadmap.
 지우기 전에 grep 으로 호출자 0건을 확인했다.
+data/product-lead-domains.ts 는 지우지 않는다 — /work 가 쓴다(§R49).
 
 기준선은 이번 배치에서 여기 한 번만 갱신한다(설계서 §11.1).
 단계마다 갱신하면 --update 가 습관이 되고 이 검사는 죽는다.
@@ -2575,6 +2628,19 @@ continue-on-error 는 쓰지 않는다 — 조용히 통과하는 게이트는 �
 ---
 
 ### Task 15: Lighthouse CI — 경고로만
+
+> ### ⚠️ **실행본은 이 절과 4곳이 다르다** (2026-08-28 T15 봉인)
+>
+> 계획서는 T13→T14 에서 이미 한 번 화석으로 판명됐다(§R49). **읽지 말고 다시 재라.**
+>
+> | # | 아래에 적힌 것 | 실제로 만든 것 | 왜 |
+> | --- | --- | --- | --- |
+> | 1 | ~~`upload.target: "temporary-public-storage"`~~ | `filesystem` + Actions 아티팩트 | **공개 저장소에 리포트를 올린다.** 이 브랜치의 `/work`·`/about` 은 아직 `main` 에 없다 — 배포 전 화면을 외부에 먼저 공개하게 된다 |
+> | 2 | ~~URL 4개~~ | **5개** — 블로그 글 1편 추가 | 블로그 글 페이지가 220개인데 아래 목록엔 **한 편도 없다.** 가장 무거운 라우트가 측정 밖이었다 |
+> | 3 | ~~`actions/checkout@v4` · `setup-node@v4`~~ | **`@v6`** | `deploy.yml` 과 맞췄다. 이 워크플로는 PR 에서만 돌아 로컬 실증이 불가능하므로 **실제 CI 에서 돌아 본 적 있는 버전**이 유일한 근거다 |
+> | 4 | (없음) | `tests/ci/lighthouse-workflow.test.ts` — 단언 19개 | 이 잡은 `continue-on-error` + 전부 `warn` 이라 **무엇이 잘못돼도 초록**이다. 수치는 무르게 두되 **설정**은 배포 게이트 안에서 딱딱하게 막는다 |
+>
+> 경위: [`reports/2026-08-28-t15-lighthouse.md`](../reports/2026-08-28-t15-lighthouse.md) (R62~R66)
 
 **Files:**
 - Create: `.github/workflows/lighthouse.yml`
@@ -2658,10 +2724,17 @@ npx @lhci/cli autorun
 
 | 라우트 | LCP | CLS | Performance |
 | --- | --- | --- | --- |
-| `/` | | | |
-| `/work/` | | | |
-| `/about/` | | | |
-| `/blog/` | | | |
+| `/` | 3864ms ⚠️ | 0.001 | 82 |
+| `/work/` | 2878ms ⚠️ | 0.000 | 94 |
+| `/about/` | 2108ms | 0.013 | 99 |
+| `/blog/` | 3398ms ⚠️ | 0.025 | 87 |
+| `/blog/agentic-coding/deploy-checklist-debugging/` | 3019ms ⚠️ | 0.227 ⚠️ | 68 ⚠️ |
+
+> **실측 (2026-08-28, T15).** 로컬 Windows · 모바일 에뮬레이션 기본값 · 1회 측정이다.
+> CI(ubuntu · `numberOfRuns: 3`) 값과 다르다 — 비교 기준이 아니라 자릿수 감각으로만 쓴다.
+>
+> **이 표가 `warn` 을 정당화한다.** `error` 였다면 5개 중 **4개가 LCP 에서 즉시 빨갛다.**
+> `/` 의 CLS 는 0.001 로 `min-h` 를 의심할 필요가 없었다 — 예산을 넘긴 것은 **블로그 글(0.227)** 이다.
 
 ⚠️ `/`의 CLS가 0.1을 넘으면 **히어로 문구 영역의 `min-h`를 의심한다**(T9 Step 3). 문구 길이가 달라 높이가 튀는 것이 가장 흔한 원인이다.
 
