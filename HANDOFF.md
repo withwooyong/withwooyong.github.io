@@ -1,10 +1,13 @@
 # 인수인계 (HANDOFF)
 
-> 갱신: 2026-08-28 · 브랜치 `feat/redesign-stage2` = `9c28aca` (미배포) · `main` = `63d7de7`
+> 갱신: 2026-08-28 · 브랜치 `feat/redesign-stage2` (미배포) · `main` = `63d7de7`
 >
-> 🔴 **다음 세션의 임무는 하나다 — 원계획의 잔여분 `T10~T15` 를 끝까지 만든다.**
+> 🔴 **다음 세션의 임무는 하나다 — 원계획의 잔여분 `T13~T15` 를 끝까지 만든다.**
 > 정본은 [`docs/superpowers/plans/2026-08-25-redesign-phase-1-2.md`](docs/superpowers/plans/2026-08-25-redesign-phase-1-2.md) 이고,
-> **`T9` 는 끝났다**(커밋 `9c28aca` — 리뷰 두 축 · 검증 5관문 통과). 남은 것은 **6개**다(§2).
+> **`T9`~`T12` 는 끝났다.** 남은 것은 **3개**다(§2).
+>
+> ⚠️ 위 커밋 해시를 다시 적지 마라 — 이 줄은 T9 마감 이후 세 태스크 동안 `9c28aca` 로 낡아 있었다.
+> 브랜치의 현재 위치는 `git log -1` 이 답한다. **문서에 적힌 순간부터 썩는 값이다.**
 >
 > 사용자의 말 그대로: *"만들려고 했던 작업을 끝까지 마무리 지어보고 내가 다시 판단할께."*
 > **재설계가 아니다.** 만들려던 것을 다 만든 뒤에 판단을 받는다.
@@ -37,7 +40,7 @@
 
 ---
 
-## 2. 🔴 다음 작업 — 원계획 `T11~T15`, 5개 미착수 (`T9`·`T10` 은 마감)
+## 2. 🔴 다음 작업 — 원계획 `T13~T15`, 3개 미착수 (`T9`~`T12` 는 마감)
 
 정본: [`docs/superpowers/plans/2026-08-25-redesign-phase-1-2.md`](docs/superpowers/plans/2026-08-25-redesign-phase-1-2.md)
 아틀라스 계획서가 **GC-11**(「`pages/index.tsx` 를 건드리지 않는다」)로 스스로를 막아 놓은 탓에
@@ -48,13 +51,13 @@
 | ~~**9**~~ | 히어로 B — 아틀라스 점등 | `components/hero.tsx` · `hero-atlas.tsx` · `lib/hero/*` · `lib/use-scroll-progress.ts` · `lib/design/accent-area.ts` | ✅ **완료** — 커밋 `9c28aca`. 리뷰 두 축 FAIL → 8건 수정 → PASS. 검증: vitest 382 · 차단 서드파티 스타일시트 0 · 뮤턴트 8/8 사멸. 경위는 [`reports/2026-08-28-t9-hero-b.md`](docs/superpowers/reports/2026-08-28-t9-hero-b.md) (R35·R36·R37) |
 | ~~**10**~~ | 메인 5섹션 재작성 | `components/home/section-*.tsx` · `pages/index.tsx` · `data/{about,education,product-lead-teaser}.ts` | ✅ **완료** — `index.tsx` 537 → 82줄. 리뷰 두 축(품질 / 접근성·R34) HIGH 3 → 수정 1라운드 → 0. 검증: e2e **84/84**, `hero.spec.ts` **5/5 첫 초록**. 경위는 [`reports/2026-08-28-t10-main-sections.md`](docs/superpowers/reports/2026-08-28-t10-main-sections.md) (R38·R39·R40) |
 | ~~**11**~~ | `/work` — `product-lead*` 4갈래 통합 | `pages/work/index.tsx` · `components/work/*` · `data/work.ts` | ✅ **완료.** 리뷰 **세 축**(품질/접근성/**검사 유효성**) → CRITICAL 1·HIGH 4 → 2라운드 → 0. 검증: vitest **406** · e2e **130/130 · skip 0** · 뮤턴트 2차 **9/9 사멸**. 경위는 [`reports/2026-08-28-t11-work.md`](docs/superpowers/reports/2026-08-28-t11-work.md) (R41·R42·R43·R44) |
-| **12** | `/about` 신규 | `pages/about/index.tsx` | ❌ 없음 |
+| ~~**12**~~ | `/about` 신규 | `pages/about/index.tsx` · `e2e/about.spec.ts` | ✅ **완료.** ⚠️ **리뷰 축 0개** — T9·T10 은 2축, T11 은 3축이었다. 대조가 없다. 검증: vitest **406** · e2e **154/154 · skip 0** · 뮤턴트 **9/9 사멸**. 경위는 [`reports/2026-08-28-t12-about.md`](docs/superpowers/reports/2026-08-28-t12-about.md) (R45·R46·R47) |
 | **13** | `product-lead*` 스텁 — 9 URL → 파일 4개 | `public/product-lead*/index.html` · `e2e/redirects.spec.ts` | ❌ 구 라우트 5개(1,425줄) 그대로 |
 | **14** | 고아 자산 삭제 + 기준선 1회 갱신 | `lib/wiki.ts` 등 5개 제거 | ❌ 5개 전부 존재. **`--update` 는 여기서만** |
 | **15** | Lighthouse CI — 경고로만 | 워크플로 단계 | ❌ 설정·워크플로 둘 다 없음 |
 
 **순서를 바꾸지 마라.** T13 이 지우는 라우트를 T11 이 흡수하고, T14 는 T13 이 라우트를 지워야
-호출자 0건이 증명된다 — ~~9~~ → ~~10~~ → ~~11~~ → **12** → 13 → 14 → 15.
+호출자 0건이 증명된다 — ~~9~~ → ~~10~~ → ~~11~~ → ~~12~~ → **13** → 14 → 15.
 
 > ### 🔴 **T14 는 이것을 모르면 멀쩡한 파일을 지운다**
 >
@@ -101,24 +104,26 @@ T10 이 구 `pages/index.tsx` 를 걷어내면서 홈에서 `/product-lead-v2` �
 - **`opacity-0` 은 텍스트 선택·`Ctrl+F` 에서 빠지지 않는다.** h1 을 드래그하면 84자 세 문장이 딸려 나온다.
   숨기려면 `visibility: hidden` 이 함께 필요하다.
 
-### 2-3. 착수 전 읽을 것 — **`T12` (`/about`) 기준**
+### 2-3. 착수 전 읽을 것 — **`T13` (`product-lead*` 스텁) 기준**
 
 | 순서 | 무엇 | 왜 |
 | --- | --- | --- |
-| 1 | 계획서 `§Task 12` (L2167~2278) | 브리프 정본. **단, 그 안의 「이미 있다」류 사실 주장은 검증하고 써라** — T11 에서 계획서가 없는 검사를 있다고 했다 (R38·R44) |
-| 2 | [`reports/2026-08-28-t11-work.md`](docs/superpowers/reports/2026-08-28-t11-work.md) — R41~R44 | **`/about` 은 `/work` 와 같은 형태로 만든다.** 리뷰 3축·검사 설계·접근성 계약이 전부 거기서 정해졌다 |
-| 3 | [`plans/2026-08-25-work-merge-notes.md`](docs/superpowers/plans/2026-08-25-work-merge-notes.md) | 문구 규칙의 현재 판정(§3) — 「`-v2` 확정본 우선」이 사용자 결정이다 |
-| 4 | `e2e/work.spec.ts` · `components/work/section-*.tsx` | **복제할 원본.** 섹션마다 개수 대조 + 접근명 계약이 한 벌이다 |
-| 5 | `e2e/shell.spec.ts` 의 `NAV_ABSENT` | `"About"` 이 거기 남아 있다. T12 가 `NAV_PRESENT` 로 올리고 **Tab 순환을 8→9 로** 갱신해야 한다 |
+| 1 | 계획서 `§Task 13` (L2279~2455) | 브리프 정본. **단, 그 안의 「이미 있다」류 사실 주장은 검증하고 써라** — T11 에서 계획서가 없는 검사를 있다고 했고(R38·R44), **T12 에서는 계획서의 코드 조각이 같은 절의 ⚠️ 경고를 어기고 있었다**(R45) |
+| 2 | [`reports/2026-08-28-t12-about.md`](docs/superpowers/reports/2026-08-28-t12-about.md) — R45~R47 | T13 이 지우는 구 라우트를 **T11·T12 가 흡수했다.** 무엇이 어디로 갔는지가 거기 있다 |
+| 3 | [`reports/2026-08-28-t11-work.md`](docs/superpowers/reports/2026-08-28-t11-work.md) — R41~R44 | 리뷰 3축·검사 설계·접근성 계약의 정본 |
+| 4 | `e2e/work.spec.ts` · `e2e/about.spec.ts` | **복제할 원본.** 개수 대조 + 접근명 계약이 한 벌이다 |
+| 5 | `e2e/smoke.spec.ts` 의 라우트 배열 | 이월로 빠져 있는 라우트는 이제 **하나도 없다.** T13 이 URL 을 옮기면 여기와 `redirects.spec.ts` 가 같이 움직인다 |
 
-**T12 에서 되풀이하지 말 것** (T11 이 실제로 겪었다):
+**되풀이하지 말 것** (T11·T12 가 실제로 겪었다):
 
 | 함정 | 대응 |
 | --- | --- |
 | 섹션 하나만 개수 대조를 빼먹는다 | **0개 렌더 뮤턴트가 생존한다.** 다섯 중 넷만 검사하면 초록이 커버리지를 증명하지 않는다 |
 | `getByRole(role, {name})` 에 `exact` 를 안 붙인다 | 접근명이 길어져도 초록이다. 계약으로 삼는 검사에는 전부 붙인다 |
 | 파일을 쓰는 에이전트(뮤테이션)를 리뷰어와 **병렬**로 띄운다 | 리뷰어가 뮤턴트를 진짜 결함으로 보고한다. **단독 실행** (R41) |
-| 새 창 링크에 예고를 안 단다 | 지금 예고가 있는 곳은 `/work` **뿐**이다 — `/about` 이 두 번째가 되어야 한다 |
+| 새 창 링크에 예고를 안 단다 | 지금 예고가 있는 곳은 `/work`·`/about` 둘뿐이다 |
+| **목록을 도는 검사에서 마지막 항목을 빼낸다** | 빈 배열을 도는 `for` 는 **아무것도 단정하지 않고 초록**이다. 전수 대조를 함께 둔다 (R46) |
+| **텍스트가 있으면 보인다고 친다** | `textContent` 는 CSS 와 무관하다. 배치·표시는 `toHaveCSS`·`toBeVisible` 로 따로 잰다 (R47) |
 
 ---
 
