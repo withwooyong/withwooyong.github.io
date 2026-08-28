@@ -10,7 +10,7 @@ import { useEffect } from "react";
  * 이 파일이 덮는다. 라우트를 지우면 그 6개가 404 가 되고 외부 링크·기존 색인이
  * 그대로 죽는다. 그래서 파일은 지우지 않고 **본문만 스텁으로 갈아끼운다.**
  *
- * `WikiShell`·`lib/wiki` import 를 전부 끊었다 — T14 가 그 둘을 지울 수 있게.
+ * `WikiShell`·`lib/wiki` import 를 전부 끊었다 — 그래서 T14 가 그 둘을 지웠다.
  *
  * **`SiteHead` 를 쓰지 않는 이유:** `components/site-head.tsx` 는 canonical 을 자기 경로로
  * 박는데, 스텁의 canonical 은 목적지를 가리켜야 한다. 그래서 생 `<Head>` 다.

@@ -92,7 +92,7 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
             {/*
               폭에 상관없이 항상 보여야 한다. 검색으로 포스트에 직접 들어온 방문자에게는
               이 링크가 포트폴리오로 가는 유일한 경로다 (요구사항 FR-4.3).
-              위키(wiki-shell)는 noindex라 sm:block으로 숨겨도 됐지만 블로그는 색인된다.
+              위키(wiki-shell, T14 가 지웠다)는 noindex라 sm:block으로 숨겨도 됐지만 블로그는 색인된다.
             */}
             <Link
               href="/"

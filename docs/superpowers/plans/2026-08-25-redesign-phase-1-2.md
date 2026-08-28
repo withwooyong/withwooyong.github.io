@@ -2539,14 +2539,27 @@ npm run check-baseline
 | 남은 항목 | `en/index.html` · `notion/index.html` · `404` 계열이 **그대로인지** |
 | 새 항목 | `work/index.html` · `about/index.html`이 추가됐는지 |
 
-⚠️ **`en`과 `notion`의 해시가 바뀌었다면 의도치 않은 회귀다.** 갱신하지 말고 원인을 먼저 찾는다. 셸을 안 붙였는데 바뀔 이유는 CSS 해시뿐이므로, CSS 외의 차이가 있으면 문제다.
+⚠️ **`en`과 `notion`의 해시가 바뀌었다면 의도치 않은 회귀다.** 갱신하지 말고 원인을 먼저 찾는다. ~~셸을 안 붙였는데 바뀔 이유는 CSS 해시뿐이므로, CSS 외의 차이가 있으면 문제다.~~
+
+> 🔴 **취소선 부분은 틀렸다** (2026-08-28 T14 실측 · [`reports/2026-08-28-t14-orphans.md` §R55](../reports/2026-08-28-t14-orphans.md)).
+> `scripts/check-baseline.mjs:175` 가 `[0-9a-f]{16}\.(css|js)` 를 이미 `<BUNDLE>` 로 정규화하므로
+> **CSS 해시는 이 검사에 도달하지 않는다.** 실제 원인은 둘이었고 둘 다 무해했다 —
+> ① `pages/_document.tsx` 변경(T9, 모든 Next 렌더 페이지에 적용) ② **webpack 청크 *번호***
+> (`chunks/3361-<BUNDLE>.js` 의 `3361`)는 정규화 대상이 아니다.
+> **확인 절차는 그대로 두되 원인 후보를 하나로 못 박지 마라.** `notion` 만 불변인 것이 대조군이다 —
+> 그것은 `public/notion/index.html` 로 Next 를 거치지 않는다.
 
 셋 다 확인했으면 갱신한다.
 
 ```bash
-npm run check-baseline:update -- --force
+npm run check-baseline:update
 npm run check-baseline
 ```
+
+> ⚠️ **`--force` 를 기본으로 붙이지 마라.** `check-baseline.mjs:223` 을 보면 그것이 뚫는 것은
+> **「파일 수가 줄었다」는 가드 하나뿐**이다. 먼저 붙이지 않고 돌려라 — 거부당하지 않았다는 것 자체가
+> 「줄어든 것이 없다」의 증명이다. 거부당하면 그때 줄어든 항목을 눈으로 확인한 뒤에만 붙인다.
+> (T14 실측: 15→16으로 늘어 `--force` 없이 종료 0)
 
 Expected: 두 번째 명령이 **종료 코드 0**.
 
@@ -2596,11 +2609,12 @@ Expected: **종료 코드 0.** 하나라도 빨가면 붙이지 말고 원인을
 
 ```bash
 git add -A
-git commit -m "chore: 고아 자산 5종 삭제 + 기준선 1회 갱신 + e2e 를 CI 게이트로
+git commit -m "chore: 고아 자산 4종 삭제 + 기준선 1회 갱신 + e2e 를 CI 게이트로
 
 T13 이 라우트를 스텁으로 대체했으므로 그것만 부르던 자산을 지운다 —
-lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-domains · -roadmap.
+lib/wiki.ts · wiki-shell · roadmap-domain · product-lead-roadmap.
 지우기 전에 grep 으로 호출자 0건을 확인했다.
+data/product-lead-domains.ts 는 지우지 않는다 — /work 가 쓴다(§R49).
 
 기준선은 이번 배치에서 여기 한 번만 갱신한다(설계서 §11.1).
 단계마다 갱신하면 --update 가 습관이 되고 이 검사는 죽는다.

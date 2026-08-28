@@ -4,7 +4,8 @@ import { domains } from "@/data/product-lead-domains";
  * 05 도메인 실행 설계 — 도메인별 실행 요약.
  *
  * ⚠️ 도메인은 `id`·`title`·`summary` 만 쓴다. 로드맵 상세와 `RoadmapDomain` 인터랙션은
- *    T14 가 지울 자산이라, 여기서 묶으면 T14 가 자기가 만든 코드를 되돌리게 된다.
+ *    T14 가 지웠다 — 여기서 그것들을 묶어 뒀다면 T14 가 자기가 만든 코드를 되돌려야 했다.
+ *    `data/product-lead-domains.ts` 만 남은 이유가 이 섹션이다.
  */
 export function SectionDomains() {
   return (

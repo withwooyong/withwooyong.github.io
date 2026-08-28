@@ -2,6 +2,22 @@
 
 이 저장소의 사용자에게 영향이 큰 변경만 날짜별로 간단히 적습니다. (커밋 해시는 선택적으로 추적합니다.)
 
+## 2026-08-28 — 고아 자산 4종 삭제 · 기준선 게이트 복구 · **E2E 를 배포 게이트로 승격**
+
+> **화면은 바뀌지 않았다.** 단계 2 동안 의도적으로 꺼 두었던 **게이트 둘을 끝에서 켠 것**이 요점이다.
+>
+> - `npm run e2e` 가 이제 `deploy.yml` 의 `build` 잡에서 돈다. `deploy` 는 `needs: build` 뒤라
+>   **E2E 가 빨가면 배포되지 않는다.** `continue-on-error` 는 쓰지 않았다
+> - `check-baseline` 이 T9 이후 15건 빨강이었다. 원인을 전수 규명한 뒤 **한 번만** 갱신해
+>   `✅ 16개 불변` 으로 되돌렸다. `product-lead*` 스텁 9개는 그대로 보존됐다
+> - 지운 것: `lib/wiki.ts` · `wiki-shell` · `roadmap-domain` · `product-lead-roadmap`. **4개다** —
+>   계획서 목록에 있던 `product-lead-domains.ts` 는 `/work` 가 쓰고 있어 남겼다
+>
+> 새 검사기 `tests/ci/deploy-workflow.test.ts` 가 그 게이트를 **YAML 파싱으로** 지킨다(단언 5개).
+> 문자열 grep 이었다면 「스텝을 주석 처리한」 뮤턴트가 살아남았을 것이다 — 주석 안에 같은 문자열이 남는다.
+>
+> 경위: [`docs/superpowers/reports/2026-08-28-t14-orphans.md`](docs/superpowers/reports/2026-08-28-t14-orphans.md) (R55~R61)
+
 ## 2026-08-28 — 문서 정합성 마감: 거짓 CI 보증 제거 · README 65커밋 drift 정정
 
 > **코드는 한 줄도 바뀌지 않았다.** 앞 배치가 남긴 문서 부채 둘을 닫았다.

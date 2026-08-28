@@ -31,7 +31,7 @@ import { SiteShell } from "@/components/site-shell";
  *
  * ⚠️ **`/product-lead-v2` 로 가는 사이트 내 유일한 진입점이 이 재작성으로 끊겼다.**
  *    구 `#product` 섹션의 CTA 가 그것이었고, product-lead 클러스터 **밖에서** 오는
- *    인바운드 링크는 이제 0건이다(`components/wiki-shell.tsx` 는 클러스터 전용).
+ *    인바운드 링크는 이제 0건이다(클러스터 전용이던 `components/wiki-shell.tsx` 는 T14 가 지웠다).
  *    이것은 사고가 아니라 **계획된 공백**이다 — T11 이 `/work` 로 통합하고 T13 이
  *    9 URL 을 파일 4개로 접으므로, 지금 임시 링크를 넣으면 두 태스크가 곧 지운다.
  *    그때까지 그 페이지들은 **사이트맵에만 남은 고아**다.

@@ -6,7 +6,8 @@
  *
  * ✅ **이 파일은 살아 있다. 지우지 마라.** `components/work/section-domains.tsx` 가 `/work` 에서
  *    렌더하고 `e2e/work.spec.ts` 가 이 데이터로 화면을 검사한다. 같은 폴더의
- *    `product-lead-roadmap.ts`(import 0건, T14 삭제 대상)와 운명이 다르다.
+ *    `product-lead-roadmap.ts` 는 import 0건이라 T14 가 지웠지만, 이 파일은 `/work` 가
+ *    쓰기 때문에 남았다 — 같은 삭제 목록에 있었어도 운명이 갈린 이유가 그것이다.
  * 네 문서가 같은 뼈대(도메인 정의 → As-Is 가설 → 검증 → 원칙 → To-Be → 결정 → 빌드/바이 → 로드맵 → 지표 → 중단 기준)를
  * 공유하므로 하나의 Domain 타입으로 모델링한다.
  *

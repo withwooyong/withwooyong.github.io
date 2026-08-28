@@ -12,8 +12,8 @@ import type { GetStaticPaths, GetStaticProps } from "next";
  * 파일 2개로 접힌다 — 라우트를 지우면 그 6개가 전부 404 가 되고, 외부에서 걸린
  * 링크와 기존 색인이 그대로 죽는다. 그래서 **본문만 스텁으로 갈아끼운다.**
  *
- * **slug 를 하드코딩하는 이유:** `lib/wiki.ts` 의존을 여기서 끊어야 T14 가
- * `lib/wiki.ts`·`components/wiki-shell.tsx` 를 지울 수 있다. 원문이던
+ * **slug 를 하드코딩하는 이유:** `lib/wiki.ts` 의존을 여기서 끊었고, 그래서 T14 가
+ * `lib/wiki.ts`·`components/wiki-shell.tsx` 를 지웠다. 원문이던
  * `pages/product-lead-loadmap/*.md` 는 라우트 삭제와 함께 T13 이 이미 지웠다.
  * 목록은 접기 직전의 `wikiDocs` 실측값과 같다.
  *
