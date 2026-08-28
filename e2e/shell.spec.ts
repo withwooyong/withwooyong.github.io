@@ -48,10 +48,16 @@ const NAV_PRESENT = [
   "Atlas",
   "Blog",
   "Work", // 2026-08-28 T11 에서 `NAV_ABSENT` → 여기로 옮겼다 (`/work/` 신설)
+  "About", // 2026-08-28 T12 에서 `NAV_ABSENT` → 여기로 옮겼다 (`/about/` 신설)
 ];
-const NAV_ABSENT = [
-  "About", // 선행 계획서 T12 로 이월
-];
+/**
+ * ⚠️ **비어 있다. T12 가 마지막 항목(About)을 올리면서 이월 라우트가 0 이 됐다.**
+ *    빈 배열을 도는 `for` 는 아무것도 단정하지 않고 초록이 된다 — 이 리포가 반복해서
+ *    데인 「거짓 0」과 같은 얼굴이다. 그래서 아래 검사는 이 목록만 보지 않고
+ *    **전수 대조**(내비가 렌더한 항목 == `NAV_PRESENT`)를 함께 본다. 목록이 비어도
+ *    「예상 밖 항목이 없다」는 남고, 전수 대조는 열거를 잊은 항목까지 잡으므로 더 강하다.
+ */
+const NAV_ABSENT: string[] = [];
 
 /**
  * 게이트를 통과하지 **않는** 유일한 검사들. 이 파일의 skip 을 감시하는 것이 임무다.
@@ -132,11 +138,15 @@ test.describe("헤더 (셸 부착 시 켜짐)", () => {
    * ⚠️ `exact: true` 를 지우지 마라. `getByRole(role, { name })` 은 기본이 **부분 문자열**이라
    *    접근명이 길어져도 초록이다(2026-08-26 대조군 실측).
    */
-  test("미완성·이월 라우트는 내비에 없다", async ({ page }) => {
+  test("미완성·이월 라우트는 내비에 없고, 내비 항목은 전수가 NAV_PRESENT 와 같다", async ({
+    page,
+  }) => {
     await gotoWithShell(page, SHELL_HOME);
 
     // 드로어는 `<header>` 안에 있으므로 열어 두면 아래 스코프가 그대로 덮는다.
-    if (!(await page.getByRole("navigation", { name: "주요 메뉴" }).isVisible())) {
+    const desktopNav = page.getByRole("navigation", { name: "주요 메뉴" });
+    const onDrawer = !(await desktopNav.isVisible());
+    if (onDrawer) {
       await page.getByRole("button", { name: "메뉴 열기" }).click();
       await expect(page.getByRole("navigation", { name: "모바일 메뉴" })).toBeVisible();
     }
@@ -145,6 +155,20 @@ test.describe("헤더 (셸 부착 시 켜짐)", () => {
     for (const label of NAV_ABSENT) {
       await expect(header.getByRole("link", { name: label, exact: true })).toHaveCount(0);
     }
+
+    /*
+      전수 대조. **위 루프는 지금 0 회 돈다**(`NAV_ABSENT` 가 비었다) — 이것이 없으면
+      이 테스트는 아무것도 단정하지 않는 초록이다. 열거한 것만 보는 검사와 달리,
+      전수 대조는 「올리는 것을 잊은 채 남은 링크」처럼 아무도 열거하지 않은 항목도 잡는다.
+
+      ⚠️ 기대 집합이 폭에 따라 다르다. EN 링크는 데스크톱에서 `<nav>` **밖**(헤더 우측)에
+         있고, 드로어에서만 내비 안으로 들어온다
+         (`site-header.tsx` 의 `[...NAV, { href: "/en/", label: "EN" }]`).
+    */
+    const nav = onDrawer ? page.getByRole("navigation", { name: "모바일 메뉴" }) : desktopNav;
+    const rendered = (await nav.getByRole("link").allInnerTexts()).map((t) => t.trim()).sort();
+    const expected = (onDrawer ? [...NAV_PRESENT, "EN"] : [...NAV_PRESENT]).sort();
+    expect(rendered, "내비가 렌더한 항목 전수").toEqual(expected);
   });
 
   test("본문 건너뛰기 링크가 포커스에서 드러난다", async ({ page }) => {
@@ -239,12 +263,16 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
    * 순서를 그대로 못박는다. 이 테스트가 지키는 것이 바로 **DOM 순서**이기 때문이다.
    * NAV 가 바뀌면 여기도 같이 바뀌어야 하는 게 맞다.
    *
-   * 390px 에서 순환에 드는 것: 헤더 바의 [로고 · 검색 · 토글 · 햄버거] + 드로어의 [Work · Atlas · Blog · EN].
+   * 390px 에서 순환에 드는 것: 헤더 바의 [로고 · 검색 · 토글 · 햄버거] + 드로어의 [Work · Atlas · Blog · About · EN].
    * 데스크톱 내비(`hidden md:flex`)와 헤더의 EN(`hidden sm:inline`)은 offsetParent 필터가 걸러 낸다.
    *
    * ⚠️ 아래 두 배열은 **실측으로 갱신한다.** 2026-08-27 에 두 곳이 한꺼번에 낡아 있었다 —
    *    NAV 가 [Work·Blog·About] 로, 헤더 바에 T5 가 넣은 「검색 열기」가 빠진 채로.
    *    둘 다 skip 중이라 드러나지 않았다.
+   *
+   * ⚠️ **한 바퀴의 길이를 숫자로 적지 마라.** 2026-08-28 T12 에서 NAV 에 About 이 늘자
+   *    「8 번 누른다」가 한 칸 모자라 실패했다 — 순환은 맞는데 검사가 낡은 것이다.
+   *    아래처럼 기대 배열의 길이에서 뽑으면 항목이 늘어도 고칠 곳이 배열 하나로 남는다.
    */
   test("드로어가 열리면 Tab 이 헤더 바와 드로어를 한 바퀴로 묶는다", async ({ page }) => {
     await page.setViewportSize(MOBILE);
@@ -254,23 +282,27 @@ test.describe("T7 미검증 항목 (셸 부착 시 켜짐)", () => {
     // 열릴 때 포커스는 버튼이 아니라 드로어 첫 항목으로 간다
     await expect(page.locator("#mobile-nav a").first()).toBeFocused();
 
-    const seen = [await focusedLabel(page)];
-    for (let i = 0; i < 8; i++) {
-      await page.keyboard.press("Tab");
-      seen.push(await focusedLabel(page));
-    }
-
-    expect(seen).toEqual([
+    // DOM 순서 그대로다. 드로어(NAV + EN) 다음이 헤더 바.
+    const CYCLE = [
       "Work", // 2026-08-28 T11 에서 NAV 맨 앞에 들어왔다
       "Atlas",
       "Blog",
+      "About", // 2026-08-28 T12 에서 NAV 맨 뒤에 들어왔다
       "EN",
       "허우용 Ted", // ← 헤더 바. 여기가 빠지면 T7 의 누수가 되살아난 것이다
       "검색 열기",
       "라이트 모드로 전환",
       "메뉴 닫기",
-      "Work", // 아홉 번째에 처음으로 돌아온다 = 한 바퀴가 정확히 8
-    ]);
+    ];
+
+    const seen = [await focusedLabel(page)];
+    for (let i = 0; i < CYCLE.length; i++) {
+      await page.keyboard.press("Tab");
+      seen.push(await focusedLabel(page));
+    }
+
+    // 마지막 한 번은 **처음으로 돌아오는지**를 본다 — 한 바퀴가 정확히 CYCLE.length 다.
+    expect(seen).toEqual([...CYCLE, CYCLE[0]]);
 
     /*
      * 역방향의 경계. 지금 포커스는 드로어 첫 항목(Work)이고, head 는 로고다.
