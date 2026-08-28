@@ -2170,8 +2170,20 @@ git commit -m "feat(work): product-lead 4갈래를 /work 하나로 통합
 - Create: `pages/about/index.tsx`
 
 **Interfaces:**
-- Consumes: T1 `experiences`, `data/portfolio.ts`의 `skillCategories`·`thesisSummaryNarration`, T7 `SiteShell`
+- Consumes: T1 `experiences`, `data/portfolio.ts`의 `skillCategories`·`thesisSummaryNarration`, **`data/education.ts`·`data/about.ts`**, T7 `SiteShell`
 - Produces: `/about/` — 헤더 내비의 About이 여기로 온다
+
+⚠️ **`data/portfolio.ts`만 보면 「학교 이름 없는 학력 페이지」가 나온다.** T10이 구 `pages/index.tsx`를
+전면 재작성하면서 `#about`·`#education`의 문자열이 그 파일에서 사라졌고, 소실을 막으려고
+아래 두 파일로 옮겨 뒀다. **둘 다 지금 렌더하는 페이지가 없어서, 찾지 않으면 영영 안 보인다.**
+
+| 파일 | 담고 있는 것 | `portfolio.ts`에 없는 이유 |
+| --- | --- | --- |
+| `data/education.ts` | 학교명 `서울시립대학교 (석사)` · 논문 제목 · 논문 PDF 링크 | `thesisSummaryNarration`에는 **`공학석사`만** 있고 학교·제목·링크가 없다 |
+| `data/about.ts` | 「개발 리더로서의 철학」 3문단 · 구 제목 2개 · 요약 카드 3장(`aboutFacts`) | 애초에 `data/`로 추출된 적이 없다 |
+
+`aboutFacts`의 **`전문 분야`는 리포 전체에서 이 파일이 유일한 사본**이다. 문구를 다시 쓰더라도
+원문이 무엇이었는지는 여기서 확인한다.
 
 **담는 것 (스펙 §4):** 경력 전문 · 학력 · 기술. `/work`가 「무엇을 했나」라면 `/about`은 「누구인가」다. 경력 전문은 `/work`와 겹치므로 **여기서는 요약만 두고 `/work`로 보낸다.**
 
@@ -2183,6 +2195,9 @@ import Link from "next/link";
 import { SiteHead } from "@/components/site-head";
 import { SiteShell } from "@/components/site-shell";
 import { skillCategories, thesisSummaryNarration } from "@/data/portfolio";
+// 학력·철학은 portfolio.ts 가 아니라 여기 있다 — 위 ⚠️ 표 참고
+import { aboutFacts, leadershipPhilosophy } from "@/data/about";
+import { education } from "@/data/education";
 
 export default function About() {
   return (

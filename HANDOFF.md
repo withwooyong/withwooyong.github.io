@@ -37,7 +37,7 @@
 
 ---
 
-## 2. 🔴 다음 작업 — 원계획 `T10~T15`, 6개 미착수 (`T9` 는 마감)
+## 2. 🔴 다음 작업 — 원계획 `T11~T15`, 5개 미착수 (`T9`·`T10` 은 마감)
 
 정본: [`docs/superpowers/plans/2026-08-25-redesign-phase-1-2.md`](docs/superpowers/plans/2026-08-25-redesign-phase-1-2.md)
 아틀라스 계획서가 **GC-11**(「`pages/index.tsx` 를 건드리지 않는다」)로 스스로를 막아 놓은 탓에
@@ -46,15 +46,29 @@
 | T | 작업 | 산출물 | 실측 (2026-08-28) |
 | --- | --- | --- | --- |
 | ~~**9**~~ | 히어로 B — 아틀라스 점등 | `components/hero.tsx` · `hero-atlas.tsx` · `lib/hero/*` · `lib/use-scroll-progress.ts` · `lib/design/accent-area.ts` | ✅ **완료** — 커밋 `9c28aca`. 리뷰 두 축 FAIL → 8건 수정 → PASS. 검증: vitest 382 · 차단 서드파티 스타일시트 0 · 뮤턴트 8/8 사멸. 경위는 [`reports/2026-08-28-t9-hero-b.md`](docs/superpowers/reports/2026-08-28-t9-hero-b.md) (R35·R36·R37) |
-| **10** | 메인 5섹션 재작성 | `components/home/section-*.tsx` · `pages/index.tsx` | ❌ `components/home/` 없음. `index.tsx` 는 **구 디자인 537줄** |
-| **11** | `/work` — `product-lead*` 4갈래 통합 | `pages/work/index.tsx` | ❌ 없음 |
+| ~~**10**~~ | 메인 5섹션 재작성 | `components/home/section-*.tsx` · `pages/index.tsx` · `data/{about,education,product-lead-teaser}.ts` | ✅ **완료** — `index.tsx` 537 → 82줄. 리뷰 두 축(품질 / 접근성·R34) HIGH 3 → 수정 1라운드 → 0. 검증: e2e **84/84**, `hero.spec.ts` **5/5 첫 초록**. 경위는 [`reports/2026-08-28-t10-main-sections.md`](docs/superpowers/reports/2026-08-28-t10-main-sections.md) (R38·R39·R40) |
+| **11** | `/work` — `product-lead*` 4갈래 통합 | `pages/work/index.tsx` | ❌ 없음. ⚠️ **`/product-lead-v2` 인바운드가 T10 에서 0건이 됐다 — 아래 2-2** |
 | **12** | `/about` 신규 | `pages/about/index.tsx` | ❌ 없음 |
 | **13** | `product-lead*` 스텁 — 9 URL → 파일 4개 | `public/product-lead*/index.html` · `e2e/redirects.spec.ts` | ❌ 구 라우트 5개(1,425줄) 그대로 |
 | **14** | 고아 자산 삭제 + 기준선 1회 갱신 | `lib/wiki.ts` 등 5개 제거 | ❌ 5개 전부 존재. **`--update` 는 여기서만** |
 | **15** | Lighthouse CI — 경고로만 | 워크플로 단계 | ❌ 설정·워크플로 둘 다 없음 |
 
 **순서를 바꾸지 마라.** T13 이 지우는 라우트를 T11 이 흡수하고, T14 는 T13 이 라우트를 지워야
-호출자 0건이 증명된다 — ~~9~~ → **10** → 11 → 12 → 13 → 14 → 15.
+호출자 0건이 증명된다 — ~~9~~ → ~~10~~ → **11** → 12 → 13 → 14 → 15.
+
+### 2-2. ⚠️ **T11 전에 `main` 에 머지하지 마라** — T10 이 만든 조건
+
+T10 이 구 `pages/index.tsx` 를 걷어내면서 **홈에서 `/product-lead-v2` 로 가는 유일한 진입점이 끊겼다.**
+인바운드 링크는 리포 전역 0건이고(product-lead 클러스터 내부는 제외), 사이트맵에만 남아 있다.
+
+**이것은 사고가 아니라 계획된 공백이다** — T11 `/work` 가 그 진입점을 받고 T13 이 9 URL 을 파일 4개로 접는다.
+임시 링크를 넣지 않은 것도 그래서다. 두 태스크가 곧 지울 링크를 지금 만들면 churn 만 남는다.
+
+**그러나 `main` 은 프리뷰 없는 프로덕션이다.** T11 이전에 `feat/redesign-stage2` 를 머지하면
+빌드도 링크 검사기도 E2E 도 전부 초록인 채 **실사용자가 도달할 수 없는 페이지**가 배포된다.
+빌드가 이 조건을 막지 않으므로 사람이 지켜야 한다.
+
+> **머지 순서가 이 공백의 수명을 정한다.** 브랜치에 쌓아 두는 동안은 아무 일도 일어나지 않는다.
 
 ### 2-1. ~~⚠️ T9 는 코드부터 쓰면 안 된다 — 선결 4건~~ (해소 — 아래는 기록으로 남긴다)
 
@@ -266,17 +280,17 @@ flowchart LR
 
 | 항목 | 값 |
 | --- | --- |
-| 브랜치 | **`main` = `63d7de7`** (origin/main 과 동일, 2026-08-28 `git fetch` 후 확인) |
+| 브랜치 | **`feat/redesign-stage2`** — T9·T10 이 여기 쌓여 있다. `main` 은 미변경 |
 | 미커밋 변경 · stash | **없음 · 없음** |
 | `feat/site-renewal` | `cef8743` — 병합 완료. 새 작업은 **새 브랜치**로 |
 | `npm run lint` · `npx tsc --noEmit` | **0 · 0** |
-| `npm test` | **354 passed** (15파일) |
-| `check-forbidden` (소스 / 산출물) | **HARD 0** (158파일 / 456파일) |
-| `check-counts` | **156편 / 6개 카테고리** (검사한 자리 4곳) |
-| `check-pagefind` · `probe-search` | ko **405/405** · 기본형 **8/8** |
-| `check-baseline` | 비블로그 산출물 **14개 불변** |
-| `npm run e2e` | **74 passed · 0 failed · 0 skipped** ← **초록이지만 화면은 §1 상태다** |
-| CI (2회) | 모두 **success** |
+| `npm test` | **395 passed** (18파일) |
+| `check-forbidden` (소스) | 자기검사 15/15 → **HARD 0** (158파일) |
+| `check-counts` | 자기검사 14/14 → **156편 / 6개 카테고리** |
+| `check-pagefind` · `probe-search` | ko **405/405** · 기본형 **8/8** (T9 시점 측정 — T10 은 블로그를 건드리지 않았다) |
+| `check-baseline` | **돌리지 마라 — 오라클이 아니다.** T3 에서 토큰이 바뀌며 CSS 파일명 해시가 HTML 에 박혀 기준선은 T1 이후로 이미 죽었다(계획서 157줄). 갱신(`--update`)은 **T14 에서만** |
+| `npm run e2e` | **84 passed · 0 failed** ← T10 으로 `hero.spec.ts` 5건이 처음 초록 |
+| CI (2회) | 모두 **success** (T9 시점) |
 
 **`out/` 은 직전 세션 빌드다 — 신선도를 믿지 말고 `npm run build` 를 먼저 돌려라.** 단 `scripts/`·`components/` 를 건드리면 mtime 이 무효가 되니
 `npm run e2e` 전에 **`npm run build` 가 먼저**다. 아니면 테스트를 하나도 안 돌리고 종료 코드 1 이 나온다.
