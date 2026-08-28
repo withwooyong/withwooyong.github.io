@@ -2638,9 +2638,9 @@ continue-on-error 는 쓰지 않는다 — 조용히 통과하는 게이트는 �
 > | 1 | ~~`upload.target: "temporary-public-storage"`~~ | `filesystem` + Actions 아티팩트 | **공개 저장소에 리포트를 올린다.** 이 브랜치의 `/work`·`/about` 은 아직 `main` 에 없다 — 배포 전 화면을 외부에 먼저 공개하게 된다 |
 > | 2 | ~~URL 4개~~ | **5개** — 블로그 글 1편 추가 | 블로그 글 페이지가 220개인데 아래 목록엔 **한 편도 없다.** 가장 무거운 라우트가 측정 밖이었다 |
 > | 3 | ~~`actions/checkout@v4` · `setup-node@v4`~~ | **`@v6`** | `deploy.yml` 과 맞췄다. 이 워크플로는 PR 에서만 돌아 로컬 실증이 불가능하므로 **실제 CI 에서 돌아 본 적 있는 버전**이 유일한 근거다 |
-> | 4 | (없음) | `tests/ci/lighthouse-workflow.test.ts` — 단언 16개 | 이 잡은 `continue-on-error` + 전부 `warn` 이라 **무엇이 잘못돼도 초록**이다. 수치는 무르게 두되 **설정**은 배포 게이트 안에서 딱딱하게 막는다 |
+> | 4 | (없음) | `tests/ci/lighthouse-workflow.test.ts` — 단언 19개 | 이 잡은 `continue-on-error` + 전부 `warn` 이라 **무엇이 잘못돼도 초록**이다. 수치는 무르게 두되 **설정**은 배포 게이트 안에서 딱딱하게 막는다 |
 >
-> 경위: [`reports/2026-08-28-t15-lighthouse.md`](../reports/2026-08-28-t15-lighthouse.md) (R62·R63·R64)
+> 경위: [`reports/2026-08-28-t15-lighthouse.md`](../reports/2026-08-28-t15-lighthouse.md) (R62~R65)
 
 **Files:**
 - Create: `.github/workflows/lighthouse.yml`

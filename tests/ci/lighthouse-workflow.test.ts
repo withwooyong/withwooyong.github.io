@@ -194,6 +194,50 @@ describe("lighthouse.yml — 워크플로", () => {
   });
 });
 
+describe("lighthouse.yml — 리포트가 실제로 올라간다", () => {
+  const uploadStep = steps.find(
+    (step) =>
+      typeof step.uses === "string" &&
+      step.uses.startsWith("actions/upload-artifact@"),
+  );
+
+  // 경로 표기가 두 파일에서 다르다 — rc 는 "./.lighthouseci", 워크플로는 ".lighthouseci/".
+  // 같은 곳을 가리키는지 보려면 앞의 "./" 와 뒤의 "/" 를 떼고 비교해야 한다.
+  const normalize = (p: string) => p.replace(/^\.\//, "").replace(/\/$/, "");
+
+  it("아티팩트 업로드 스텝이 있다", () => {
+    expect(uploadStep).toBeDefined();
+  });
+
+  it("업로드 경로가 lighthouserc.json 의 outputDir 과 같은 곳이다", () => {
+    // 어긋나면 lhci 는 리포트를 쓰고 업로드는 빈 손으로 끝난다 — 둘 다 초록인 채로.
+    const outputDir = rc.ci.upload?.outputDir;
+    expect(typeof outputDir).toBe("string");
+    const uploadPath = (uploadStep?.with as { path?: string } | undefined)?.path;
+    expect(typeof uploadPath).toBe("string");
+    expect(normalize(uploadPath as string)).toBe(
+      normalize(outputDir as string),
+    );
+  });
+
+  // 🔴 실측으로 걸린 결함이다(PR #2 첫 실행). upload-artifact 는 v4.4 부터 숨김 파일을
+  //    **기본 제외**한다. lhci 는 `Done writing reports to disk` 를 찍었는데
+  //    업로드는 `No files were found` 로 0개를 올렸고, **두 스텝 모두 초록이었다.**
+  it("숨김 경로를 올리려면 include-hidden-files 가 켜져 있다", () => {
+    const uploadWith = uploadStep?.with as
+      | { path?: string; "include-hidden-files"?: boolean }
+      | undefined;
+    const uploadPath = normalize(uploadWith?.path ?? "");
+    const isHidden = uploadPath
+      .split("/")
+      .some((segment) => segment.startsWith("."));
+
+    // 경로를 숨김이 아닌 곳으로 옮겼다면 이 옵션은 필요 없다 — 그때는 조건이 꺼진다.
+    if (!isHidden) return;
+    expect(uploadWith?.["include-hidden-files"]).toBe(true);
+  });
+});
+
 describe("deploy.yml — 배포 경로에 경고를 섞지 않는다", () => {
   it("배포 워크플로에 라이트하우스가 없다", () => {
     // 여기는 문자열 검사가 맞다 — 「없다」를 단언하므로 주석까지 걸리는 쪽이 안전하다.

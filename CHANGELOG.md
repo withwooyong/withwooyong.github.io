@@ -12,13 +12,15 @@
 > - 실측이 이 결정을 뒷받침한다 — `error` 였다면 5개 중 **4개가 LCP 예산(2500ms)에서 즉시 빨갛다.**
 >   접근성은 5개 전부 96~100 으로 예산(95)을 넘겼다
 >
-> 새 검사기 `tests/ci/lighthouse-workflow.test.ts` 가 단언 16개로 이 설정을 지킨다.
+> 새 검사기 `tests/ci/lighthouse-workflow.test.ts` 가 단언 19개로 이 설정을 지킨다.
 > 라이트하우스 잡은 `continue-on-error` 라 **무엇이 잘못돼도 초록**이므로,
 > 수치는 무르게 두되 **설정이 말이 되는지는 배포 게이트 안에서** 딱딱하게 본다.
 >
-> ⚠️ **이 워크플로는 아직 CI 에서 한 번도 돌지 않았다** — `main` 대상 PR 이 첫 실행이다.
+> ✅ PR [#2](https://github.com/withwooyong/withwooyong.github.io/pull/2) 에서 실제로 돌았다 — 5 URL × 3회 수집.
+> 🔴 **첫 실행에서 결함 1건.** `upload-artifact` 가 숨김 파일을 기본 제외해
+> 리포트 15개를 쓰고 **0개를 올렸는데 두 스텝 모두 초록이었다.** 고쳤고 검사기가 지킨다.
 >
-> 경위: [`docs/superpowers/reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R64)
+> 경위: [`docs/superpowers/reports/2026-08-28-t15-lighthouse.md`](docs/superpowers/reports/2026-08-28-t15-lighthouse.md) (R62~R65)
 
 ## 2026-08-28 — 고아 자산 4종 삭제 · 기준선 게이트 복구 · **E2E 를 배포 게이트로 승격**
 

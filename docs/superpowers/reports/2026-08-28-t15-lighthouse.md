@@ -10,7 +10,7 @@
 ```mermaid
 flowchart TB
     subgraph 딱딱["딱딱한 게이트 — deploy.yml"]
-        DEP["Content invariants<br/>(vitest 427)"] --> CFG["설정이 말이 되는가<br/>tests/ci/lighthouse-workflow.test.ts"]
+        DEP["Content invariants<br/>(vitest 430)"] --> CFG["설정이 말이 되는가<br/>tests/ci/lighthouse-workflow.test.ts"]
     end
     subgraph 무른["무른 경고 — lighthouse.yml"]
         LH["lhci autorun<br/>continue-on-error: true"] --> NUM["수치는 warn<br/>배포를 막지 않는다"]
@@ -29,7 +29,7 @@ flowchart TB
 | --- | --- |
 | `lighthouserc.json` **신규** | 측정 대상 5 URL · 단언 4종 **전부 `warn`** · `staticDistDir: ./out` |
 | `.github/workflows/lighthouse.yml` **신규** | `pull_request` + `workflow_dispatch`. `deploy.yml` 을 건드리지 않는다 |
-| `tests/ci/lighthouse-workflow.test.ts` **신규** | 단언 **16개**. 위 두 파일이 T15 의 주장을 지키는지 검사 |
+| `tests/ci/lighthouse-workflow.test.ts` **신규** | 단언 **19개**. 위 두 파일이 T15 의 주장을 지키는지 검사 |
 | `.gitignore` | `/.lighthouseci/` 추가 |
 
 `deploy.yml` 은 **한 글자도 바뀌지 않았다.** T14 가 붙인 E2E 게이트와
@@ -57,9 +57,9 @@ flowchart TB
 | --- | --- | --- |
 | 타입 | `npx tsc --noEmit` | 종료 0 |
 | lint | `npm run lint` | 종료 0 · 경고 0 |
-| 단위 | `npm test` | **427 통과** (T14 411 + 신규 16) |
+| 단위 | `npm test` | **430 통과** (T14 411 + 신규 19) |
 | E2E | `npm run e2e` | **238/238 · skip 0** (첫 줄 확인 — 가드 거부 아님) |
-| 검사 유효성 | 뮤테이션 11종 | **11/11 사멸** (1차 10/11 → §R62) |
+| 검사 유효성 | 뮤테이션 15종 | **15/15 사멸** (1차 10/11 → §R62 · 신규 4종은 §R65) |
 | 실물 수치 | 로컬 Lighthouse 5 라우트 | 아래 표 |
 
 ### 계획서 Step 3 — 실측 수치
@@ -82,6 +82,33 @@ flowchart TB
 
 ⚠️ Accessibility 는 5개 전부 96~100 이다. T10~T12 가 접근성을 별도 리뷰 축으로 돌린 것의
 **독립 증거**다 — 그 축이 없었다면 이 수치를 지금 처음 봤을 것이다.
+
+### CI 실측 (PR #2 첫 실행 · ubuntu · `numberOfRuns: 3`)
+
+`Checking assertions against 5 URL(s), 15 total run(s)` — 실제로 5×3 회를 수집했다.
+경고가 뜬 것은 **2개 라우트뿐**이다.
+
+| 라우트 | 단언 | 판정값 | 3회 원값 |
+| --- | --- | --- | --- |
+| `/work/` | LCP ≤ 2500 | **2717ms** ⚠️ | 5710 · 5687 · **2717** |
+| 블로그 글 | Performance ≥ 0.8 | **0.70** ⚠️ | **0.70** · 0.48 · 0.49 |
+| 블로그 글 | LCP ≤ 2500 | **2891ms** ⚠️ | **2891** · 8043 · 7641 |
+| `/` · `/about/` · `/blog/` | — | 경고 없음 | — |
+
+🔴 **판정값이 3회의 중앙값이 아니라 「가장 좋은 회차」다.** 위 표의 굵은 값이 전부 최선값이다 —
+LCP 는 최소, Performance 는 최대. LHCI 의 기본 집계가 **낙관적(optimistic)** 이기 때문이다.
+
+그래서 이 표는 두 가지를 동시에 말한다.
+
+| 읽는 법 | 뜻 |
+| --- | --- |
+| 경고가 **뜬** 2개 | 3회 중 **가장 좋은 회차에서도** 예산을 넘겼다 — 확실한 초과다 |
+| 경고가 **안 뜬** 3개 | **통과했다는 증거가 아니다.** 최선의 회차만 통과했을 수 있다 |
+
+로컬에서 `/` 가 3864ms 였는데 CI 에서 경고가 없는 것이 그 경우다 — 3회 중 하나가 2500 이하였다.
+편차도 크다(`/work/` 는 2717~5710 으로 2배). **러너 변동이 예산 폭보다 크므로,
+이 경고를 회귀 탐지에 쓰려면 `aggregationMethod` 를 median 으로 바꾸고 `numberOfRuns` 를 올려야 한다.**
+지금은 그러지 않았다 — 값이 몇 번 쌓이기 전에 임계를 손대면 무엇을 조정한 것인지 알 수 없다.
 
 ---
 
@@ -171,25 +198,80 @@ Runtime error encountered: EPERM, Permission denied:
 그래서 수치를 얻는 방법은 **종료 코드가 아니라 파일 존재로 판정하는 것**이다.
 `lighthouse --output-path=<파일>` 로 URL 마다 따로 돌리면 리포트가 남는다(위 표가 그 결과다).
 
-⚠️ CI 는 ubuntu 이므로 이 문제는 나지 않는다. **하지만 그것을 실증할 수단이 지금 없다** — §미확인.
+⚠️ ~~CI 는 ubuntu 이므로 이 문제는 나지 않는다. 하지만 그것을 실증할 수단이 지금 없다.~~
+**확인됐다(PR #2)** — ubuntu 러너에서 15회 수집이 전부 정상 종료했다. 이 함정은 로컬 전용이다.
 
 ---
 
-## 미확인으로 남는 것
+## R65 — 🔴 리포트 15개를 쓰고 0개를 올렸다. **두 스텝 모두 초록이었다**
 
-| 무엇 | 왜 확인 못 했나 | 언제 드러나나 |
+PR #2 를 열자마자 나온 결함이다. 위 §미확인 표에 *「`actions/upload-artifact@v7` 동작 —
+리포에 선례가 없는 버전이다」* 로 적어 둔 항목이 **실제로 터졌다.**
+
+```
+Lighthouse CI            Dumping 15 reports to disk at .../.lighthouseci...
+Lighthouse CI            Done writing reports to disk.
+Upload Lighthouse report ##[warning]No files were found with the provided path: .lighthouseci/.
+                         No artifacts will be uploaded.
+```
+
+원인은 라이트하우스가 아니다. **`upload-artifact` 는 v4.4 부터 숨김 파일을 기본 제외한다.**
+
+```
+include-hidden-files: false     ← 기본값. 로그에 찍혀 있었다
+path: .lighthouseci/            ← 점으로 시작 = 숨김
+```
+
+`lhci` 의 관례적 출력 경로가 하필 점으로 시작한다. 한 줄(`include-hidden-files: true`)로 고쳤다.
+
+**여기서 값어치 있는 것은 수정이 아니라 실패의 모양이다.**
+
+| 스텝 | 결과 | 실제로 한 일 |
 | --- | --- | --- |
-| **`lighthouse.yml` 이 CI 에서 실제로 도는지** | 트리거가 `pull_request: [main]` 인데 이번 종료 정책은 **푸시까지**다. PR 을 열지 않았다 | `main` 대상 PR 을 처음 여는 순간 |
-| `workflow_dispatch` 수동 실행 | 워크플로 파일이 **기본 브랜치에 있어야** Actions UI 에 뜬다. `main` 에 없다 | 머지 후 |
-| `actions/upload-artifact@v7` 동작 | 위와 같음. 리포에 선례가 없는 버전이다 | 첫 PR |
-| ubuntu 에서의 실제 수치 | 로컬 값은 Windows·1회 측정이다 | 첫 PR |
+| Lighthouse CI | ✅ 초록 | 리포트 15개를 디스크에 씀 |
+| Upload Lighthouse report | ✅ 초록 | **0개 업로드** — `if-no-files-found: warn` 이라 경고로만 |
 
-**이 4개는 전부 같은 하나다 — 「PR 을 열기 전까지 이 워크플로는 한 번도 돌지 않는다」.**
-계획서 T14 Step 5 가 경고한 *「게이트를 만들어 놓고 아무 데서도 안 돌리는 상태」* 와 같은 모양이고,
-차이는 이번엔 **그것을 알고 있다**는 것뿐이다.
+두 스텝이 각자 자기 일을 했다고 보고했고, **아무도 둘 사이가 끊긴 것을 보지 않았다.**
+이 리포가 반복해 데인 「없다와 읽을 수 없었다가 같은 출력으로 나온다」의 또 한 형태다 —
+이번엔 **「썼다」와 「전달됐다」가 둘 다 초록으로 나온다.**
 
-완화책으로 넣은 것이 `tests/ci/lighthouse-workflow.test.ts` 다 — 워크플로가 돌지 않아도
-**설정의 정합성만은 매 커밋 검사된다.** 실행 자체를 대신하지는 못한다.
+`if-no-files-found: error` 로 바꾸면 잡이 빨개지지만, 그러면 이 워크플로가 게이트가 되어
+설계 결정(§R63)이 뒤집힌다. 그래서 여기서도 **검사를 딱딱한 쪽으로 옮겼다** —
+`tests/ci/lighthouse-workflow.test.ts` 에 단언 3개를 더했다.
+
+| 단언 | 잡는 것 |
+| --- | --- |
+| 업로드 경로 == `rc` 의 `outputDir` | 두 파일이 다른 곳을 가리키는 것 |
+| 숨김 경로면 `include-hidden-files: true` | 이번 결함 그대로 |
+| 업로드 스텝 존재 | 스텝을 통째로 지우는 것 |
+
+뮤테이션 **15/15 사멸**(신규 4종 포함).
+
+⚠️ **리뷰로는 못 잡았을 것이다.** `path: .lighthouseci/` 는 어느 각도에서 봐도 맞는 경로다.
+잡은 것은 **실행**이다 — 그래서 「PR 이 첫 실행」이라는 미확인 항목을 표에 적어 둔 것이
+실제로 값을 했다. 적어 두지 않았다면 이 로그를 읽지 않았을 것이다.
+
+---
+
+## 미확인으로 남는 것 — 4건 중 **3건이 PR #2 에서 닫혔다**
+
+| 무엇 | 상태 |
+| --- | --- |
+| ~~`lighthouse.yml` 이 CI 에서 실제로 도는지~~ | ✅ **닫힘.** `Checking assertions against 5 URL(s), 15 total run(s)` |
+| ~~ubuntu 에서의 실제 수치~~ | ✅ **닫힘.** 위 §CI 실측 — 경고 2개 라우트, 낙관적 집계 |
+| ~~`actions/upload-artifact@v7` 동작~~ | 🔴 **닫혔고, 결함이었다** — §R65 |
+| `workflow_dispatch` 수동 실행 | ❌ **여전히 미확인.** 워크플로 파일이 **기본 브랜치에 있어야** Actions UI 에 뜬다. 머지 후에야 확인된다 |
+
+### 새로 드러난 미확인
+
+| 무엇 | 왜 |
+| --- | --- |
+| **`include-hidden-files: true` 가 실제로 15개를 올리는지** | 고친 커밋이 PR 을 갱신하며 재실행되지만, **이 문서를 쓰는 시점엔 결과가 없다.** 아티팩트 목록을 눈으로 봐라 — 「스텝이 초록」은 §R65 가 보여줬듯 증거가 아니다 |
+| **`deploy.yml` 이 PR 에서 돌지 않는다** | 트리거가 `push: [main]` 뿐이다(`pull_request` 0건). 즉 lint · tsc · vitest · 금칙어 · 발행본 수 · **T14 가 승격시킨 E2E 게이트**가 **PR 단계에서 하나도 돌지 않는다.** 머지 후 `main` 에서 처음 돌고, 빨개지면 배포는 막히지만 **커밋은 이미 `main` 에 있다** — 「배포 전 차단」이 아니라 「배포 실패 후 복구」다 |
+
+⚠️ 두 번째 항목은 T15 가 만든 것이 아니라 **원래 그랬던 것**이고, T14 가 E2E 를 승격시키면서
+값이 올라간 자리다. 고치려면 `deploy.yml` 에 `pull_request` 트리거를 더해야 하는데,
+그것은 T14·T15 가 지킨 「`deploy.yml` 을 건드리지 마라」와 충돌한다 — **사용자 판단 대상이다.**
 
 ---
 

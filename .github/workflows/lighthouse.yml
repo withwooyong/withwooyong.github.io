@@ -68,3 +68,8 @@ jobs:
           path: .lighthouseci/
           retention-days: 7
           if-no-files-found: warn
+          # 🔴 .lighthouseci 는 점으로 시작한다. upload-artifact 는 v4.4 부터
+          #    숨김 파일을 **기본 제외**하므로 이 줄이 없으면 리포트 15개가 전부 걸러진다.
+          #    실측: 첫 PR 실행에서 lhci 가 `Done writing reports to disk` 를 찍은 직후
+          #    `No files were found with the provided path: .lighthouseci/` 로 0개가 올라갔다.
+          include-hidden-files: true
