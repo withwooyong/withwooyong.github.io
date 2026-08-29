@@ -114,6 +114,8 @@ results = chain.batch(questions, config={"max_concurrency": 5})
 | 체인이 예상보다 느린 이유 |
 | 에이전트가 각 단계에서 사용한 토큰 수 |
 
+셋째 행이 중요한 이유는 **합계만 보면 병목이 어디인지 알 수 없다**는 데 있다. 단계별로 갈라 보기 전에 손을 대면 엉뚱한 곳을 고치게 되는데, 메시지 브로커에서 밀린 양이 늘 때 소비자부터 늘리면 오히려 나빠지는 [진단 순서 문제](/blog/backend-engineering/kafka-messaging-and-delivery-guarantees/)도 같은 형태다.
+
 관측은 두 계층으로 나뉜다.
 
 ```mermaid
