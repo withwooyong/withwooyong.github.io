@@ -61,11 +61,11 @@ The build is not a substitute for these. Each one compiles and ships happily whe
 These are not rules about content — they are ways the tooling reports something false. Each one was hit
 for real in this repo.
 
-The table below is the short list. The full catalogue — 37 traps with reproduction steps, measured
+The table below is the short list. The full catalogue — 40 traps with reproduction steps, measured
 numbers, and how each was found — lives in [`docs/TOOL-TRAPS.md`](docs/TOOL-TRAPS.md). That file was
 deleted by the 2026-08-29 rollback and restored the same day; its header marks which entries point at
 code that no longer exists (atlas, Pagefind, Playwright). Read it when a tool reports something you
-cannot explain, not on every session — it is 724 lines.
+cannot explain, not on every session — it is 770 lines.
 
 | Trap | What actually happens | What to do |
 | --- | --- | --- |
