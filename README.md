@@ -84,6 +84,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
 | `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
+| `npm run check-counts` | README 3자리와 CHANGELOG의 **발행본 편수**가 실제와 맞는지 검사합니다. 어긋나면 종료 코드 1. `:verify`는 자체 검사, `:print`는 실제 수치만 출력합니다 |
+| `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
 
 ## 페이지 구성
 
