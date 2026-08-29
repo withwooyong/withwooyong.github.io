@@ -168,7 +168,7 @@ flowchart LR
 | **1** | 지형 전체 (이 글) | 무엇을 왜 쪼개고, 낱말은 무슨 뜻인가 |
 | [**2**](/blog/backend-engineering/read-write-separation-and-multimodule/) | 조회·생성 분리와 멀티모듈 | 경계를 어디에 긋고 어디서 멈추는가 |
 | [**3**](/blog/backend-engineering/kafka-messaging-and-delivery-guarantees/) | Kafka 구조와 전달 보장 | 한 번 이상 오는 것을 한 번처럼 다루려면 |
-| **4** | 저장소 선택과 조회 성능 | 쌓이기만 하는 데이터를 빠르게 읽으려면 |
+| [**4**](/blog/backend-engineering/notification-storage-and-query-performance/) | 저장소 선택과 조회 성능 | 쌓이기만 하는 데이터를 빠르게 읽으려면 |
 | **5** | 문답 | 고를 때 · 터졌을 때 · 설명해야 할 때 |
 
 **편2 — 경계를 어디에 그을 것인가.** 조회와 생성을 쪼갠 다음, 쪼갠 서버들이 도메인 코드를 한 벌로 공유하도록 모듈을 나눈다. 모듈 사이의 의존은 한 방향으로만 흐르게 두는데, 그 방향이 깨지면 멀티모듈은 폴더만 나뉜 덩어리로 되돌아간다. 후반은 한 발 더 나가면 만나는 MSA를 놓고 넘어갈 신호가 어디서 오는지를 다룬다.
