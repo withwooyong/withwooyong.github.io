@@ -339,9 +339,13 @@ C-1은 「본편 비율은 발행 순서로 커진다」(ρ=0.90)이고, 예측�
 | 2 | `read-write-separation-and-multimodule` | 경계를 어디에 그을 것인가 — 조회와 생성을 쪼개고 모듈을 나누는 기준 | — | §3·5·6 | 14,930 |
 | 3 | `kafka-messaging-and-delivery-guarantees` | 한 번 이상 오는 메시지를 어떻게 한 번처럼 다루는가 — Kafka 구조와 전달 보장 | — | §7·8·9·10 | 21,190 |
 | 4 | `notification-storage-and-query-performance` | 쌓이기만 하는 데이터를 어떻게 빠르게 읽는가 — 저장소 선택과 조회 설계 | — | §4·11 | 13,900 |
-| 5 | `kafka-notification-qna` | 되돌아오는 질문들 — 알림센터 설계 문답 | `qna` | §12·13 | 19,450 |
+| 5 | `kafka-notification-qna` | 되돌아오는 질문들 — 알림센터 설계 문답 | 🔴 **없음** | §12·13 | 19,450 |
 
-시리즈: `kafka-notification-center` · `seriesOrder` 1~5 · `date: "2026-08-29"`
+시리즈: `kafka-notification-center` · `seriesOrder` 1~5 · `date: "2026-07-26"` · `updated: "2026-08-29"` (§10-2-b)
+
+🔴 **편5에 `role: "qna"` 를 쓰면 빌드가 죽는다.** `lib/blog/frontmatter.ts` 가 `role` 을
+`"map"` 하나만 허용하고 그 밖의 값에는 던진다. 기존 Q&A 발행본 넷(`spring-batch-qna` 등)은
+전부 `role` 키 자체가 없다. **편5는 `role` 을 적지 마라** — 이 설계서 초판의 `qna` 는 오기다.
 
 ### 4-1. 편별 주제 경계 — **넘지 말아야 할 선**
 
