@@ -120,7 +120,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── flow-diagram/       # 흐름 다이어그램 (2)
 │   └── ui/                 # shadcn/ui — badge · button · card · dialog
 ├── data/                   # portfolio.ts · product-lead-*.ts · diagrams/ (시스템 다이어그램 10종)
-├── scripts/                # generate-sitemap.mjs · dup-scan.mjs · check-forbidden.mjs
+├── scripts/                # generate-sitemap.mjs · dup-scan.mjs · check-forbidden.mjs · check-baseline.mjs · check-counts.mjs · compose.mjs
 ├── tests/blog/             # Vitest — frontmatter · loader · toc (+ fixtures)
 ├── public/                 # 이미지, favicon, robots.txt, sitemap.xml
 ├── styles/                 # 전역 CSS (테마·모션)
