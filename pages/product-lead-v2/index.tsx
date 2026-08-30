@@ -196,13 +196,13 @@ export default function ProductLead() {
             <Button asChild variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
               <a href="/docs/heo-wooyong-career-statement.pdf" target="_blank" rel="noopener noreferrer">
                 <FileText className="h-4 w-4 mr-2" />
-                경력기술서 (PDF)
+                경력기술서 (제출본 PDF)
               </a>
             </Button>
             <Button asChild variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
               <a href="/docs/heo-wooyong-portfolio.pdf" target="_blank" rel="noopener noreferrer">
                 <FileText className="h-4 w-4 mr-2" />
-                포트폴리오 (PDF)
+                포트폴리오 (제출본 PDF)
               </a>
             </Button>
           </div>
