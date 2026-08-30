@@ -56,8 +56,8 @@ export default function ProductLeadRoadmap() {
   return (
     <>
       <SiteHead
-        title="플랫폼 코어 실행 설계 | 허우용 (Ted)"
-        description="TVING Platform Product Lead 관점에서 CMS·결제/정산·공통 어드민·거버넌스 4개 코어 도메인을 어떤 순서와 근거로 다룰 것인지 정리한 실행 설계."
+        title="플랫폼 코어 목표 설계 | 허우용 (Ted)"
+        description="TVING Platform Product Lead 관점에서 CMS·결제/정산·공통 어드민·거버넌스 4개 코어 도메인을 어떤 순서와 근거로 다룰 것인지 정리한 목표 설계."
         path="/product-lead-loadmap/"
         noindex
       />
@@ -96,7 +96,7 @@ export default function ProductLeadRoadmap() {
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed break-keep max-w-3xl">
                 CMS · 결제/정산 · 공통 어드민 · 거버넌스. 네 개의 코어 도메인을 동시에 할 수는 없습니다. 이 문서는 무엇을 먼저
-                하고 무엇을 뒤로 미룰지, 그리고 그 판단의 근거가 무엇인지를 정리한 실행 설계입니다.
+                하고 무엇을 뒤로 미룰지, 그리고 그 판단의 근거가 무엇인지를 정리한 목표 설계입니다.
               </p>
 
               <Link href="/product-lead-wiki/" className="block">
@@ -118,9 +118,9 @@ export default function ProductLeadRoadmap() {
                   <div className="space-y-1.5 text-sm text-amber-900 dark:text-amber-200 leading-relaxed break-keep">
                     <p className="font-semibold">이 문서의 전제</p>
                     <p>
-                      모든 As-Is 서술은 공개정보에서 추론한 <strong>가설</strong>입니다. 티빙 내부 자료가 아닙니다. 로드맵의 기간과
-                      목표치도 전부 <strong>가정</strong>이며, 실제 순서와 기간은 부임 후 실측 결과와 조직 규모에 따라 팀과 함께
-                      재산정합니다.
+                      티빙 현행 시스템을 진단한 문서가 <strong>아닙니다.</strong> &ldquo;제가 만든다면 이렇게 만들겠다&rdquo;는 <strong>목표
+                      아키텍처 초안</strong>입니다. 현행 구조는 알지 못하며, 부임 후 팀과 함께 진단해 이 초안을 조정합니다. 기간과
+                      목표치도 전부 가정입니다.
                     </p>
                   </div>
                 </CardContent>
@@ -245,9 +245,9 @@ export default function ProductLeadRoadmap() {
                 {stages.map((s) => {
                   const accent = stageAccent[s.accent];
                   return (
-                    <Card key={s.period} className={`border-l-4 ${accent.border}`}>
+                    <Card key={s.step} className={`border-l-4 ${accent.border}`}>
                       <CardHeader className="pb-2">
-                        <span className={`w-fit rounded-full px-2 py-0.5 text-xs font-semibold ${accent.chip}`}>{s.period}</span>
+                        <span className={`w-fit rounded-full px-2 py-0.5 text-xs font-semibold ${accent.chip}`}>{s.step}</span>
                         <CardTitle className="text-base break-keep">{s.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -261,6 +261,11 @@ export default function ProductLeadRoadmap() {
                             </li>
                           ))}
                         </ul>
+                        <p className="mt-3 border-t border-slate-100 pt-3 text-xs break-keep text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                          <span className="font-semibold">다음으로 가는 조건</span>
+                          <br />
+                          {s.gate}
+                        </p>
                       </CardContent>
                     </Card>
                   );
@@ -271,7 +276,7 @@ export default function ProductLeadRoadmap() {
                 <CardContent className="p-5 space-y-2">
                   <p className="font-semibold break-keep">왜 결제 원장이 CMS 코어보다 먼저인가</p>
                   <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed break-keep">
-                    CMS 재구축은 이 자리의 간판 과제입니다. 하지만 원장 없이 결제를 두면, CMS를 고치는 동안 돈이 새는 것을 아무도
+                    CMS 재구축은 이 자리의 핵심 과제입니다. 하지만 원장 없이 결제를 두면, CMS를 고치는 동안 돈이 새는 것을 아무도
                     모릅니다. 그리고 원장은 <strong>기존 결제를 건드리지 않고 병렬로 기록만</strong> 하면 되므로 리스크가 낮습니다.
                     싸고, 안전하고, 효과가 큽니다.
                   </p>
@@ -439,10 +444,10 @@ export default function ProductLeadRoadmap() {
           <section id="domains" className="space-y-10 scroll-mt-20">
             <SectionReveal>
               <div className="space-y-3">
-                <h2 className="text-2xl font-bold">도메인별 실행 설계</h2>
+                <h2 className="text-2xl font-bold">도메인별 목표 설계</h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400 break-keep">
-                  네 개 도메인 각각을 같은 뼈대로 다룹니다. 내부 고객이 누구인지 정의하고, As-Is를 가설로 세우고, 실측으로 검증한
-                  뒤, 설계 원칙과 전환 로드맵을 정하고, 마지막으로 지표와 중단 기준에 합의합니다.
+                  네 개 도메인 각각을 같은 뼈대로 다룹니다. 내부 고객이 누구인지 정의하고, 목표 아키텍처를 세우고, 데이터 모델과
+                  전환 로드맵을 정한 뒤, 마지막으로 지표와 중단 기준에 합의합니다.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {domains.map((d) => (
@@ -554,7 +559,7 @@ export default function ProductLeadRoadmap() {
                 </Button>
               </div>
               <p className="text-xs text-slate-400 dark:text-slate-500 break-keep">
-                허우용(Ted) · 플랫폼 코어 4개 도메인 실행 설계. 기간과 목표치는 모두 가정이며, 실측 후 재산정합니다.
+                허우용(Ted) · 플랫폼 코어 4개 도메인 목표 설계. 기간과 목표치는 모두 가정이며, 실측 후 재산정합니다.
               </p>
             </section>
           </SectionReveal>

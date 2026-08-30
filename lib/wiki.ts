@@ -5,6 +5,9 @@ import { buildToc, type TocEntry } from "@/lib/toc";
 /**
  * 프로덕트 로드맵 위키 — 원문 마크다운 로더 (빌드 타임 전용).
  *
+ * ⚠️ dropSections 는 원문의 섹션 번호다. 원문을 갱신하면 반드시 다시 대조할 것.
+ *    2026-08-30 원문에서 As-Is 추정·Pain Point 검증 두 절이 빠지며 번호가 두 칸 당겨졌다.
+ *
  * 원문은 pages/product-lead-loadmap/*.md 다섯 개. mermaid 도식·ERD·SQL을 그대로 살리기 위해
  * 요약하지 않고 마크다운 자체를 렌더링한다. 다만 면접 대비 목적의 섹션은 여기서 제거한다.
  *
@@ -48,7 +51,8 @@ export const wikiDocs: WikiDoc[] = [
     subtitle: "콘텐츠가 들어와 화면에 걸리기까지",
     posting: "주요업무 1 · 2번",
     essence: "CMS의 고객은 시청자가 아니라 운영자다. 그들의 화폐는 시간이다.",
-    dropSections: [13, 14],
+    // §11 면접 질문, §12 문서의 한계
+    dropSections: [11, 12],
   },
   {
     slug: "payment",
@@ -57,7 +61,7 @@ export const wikiDocs: WikiDoc[] = [
     subtitle: "원장을 가운데 두는 설계",
     posting: "주요업무 1번",
     essence: "원장을 먼저 세우지 않으면, 바꾼 게 맞는지 검증할 기준이 없다.",
-    dropSections: [13, 14],
+    dropSections: [11, 12],
   },
   {
     slug: "admin",
@@ -66,7 +70,7 @@ export const wikiDocs: WikiDoc[] = [
     subtitle: "효율과 통제의 긴장을 설계로 푼다",
     posting: "주요업무 4번",
     essence: "화면 권한을 아무리 잘 걸어도, 운영 DB 직접 접속이 열려 있으면 통제는 없는 것과 같다.",
-    dropSections: [13, 14],
+    dropSections: [11, 12],
   },
   {
     slug: "governance",
@@ -75,7 +79,8 @@ export const wikiDocs: WikiDoc[] = [
     subtitle: "확장을 반복 가능한 절차로",
     posting: "주요업무 3 · 5번",
     essence: "거버넌스는 통제가 아니라, 새 사업을 얹을 때 전체를 다시 만들지 않는 능력이다.",
-    dropSections: [13, 14],
+    // 이 문서만 §11이 PM 조직 빌딩이라 한 칸씩 밀린다
+    dropSections: [12, 13],
   },
 ];
 

@@ -41,7 +41,7 @@ export default function WikiDocPage({ docs, doc, markdown, toc, prev, next }: Pr
   return (
     <>
       <SiteHead
-        title={`${doc.title} | 플랫폼 코어 실행 설계 위키`}
+        title={`${doc.title} | 플랫폼 코어 목표 설계 위키`}
         description={doc.essence}
         path={`/product-lead-wiki/${doc.slug}/`}
         noindex
@@ -59,7 +59,7 @@ export default function WikiDocPage({ docs, doc, markdown, toc, prev, next }: Pr
               </p>
             </blockquote>
             <p className="text-xs leading-relaxed break-keep text-amber-700 dark:text-amber-400">
-              As-Is 도식은 공개정보에서 추론한 가설이며, 로드맵의 기간·목표치는 전부 가정입니다.
+              티빙 현행을 진단한 문서가 아니라 &ldquo;제가 만든다면&rdquo;의 목표 설계 초안이며, 기간·목표치는 전부 가정입니다.
             </p>
           </header>
 

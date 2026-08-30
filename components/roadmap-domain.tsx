@@ -133,8 +133,8 @@ export function RoadmapDomain({ domain }: { domain: Domain }) {
         </ol>
       </Block>
 
-      {/* As-Is → To-Be */}
-      <Block title="As-Is 가설 → To-Be">
+      {/* 흔한 레거시 → 목표 설계. 티빙 현행을 추정한 것이 아니라 일반적인 출발점이다 */}
+      <Block title="흔한 출발점 → 목표 설계">
         <Card>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
@@ -142,8 +142,8 @@ export function RoadmapDomain({ domain }: { domain: Domain }) {
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-700 text-left">
                     <th className="px-4 py-2.5 font-semibold whitespace-nowrap">축</th>
-                    <th className="px-4 py-2.5 font-semibold">As-Is (가설)</th>
-                    <th className="px-4 py-2.5 font-semibold">To-Be</th>
+                    <th className="px-4 py-2.5 font-semibold">흔한 레거시</th>
+                    <th className="px-4 py-2.5 font-semibold">목표 설계</th>
                     <th className="px-4 py-2.5 font-semibold">근거</th>
                   </tr>
                 </thead>
@@ -240,8 +240,8 @@ export function RoadmapDomain({ domain }: { domain: Domain }) {
         </summary>
 
         <div className="space-y-8 border-t border-slate-200 dark:border-slate-800 px-5 py-6">
-          {/* As-Is 문제 */}
-          <Block title="As-Is 가설이 참이라면 생기는 문제">
+          {/* 레거시 구조가 만드는 문제 */}
+          <Block title="이런 구조가 반복해서 만드는 문제">
             <div className="grid sm:grid-cols-2 gap-3">
               {domain.asIsProblems.map((p) => (
                 <div key={p.code} className="rounded-md border border-slate-200 dark:border-slate-800 p-3.5">

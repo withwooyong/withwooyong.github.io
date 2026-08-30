@@ -94,37 +94,49 @@ export const priorityPrinciples: Principle[] = [
   },
 ];
 
-/** 착수 순서 4단계 */
+/**
+ * 착수 순서 4단계.
+ *
+ * 기간(개월)을 쓰지 않는다. 현행 구조를 모르는 상태에서 개월을 적으면 지킬 수 없는 약속이 되고,
+ * "이 프로젝트는 18개월짜리인가"로 읽힌다. 대신 다음 단계로 넘어가는 조건을 명시한다 —
+ * 발표자료(/tving-brief/) 슬라이드 3과 같은 규약이다.
+ */
 export type Stage = {
-  period: string;
+  step: string;
   title: string;
   items: string[];
+  /** 다음 단계로 넘어가는 조건 */
+  gate: string;
   accent: string;
 };
 
 export const stages: Stage[] = [
   {
-    period: "0–3개월",
-    title: "진단 + Quick Win",
-    items: ["baseline 계측", "퇴사자 계정 회수", "권리 만료 자동 알림"],
+    step: "1단계",
+    title: "진단과 즉시 방어",
+    items: ["기준선 계측 시작", "퇴사자 계정 회수", "권리 만료 자동 알림"],
+    gate: "기준선 확정",
     accent: "emerald",
   },
   {
-    period: "3–9개월",
+    step: "2단계",
     title: "검증 기반",
-    items: ["감사로그 · SSO", "원장 병렬 기록", "모듈 레지스트리", "API Gateway 파사드"],
+    items: ["감사로그 · SSO", "원장 병렬 기록", "모듈 레지스트리", "API 게이트웨이 파사드"],
+    gate: "원장이 기존 결제와 대사 일치",
     accent: "amber",
   },
   {
-    period: "9–18개월",
+    step: "3단계",
     title: "코어 이관",
-    items: ["CMS 저위험 → 코어", "결제 카나리", "어드민 셸"],
+    items: ["CMS 저위험 → 코어", "결제 카나리 전환", "어드민 셸 통합"],
+    gate: "카나리 구간 이중 청구 0 유지",
     accent: "blue",
   },
   {
-    period: "18개월+",
+    step: "4단계",
     title: "확장",
-    items: ["테넌트 구조", "글로벌 준비", "셀프서비스"],
+    items: ["테넌트 구조 도입", "글로벌 준비", "운영 셀프서비스"],
+    gate: "새 사업 추가가 전체 재작업을 부르지 않을 것",
     accent: "violet",
   },
 ];

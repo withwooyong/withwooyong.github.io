@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
-import { ArrowRight, Bot, ExternalLink, Github, Layers, Mail, Search, ShoppingCart, Users } from "lucide-react";
+import { ArrowRight, Bot, ExternalLink, FileText, Github, Layers, Mail, Search, ShoppingCart, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -190,6 +190,19 @@ export default function ProductLead() {
               <a href="/tving-brief/" target="_blank" rel="noopener noreferrer">
                 <Layers className="h-4 w-4 mr-2" />
                 플랫폼 코어 설계 브리프
+              </a>
+            </Button>
+            {/* 제출본 PDF. download 속성을 붙이면 저장 대화상자가 떠 브라우저 뷰어로 열리지 않는다. */}
+            <Button asChild variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
+              <a href="/docs/heo-wooyong-career-statement.pdf" target="_blank" rel="noopener noreferrer">
+                <FileText className="h-4 w-4 mr-2" />
+                경력기술서 (PDF)
+              </a>
+            </Button>
+            <Button asChild variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
+              <a href="/docs/heo-wooyong-portfolio.pdf" target="_blank" rel="noopener noreferrer">
+                <FileText className="h-4 w-4 mr-2" />
+                포트폴리오 (PDF)
               </a>
             </Button>
           </div>

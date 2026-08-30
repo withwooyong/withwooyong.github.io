@@ -15,8 +15,8 @@ export default function WikiIndex({ docs }: Props) {
   return (
     <>
       <SiteHead
-        title="플랫폼 코어 실행 설계 위키 | 허우용 (Ted)"
-        description="TVING Platform Product Lead 관점의 CMS·결제/정산·공통 어드민·거버넌스 실행 설계. 아키텍처 구성도·ERD·시퀀스·상태기계·로드맵 도식 74개를 포함한 원문 위키."
+        title="플랫폼 코어 목표 설계 위키 | 허우용 (Ted)"
+        description="TVING Platform Product Lead 관점의 CMS·결제/정산·공통 어드민·거버넌스 목표 설계 초안. 아키텍처 구성도·ERD·시퀀스·상태기계·로드맵 도식을 포함한 원문 위키."
         path="/product-lead-wiki/"
         noindex
       />
@@ -27,10 +27,11 @@ export default function WikiIndex({ docs }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400">
               TVING · Platform Product Lead
             </p>
-            <h1 className="text-2xl font-bold leading-[1.3] break-keep sm:text-3xl md:text-4xl">플랫폼 코어 실행 설계 위키</h1>
+            <h1 className="text-2xl font-bold leading-[1.3] break-keep sm:text-3xl md:text-4xl">플랫폼 코어 목표 설계 위키</h1>
             <p className="leading-relaxed break-keep text-slate-600 sm:text-lg dark:text-slate-300">
-              CMS · 결제/정산 · 공통 어드민 · 거버넌스. 네 개 코어 도메인을 어떤 순서로, 어떤 근거로 다시 세울 것인지를 도식
-              중심으로 정리한 원문 문서군입니다. 시스템 구성도, ERD, 시퀀스, 상태기계, 로드맵 간트를 그대로 담았습니다.
+              CMS · 결제/정산 · 공통 어드민 · 거버넌스. 네 개 코어 도메인을 <strong>제가 만든다면 어떤 순서로, 어떤 근거로 세울
+              것인지</strong>를 도식 중심으로 정리한 원문 문서군입니다. 시스템 구성도, ERD, 시퀀스, 상태기계, 로드맵 간트를 그대로
+              담았습니다.
             </p>
           </div>
 
@@ -40,9 +41,9 @@ export default function WikiIndex({ docs }: Props) {
               <div className="space-y-1.5 text-sm leading-relaxed break-keep text-amber-900 dark:text-amber-200">
                 <p className="font-semibold">이 문서군의 전제</p>
                 <p>
-                  모든 As-Is 도식은 공개정보에서 추론한 <strong>가설</strong>입니다. 티빙 내부 자료가 아닙니다. 로드맵의 기간과
-                  목표치도 전부 <strong>가정</strong>이며, 실제 순서와 기간은 부임 후 실측 결과와 조직 규모에 따라 팀과 함께
-                  재산정합니다.
+                  티빙 현행 시스템을 진단한 문서가 <strong>아닙니다.</strong> &ldquo;제가 만든다면 이렇게 만들겠다&rdquo;는 <strong>목표
+                  아키텍처 초안</strong>입니다. 현행 구조는 알지 못하며, 부임 후 팀과 함께 진단해 이 초안을 조정합니다. 기간과
+                  목표치도 전부 가정입니다.
                 </p>
               </div>
             </CardContent>

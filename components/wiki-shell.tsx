@@ -59,7 +59,7 @@ export function WikiShell({ docs, activeSlug, toc, children }: WikiShellProps) {
             </button>
             <Link href="/product-lead-wiki/" className="flex min-w-0 items-center gap-2 font-semibold">
               <BookOpen className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />
-              <span className="truncate text-sm">플랫폼 코어 실행 설계 위키</span>
+              <span className="truncate text-sm">플랫폼 코어 목표 설계 위키</span>
             </Link>
           </div>
           <div className="flex items-center gap-3">
