@@ -175,10 +175,10 @@ flowchart LR
 | :---: | --- | --- |
 | **1** | 지형 전체 (이 글) | 무엇을 왜 만들고, 낱말은 무슨 뜻인가 |
 | **[2](/blog/backend-engineering/auth-domain-and-requirements/)** | 인증 도메인과 요구사항 산출물 | 인증과 인가는 무엇이 다르고, 요구를 어떻게 문서로 굳히는가 |
-| **3** | 명세서에서 ERD까지 | API 표에서 엔티티를 어떻게 뽑아내는가 |
-| **4** | 인증 구현의 갈림길 | 무엇을 포기하고 무엇을 얻는가 |
-| **5** | 쿠버네티스 배포와 무중단 운영 | 띄운 뒤에 무엇이 달라지는가 |
-| **6** | 문답 | 고를 때 · 터졌을 때 · 설명해야 할 때 |
+| **[3](/blog/backend-engineering/requirements-spec-to-erd/)** | 명세서에서 ERD까지 | API 표에서 엔티티를 어떻게 뽑아내는가 |
+| **[4](/blog/backend-engineering/session-vs-token-authentication/)** | 인증 구현의 갈림길 | 무엇을 포기하고 무엇을 얻는가 |
+| **[5](/blog/backend-engineering/kubernetes-deployment-and-rollout/)** | 쿠버네티스 배포와 무중단 운영 | 띄운 뒤에 무엇이 달라지는가 |
+| **[6](/blog/backend-engineering/auth-kubernetes-qna/)** | 문답 | 고를 때 · 터졌을 때 · 설명해야 할 때 |
 
 **편2 — 무엇을 만들 것인가.** 인증과 인가의 구분에서 시작해 통합 인증이 실제로 어떤 방식들로 구현되어 왔는지를 훑는다. 하나의 로그인을 여럿이 인정하게 만드는 방식, 비밀번호를 넘기지 않고 권한만 위임하는 방식, 시스템끼리 서로를 신뢰하는 방식이 각각 무엇을 전제하는지가 여기서 갈린다. 후반은 그 요구를 문서로 굳히는 네 가지 산출물이다.
 
