@@ -1,99 +1,104 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Claude Code 가 이 리포에서 작업할 때 참고하는 지침이다.
 
-## Commands
+## 명령
 
-- `npm run dev` — start the dev server at http://localhost:3000
-- `npm run build` — produce the static export into `out/` (Next.js `output: "export"` runs at build time, so there is no separate `next export` step; the README's mention of `npm run export` is outdated)
-- `npm run start` — serve the production build (rarely needed since this site is statically exported)
-- `npm test` — Vitest over `tests/blog/`. Vitest strips types with esbuild rather than checking them, so run `npx tsc --noEmit` as a **separate** step.
-- `npm run lint` — `next lint`.
-
-### Pre-publish checks (run these whenever `content/blog/` changes)
-
-| Command | What it checks |
+| 명령 | 설명 |
 | --- | --- |
-| `npm run check-forbidden:verify` | **Run this first.** Proves the forbidden-word scanner actually catches things. It prints how many cases ran — the count lives in the code, not here, so it can't go stale. |
-| `npm run check-forbidden` | Scans `content/blog`. Must report **HARD 0** before publishing; exits 1 otherwise. |
-| `npm run check-forbidden:built` | Scans the **built output** (`out/blog` plus the matching `_next/data` JSON). Run it after `npm run build`. A clean source does not prove a clean page — the template injects `og:image` and titles too, which is how `Ted_yanadoo.png` sat in 366 places while the source scan kept reporting zero. Exits 2 when `out/blog` is missing rather than reporting a false zero. |
-| `npm run dup-scan:verify` → `npm run dup-scan -- --category <slug>` | Verbatim-duplication scan. Same order: prove, then scan. It needs a target — a bare `npm run dup-scan` exits 1 with 「대상이 없다」. Passing a whole batch at once is safe as of 2026-08-18: each target is compared against **everything but itself**, targets included. Before that fix the scanner removed *all* targets from the comparison set, so handing it a fresh batch — the case that needs it most — returned a silent 0. Self-test cases ⑤ and ⑥ now hold that behaviour down. |
+| `npm run dev` | 개발 서버 (http://localhost:3000) |
+| `npm run build` | 정적 산출물을 `out/` 에 만든다. 별도의 `next export` 단계는 없다 |
+| `npm run start` | 프로덕션 빌드 서빙. 정적 export 라 쓸 일이 드물다 |
+| `npm test` | `tests/blog/` 를 Vitest 로 돌린다. Vitest 는 타입을 **지울 뿐 검사하지 않으므로** `npx tsc --noEmit` 을 **따로** 돌려야 한다 |
+| `npm run lint` | `next lint` |
 
-Both scanners follow the same rule: **run the self-test before trusting a zero.** A "0 findings" result that was never proven is indistinguishable from a false negative — this actually happened here. The forbidden-word list held only Latin spellings (`FASTCAMPUS`, `teddynote`) and silently missed the Korean ones (「패스트캠퍼스」, 「테디노트」), so a false zero was recorded in CHANGELOG as fact (fixed 2026-08-18).
+### 발행 전 검사 — `content/blog/` 를 건드릴 때마다
 
-The canonical forbidden-word list lives in `scripts/check-forbidden.mjs`, **not** in any document. Do not copy it into docs — that split is exactly what caused the failure above.
-
-## Gates
-
-Publishing rules live in checkers, not in prose. As of 2026-08-18 a full triage of the 105 accumulated
-rules (`docs/superpowers/reports/2026-08-18-rule-triage.md`) split them four ways:
-
-| Where a rule lives | What belongs there |
+| 명령 | 무엇을 검사하나 |
 | --- | --- |
-| Checkers (`scripts/`, `tests/blog/`) | Anything a machine can decide — schema, forbidden words, links, size, build output |
-| `docs/superpowers/PUBLISHING-CHECKLIST.md` | Human judgement only — attribution, exhaustive assignment, deletion fallout, anonymisation, diagram evidence, link promises, tone |
-| This file | How tools fail in this environment, and the code constraints the build does *not* enforce |
-| Design docs `§11` (struck through) | Rules that expired with their batch. Kept, not deleted — other documents cite them by number |
+| `npm run check-forbidden:verify` | **가장 먼저.** 금칙어 스캐너가 실제로 잡는지 증명한다 |
+| `npm run check-forbidden` | `content/blog` 스캔. 발행 전 **HARD 0** 이어야 한다 |
+| `npm run check-forbidden:built` | **빌드 산출물**(`out/blog` + `_next/data`) 스캔. 빌드 뒤에 돌린다. 템플릿이 `og:image` 와 제목을 주입하므로 **소스가 깨끗해도 페이지는 오염될 수 있다.** 산출물이 없으면 거짓 0 대신 종료 코드 2 |
+| `npm run dup-scan:verify` → `npm run dup-scan -- --category <slug>` | 축자 복제 스캔. 순서는 같다 — 증명한 뒤 스캔. 대상이 없으면 종료 코드 1. 배치를 통째로 넘겨도 안전하다 |
 
-**Do not copy a checker's criteria into a document.** That split is what produced the false-zero above.
-Conversely, do not put a batch-scoped instruction ("not in scope this time", "only §4 of that file")
-into a permanent rule list — a permanent rule has to be true in *every* batch. 14 of the 105 rules failed
-that test and were struck through.
+**증명하기 전에는 0을 믿지 마라.** 증명되지 않은 「0건」은 거짓 음성과 구분되지 않는다.
+실제로 금칙어 목록에 라틴 표기만 있고 한글 표기가 빠져 거짓 0 이 CHANGELOG 에 사실로 기록됐고,
+`Ted_yanadoo.png` 가 산출물 366곳에 남은 동안 소스 스캔은 계속 0 을 반환했다.
 
-The `pre-commit` hook at `.githooks/pre-commit` runs the source checks whenever a commit touches
-`content/blog/`; commits that don't touch it pass straight through. `npm install` wires the hook up
-via the `prepare` script — to do it by hand, `git config core.hooksPath .githooks`. Checks that need
-a build run in CI instead.
+**금칙어 목록의 정본은 `scripts/check-forbidden.mjs` 다.** 문서로 복사하지 마라 — 목록이 코드와
+문서로 갈라진 것이 위 실패의 원인이었다.
 
-### Constraints the build does *not* catch
+## 게이트
 
-The build is not a substitute for these. Each one compiles and ships happily when violated:
+**발행 규칙은 산문이 아니라 검사기에 산다.** 누적 규칙 105개를 전수 분류한 결과
+(`docs/superpowers/reports/2026-08-18-rule-triage.md`) 규칙이 살 자리는 넷이다.
 
-- **No App Router.** `app/` conventions are not rejected by Next.js — they just break this project's assumptions.
-- **Path alias.** Relative imports pass the build; use `@/lib/...`, `@/components/...`.
-- **`tsconfig.json` is frozen.** Changing `target` re-emits the whole project and silently breaks the
-  "existing pages unchanged" guarantee. Fix type errors at the call site instead.
-- **`break-keep` on Korean body text**, and `dark:` variants on every new component.
-- **Commit messages in Korean; never `git push` unless the user explicitly asks.**
+| 규칙이 사는 곳 | 무엇이 들어가나 |
+| --- | --- |
+| 검사기 (`scripts/`, `tests/blog/`) | 기계가 판정하는 것 — 스키마, 금칙어, 링크, 분량, 산출물 |
+| `docs/superpowers/PUBLISHING-CHECKLIST.md` | 사람의 판단만 — 출처 표기, 배정 누락, 삭제 여파, 익명화, 도식 근거, 어조 |
+| 이 파일 | 도구가 실패하는 방식과, **빌드가 강제하지 않는** 코드 제약 |
+| 설계서 `§11` (취소선) | 배치와 함께 만료된 규칙. 다른 문서가 번호로 인용하므로 남긴다 |
 
-## Tool traps in this environment
+두 방향 모두 금지다. **검사기의 판정 기준을 문서로 복사하지 말고**, 배치 한정 지시를 영구 규칙
+목록에 넣지 마라. 영구 규칙은 **모든** 배치에서 참이어야 한다 (105개 중 14개가 탈락했다).
 
-These are not rules about content — they are ways the tooling reports something false. Each one was hit
-for real in this repo.
+`.githooks/pre-commit` 이 `content/blog/` 를 건드리는 커밋에서 소스 검사를 돌린다. `npm install`
+이 훅을 연결하며, 손으로 하려면 `git config core.hooksPath .githooks` 다. 빌드가 필요한 검사는
+CI 에서 돈다.
 
-The table below is the short list. The full catalogue — 40 traps with reproduction steps, measured
-numbers, and how each was found — lives in [`docs/TOOL-TRAPS.md`](docs/TOOL-TRAPS.md). That file was
-deleted by the 2026-08-29 rollback and restored the same day; its header marks which entries point at
-code that no longer exists (atlas, Pagefind, Playwright). Read it when a tool reports something you
-cannot explain, not on every session — it is 770 lines.
+### 빌드가 잡지 못하는 제약
 
-| Trap | What actually happens | What to do |
+어겨도 빌드가 통과하고 배포까지 된다.
+
+| 제약 | 어기면 |
+| --- | --- |
+| **App Router 를 쓰지 않는다** | Next.js 는 `app/` 을 거부하지 않지만 이 프로젝트의 전제가 깨진다 |
+| **경로 별칭** `@/lib/...` · `@/components/...` | 상대 경로도 빌드를 통과한다 |
+| **`tsconfig.json` 은 동결** | `target` 을 바꾸면 전체가 재방출되어 「기존 페이지 불변」이 깨진다. 타입 오류는 호출부에서 고친다 |
+| 한글 본문에 **`break-keep`**, 새 컴포넌트마다 **`dark:`** | 줄바꿈과 다크모드가 깨진다 |
+| **커밋 메시지는 한글** · `git push` 는 명시적 요청이 있을 때만 | — |
+
+## 이 환경의 도구 함정
+
+내용 규칙이 아니라 **도구가 거짓을 보고하는 방식**이며 전부 실제로 겪었다. 아래는 요약이고,
+재현 절차와 실측값을 담은 전체 40건은 [`docs/TOOL-TRAPS.md`](docs/TOOL-TRAPS.md)(770줄)에 있다.
+매 세션 읽지 말고 **도구가 설명되지 않는 결과를 낼 때** 읽어라.
+
+| 함정 | 실제로 일어나는 일 | 대응 |
 | --- | --- | --- |
-| **Exit code after a pipe** | `$?` belongs to the *last* command, so `grep … \| sort \| uniq -c` is always 0 | Run any command whose exit code you intend to read **on its own** |
-| **Korean first person** | grep fails in both directions: 「동시성 문**제가**」 and 「메이**저는**」 are false positives, 「**내** 검색 커리어」 is a false negative. Widening to `내 [가-힣]{2,6}` floods on 「인덱스 **내** 문서」 | Open the matching lines and read them. **Do not put first person in a checker** |
-| **Korean sentence endings never sit at line end** | 「…있습니다.」 ends with a period, so `습니다$` matches **nothing** and reports a structural 0. A brief that says 「~로 끝나는 줄」 makes the agent write exactly that pattern | Count the ending as a **substring**, not an anchored match. Count occurrences, not lines — one line can hold two. Then sanity-check against a section with a known non-zero count |
-| **Markdown emphasis splits words** | `**IDOL**을` does not match `IDOL을`. Korean particles attach directly, so this happens structurally (English has a space, so it doesn't) | Also search a pattern with the emphasis stripped |
-| **Locale hides Korean and emoji** | Without `LC_ALL=C`, emoji greps return a false 0. `LC_ALL=C grep -P '[\x{1F300}-\x{1FAFF}]'` then dies with "range out of order" — and no output looks like no findings | Pin `LC_ALL=C`; match emoji as UTF-8 byte patterns. Never append `\|\| echo "0건"` — that makes "file missing" and "zero found" the same string |
-| **Substring hits inside words** | `grep -o '비용'` also counts 「대**비용**(對比用)」 | Open the hit lines and confirm the word is the word you meant |
-| **Verbatim dup-scan has a blind spot** | `dup-scan.mjs` cannot see "same meaning, different words" | Check definitions by meaning as well, not only by string |
-| **Heredoc eats one backslash layer** | Even quoted `<<'EOF'`, a regex's `\\` arrives as `\` and throws `SyntaxError`. Single escapes survive; only doubles are stripped. Shell quoting inside a heredoc can break the heredoc itself | Write those files with the `Write`/`Edit` tool, or build the character via `String.fromCharCode(92)` |
-| **grep cannot detect CRLF** | It treats CR as a line end, so a file with 393 CRs was reported "LF only" | Count bytes with `tr -cd` |
-| **`core.autocrlf=true` hides line-ending changes** | git normalises before diffing, so a wholly rewritten file shows a clean diff. This repo genuinely mixes CRLF and LF | A clean diff is not evidence nothing changed. Count CR/LF directly against a control file |
-| **Subagents go idle without reporting** | `reviewer` and `scout` have no `Write` tool; `scout` and `verifier` have gone idle across three notifications with nothing delivered | Judge by the file, not the message: `ls -la <scratchpad>` on every idle notification, then pull the report with `SendMessage`. Re-send the **original question** verbatim — "as I asked before" loses the awkward items first |
-| **`grep -r` scans `out/` and `node_modules`** | 120-second timeout | Use the `Grep` tool, or `--include` / an explicit path |
+| **파이프 뒤의 종료 코드** | `$?` 는 **마지막** 명령의 것이라 `grep … \| uniq -c` 는 항상 0 | 종료 코드를 읽을 명령은 **단독 실행** |
+| **한국어 1인칭** | 양방향으로 실패한다. 「동시성 문**제가**」는 거짓 양성, 「**내** 검색 커리어」는 거짓 음성. `내 [가-힣]{2,6}` 로 넓히면 「인덱스 **내** 문서」가 쏟아진다 | 걸린 줄을 열어 읽는다. **1인칭을 검사기에 넣지 마라** |
+| **한국어 종결어미는 줄 끝에 없다** | 「…있습니다.」는 마침표로 끝나 `습니다$` 가 **아무것도** 매칭하지 않고 구조적 0 을 낸다 | 앵커가 아니라 **부분 문자열**로, 줄이 아니라 **출현 횟수**를 센다 (한 줄에 둘이 온다). 0 이 아님을 아는 절과 대조한다 |
+| **마크다운 강조가 낱말을 쪼갠다** | `**IDOL**을` 은 `IDOL을` 과 매칭되지 않는다. 조사가 붙는 한국어에서 구조적으로 발생한다 | 강조를 벗긴 패턴으로도 검색한다 |
+| **로케일이 한글과 이모지를 숨긴다** | `LC_ALL=C` 없이는 이모지 grep 이 거짓 0 을 낸다 — 같은 패턴이 로케일 유무에 따라 **9와 0** 으로 갈렸다. `grep -P '[\x{1F300}-\x{1FAFF}]'` 는 "range out of order" 로 죽는데, 출력 없음은 발견 없음과 똑같아 보인다 | `LC_ALL=C` 고정 · 이모지는 UTF-8 바이트 패턴으로. `\|\| echo "0건"` 을 붙이지 마라 — 「파일 없음」과 「0건」이 같아진다 |
+| **낱말 안쪽의 부분 일치** | `grep -o '비용'` 은 「대**비용**(對比用)」도 센다 | 걸린 줄을 열어 확인한다 |
+| **`dup-scan` 의 사각지대** | 「같은 뜻, 다른 낱말」을 보지 못한다 | 문자열뿐 아니라 **의미로도** 대조한다 |
+| **히어독이 백슬래시 한 겹을 먹는다** | `<<'EOF'` 에서도 `\\` 가 `\` 로 도착해 `SyntaxError` 를 낸다. 홑겹은 살아남고 겹겹만 벗겨진다 | `Write`/`Edit` 로 쓰거나 `String.fromCharCode(92)` 로 만든다 |
+| **grep 은 CRLF 를 탐지하지 못한다** | CR 을 줄 끝으로 처리해 CR 393개인 파일이 「LF 전용」으로 보고됐다 | `tr -cd` 로 바이트를 센다 |
+| **`core.autocrlf=true` 가 줄바꿈 변경을 숨긴다** | git 이 diff 전에 정규화해 통째로 재작성한 파일이 깨끗한 diff 로 보인다. 이 리포는 CRLF 와 LF 가 섞여 있다 | 깨끗한 diff 는 증거가 아니다. 대조군과 CR/LF 를 직접 센다 |
+| **서브에이전트가 보고 없이 유휴가 된다** | `reviewer`·`scout` 에는 `Write` 도구가 없다 | 메시지가 아니라 파일로 판단한다. `ls -la <scratchpad>` 뒤 `SendMessage` 로 끌어오되 **원래 질문을 그대로** 다시 보낸다 — 「아까 물어본 대로」는 까다로운 항목부터 잃는다 |
+| **`grep -r` 이 `out/` 과 `node_modules` 를 훑는다** | 120초 타임아웃 | `Grep` 도구 또는 `--include` / 명시 경로 |
+| **`compose` 통과는 배정 타당성이 아니다** | 성분 실측은 인용을 한 성분으로 셀 뿐 발행 가능한지는 모른다. `pm-po` 배정의 14.6%(10,065 B)가 금칙어를 담은 경력 메모였는데, 편 구성과 예산이 확정된 뒤에야 드러났다 | 성분 실측 **바로 다음에 배정 원본의 금칙어를 직접 센다.** `LC_ALL=C` 필수 |
+| **awk `length()` 는 바이트가 아니다** | 문자 수를 센다. 한글 블록이 `length()` 3,903 대 `wc -c` **10,065** 로 2.6배 어긋났는데 오류 없이 그럴듯한 표가 나왔다 | 바이트는 `wc -c` 로 재고, 예산에 넣기 전 **두 방법으로 교차 검증** |
 
-## Architecture
+## 아키텍처
 
-Single-page Korean-language portfolio (허우용 / Ted) deployed as a static site to GitHub Pages.
+GitHub Pages 에 정적 배포되는 한국어 단일 페이지 포트폴리오다 (허우용 / Ted).
 
-- **Framework**: Next.js 14 with the **Pages Router** (`pages/_app.tsx`, `pages/index.tsx`) — not the App Router. Do not introduce `app/` directory conventions.
-- **Static export**: `next.config.js` sets `output: "export"`, `trailingSlash: true`, and `images.unoptimized: true`. Anything that requires a Node runtime (API routes, ISR, `next/image` loaders, server actions) will break the build — keep everything client-renderable.
-- **Content**: nearly the entire site lives in `pages/index.tsx` (~760 lines). Sections (about / experience / projects / systems / skills / contact) are anchor-linked within that one file rather than split into routes.
-- **UI primitives**: shadcn/ui ("new-york" style, neutral base) under `components/ui/` — `badge`, `button`, `card`, `dialog`. Add new shadcn components into the same directory; the project's `components.json` is already configured (`@/components`, `@/lib/utils`, CSS variables on, RSC off).
-- **Styling**: Tailwind CSS with a custom `primary` palette in `tailwind.config.js` and Inter as the sans font. Global CSS in `styles/globals.css`. Use the `cn()` helper from `lib/utils.ts` (clsx + tailwind-merge) for conditional class composition.
-- **Path alias**: `@/*` resolves to the repo root (see `tsconfig.json`). Prefer `@/components/...`, `@/lib/utils` over relative paths.
-- **Static assets**: place files under `public/` (e.g. profile image at `public/images/Ted_yanadoo.png`, favicon at `public/favicon.svg`).
+| 항목 | 내용 |
+| --- | --- |
+| **프레임워크** | Next.js 14 · **Pages Router**(`pages/_app.tsx`, `pages/index.tsx`). App Router 가 아니며 `app/` 관례를 도입하지 않는다 |
+| **정적 export** | `output: "export"` · `trailingSlash: true` · `images.unoptimized: true`. Node 런타임이 필요한 것(API 라우트, ISR, `next/image` 로더, 서버 액션)은 빌드를 깨뜨린다 |
+| **콘텐츠** | 대부분이 `pages/index.tsx`(약 760줄) 하나에 있다. 섹션은 라우트가 아니라 앵커로 연결된다 |
+| **UI** | `components/ui/` 아래 shadcn/ui("new-york", neutral) — `badge`·`button`·`card`·`dialog`. 새 컴포넌트도 같은 디렉터리에 넣는다 |
+| **스타일** | Tailwind CSS · 커스텀 `primary` 팔레트 · Inter. 전역 CSS 는 `styles/globals.css`. 조건부 클래스는 `lib/utils.ts` 의 `cn()` |
+| **경로 별칭** | `@/*` 가 리포 루트다 |
+| **정적 자산** | `public/` 아래 (`public/images/Ted_yanadoo.png`, `public/favicon.svg`) |
 
-## Deployment
+## 배포
 
-GitHub Actions workflow at `.github/workflows/deploy.yml` runs on every push to `main`: it executes `npm ci && npm run build`, uploads `./out` as a Pages artifact, and deploys via `actions/deploy-pages`. There is no preview environment — `main` is production. Don't push to `main` casually; verify the build locally first.
+`.github/workflows/deploy.yml` 이 `main` 푸시마다 `npm ci && npm run build` 를 돌리고 `./out` 을
+Pages 아티팩트로 배포한다.
+
+**프리뷰 환경이 없고 `main` 이 곧 프로덕션이다.** 가볍게 푸시하지 말고 로컬 빌드를 먼저 확인한다.
