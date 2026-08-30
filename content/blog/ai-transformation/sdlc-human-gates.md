@@ -456,6 +456,7 @@ KPI 쪽에서 이름이 겹치는 자리는 둘이다. **변경 실패율은 개
 | 무엇 | 어디 |
 |---|---|
 | 요구사항·기획·디자인 세 단계의 **영역별 도구와 활용**, 그리고 마케팅·경쟁사 분석 도메인 | [기획·디자인·마케팅·경쟁사 분석 네 영역의 AI 도구 지형](/blog/ai-transformation/discovery-to-growth-tooling/) |
+| 여섯 단계에 들어가기 **전**의 게이트 — 이 요구를 아예 만들지 말지 가르는 판정과 그 근거 문서 | [만드는 비용이 내려가면 무엇이 남는가](/blog/ai-product-planning/planning-harness-map/) |
 | 운영 4원칙 전체, 빌더→오케스트레이터 직무 재정의, 거버넌스, 기업 사례와 GitClear·70% Problem의 출처 | [빌더에서 오케스트레이터로 가는 조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/) |
 | n8n 워크플로 자동화, 회사 두뇌(사내 지식 LLM), 팀 스코프 MCP, 레포 체크인 컨텍스트 표준(CLAUDE.md·Cursor rules·AGENTS.md), 도입 순서와 성숙도 | [팀 공유 인프라 넷과 성숙도 0 → 1 → N](/blog/ai-transformation/enablement-infra-and-maturity/) |
 | 에이전트 루프의 종료 조건으로서의 사람 게이트, 검증기 설계 | [안티패턴 10종과 진단 순서](/blog/ai-agent/loop-antipatterns-and-checklist/) · [여덟 개의 설계 표면](/blog/ai-agent/minimal-loop-design-surfaces/) |
