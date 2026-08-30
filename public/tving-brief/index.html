@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>티빙 플랫폼 코어 목표 설계 — 허우용 (Ted)</title>
+<meta name="robots" content="noindex">
+<style>
+/* ── 외부 리소스를 일절 쓰지 않습니다(회의실 네트워크 대비). 시스템 폰트만 사용 ── */
+:root{
+  --ink:#16202b;
+  --ink-2:#3d4b5a;
+  --muted:#6b7a8a;
+  --line:#dfe4ea;
+  --line-2:#eef1f5;
+  --soft:#f6f8fa;
+  --accent:#1e5fa8;
+  --accent-soft:#eaf1fa;
+  --warn:#a8382c;
+  --warn-soft:#fbeeec;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#e9ecf0;color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;overflow:hidden}
+
+/* ── 무대: 1280×720 고정 후 화면에 맞춰 축소·확대 ── */
+#stage{position:fixed;inset:0;display:grid;place-items:center}
+#deck{width:1280px;height:720px;position:relative;transform-origin:center center;visibility:hidden;
+  background:#fff;box-shadow:0 18px 60px rgba(20,32,48,.18);border-radius:6px;overflow:hidden}
+
+.slide{position:absolute;inset:0;padding:56px 64px 76px;display:none;flex-direction:column}
+.slide.on{display:flex}
+
+/* ── 공통 타이포 ── */
+.kicker{font-size:17px;font-weight:700;color:var(--accent);letter-spacing:.02em;margin-bottom:10px}
+.kicker.ap{color:var(--muted)}
+h2{font-size:40px;line-height:1.28;font-weight:800;letter-spacing:-.02em;word-break:keep-all}
+em{font-style:normal;color:var(--accent);font-weight:inherit}
+.lead{margin-top:14px;font-size:21px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:22px}
+.note{margin-top:20px;font-size:18px;line-height:1.6;color:var(--muted);word-break:keep-all}
+.note b{color:var(--ink);font-weight:700}
+
+/* ── 표지 ── */
+.cover{justify-content:center;padding:64px 80px 96px}
+.cover .eyebrow{font-size:19px;font-weight:700;color:var(--accent);letter-spacing:.06em}
+.cover h1{margin-top:20px;font-size:58px;line-height:1.24;font-weight:800;letter-spacing:-.03em;word-break:keep-all}
+.premise{margin-top:34px;padding:22px 26px;background:var(--soft);border-left:4px solid var(--accent);
+  border-radius:0 8px 8px 0;font-size:20px;line-height:1.62;color:var(--ink-2);word-break:keep-all;max-width:940px}
+.premise b{color:var(--ink);font-weight:700}
+.byline{margin-top:38px;font-size:19px;color:var(--muted)}
+.byline b{color:var(--ink);font-weight:700;font-size:21px}
+.byline span{margin:0 10px;color:var(--line)}
+
+/* ── 2×2 격자 (슬라이드 2) ── */
+.grid22{display:grid;grid-template-columns:212px 1fr 1fr;gap:10px;align-items:stretch}
+.gh{display:flex;align-items:center;justify-content:center;padding:14px;border-radius:8px;
+  background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:20px;
+  text-align:center;line-height:1.35;word-break:keep-all}
+.gh.side{background:var(--soft);color:var(--ink);flex-direction:column;gap:4px;font-size:18px}
+.gh.side small{font-weight:600;font-size:15px;color:var(--muted)}
+.gh.corner{background:transparent}
+.cell{padding:18px 20px;border:1px solid var(--line);border-radius:8px;background:#fff;
+  font-size:18px;line-height:1.5;color:var(--ink-2);display:flex;align-items:center;word-break:keep-all}
+
+/* ── 4단계 (슬라이드 3) ── */
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stage{border:1px solid var(--line);border-radius:10px;padding:18px 18px 0;display:flex;flex-direction:column}
+.stage .no{font-size:14px;font-weight:800;color:var(--accent);letter-spacing:.04em}
+.stage h3{margin-top:6px;font-size:22px;font-weight:800;line-height:1.3;word-break:keep-all}
+.stage ul{margin-top:12px;flex:1;list-style:none}
+.stage li{font-size:16px;line-height:1.55;color:var(--ink-2);padding-left:13px;position:relative;margin-bottom:5px;word-break:keep-all}
+.stage li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--line)}
+.gate{margin:14px -18px 0;padding:12px 18px;background:var(--soft);border-top:1px solid var(--line-2);
+  border-radius:0 0 9px 9px;font-size:15px;line-height:1.5;color:var(--ink-2);word-break:keep-all}
+.gate b{display:block;font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.03em;margin-bottom:3px}
+
+/* ── 3단계 흐름 (슬라이드 4) ── */
+.flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;align-items:stretch}
+.arrow{display:flex;align-items:center;justify-content:center;font-size:30px;color:#aab6c2;font-weight:700}
+.step{border:1px solid var(--line);border-radius:10px;padding:20px}
+.step h3{font-size:24px;font-weight:800;line-height:1.3;word-break:keep-all}
+.step .when{margin-top:4px;font-size:15px;color:var(--muted);font-weight:600}
+.step ul{margin-top:14px;list-style:none}
+.step li{font-size:17px;line-height:1.6;color:var(--ink-2);padding-left:14px;position:relative;margin-bottom:5px;word-break:keep-all}
+.step li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--line)}
+.qbox{margin-top:22px;border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:18px 22px}
+.qbox b{font-size:17px;font-weight:800;color:var(--accent)}
+.qbox ol{margin-top:8px;padding-left:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px 22px}
+.qbox li{font-size:16.5px;line-height:1.5;color:var(--ink);word-break:keep-all}
+
+/* ── 북극성 트리 (슬라이드 5) ── */
+.tree{display:flex;flex-direction:column;align-items:center}
+.north{padding:18px 34px;border-radius:10px;background:var(--accent);color:#fff;text-align:center}
+.north b{display:block;font-size:15px;font-weight:700;opacity:.82;letter-spacing:.04em}
+.north span{display:block;margin-top:5px;font-size:30px;font-weight:800;letter-spacing:-.01em}
+.north small{display:block;margin-top:4px;font-size:16px;opacity:.88;font-weight:500}
+.stem{width:1px;height:26px;background:var(--line)}
+.branches{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;padding-top:26px}
+.branches::before{content:"";position:absolute;top:0;left:12.5%;right:12.5%;height:1px;background:var(--line)}
+.branch{position:relative;border:1px solid var(--line);border-radius:9px;padding:15px 16px;text-align:center}
+.branch::before{content:"";position:absolute;top:-26px;left:50%;width:1px;height:26px;background:var(--line)}
+.branch b{display:block;font-size:14px;font-weight:800;color:var(--muted)}
+.branch span{display:block;margin-top:5px;font-size:18px;font-weight:700;line-height:1.4;word-break:keep-all}
+.guard{margin-top:24px;border:1px solid var(--warn);background:var(--warn-soft);border-radius:10px;padding:15px 22px;
+  display:flex;align-items:center;gap:20px}
+.guard b{font-size:16px;font-weight:800;color:var(--warn);white-space:nowrap}
+.guard ul{display:flex;gap:26px;list-style:none;flex-wrap:wrap}
+.guard li{font-size:17px;font-weight:600;color:var(--ink)}
+
+/* ── 부록 표 ── */
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-2);
+  font-size:17px;line-height:1.5;vertical-align:top;word-break:keep-all}
+th{font-size:14px;font-weight:800;color:var(--muted);letter-spacing:.03em;
+  border-bottom:1px solid var(--line);background:var(--soft)}
+td:first-child{font-weight:700;white-space:nowrap;color:var(--ink)}
+td.d{color:var(--ink-2);font-weight:400}
+
+/* ── 3단 비교 (부록 7) ── */
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:stretch}
+.col{border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.col.mid{border-color:var(--accent);background:var(--accent-soft)}
+.col h3{font-size:23px;font-weight:800}
+.col.mid h3{color:var(--accent)}
+.col dl{margin-top:12px}
+.col dt{font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.03em;margin-top:9px}
+.col dd{font-size:17px;line-height:1.5;color:var(--ink-2);margin-top:2px;word-break:keep-all}
+
+/* ── 2단 대비 (부록 8) ── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.duo .col h3{font-size:21px}
+.duo .col p{margin-top:8px;font-size:17.5px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
+
+/* ── 근거 (부록 9) ── */
+.record{list-style:none}
+.record li{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.record .yr{font-size:16px;font-weight:800;color:var(--muted);padding-top:2px}
+.record .tx{font-size:18.5px;line-height:1.55;color:var(--ink);word-break:keep-all}
+.record .tx small{display:block;margin-top:3px;font-size:16px;color:var(--muted);font-weight:400}
+.links{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
+.links a{display:block;padding:12px 18px;border:1px solid var(--line);border-radius:8px;
+  text-decoration:none;color:var(--ink)}
+.links a b{display:block;font-size:16px;font-weight:700}
+.links a span{display:block;margin-top:3px;font-size:15px;color:var(--accent);font-family:ui-monospace,Consolas,monospace}
+
+/* ── 하단 바 ── */
+.bar{position:absolute;left:64px;right:64px;bottom:26px;display:flex;align-items:center;
+  justify-content:space-between;border-top:1px solid var(--line-2);padding-top:14px}
+.dots{display:flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);border:none;padding:0;cursor:pointer}
+.dot.ap{background:transparent;border:1.5px solid var(--line)}
+.dot.cur{background:var(--accent);border-color:var(--accent)}
+.sep{width:1px;height:12px;background:var(--line);margin:0 5px}
+.label{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.slide.cover .bar{border-top-color:transparent}
+
+/* ── 조작 안내(표지에서만, 3초 뒤 사라짐) ── */
+#hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(22,32,43,.86);
+  color:#fff;font-size:14px;padding:9px 16px;border-radius:20px;transition:opacity .5s;z-index:9}
+#hint.gone{opacity:0;pointer-events:none}
+
+/* ── 인쇄: 슬라이드 한 장 = 한 페이지(가로) ── */
+@media print{
+  @page{size:1280px 720px;margin:0}
+  html,body{height:auto;background:#fff;overflow:visible}
+  #stage{position:static;display:block}
+  #hint{display:none}
+  #deck{width:1280px;height:auto;transform:none!important;visibility:visible!important;box-shadow:none;border-radius:0}
+  .slide{position:relative;display:flex!important;width:1280px;height:720px;
+    break-after:page;page-break-after:always;border-radius:0}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .dot,.sep{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="stage">
+<div id="deck">
+
+<!-- ══════════ 1. 표지 ══════════ -->
+<section class="slide cover on">
+  <div class="eyebrow">TVING · PLATFORM PRODUCT LEAD</div>
+  <h1>플랫폼 코어를<br>이렇게 만들겠습니다</h1>
+  <div class="premise">
+    <b>티빙 현행 시스템을 진단한 자료가 아닙니다.</b> 제가 만든다면 이렇게 만들겠다는 목표 설계 초안이고,
+    부임 후 팀과 함께 현행을 진단해 조정할 전제로 준비했습니다.
+  </div>
+  <div class="byline"><b>허우용 (Ted)</b><span>|</span>20년 플랫폼 리더<span>|</span>2026. 08. 31.</div>
+</section>
+
+<!-- ══════════ 2. 지형도 ══════════ -->
+<section class="slide">
+  <div class="kicker">지형도</div>
+  <h2>네 도메인은 나란하지 않습니다</h2>
+  <p class="lead">세로는 <em>업무 도메인</em>, 가로는 그것을 떠받치는 <em>공통 기반</em>입니다. 가로는 모든 칸을 관통합니다.</p>
+  <div class="body">
+    <div class="grid22">
+      <div class="gh corner"></div>
+      <div class="gh">01 CMS</div>
+      <div class="gh">02 결제 · 정산</div>
+
+      <div class="gh side">03 공통 어드민<small>권한 · 감사</small></div>
+      <div class="cell">CMS 화면 권한 · 변경 감사</div>
+      <div class="cell">정산 화면 권한 · 변경 감사</div>
+
+      <div class="gh side">04 거버넌스 · 글로벌<small>테넌트 · 모듈 계약</small></div>
+      <div class="cell">로케일 · 카탈로그 규칙, 모듈 경계</div>
+      <div class="cell">통화 · 결제수단 규칙, 모듈 경계</div>
+    </div>
+    <p class="note">
+      가로를 먼저 세우면 세로 도메인이 늘어도 각 칸이 자동으로 채워지고, 늦게 세우면 이미 만든 모든 칸을 되돌려 고쳐야 합니다.
+      그리고 <b>CMS의 직접 고객은 시청자가 아니라 내부 운영자입니다. 그들이 쓰는 화폐는 시간입니다.</b>
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 3. 순서 ══════════ -->
+<section class="slide">
+  <div class="kicker">순서</div>
+  <h2>CMS가 간판이지만, <em>장부와 기록</em>을 먼저 세웁니다</h2>
+  <div class="body">
+    <div class="stages">
+      <div class="stage">
+        <div class="no">1단계</div>
+        <h3>진단과<br>즉시 방어</h3>
+        <ul>
+          <li>기준선 계측 시작</li>
+          <li>퇴사자 계정 회수</li>
+          <li>권리 만료 자동 알림</li>
+        </ul>
+        <div class="gate"><b>다음으로 가는 조건</b>기준선 5종 확정</div>
+      </div>
+      <div class="stage">
+        <div class="no">2단계</div>
+        <h3>검증 기반</h3>
+        <ul>
+          <li>감사로그 · SSO</li>
+          <li>원장 병렬 기록</li>
+          <li>모듈 레지스트리</li>
+          <li>API 게이트웨이 파사드</li>
+        </ul>
+        <div class="gate"><b>다음으로 가는 조건</b>원장이 기존 결제와 대사 일치</div>
+      </div>
+      <div class="stage">
+        <div class="no">3단계</div>
+        <h3>코어 이관</h3>
+        <ul>
+          <li>CMS 저위험 → 코어</li>
+          <li>결제 카나리 전환</li>
+          <li>어드민 셸 통합</li>
+        </ul>
+        <div class="gate"><b>다음으로 가는 조건</b>카나리 구간 이중 청구 0 유지</div>
+      </div>
+      <div class="stage">
+        <div class="no">4단계</div>
+        <h3>확장</h3>
+        <ul>
+          <li>테넌트 구조 도입</li>
+          <li>글로벌 준비</li>
+          <li>운영 셀프서비스</li>
+        </ul>
+        <div class="gate"><b>기준</b>새 사업 추가가 전체 재작업을 부르지 않을 것</div>
+      </div>
+    </div>
+    <p class="note">
+      원장은 기존 결제를 건드리지 않고 <b>병렬 기록만</b> 하므로 싸고 안전합니다. 그런데 이것이 없으면 CMS를 고치는 동안 돈이 새도 아무도 모릅니다.
+      <b>기간은 현행을 본 뒤에 말씀드립니다.</b> 지금 드릴 수 있는 것은 순서와, 다음 단계로 넘어가는 조건입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 4. 첫 90일 ══════════ -->
+<section class="slide">
+  <div class="kicker">첫 90일</div>
+  <h2>제 기억이 아니라 <em>지금의 데이터</em>로 근거를 세웁니다</h2>
+  <div class="body">
+    <div class="flow">
+      <div class="step">
+        <h3>듣기와 측정</h3>
+        <div class="when">~30일</div>
+        <ul>
+          <li>운영자 인터뷰 5개 직군</li>
+          <li>작업 로그 계측 시작</li>
+          <li>권한 · 계정 인벤토리</li>
+          <li>백엔드 · 데이터 · AI팀 관계 형성</li>
+        </ul>
+      </div>
+      <div class="arrow">→</div>
+      <div class="step">
+        <h3>문제 정의와 즉시 개선</h3>
+        <div class="when">~60일</div>
+        <ul>
+          <li>기준선 5종 확정</li>
+          <li>퇴사자 계정 회수</li>
+          <li>권리 만료 자동 알림</li>
+          <li>우선순위 매트릭스 확정</li>
+        </ul>
+      </div>
+      <div class="arrow">→</div>
+      <div class="step">
+        <h3>로드맵 합의</h3>
+        <div class="when">~90일</div>
+        <ul>
+          <li>재구축 범위 · 순서 문서화</li>
+          <li>북극성 · 중단 기준 합의</li>
+          <li>PM 역할 정의 · 채용 기준</li>
+          <li>경영진 투자 근거 발표</li>
+        </ul>
+      </div>
+    </div>
+    <div class="qbox">
+      <b>첫날 던질 세 가지 질문</b>
+      <ol>
+        <li>개인정보를 조회한 사람 목록을 뽑을 수 있습니까</li>
+        <li>운영 DB 상시 접속 계정이 몇 개입니까</li>
+        <li>개발 티켓 중 운영자가 스스로 할 수 있었어야 하는 건 몇 %입니까</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 5. 북극성 ══════════ -->
+<section class="slide">
+  <div class="kicker">자(尺)</div>
+  <h2>넷을 하나로 묶어 보는 지표는 <em>하나</em>입니다</h2>
+  <div class="body">
+    <div class="tree">
+      <div class="north">
+        <b>플랫폼 북극성</b>
+        <span>Time-to-Launch</span>
+        <small>새 사업을 출시하는 데 드는 시간</small>
+      </div>
+      <div class="stem"></div>
+      <div class="branches">
+        <div class="branch"><b>01 CMS</b><span>수급 → 노출 리드타임</span></div>
+        <div class="branch"><b>02 결제 · 정산</b><span>결제 성공률 × 정산 마감일</span></div>
+        <div class="branch"><b>03 어드민</b><span>셀프서비스 비율</span></div>
+        <div class="branch"><b>04 거버넌스</b><span>신규 테넌트 온보딩 소요일</span></div>
+      </div>
+    </div>
+    <div class="guard">
+      <b>가드레일 — 하나라도 깨지면 실패</b>
+      <ul>
+        <li>권리 · 지역 위반 노출 0</li>
+        <li>이중 청구 0</li>
+        <li>운영 DB 상시 접속 0</li>
+      </ul>
+    </div>
+    <p class="note">
+      속도 지표에는 반드시 품질 짝지표를 붙이고, 조작 가능한 지표는 쓰지 않습니다.
+      그런데 이 지표들은 <b>처음엔 존재하지 않습니다.</b> 그래서 첫 일은 성과를 내는 것이 아니라 성공을 잴 자를 만드는 것입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 부록 6. CMS 여섯 난제 ══════════ -->
+<section class="slide">
+  <div class="kicker ap">부록 · CMS</div>
+  <h2>미디어 CMS라면 시대와 무관하게 푸는 여섯 문제</h2>
+  <div class="body">
+    <table>
+      <tr><th style="width:220px">문제</th><th>왜 아픈가</th><th style="width:390px">설계 답</th></tr>
+      <tr><td>저장소 두 벌</td><td class="d">정확성과 검색 속도가 서로 다른 것을 요구한다</td><td class="d">원본 · 조회 분리 후 변경분만 실시간 복사</td></tr>
+      <tr><td>바깥 시스템 실패</td><td class="d">변환 · 저작권 보호 · 전송망은 자주 실패한다</td><td class="d">작업 흐름 엔진이 진행 상태와 재시도를 책임진다</td></tr>
+      <tr><td>대량 입력</td><td class="d">콘텐츠가 늘 때마다 입력할 사람도 늘어야 하면 무너진다</td><td class="d">AI가 초안, 최종 승인은 사람(HITL)</td></tr>
+      <tr><td>편성과 노출</td><td class="d">시간 축과 자리 축을 한 테이블로 합치면 급한 변경에서 터진다</td><td class="d">두 축을 분리해 모델링</td></tr>
+      <tr><td>다국어</td><td class="d">언어를 표의 칸으로 두면 나라 추가가 시스템 공사가 된다</td><td class="d">공통 원본 + 덧씌우기, 나라 추가를 데이터 입력으로</td></tr>
+      <tr><td>권리(계약)</td><td class="d">엑셀로 관리하면 만료 콘텐츠가 노출된다 — 사고가 나야 발견된다</td><td class="d">권리 윈도우를 모델에 넣고 만료를 자동 알림</td></tr>
+    </table>
+    <p class="note">전환은 빅뱅이 아니라 <b>저위험 도메인부터 감싸며 교체</b>합니다. 수급과 편성은 하루도 멈출 수 없습니다.</p>
+  </div>
+</section>
+
+<!-- ══════════ 부록 7. 결제 · 원장 · 정산 ══════════ -->
+<section class="slide">
+  <div class="kicker ap">부록 · 결제 · 정산</div>
+  <h2>결제와 정산은 다른 시스템이고, 사이에 <em>원장</em>이 있습니다</h2>
+  <div class="body">
+    <div class="trio">
+      <div class="col">
+        <h3>결제</h3>
+        <dl>
+          <dt>언제</dt><dd>실시간, 초 단위</dd>
+          <dt>성격</dt><dd>틀리면 즉시 사고 — 이중 청구</dd>
+          <dt>고객</dt><dd>시청자, 상담원</dd>
+        </dl>
+      </div>
+      <div class="col mid">
+        <h3>원장</h3>
+        <dl>
+          <dt>역할</dt><dd>결제도 정산도 서로를 직접 부르지 않고 여기에 기록만 남긴다</dd>
+          <dt>규칙</dt><dd>추가만 가능. 고치지 않고 바로잡는 전표를 새로 더한다</dd>
+          <dt>효과</dt><dd>석 달 전 그날 무슨 일이 있었는지 되짚을 수 있다</dd>
+        </dl>
+      </div>
+      <div class="col">
+        <h3>정산</h3>
+        <dl>
+          <dt>언제</dt><dd>나중에 몰아서, 월 마감</dd>
+          <dt>성격</dt><dd>과거를 다시 계산할 수 있어야 한다</dd>
+          <dt>고객</dt><dd>재무팀, 배급사</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="note">
+      그래서 <b>원장 없이 결제를 바꾸면, 바꾼 것이 맞는지 검증할 기준이 없습니다.</b>
+      결제 수단은 어댑터로 격리하고, 같은 요청이 두 번 와도 한 번만 처리되도록 멱등키를 겁니다.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 부록 8. 뒷문 ══════════ -->
+<section class="slide">
+  <div class="kicker ap">부록 · 공통 어드민</div>
+  <h2>화면 권한보다 <em>뒷문</em>을 먼저 닫습니다</h2>
+  <div class="body">
+    <div class="duo">
+      <div class="col">
+        <h3>효율 — 스스로 일하게</h3>
+        <p>직원이 개발팀을 기다리지 않고 요금제와 편성을 직접 다룰 수 있어야 사업 속도가 납니다.</p>
+      </div>
+      <div class="col">
+        <h3>통제 — 아무나 못 보게</h3>
+        <p>효율만 좇으면 권한이 헐거워지고, 통제만 좇으면 아무도 일을 못 합니다. 이 긴장을 설계로 풉니다.</p>
+      </div>
+    </div>
+    <table style="margin-top:20px">
+      <tr><th style="width:250px">가장 큰 구멍</th><th>왜 위험한가</th><th style="width:330px">조치</th></tr>
+      <tr><td>운영 DB 직접 접속</td><td class="d">화면 권한을 아무리 잘 걸어도 우회 경로가 있으면 통제는 없는 것과 같다</td><td class="d">상시 접속을 없애고, 필요할 때 사유와 함께 2시간짜리로 받는다</td></tr>
+      <tr><td>권한 안에서의 이상 행위</td><td class="d">권한 있는 사람의 대량 조회는 권한 검사를 통과한다</td><td class="d">절대 건수가 아니라 개인별 평소 패턴 대비 이탈로 탐지</td></tr>
+      <tr><td>지울 수 있는 기록</td><td class="d">관리자가 지울 수 있으면 감사로그가 아니다</td><td class="d">본인도 못 지우는 별도 저장소에 추가만 가능하게 보관</td></tr>
+    </table>
+    <p class="note">답은 하나입니다. <b>일상 업무는 마찰 없이 빠르게, 위험한 작업만 느리게(승인 · 기록).</b></p>
+  </div>
+</section>
+
+<!-- ══════════ 부록 9. 근거와 원문 ══════════ -->
+<section class="slide">
+  <div class="kicker ap">부록 · 근거</div>
+  <h2>이 설계가 어디에서 나왔는지</h2>
+  <div class="body">
+    <ul class="record">
+      <li>
+        <div class="yr">2012 – 2017</div>
+        <div class="tx">CJ헬로비전 TVING — N-Screen CMS 개발 파트 리드
+          <small>1세대 CMS · 검색 · 편성 · 통합 API를 팀과 함께 설계하고 구축</small></div>
+      </li>
+      <li>
+        <div class="yr">2017 – 2021</div>
+        <div class="tx">SK브로드밴드 B tv — 차세대 CMS(NCMS) 재구축, 발주사 측 기획 · 기술 PM
+          <small>레거시 CMS를 MSA로 재구축하는 설계 · 검토를 리딩. 같은 문제를 두 번, 다른 제약에서</small></div>
+      </li>
+      <li>
+        <div class="yr">2022 – 2026</div>
+        <div class="tx">(주)야나두 a kakao company — 커머스개발실장
+          <small>전 직군 개발 조직을 총괄. 조직을 10명에서 30명으로 키우며 20명을 직접 채용 · 온보딩</small></div>
+      </li>
+    </ul>
+    <div class="links">
+      <a href="https://withwooyong.github.io/product-lead-v2/" target="_blank" rel="noopener">
+        <b>지원 프로필</b><span>withwooyong.github.io/product-lead-v2</span></a>
+      <a href="https://withwooyong.github.io/product-lead-wiki/" target="_blank" rel="noopener">
+        <b>목표 설계 문서군 (전문)</b><span>withwooyong.github.io/product-lead-wiki</span></a>
+      <a href="https://withwooyong.github.io/notion" target="_blank" rel="noopener">
+        <b>경력기술서</b><span>withwooyong.github.io/notion</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- 하단 바는 스크립트가 각 슬라이드에 심습니다 -->
+</div>
+</div>
+
+<div id="hint">← → 넘기기 &nbsp;·&nbsp; 숫자키 바로가기 &nbsp;·&nbsp; F 전체화면</div>
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var MAIN = 5;                       // 1~5가 본편, 6~9는 부록
+  var cur = 0;
+
+  /* ── 하단 바 심기 ── */
+  slides.forEach(function (s, i) {
+    var bar = document.createElement('div');
+    bar.className = 'bar';
+    var dots = document.createElement('div');
+    dots.className = 'dots';
+    slides.forEach(function (_, j) {
+      if (j === MAIN) {
+        var sep = document.createElement('span');
+        sep.className = 'sep';
+        dots.appendChild(sep);
+      }
+      var d = document.createElement('button');
+      d.className = 'dot' + (j >= MAIN ? ' ap' : '') + (j === i ? ' cur' : '');
+      d.setAttribute('aria-label', (j + 1) + '번 슬라이드');
+      d.addEventListener('click', function (e) { e.stopPropagation(); go(j); });
+      dots.appendChild(d);
+    });
+    var label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = i < MAIN ? (i + 1) + ' / ' + MAIN : '부록 ' + (i - MAIN + 1);
+    bar.appendChild(dots);
+    bar.appendChild(label);
+    s.appendChild(bar);
+  });
+
+  function go(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[cur].classList.remove('on');
+    slides[n].classList.add('on');
+    cur = n;
+    location.hash = String(n + 1);
+    hideHint();
+  }
+  function next() { go(Math.min(cur + 1, slides.length - 1)); }
+  function prev() { go(Math.max(cur - 1, 0)); }
+
+  /* ── 화면 크기에 맞춰 축소 ── */
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+  deck.style.visibility = 'visible';
+
+  /* ── 키보드 ── */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'Enter') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { go(0); }
+    else if (e.key === 'End') { go(slides.length - 1); }
+    else if (e.key >= '1' && e.key <= '9') { go(parseInt(e.key, 10) - 1); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    }
+  });
+
+  /* ── 클릭: 오른쪽 다음, 왼쪽 이전. 링크·점은 제외 ── */
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('a') || e.target.closest('.dot')) return;
+    if (e.clientX < window.innerWidth * 0.25) prev(); else next();
+  });
+
+  /* ── 조작 안내는 잠깐만 ── */
+  var hint = document.getElementById('hint'), hidden = false;
+  function hideHint() { if (!hidden) { hidden = true; hint.classList.add('gone'); } }
+  setTimeout(hideHint, 4000);
+
+  /* ── 새로고침해도 자리 유지 ── */
+  var h = parseInt(location.hash.replace('#', ''), 10);
+  if (h >= 1 && h <= slides.length) go(h - 1);
+})();
+</script>
+</body>
+</html>

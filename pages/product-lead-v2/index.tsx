@@ -186,6 +186,12 @@ export default function ProductLead() {
                 경력기술서 (Notion)
               </a>
             </Button>
+            <Button asChild variant="outline" className="transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
+              <a href="/tving-brief/" target="_blank" rel="noopener noreferrer">
+                <Layers className="h-4 w-4 mr-2" />
+                플랫폼 코어 설계 브리프
+              </a>
+            </Button>
           </div>
 
           {/* 핵심 요약 */}

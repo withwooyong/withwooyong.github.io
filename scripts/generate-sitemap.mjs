@@ -13,7 +13,7 @@ const ORIGIN = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://
  * (product-lead-wiki/cms)만 걸러지고 인덱스 라우트(product-lead-wiki) 자체는 통과해
  * noindex 페이지가 sitemap에 실린다.
  */
-const EXCLUDE = [/^product-lead-wiki(\/|$)/, /^product-lead-loadmap(\/|$)/, /^notion(\/|$)/, /^404$/];
+const EXCLUDE = [/^product-lead-wiki(\/|$)/, /^product-lead-loadmap(\/|$)/, /^notion(\/|$)/, /^tving-brief(\/|$)/, /^404$/];
 
 /**
  * 경로별 우선순위. 앞에서 매칭되는 첫 규칙을 쓴다.
