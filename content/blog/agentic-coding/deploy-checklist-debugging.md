@@ -225,6 +225,8 @@ flowchart TD
 | 배포 후 502 | 서버리스 함수 타임아웃 | 긴 작업을 백그라운드 잡으로 분리 |
 | 콜드 스타트 5초 이상 | 큰 SDK를 통째로 임포트 | 필요한 모듈만 개별 임포트 |
 
+같은 증상이 클러스터 위에서 나면 원인이 하나 더 붙는다 — [생존 프로브와 준비 프로브를 혼동하면](/blog/backend-engineering/kubernetes-deployment-and-rollout/) 무한 재시작이나 5xx가 된다.
+
 ## 디버깅 — 절대 원칙과 4 Phase
 
 > **The Iron Law**
