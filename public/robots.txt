@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# 지원 제출본 PDF. 링크로는 열리되 검색 결과에는 뜨지 않게 한다.
+Disallow: /docs/
+
 Sitemap: https://withwooyong.github.io/sitemap.xml
