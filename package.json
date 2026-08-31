@@ -22,7 +22,9 @@
     "map-terms": "node scripts/map-terms.mjs",
     "map-terms:verify": "node scripts/map-terms.mjs --self-test",
     "compose": "node scripts/compose.mjs",
-    "compose:verify": "node scripts/compose.mjs --self-test"
+    "compose:verify": "node scripts/compose.mjs --self-test",
+    "source-overlap": "node scripts/source-overlap.mjs",
+    "source-overlap:verify": "node scripts/source-overlap.mjs --self-test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
