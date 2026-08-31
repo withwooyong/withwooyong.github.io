@@ -19,6 +19,8 @@
     "check-counts": "node scripts/check-counts.mjs",
     "check-counts:verify": "node scripts/check-counts.mjs --self-test",
     "check-counts:print": "node scripts/check-counts.mjs --print",
+    "map-terms": "node scripts/map-terms.mjs",
+    "map-terms:verify": "node scripts/map-terms.mjs --self-test",
     "compose": "node scripts/compose.mjs",
     "compose:verify": "node scripts/compose.mjs --self-test"
   },
