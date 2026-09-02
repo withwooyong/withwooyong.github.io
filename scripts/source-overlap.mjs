@@ -24,9 +24,20 @@ function normalizeKeepSpace(text) {
   return text.replace(/\s+/g, " ");
 }
 
-/** 공백 제거 — `dup-scan` 과 같은 정규화. 비교용으로만 쓴다. */
+/**
+ * 공백 제거 — `dup-scan` 의 `normalizeLine` 과 **같은 정규화**여야 한다.
+ *
+ * ⚠️ 2026-09-02 이전 판은 공백만 지웠으면서 출력 라벨에는 「dup-scan 과 같은 정규화」라고
+ *    찍었다. 그래서 원본 문장을 그대로 복사한 뒤 `**` 두 쌍만 씌우면 ②가 **0건**이 됐다
+ *    (실측: 축자 그대로 27자 → 굵게를 씌우면 0자). CLAUDE.md 의 함정 「마크다운 강조가
+ *    낱말을 쪼갠다」가 검사기 안에 들어 있었던 것이다. 라벨을 약한 쪽으로 고치는 대신
+ *    동작을 라벨에 맞췄다. 증명은 자기 검사 ⑫ 다.
+ */
 function normalizeStripSpace(text) {
-  return text.replace(/\s+/g, "");
+  return text
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // 링크는 제목만 — URL 은 겹쳐도 복제가 아니다
+    .replace(/[|*_`#>~]/g, "")
+    .replace(/\s+/g, "");
 }
 
 /** 마크다운 표 구분선처럼 기호만 남는 줄은 내용이 아니다. */
@@ -218,6 +229,22 @@ function selfTest() {
   const shortLabel = "④ 성장 다음 탐색 거리";
   check("⑪ 라벨은 임계값으로는 잡히지 않는다", shortLabel.length < 20, true);
   check("⑪-b 통째 일치로는 잡힌다", new Set([shortLabel]).has(shortLabel), true);
+
+  // ⑫ 🔴 굵게를 씌운 축자 복사가 ②에 걸린다 — 이 검사기의 실제 결함이었던 자리다.
+  //    옛 판(공백만 제거)은 `**` 두 쌍만 들어가도 0건을 냈다. 내용이 같은데 통과하는
+  //    경로가 있으면 그 검사의 0 은 결론이 아니다.
+  const bold = findOverlaps("네 단계는 **나열된 목록**이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다.", normalizeStripSpace(src), normalizeStripSpace, 20);
+  check("⑫ 굵게를 씌운 축자 복사도 ②가 잡는다", bold.length > 0, true);
+
+  // ⑫-b 표 셀 경계를 넘는 일치도 잡는다 — `| 셀A | 셀B |` 와 산문이 같은 문자열로 수렴한다.
+  const cell = findOverlaps("| 네 단계는 나열된 목록이 아니라 | 의존 관계이며, 한 단계의 출력이 |", normalizeStripSpace(src), normalizeStripSpace, 20);
+  check("⑫-b 표 셀 경계를 넘는 일치를 잡는다", cell.length > 0, true);
+
+  // ⑫-c 두 검사기의 정규화가 실제로 같은지 문자열로 대조한다. 라벨이 약속한 것을
+  //     코드가 지키는지는 「같다고 적어 두는 것」이 아니라 이 항목이 증명한다.
+  const dupScanLike = (t) => t.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[|*_`#>~]/g, "").replace(/\s+/g, "");
+  const probe = "**굵게**와 `코드`와 | 셀 | 과 [제목](/blog/x/) 이 섞인 줄";
+  check("⑫-c dup-scan 과 같은 결과를 낸다", normalizeStripSpace(probe), dupScanLike(probe));
 
   let pass = 0;
   for (const c2 of cases) {
