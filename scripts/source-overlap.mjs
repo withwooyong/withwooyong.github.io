@@ -16,6 +16,7 @@
  * 증명 대상이다.
  */
 import fs from "node:fs";
+import { normalizeStripSpace } from "./lib/normalize.mjs";
 
 const MIN_DEFAULT = 20;
 
@@ -25,23 +26,29 @@ function normalizeKeepSpace(text) {
 }
 
 /**
- * 공백 제거 — `dup-scan` 의 `normalizeLine` 과 **같은 정규화**여야 한다.
+ * 공백 제거 — `dup-scan` 의 `normalizeLine` 과 **같은 정규화**다.
  *
- * ⚠️ 2026-09-02 이전 판은 공백만 지웠으면서 출력 라벨에는 「dup-scan 과 같은 정규화」라고
- *    찍었다. 그래서 원본 문장을 그대로 복사한 뒤 `**` 두 쌍만 씌우면 ②가 **0건**이 됐다
- *    (실측: 축자 그대로 27자 → 굵게를 씌우면 0자). CLAUDE.md 의 함정 「마크다운 강조가
- *    낱말을 쪼갠다」가 검사기 안에 들어 있었던 것이다. 라벨을 약한 쪽으로 고치는 대신
- *    동작을 라벨에 맞췄다. 증명은 자기 검사 ⑫ 다.
+ * 🔴 「같아야 한다」가 아니라 「같다」인 이유는 둘이 `scripts/lib/normalize.mjs` **한
+ *    함수를 가져다 쓰기** 때문이다. 2026-09-02 이전에는 각자 손으로 복사해 두었고,
+ *    자기 검사 ⑫-c 조차 진짜 `dup-scan` 이 아니라 같은 파일 안의 또 다른 손복사본과
+ *    비교해서, `dup-scan` 쪽 문자군을 어긋나게 해도 **21/21 을 그대로 냈다.**
+ *    출력 라벨이 거짓이 되는데 검사가 아무 말도 하지 않는 상태였다.
+ *
+ *    ⇒ 드리프트를 검사로 잡으려 하지 말고 **드리프트가 생길 자리를 없앤다.**
+ *    ⑫-c 는 이제 값 비교가 아니라 「손복사본이 되살아나지 않았는가」를 본다.
  */
-function normalizeStripSpace(text) {
-  return text
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // 링크는 제목만 — URL 은 겹쳐도 복제가 아니다
-    .replace(/[|*_`#>~]/g, "")
-    .replace(/\s+/g, "");
-}
+
 
 /** 마크다운 표 구분선처럼 기호만 남는 줄은 내용이 아니다. */
 const SYMBOLS_ONLY = /^[\s|:\-—·*#>`_+.()[\]]*$/;
+
+/**
+ * 펜스 없이 놓인 도식 본체를 알아본다 — **선언 낱말로** 판정한다.
+ *
+ * 🔴 「`-->` 를 담았으면 도식」으로 판정하면 화살표를 언급한 산문이 통째로 대조 대상에서
+ *    빠진다. 도식이 무엇인지는 화살표가 아니라 **첫 낱말**이 말한다.
+ */
+const BARE_DIAGRAM = /^(?:flowchart|graph|sequenceDiagram|stateDiagram(?:-v2)?|classDiagram|erDiagram|gantt|journey|pie|mindmap|timeline)\b/;
 
 /**
  * 표 구분선(`| --- | --- |`)을 지운다. 이것은 내용이 아니라 문법이며, 열 수가 같으면
@@ -59,18 +66,32 @@ function stripTableRules(text) {
  * 라벨은 다시 쓴다)를 지켰는지는 라벨만 놓고 봐야 판정된다.
  */
 function toParagraphs(markdown) {
-  // 🔴 줄바꿈은 `\r?\n` 로 받는다. LF 만 보면 CRLF 파일에서 프론트매터가 벗겨지지 않고
-  //    문단 분할도 일어나지 않아 **파일 전체가 한 덩어리**가 된다. 그 덩어리에 `-->` 가
-  //    하나라도 있으면 통째로 도식 버킷에 들어가 산문 문단이 0개가 되고, ①②가 전면
-  //    무력화된다 — 42자 축자 복사도 0건으로 나온다. 이 리포에는 CRLF 발행본이 실재한다.
-  const body = stripTableRules(markdown.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ""));
+  // 🔴 줄바꿈을 **가장 먼저** LF 로 통일한다. 이것을 하지 않으면 CRLF 파일에서
+  //    프론트매터가 벗겨지지 않고 문단 분할도 일어나지 않아 **파일 전체가 한 덩어리**가
+  //    된다. 42자 축자 복사가 통째로 사라졌던 자리다. 이 리포에는 CRLF 발행본이 실재한다.
+  //    이후의 정규식이 전부 `\n` 만 보면 되므로 `\r?` 를 빠뜨릴 자리 자체가 없어진다.
+  const unified = markdown.replace(/\r\n/g, "\n");
+  const body = stripTableRules(unified.replace(/^---\n[\s\S]*?\n---\n/, ""));
   const prose = [];
   const diagrams = [];
 
-  for (const chunk of body.split(/(?:\r?\n){2,}/)) {
+  // 🔴 펜스 블록은 문단 분할 **전에** 통째로 걷어낸다.
+  //    옛 판은 문단으로 쪼갠 뒤 「`-->` 를 담았으면 도식」으로 분류했는데, 그러면
+  //    화살표를 **본문에서 언급한 산문 문단**까지 도식 버킷으로 끌려갔다. 다섯 글자가
+  //    문단 하나를 통째로 대조 대상에서 지웠고, 실측으로 56자 축자 복사가 1건에서
+  //    0건으로 떨어졌다. 펜스를 먼저 걷어내면 안쪽에 빈 줄이 있어도 한 덩어리로 남고,
+  //    바깥에 남은 화살표는 산문으로 정상 분류된다.
+  const rest = body.replace(/^```[^\n]*\n[\s\S]*?^```[ \t]*$/gm, (block) => {
+    diagrams.push(block.trim());
+    return "\n\n";
+  });
+
+  for (const chunk of rest.split(/\n{2,}/)) {
     const trimmed = chunk.trim();
     if (!trimmed || SYMBOLS_ONLY.test(trimmed)) continue;
-    if (/^```/.test(trimmed) || /-->/.test(trimmed)) diagrams.push(trimmed);
+    // 펜스 없이 놓인 도식 본체만 남는다. 「화살표를 담았는가」가 아니라
+    // 「도식 선언으로 시작하는가」로 판정한다 — 앞의 것은 산문을 삼킨다.
+    if (BARE_DIAGRAM.test(trimmed)) diagrams.push(trimmed);
     else prose.push(trimmed);
   }
   prose.diagrams = diagrams;
@@ -260,11 +281,14 @@ function selfTest() {
   const cell = findOverlaps("| 네 단계는 나열된 목록이 아니라 | 의존 관계이며, 한 단계의 출력이 |", normalizeStripSpace(src), normalizeStripSpace, 20);
   check("⑫-b 표 셀 경계를 넘는 일치를 잡는다", cell.length > 0, true);
 
-  // ⑫-c 두 검사기의 정규화가 실제로 같은지 문자열로 대조한다. 라벨이 약속한 것을
-  //     코드가 지키는지는 「같다고 적어 두는 것」이 아니라 이 항목이 증명한다.
-  const dupScanLike = (t) => t.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[|*_`#>~]/g, "").replace(/\s+/g, "");
-  const probe = "**굵게**와 `코드`와 | 셀 | 과 [제목](/blog/x/) 이 섞인 줄";
-  check("⑫-c dup-scan 과 같은 결과를 낸다", normalizeStripSpace(probe), dupScanLike(probe));
+  // ⑫-c 🔴 두 검사기가 **같은 함수**를 쓰는지 본다 — 값을 비교하지 않는다.
+  //     옛 판은 같은 파일 안에 손복사본 `dupScanLike` 를 두고 그것과 비교했다. 손복사본은
+  //     정의상 언제나 일치하므로, `dup-scan` 쪽 문자군에서 물결표 하나를 빼 두 정규화를
+  //     실제로 어긋나게 해도 이 항목이 **PASS 를 그대로 냈다**(뮤테이션 M1 실측).
+  //     값 비교로는 드리프트를 잡을 수 없다. 잡을 수 있는 것은 **손복사본의 부재**다.
+  const dupScanSrc = fs.readFileSync(new URL("./dup-scan.mjs", import.meta.url), "utf8");
+  check("⑫-c dup-scan 이 공용 정규화를 가져다 쓴다", /from\s+"\.\/lib\/normalize\.mjs"/.test(dupScanSrc), true);
+  check("⑫-c-2 dup-scan 에 손복사본이 되살아나지 않았다", /function\s+normalizeLine\s*\(/.test(dupScanSrc), false);
 
   // ⑬ 🔴 CRLF 문서에서도 문단이 쪼개진다 — 이 검사기의 실제 결함이었던 자리다.
   //    옛 판은 프론트매터 정규식과 문단 분할이 둘 다 LF 전용이라, CRLF 파일이 통째로
@@ -277,12 +301,38 @@ function selfTest() {
   check("⑬-b LF 와 CRLF 가 같은 문단 수를 낸다", toParagraphs(crlfDoc).length, toParagraphs(lfDoc).length);
   check("⑬-c CRLF 문서에서도 프론트매터가 벗겨진다", toParagraphs(crlfDoc).some((p) => /title:/.test(p)), false);
 
+  // ⑬-d 🔴 표가 든 문서에서 LF 와 CRLF 가 **같은 문단으로** 쪼개진다.
+  //     2026-09-02 이전 판은 문단 **수**만 우연히 맞고 경계가 달랐다. `stripTableRules`
+  //     가 CRLF 에서만 머리행과 본문행을 한 덩어리로 남겨, 같은 글이 줄바꿈에 따라 다른
+  //     대조 단위를 갖고 있었다(실측: 발행본 180편 중 33편에서 경계가 갈렸다).
+  //     대조 단위가 다르면 문단 경계를 걸친 겹침이 한쪽에서만 잡힌다.
+  //     ⑬-b 처럼 개수만 보면 이 차이가 드러나지 않으므로 **내용으로** 대조한다.
+  const tableDoc = "---\ntitle: x\n---\n\n앞 문단이다.\n\n| 용어 | 뜻 |\n| --- | --- |\n| 가 | 나 |\n| 다 | 라 |\n\n뒤 문단이다.\n";
+  const flat = (ps) => [...ps].map((p) => p.replace(/\s+/g, "")).join("¶");
+  check("⑬-d 표가 든 문서도 LF 와 CRLF 가 같은 문단 경계를 낸다",
+    flat(toParagraphs(tableDoc.replace(/\n/g, "\r\n"))), flat(toParagraphs(tableDoc)));
+
   // ⑭ 🔴 라벨 대조가 공백 한 칸으로 회피되지 않는다.
   //    옛 판은 원문 그대로 비교해, 원본 라벨을 복사한 뒤 띄어쓰기만 바꾸면 0건이었다.
   //    그러면 ③의 0 은 처방 ② 를 지켰다는 증거가 되지 못한다.
   check("⑭ 라벨의 공백 차이는 회피 수단이 되지 못한다", normalizeLabel("제품비전"), normalizeLabel("제품 비전"));
   check("⑭-b 굵게를 씌운 라벨도 같은 값이 된다", normalizeLabel("**제품비전**"), normalizeLabel("제품비전"));
   check("⑭-c 내용이 다르면 다른 값이다", normalizeLabel("제품비전") !== normalizeLabel("제품목적"), true);
+
+  // ⑮ 🔴 화살표를 언급한 **산문**은 산문으로 남는다 — 이 검사기의 실제 결함이었던 자리다.
+  //    옛 판은 「`-->` 를 담았으면 도식」으로 분류해, 다섯 글자가 문단 하나를 통째로
+  //    대조 대상에서 지웠다. 축자 복사가 그 문단 안에 있으면 그대로 사라진다.
+  const arrowProse = toParagraphs("본문에서 `A --> B` 라고 적는 자리가 있다. 이것은 도식이 아니라 산문이다.");
+  check("⑮ 화살표를 담은 산문을 도식으로 보내지 않는다", [[...arrowProse].length, arrowProse.diagrams.length], [1, 0]);
+
+  const arrowHidden = "네 단계는 나열된 목록이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다. 화살표(-->)로 적어도 마찬가지다.";
+  check("⑮-b 화살표가 섞여도 그 문단의 축자 복사가 잡힌다",
+    findOverlaps(toParagraphs(arrowHidden).map(normalizeStripSpace).join(" "), normalizeStripSpace(src), normalizeStripSpace, 20).length > 0, true);
+
+  // ⑮-c 펜스 안에 빈 줄이 있어도 도식은 **한 덩어리**로 남는다. 문단으로 먼저 쪼개면
+  //     펜스가 조각나고, 조각 하나하나가 따로 분류돼 판정이 흐려진다.
+  const gapped = toParagraphs('앞 문단이다.\n\n```mermaid\nflowchart LR\n    A["가"] --> B["나"]\n\n    B --> C["다"]\n```\n\n뒤 문단이다.');
+  check("⑮-c 빈 줄이 든 펜스도 도식 하나로 센다", [[...gapped].length, gapped.diagrams.length], [2, 1]);
 
   let pass = 0;
   for (const c2 of cases) {

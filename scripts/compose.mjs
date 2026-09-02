@@ -41,7 +41,12 @@ const KINDS = ["prose", "table", "code", "diagram", "bullet", "quote"];
  * @returns {{sections: object[], fenceErrors: string[]}}
  */
 export function analyze(text) {
-  const lines = text.split(/\r?\n/);
+  // 🔴 `\n` 으로만 쪼갠다. `\r?\n` 으로 쪼개면 CR 이 줄에서 사라지는데 `B()` 는 `\n` 하나만
+  //    되붙이므로, CRLF 파일의 CR 이 **한 바이트도 세어지지 않는다.** 실측으로 같은 글의
+  //    LF 판(19,007 B)과 CRLF 판(19,202 B)에 똑같이 19,008 을 찍었다 — 195 B 가 조용히
+  //    사라졌고, 오차가 하필 **「밴드에 들어와 보이는」 쪽**으로 난다. 이 리포에는 CRLF
+  //    발행본이 32편 있다. CR 을 줄 끝에 남겨 두면 `B()` 가 그대로 센다.
+  const lines = text.split("\n");
   const sections = [];
   const fenceErrors = [];
 
@@ -246,6 +251,25 @@ function selfTest() {
     check: (r) => {
       const s = r.sections.find((x) => x.title === "A");
       return KINDS.reduce((a, k) => a + s[k], 0) <= s.total;
+    },
+  });
+
+  // ⑩ 🔴 CRLF 파일의 CR 을 흘리지 않는다 — 이 검사기의 실제 결함이었던 자리다.
+  //    옛 판은 `\r?\n` 으로 쪼개 CR 을 버리고 `\n` 하나만 되붙여, 같은 글의 LF 판과
+  //    CRLF 판에 **똑같은 합계**를 찍었다. 분량 판정이 전부 이 합계 위에 서 있는데
+  //    오차는 「밴드에 들어와 보이는」 쪽으로만 난다. 케이스에 CR 리터럴이 하나도
+  //    없어서 자기 검사 아홉 개가 이 축에 대해 아무 말도 하지 않았다.
+  const crlfBody = ["## A", "산문이다", "| a | b |"].join("\n");
+  cases.push({
+    name: "CRLF 문서의 CR 도 바이트로 센다",
+    text: crlfBody.replace(/\n/g, "\r\n"),
+    check: (r) => {
+      const lf = analyze(crlfBody).sections.reduce((a, s) => a + s.total, 0);
+      const crlf = r.sections.reduce((a, s) => a + s.total, 0);
+      // 차가 **실제 CR 수**와 정확히 같아야 한다. 줄 수로 세면 안 된다 —
+      // 마지막 줄에는 줄바꿈이 없어 CR 도 붙지 않는다.
+      const crCount = (crlfBody.replace(/\n/g, "\r\n").match(/\r/g) || []).length;
+      return crlf - lf === crCount;
     },
   });
 

@@ -20,6 +20,7 @@
 import { readFileSync, readdirSync, statSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
+import { normalizeStripSpace } from "./lib/normalize.mjs";
 
 const BLOG_DIR = join(process.cwd(), "content", "blog");
 const DEFAULT_MIN = 20;
@@ -33,15 +34,10 @@ const toAbs = (p) => resolve(p);
 const HAS_WORD = /[0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ]/;
 
 // ── 정규화 ─────────────────────────────────────────────────────────
-// 마크다운 기호를 걷어내면 표 셀 경계를 넘는 일치까지 잡힌다.
-// `| 셀A | 셀B |`와 산문 `셀A 셀B`가 같은 문자열로 수렴하기 때문이다.
-function normalizeLine(raw) {
-  return raw
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // 링크는 제목만 — URL은 겹쳐도 복제가 아니다
-    .replace(/[|*_`#>~]/g, "")
-    .replace(/\s+/g, "")
-    .trim();
-}
+// 🔴 정의는 `scripts/lib/normalize.mjs` 하나뿐이다. 여기에 손으로 복사하지 마라 —
+//    `source-overlap` 이 「dup-scan 과 같은 정규화」라고 출력하면서 실제로는 갈라져
+//    있던 결함(2026-09-02)이 손복사본 때문에 생겼다. 정의가 하나면 갈라질 수 없다.
+const normalizeLine = normalizeStripSpace;
 
 // 링크 제목은 다른 편의 title이므로 겹치는 것이 정상이다.
 // 분류하지 않으면 지도편·Q&A편처럼 링크가 많은 글이 전부 위양성으로 뒤덮인다.
