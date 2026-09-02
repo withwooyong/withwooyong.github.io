@@ -437,5 +437,6 @@ flowchart TD
 | 개발기술 4종과 개발조직 이식 | [개발조직에 옮길 것](/blog/agentic-coding/dev-org-transfer/) |
 | 부서를 에이전트로 쪼개는 절차와 I/O 계약 | [부서별 에이전트 설계 첫 편](/blog/ai-transformation/department-agent-blueprint/) |
 | 다른 판본(세트 C)의 부서별 자동화 설계 | [2편](/blog/ai-transformation/department-automation-frontline/) · [3편](/blog/ai-transformation/department-automation-backoffice/) |
+| `product-strategist`·`roadmap-planner`가 다루는 요구사항 문서와 로드맵이 사람의 직무에서는 어떤 자리에 놓이는가 | [프로덕트 매니지먼트의 지형](/blog/product-management/product-management-map/) |
 
 부서별 정의서에서 실무로 곧장 옮겨지는 것은 에이전트가 아니라 **화살표에 붙은 라벨 문장**이라는 것이 이 글의 정리다. 옮기는 쪽이 에이전트가 아니라 그 에이전트가 강제하던 틀이라는 관점은 [개발조직에 옮길 것](/blog/agentic-coding/dev-org-transfer/) 편이 열 종을 대 보아 이미 정리해 두었다.
