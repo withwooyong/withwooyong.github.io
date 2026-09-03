@@ -162,6 +162,10 @@ function render(sections) {
   // 절대 바이트도 낸다 — %만 있으면 다음 배치가 비율을 재환산하지 못한다
   out.push("");
   out.push(`도식 ${sum.diagram.toLocaleString()} B · 코드 ${sum.code.toLocaleString()} B · 표 ${sum.table.toLocaleString()} B`);
+  // 🔴 규약을 찍는다. 이 한 줄이 없어서 편4 의 발행 B 가 같은 문서 안에서 19,352(compose)
+  //    와 19,408(wc) 두 값으로 섞여 적혔고, 증분이 +56 으로 잘못 계산됐다(실제 +57).
+  //    합계는 마지막 줄의 개행을 항상 세므로 `wc -c` 보다 **정확히 1 크다.**
+  out.push(`규약: 합계는 wc -c + 1 이다 (마지막 줄의 개행을 항상 센다). 이 파일의 wc -c 는 ${(sum.total - 1).toLocaleString()} 이다`);
   return out.join("\n");
 }
 
@@ -272,6 +276,25 @@ function selfTest() {
       return crlf - lf === crCount;
     },
   });
+
+  // ⑪ 🔴 합계와 `wc -c` 의 등식을 고정한다 — 규약이 어디에도 적혀 있지 않아서
+  //    편4 의 발행 B 가 한 문서 안에서 두 규약으로 섞여 적혔다. 기존 케이스는 전부
+  //    join 으로 만들어 **끝 개행이 없는** 문자열이라, 파일이 개행으로 끝나는 실제
+  //    상황(마지막 빈 조각에도 1 을 더하는 자리)을 아무도 건드리지 않았다.
+  //    두 경우를 모두 넣어 둔다 — 한쪽만 넣으면 그 자리가 다시 비어 버린다.
+  for (const [label, body] of [
+    ["끝 개행 있음", "## A\n산문이다\n| a | b |\n"],
+    ["끝 개행 없음", "## A\n산문이다\n| a | b |"],
+  ]) {
+    cases.push({
+      name: `합계는 wc -c + 1 이다 (${label})`,
+      text: body,
+      check: (r) => {
+        const total = r.sections.reduce((a, s) => a + s.total, 0);
+        return total === Buffer.byteLength(body, "utf8") + 1;
+      },
+    });
+  }
 
   let pass = 0;
   const fails = [];

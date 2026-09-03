@@ -116,6 +116,37 @@ function diagramLabels(chunk) {
 }
 
 /**
+ * ③ 줄을 만든다. 라벨 수의 **단위를 한 곳에서 정하려고** 함수로 뽑았다.
+ *
+ * 🔴 옛 판은 원본 쪽에 Set 크기를, 발행본 쪽에 누적 카운터를 찍으면서 양쪽을
+ *    「라벨 N개」라는 같은 말로 불렀다. 실측으로 원본 도식 셋의 원시 라벨이
+ *    5+6+6 = 17 인데 출력은 16 이었다 — 중복을 지운 값과 지우지 않은 값을 나란히
+ *    놓고 비교하게 만든다. 검출은 Set 으로 하는 것이 맞으므로 고친 것은 판정이
+ *    아니라 **라벨이다.** 그래서 이 함수는 문자열을 반환하고, 자기 검사가 계산이
+ *    아니라 그 문자열을 본다 — 계산만 보는 케이스는 라벨이 다시 어긋나도 통과한다.
+ */
+function labelReport(source, publishedDiagrams) {
+  const sourceLabelList = toParagraphs(source).diagrams.flatMap((d) =>
+    [...d.matchAll(/"([^"]+)"/g)].map((m) => normalizeLabel(m[1]))
+  );
+  const sourceLabels = new Set(sourceLabelList);
+  const hits = [];
+  let publishedLabels = 0;
+  for (const chunk of publishedDiagrams) {
+    for (const m of chunk.matchAll(/"([^"]+)"/g)) {
+      publishedLabels += 1;
+      if (sourceLabels.has(normalizeLabel(m[1]))) hits.push(m[1].replace(/<br\/?>/g, " ").trim());
+    }
+  }
+  // 발행본 라벨 수를 함께 찍는다. 이것이 없으면 「라벨이 하나도 없어서 0건」과
+  // 「라벨이 있는데 겹치지 않아 0건」이 같은 줄로 나온다 — 구조적 0과 진짜 0의 구분이다.
+  const line =
+    `③ 도식 라벨 통째 일치 (처방 ②) — ${hits.length}건 · ` +
+    `원본 라벨 ${sourceLabelList.length}개(고유 ${sourceLabels.size}개) · 발행본 라벨 ${publishedLabels}개`;
+  return { hits, line };
+}
+
+/**
  * 한 문단 안에서 원본과 겹치는 구간을 최장으로 모은다.
  * 겹침을 찾으면 그 길이만큼 건너뛰므로 같은 구간이 여러 번 세어지지 않는다.
  */
@@ -187,23 +218,8 @@ function scan(publishedPath, sourcePath, min) {
   //
   // 임계값은 여기에 쓰지 않는다. 라벨은 대개 열 자 안팎이라 20자 기준을 대면 무엇을
   // 베껴 왔든 0건이 나온다 — 검출하지 못하는 구조적 0이다. 라벨은 통째로 같은지만 본다.
-  const sourceLabels = new Set(
-    toParagraphs(source)
-      .diagrams.flatMap((d) => [...d.matchAll(/"([^"]+)"/g)].map((m) => normalizeLabel(m[1])))
-  );
-  const labelHits = [];
-  let publishedLabels = 0;
-  for (const chunk of paragraphs.diagrams) {
-    for (const m of chunk.matchAll(/"([^"]+)"/g)) {
-      publishedLabels += 1;
-      if (sourceLabels.has(normalizeLabel(m[1]))) labelHits.push(m[1].replace(/<br\/?>/g, " ").trim());
-    }
-  }
-  // 🔴 발행본 라벨 수를 함께 찍는다. 이것이 없으면 「라벨이 하나도 없어서 0건」과
-  //    「라벨이 있는데 겹치지 않아 0건」이 같은 줄로 나온다 — 구조적 0과 진짜 0의 구분이다.
-  console.log(
-    `③ 도식 라벨 통째 일치 (처방 ②) — ${labelHits.length}건 · 원본 라벨 ${sourceLabels.size}개 · 발행본 라벨 ${publishedLabels}개`
-  );
+  const { hits: labelHits, line: labelLine } = labelReport(source, paragraphs.diagrams);
+  console.log(labelLine);
   for (const label of labelHits) console.log(`    ${label}`);
   console.log("");
 
@@ -333,6 +349,21 @@ function selfTest() {
   //     펜스가 조각나고, 조각 하나하나가 따로 분류돼 판정이 흐려진다.
   const gapped = toParagraphs('앞 문단이다.\n\n```mermaid\nflowchart LR\n    A["가"] --> B["나"]\n\n    B --> C["다"]\n```\n\n뒤 문단이다.');
   check("⑮-c 빈 줄이 든 펜스도 도식 하나로 센다", [[...gapped].length, gapped.diagrams.length], [2, 1]);
+
+  // ⑯ 🔴 ③ 줄이 무엇을 세는지 고정한다 — **검사기가 출력하는 라벨도 자기 검사 항목이다.**
+  //     옛 판은 원본 쪽에 고유 개수를, 발행본 쪽에 원시 개수를 찍으면서 양쪽을 「라벨 N개」로
+  //     똑같이 불러, 중복을 지운 값과 지우지 않은 값을 나란히 놓고 비교하게 만들었다.
+  //     계산이 아니라 **문자열**을 보는 이유는 계산만 보는 케이스는 라벨이 다시 어긋나도
+  //     통과하기 때문이다. 아래 원본은 「회원」이 두 도식에 겹쳐 원시 4 · 고유 3 이 된다.
+  const dupLabelSrc =
+    '```mermaid\nflowchart LR\n    A["회원"] --> B["상품"]\n```\n\n```mermaid\nflowchart LR\n    C["회원"] --> D["가격"]\n```';
+  const dupLabelLine = labelReport(dupLabelSrc, toParagraphs(dupLabelSrc).diagrams).line;
+  check(
+    "⑯ ③ 줄은 원본 라벨의 원시 개수와 고유 개수를 함께 찍는다",
+    /원본 라벨 4개\(고유 3개\)/.test(dupLabelLine),
+    true
+  );
+  check("⑯-b 발행본 라벨은 원시 개수로 센다", /발행본 라벨 4개/.test(dupLabelLine), true);
 
   let pass = 0;
   for (const c2 of cases) {
