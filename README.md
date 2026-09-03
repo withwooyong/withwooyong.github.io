@@ -82,10 +82,17 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
 | `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 15건) |
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
+| `npm run check-markup` | 🔴 **렌더되지 않는 강조** 스캔. 판정은 정규식이 아니라 **페이지를 그리는 파서**가 하므로 코드 블록 안의 정당한 예시는 저절로 빠진다. `-- --category <slug>` 로 좁히고, `-- --files <경로...>` 로 발행본 밖의 문서도 본다 |
+| `npm run check-markup:verify` | 위 검사의 자체 검사 (`--self-test` 19건) |
+| `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
+| `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
 | `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
 | `npm run check-counts` | README 3자리와 CHANGELOG의 **발행본 편수**가 실제와 맞는지 검사합니다. 어긋나면 종료 코드 1. `:verify`는 자체 검사, `:print`는 실제 수치만 출력합니다 |
 | `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
+| `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
+| `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
+| `npm run mutate` | 알려진 결함 28개를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
