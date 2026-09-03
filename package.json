@@ -16,6 +16,8 @@
     "check-forbidden:built": "node scripts/check-forbidden.mjs --built",
     "check-markup": "node scripts/check-markup.mjs",
     "check-markup:verify": "node scripts/check-markup.mjs --self-test",
+    "fix-markup": "node scripts/fix-markup.mjs",
+    "fix-markup:verify": "node scripts/fix-markup.mjs --self-test",
     "check-baseline": "node scripts/check-baseline.mjs",
     "check-baseline:update": "node scripts/check-baseline.mjs --update",
     "check-counts": "node scripts/check-counts.mjs",

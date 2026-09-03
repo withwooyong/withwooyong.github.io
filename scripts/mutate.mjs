@@ -171,6 +171,48 @@ const MUTANTS = [
     from: '    (matched) => "\\n".repeat(matched.split("\\n").length - 1),',
     to: '    () => "",',
   },
+  {
+    id: "F1",
+    file: "scripts/fix-markup.mjs",
+    desc: "조사 목록을 짧은 것부터 본다 (「에서」가 「에」로 잘려 낱말이 쪼개진다)",
+    from: "  const particle = PARTICLES.find((p) => after.startsWith(p));",
+    to: "  const particle = [...PARTICLES].sort((a, b) => a.length - b.length).find((p) => after.startsWith(p));",
+  },
+  {
+    id: "F3",
+    file: "scripts/fix-markup.mjs",
+    desc: "조사인지 보지 않고 뒤의 한글을 통째로 옮긴다 (강조가 낱말을 삼킨다)",
+    from: '    const particle = PARTICLES.find((p) => after.startsWith(p));\n    if (!particle) {',
+    to: '    const particle = (after.match(/^[가-힣]+/) || [null])[0];\n    if (!particle) {',
+  },
+  {
+    id: "F4",
+    file: "scripts/fix-markup.mjs",
+    desc: "조사 뒤가 한글인지 보지 않는다 (「만족스럽다」의 「만」을 조사로 읽는다)",
+    from: '    if (/^[가-힣]/.test(after.slice(particle.length))) {',
+    to: "    if (false) {",
+  },
+  {
+    id: "F5",
+    file: "scripts/fix-markup.mjs",
+    desc: "여는 별표까지 교정 대상에 넣는다 (손볼 자리가 12곳에서 165곳으로 부푼다)",
+    from: "  for (let i = 1; i < columns.length; i += 2) targets.push(columns[i]);",
+    to: "  for (let i = 0; i < columns.length; i += 1) targets.push(columns[i]);",
+  },
+  {
+    id: "F6",
+    file: "scripts/fix-markup.mjs",
+    desc: "짝이 없는 별표를 조용히 버린다",
+    from: '  if (columns.length % 2) skipped.push({ column: columns[columns.length - 1], reason: "짝이 없는 별표다" });',
+    to: "",
+  },
+  {
+    id: "F7",
+    file: "scripts/fix-markup.mjs",
+    desc: "서술격 조사를 목록에서 뺀다 (문장을 강조로 끝맺는 상용구를 못 고친다)",
+    from: '  "이다", "다",\n',
+    to: "",
+  },
 ];
 
 const CHECKS = [
@@ -179,6 +221,7 @@ const CHECKS = [
   ["check-forbidden", "npm run --silent check-forbidden:verify"],
   ["compose", "npm run --silent compose:verify"],
   ["check-markup", "npm run --silent check-markup:verify"],
+  ["fix-markup", "npm run --silent fix-markup:verify"],
 ];
 
 function run(cmd) {
