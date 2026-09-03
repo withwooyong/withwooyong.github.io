@@ -21,6 +21,7 @@ const ROOT = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "
 const BLOG = join(ROOT, "content", "blog");
 const README = join(ROOT, "README.md");
 const CHANGELOG = join(ROOT, "CHANGELOG.md");
+const CHANGELOG_ARCHIVE = join(ROOT, "docs", "changelog");
 const CATEGORIES_TS = join(BLOG, "categories.ts");
 
 /** content/blog 를 세어 실제 수치를 낸다. 이것이 유일한 정본이다. */
@@ -106,6 +107,37 @@ export function readClaims(readmeText, changelogText = null) {
   }
 
   return claims;
+}
+
+/**
+ * 본체와 월별 아카이브를 **최신순으로** 이어 붙인다.
+ *
+ * 🔴 왜 필요한가 — 본체는 최신 3개 절만 두고 나머지를 `docs/changelog/YYYY-MM.md` 로 옮긴다.
+ * 발행이 없는 세션이 새 절을 쓰면 절이 넷이 되어 **마지막 발행 기록이 본체 밖으로 밀려난다.**
+ * 그러면 ④가 「찾지 못했다」로 죽는데, 이것은 배치 미기록이 아니라 **아카이브가 정상 동작한**
+ * 결과다. 둘을 같은 실패로 내면 다음 사람이 멀쩡한 CHANGELOG 를 고치려 든다.
+ * 2026-09-04 에 실제로 겪었다.
+ *
+ * 순서가 곧 판정이다 — ④는 **처음 만나는** 「총 N편」을 최신으로 보므로, 본체가 앞이고
+ * 아카이브는 파일명 내림차순이어야 한다.
+ */
+export function chainChangelog(bodyText, archiveTexts = []) {
+  return [bodyText, ...archiveTexts].join("\n");
+}
+
+/** 아카이브를 최신순으로 읽는다. 파일명이 `YYYY-MM.md` 라 문자열 정렬이 곧 날짜 정렬이다. */
+export function readArchives(dir = CHANGELOG_ARCHIVE) {
+  let names;
+  try {
+    names = readdirSync(dir);
+  } catch {
+    return []; // 아카이브가 없는 리포에서도 본체만으로 동작해야 한다.
+  }
+  return names
+    .filter((f) => /^\d{4}-\d{2}\.md$/.test(f))
+    .sort()
+    .reverse()
+    .map((f) => readFileSync(join(dir, f), "utf8"));
 }
 
 /** 주장과 실제를 대조해 불일치 목록을 낸다. 못 찾은 자리도 불일치로 센다. */
@@ -233,6 +265,31 @@ function selfTest() {
       changelog: ["## 2026-08-19 — **1편**(총 149편)", "## 2026-08-18 — **4편**(총 128편)"].join("\n"),
       expect: (p) => p.length === 0,
     },
+    // 아카이브 자리 — 밀려난 발행 기록을 「미기록」으로 오판하지 않는다
+    {
+      name: "🆕 발행 기록이 아카이브로 밀려나도 찾는다",
+      text: good,
+      changelog: chainChangelog("## 2026-08-20 — 발행 없는 세션", ["## 2026-08-18 — **5편**(총 149편)"]),
+      expect: (p) => p.length === 0,
+    },
+    {
+      name: "🆕 아카이브까지 봐도 없으면 여전히 잡는다",
+      text: good,
+      changelog: chainChangelog("## 2026-08-20 — 발행 없는 세션", ["## 2026-08-18 — 이것도 발행 없음"]),
+      expect: (p) => p.some((x) => x.startsWith("[CHANGELOG 최신 발행]") && x.includes("찾지 못했다")),
+    },
+    {
+      name: "🆕 본체가 아카이브를 이긴다 (아카이브의 낡은 값에 속지 않는다)",
+      text: good,
+      changelog: chainChangelog("## 2026-08-20 — **1편**(총 149편)", ["## 2026-08-18 — **4편**(총 128편)"]),
+      expect: (p) => p.length === 0,
+    },
+    {
+      name: "🆕 아카이브를 옛 것부터 붙이면 낡은 값을 본다 — 순서가 판정이다",
+      text: good,
+      changelog: chainChangelog("## 2026-08-20 — 발행 없는 세션", ["## 2026-07-01 — **2편**(총 128편)", "## 2026-08-18 — **5편**(총 149편)"]),
+      expect: (p) => p.some((x) => x.startsWith("[CHANGELOG 최신 발행]") && x.includes("128편")),
+    },
   ];
 
   let pass = 0;
@@ -271,7 +328,10 @@ if (arg === "--print") {
   process.exit(0);
 }
 
-const claims = readClaims(readFileSync(README, "utf8"), readFileSync(CHANGELOG, "utf8"));
+const claims = readClaims(
+  readFileSync(README, "utf8"),
+  chainChangelog(readFileSync(CHANGELOG, "utf8"), readArchives()),
+);
 const problems = compare(actual, claims);
 
 if (problems.length === 0) {
