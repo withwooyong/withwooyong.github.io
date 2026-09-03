@@ -214,6 +214,31 @@ function main() {
   if (process.argv.includes("--self-test")) { selfTest(); return; }
 
   const dry = process.argv.includes("--dry");
+
+  // --files 는 카테고리 밖의 문서(인수인계 · 변경 기록 등)를 고칠 때 쓴다. 같은 기전이
+  // 같은 손으로 쓴 문서에도 생기므로, 발행본만 고치고 문서를 두면 화면의 별표가 남는다.
+  const filesIdx = process.argv.indexOf("--files");
+  if (filesIdx >= 0) {
+    const files = process.argv.slice(filesIdx + 1).filter((a) => !a.startsWith("--"));
+    if (!files.length) {
+      console.error("🔴 --files 뒤에 경로가 없다. 0건이 아니라 대상 없음이다.");
+      process.exit(2);
+    }
+    let fixed = 0;
+    const left = [];
+    for (const path of files) {
+      const result = fixFile(path, { dry });
+      if (!result) continue;
+      fixed += result.fixed;
+      const tail = result.skipped.length ? "  (남김 " + result.skipped.length + ")" : "";
+      console.log("  " + result.fixed + "곳 고침  " + path + tail);
+      for (const s of result.skipped) left.push(path + ":" + s.line + "  " + s.reason);
+    }
+    console.log("\n" + (dry ? "[시험] " : "") + fixed + "곳 고침 · 손볼 자리 " + left.length + "곳");
+    for (const x of left) console.log("  " + x);
+    return;
+  }
+
   const idx = process.argv.indexOf("--category");
   const category = idx >= 0 ? process.argv[idx + 1] : null;
   if (!category) {
