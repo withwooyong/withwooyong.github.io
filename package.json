@@ -24,7 +24,9 @@
     "compose": "node scripts/compose.mjs",
     "compose:verify": "node scripts/compose.mjs --self-test",
     "source-overlap": "node scripts/source-overlap.mjs",
-    "source-overlap:verify": "node scripts/source-overlap.mjs --self-test"
+    "source-overlap:verify": "node scripts/source-overlap.mjs --self-test",
+    "mutate": "node scripts/mutate.mjs",
+    "mutate:verify": "node scripts/mutate.mjs --self-test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

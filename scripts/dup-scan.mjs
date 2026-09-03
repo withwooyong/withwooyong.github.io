@@ -225,9 +225,24 @@ function selfTest() {
   // 걸러내지 않으면 표를 쓰는 모든 편이 서로 「복제」로 잡히고, 위양성이 진짜 복제를 가린다.
   const TABLE_RULE = "|-------|-------|-------|";
 
+  const countLinks = (targets, corpus) =>
+    scan(targets, corpus, min).results.reduce((n, r) => n + r.links.length, 0);
+
+  // ⑧~⑫ 가 쓰는 재료. **①~④ 와 달리 임시 파일과 `scan()` 을 탄다** — ①~④ 의 `probe()` 는
+  // 색인과 표본을 둘 다 `normalizeLine` 으로 만들기 때문에, 정규화를 어떻게 바꾸어도
+  // 양쪽이 **함께** 바뀌어 언제나 일관된다. 자기 참조라 정규화를 검증하지 못한다.
+  const HALF = CONTROL.length >> 1;
+  const LINK_TITLE = "이것은링크제목으로쓰는충분히긴통제용문자열이다";
+  const LONG_URL = "/blog/agentic-coding/very-long-slug-for-url-overlap-test/";
+
   let crossTargets = 0;
   let withinOne = 0;
   let tableRule = 0;
+  let boldCopy = 0;
+  let tableCell = 0;
+  let urlOnly = 0;
+  let linkTitleHits = 0;
+  let linkTitleLinks = 0;
   try {
     const a = write("alpha.md", CONTROL);
     const b = write("beta.md", CONTROL);
@@ -237,6 +252,29 @@ function selfTest() {
     const d = write("delta.md", `${CONTROL}\n\n${TABLE_RULE}`);
     const e = write("epsilon.md", `겹치지않는통제용문장하나둘셋넷다섯여섯일곱여덟아홉열\n\n${TABLE_RULE}`);
     tableRule = countHits([d, e], [d, e]);
+
+    // ⑧ 굵게를 씌운 축자 복사. 기호를 걷어내지 않으면 `**` 두 쌍만으로 0건이 된다.
+    const f = write("zeta.md", CONTROL);
+    const g = write("eta.md", `**${CONTROL}**`);
+    boldCopy = countHits([f, g], [f, g]);
+
+    // ⑨ 표 셀 경계를 넘는 일치. `| 앞 | 뒤 |` 와 산문이 같은 문자열로 수렴해야 잡힌다.
+    const h = write("theta.md", CONTROL);
+    const i2 = write("iota.md", `| ${CONTROL.slice(0, HALF)} | ${CONTROL.slice(HALF)} |`);
+    tableCell = countHits([h, i2], [h, i2]);
+
+    // ⑩ URL 만 같고 제목이 다른 링크는 복제가 아니다. 링크를 제목으로 접지 않으면
+    //    긴 슬러그가 통째로 축자 일치가 되어 링크를 많이 단 편이 위양성으로 뒤덮인다.
+    const j = write("kappa.md", `[제목이서로다른앞쪽링크다](${LONG_URL})`);
+    const k = write("lambda.md", `[제목이서로다른뒤쪽링크다](${LONG_URL})`);
+    urlOnly = countHits([j, k], [j, k]);
+
+    // ⑪ 제목이 같은 링크는 **복제가 아니라 참조다.** `hits` 가 아니라 `links` 로 간다.
+    //    이 분류가 무너지면 지도편·Q&A편이 통째로 위양성이 된다(실측 0건 → 11건).
+    const l = write("mu.md", `[${LINK_TITLE}](/blog/a/)`);
+    const m2 = write("nu.md", `[${LINK_TITLE}](/blog/b/)`);
+    linkTitleHits = countHits([l, m2], [l, m2]);
+    linkTitleLinks = countLinks([l, m2], [l, m2]);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -249,6 +287,11 @@ function selfTest() {
     ["⑤ 대상 2편을 함께 넘겨도 서로 대조된다 (배치 통째 검사의 거짓 0 방지)", crossTargets > 0],
     ["⑥ 한 편 안의 반복은 검출하지 않는다 (자기 대조는 위양성)", withinOne === 0],
     ["⑦ 표 구분선은 검출하지 않는다 (기호만 남는 줄은 내용이 아니다)", tableRule === 0],
+    ["⑧ 굵게를 씌운 축자 복사도 검출한다 (마크다운 기호 제거)", boldCopy > 0],
+    ["⑨ 표 셀 경계를 넘는 일치를 검출한다", tableCell > 0],
+    ["⑩ URL 만 같은 링크는 복제가 아니다 (링크는 제목만 본다)", urlOnly === 0],
+    ["⑪ 제목이 같은 링크는 hits 가 아니다 (참조이지 복제가 아니다)", linkTitleHits === 0],
+    ["⑪-b 그 일치는 links 로 분류된다 (조용히 사라지지 않는다)", linkTitleLinks > 0],
   ];
 
   console.log(`자체 검사 — 발행본 ${posts.length}편 · 임계값 ${min}자 · 색인 ${index.size.toLocaleString()}개 윈도우\n`);

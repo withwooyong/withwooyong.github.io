@@ -50,6 +50,20 @@ const SYMBOLS_ONLY = /^[\s|:\-—·*#>`_+.()[\]]*$/;
  */
 const BARE_DIAGRAM = /^(?:flowchart|graph|sequenceDiagram|stateDiagram(?:-v2)?|classDiagram|erDiagram|gantt|journey|pie|mindmap|timeline)\b/;
 
+/** 도식을 담는 펜스의 info string. 이것만 도식으로 보내고 나머지는 본문으로 남긴다. */
+const DIAGRAM_FENCE_INFO = /^mermaid\b/i;
+
+/**
+ * 이 펜스가 도식인가 — **info string 이 말하거나, 내용의 첫 낱말이 말한다.**
+ *
+ * 🔴 옛 판은 이 질문을 하지 않고 **모든 펜스**를 도식 버킷으로 보냈다. 도식은 ①②를
+ *    거치지 않고 라벨만 대조되므로, 원본 문장을 ```text 로 감싸는 것만으로 축자 복사가
+ *    통째로 사라졌다(실측 52자 → 0건). 회피가 세 글자로 끝나면 그 검사의 0 은 결론이 아니다.
+ */
+function isDiagramFence(info, inner) {
+  return DIAGRAM_FENCE_INFO.test(info.trim()) || BARE_DIAGRAM.test(inner.trim());
+}
+
 /**
  * 표 구분선(`| --- | --- |`)을 지운다. 이것은 내용이 아니라 문법이며, 열 수가 같으면
  * 어떤 두 표든 반드시 겹친다. 지우지 않으면 거짓 양성이 실질 겹침을 덮는다.
@@ -81,9 +95,15 @@ function toParagraphs(markdown) {
   //    문단 하나를 통째로 대조 대상에서 지웠고, 실측으로 56자 축자 복사가 1건에서
   //    0건으로 떨어졌다. 펜스를 먼저 걷어내면 안쪽에 빈 줄이 있어도 한 덩어리로 남고,
   //    바깥에 남은 화살표는 산문으로 정상 분류된다.
-  const rest = body.replace(/^```[^\n]*\n[\s\S]*?^```[ \t]*$/gm, (block) => {
-    diagrams.push(block.trim());
-    return "\n\n";
+  //
+  //    🔴 다만 걷어내는 것은 **도식 펜스뿐이다.** 도식이 아닌 펜스는 본문이므로 울타리
+  //    줄만 벗겨 산문으로 돌려보낸다. 전부 걷어내면 ```text 세 글자가 대조를 무력화한다.
+  const rest = body.replace(/^```([^\n]*)\n([\s\S]*?)^```[ \t]*$/gm, (block, info, inner) => {
+    if (isDiagramFence(info, inner)) {
+      diagrams.push(block.trim());
+      return "\n\n";
+    }
+    return `\n\n${inner.trim()}\n\n`;
   });
 
   for (const chunk of rest.split(/\n{2,}/)) {
@@ -170,6 +190,21 @@ function findOverlaps(paragraph, sourceNormalized, normalize, min) {
   return found;
 }
 
+/**
+ * `--min` 을 읽는다. **진입점에 인라인으로 두면 자기 검사가 보지 못한다** — 임계값이
+ * 자기 검사와 끊겨 있던 자리(⑰)와 같은 부류이며, 여기는 결과가 조용한 0 으로 나온다.
+ */
+function parseMin(argv) {
+  const i = argv.indexOf("--min");
+  if (i === -1) return MIN_DEFAULT;
+  const n = Number(argv[i + 1]);
+  // 거부는 `null` 로 돌려주고 판정은 호출부가 한다. NaN 을 그대로 흘리면 `i + NaN <= len`
+  // 이 언제나 거짓이 되어 **0건 · 종료 코드 0** 으로 통과한다. 0 도 같은 이유로 막는다 —
+  // 모든 위치가 빈 문자열과 일치해 판정이 무의미해진다.
+  if (!Number.isInteger(n) || n < 1) return null;
+  return n;
+}
+
 function scan(publishedPath, sourcePath, min) {
   for (const p of [publishedPath, sourcePath]) {
     if (!fs.existsSync(p)) {
@@ -231,34 +266,54 @@ function scan(publishedPath, sourcePath, min) {
 
 function selfTest() {
   const cases = [];
+
+  // 🔴 비교 함수 자체가 자기 검사 항목이다. 옛 판은 그냥 `JSON.stringify` 를 썼는데
+  //    `JSON.stringify(NaN)` 도 `JSON.stringify(null)` 도 **둘 다 `"null"`** 이라,
+  //    「NaN 이 나왔는데 null 을 기대한다」는 케이스가 **거짓 PASS** 를 냈다(실측).
+  //    검사기가 서로 다른 값을 같다고 말하면 그 아래의 모든 케이스가 헛돈다.
+  //    유한하지 않은 수와 `undefined` 를 구분 가능한 토큰으로 바꿔 뭉개짐을 막는다.
+  const encode = (value) =>
+    JSON.stringify(value, (_k, v) => {
+      if (typeof v === "number" && !Number.isFinite(v)) return `«${String(v)}»`;
+      return v === undefined ? "«undefined»" : v;
+    });
+
   const check = (name, actual, expected) => {
-    const ok = JSON.stringify(actual) === JSON.stringify(expected);
+    const ok = encode(actual) === encode(expected);
     cases.push({ name, ok, actual, expected });
   };
 
+  check("⓪ 비교 함수가 NaN 과 null 을 구분한다", encode(NaN) === encode(null), false);
+  check("⓪-b 비교 함수가 undefined 와 null 을 구분한다", encode(undefined) === encode(null), false);
+
   const src = "네 단계는 나열된 목록이 아니라 의존 관계이며, 한 단계의 출력이 그다음 단계의 입력이 된다.";
 
-  // ① 20자 겹침을 실제로 찾는다. 찾지 못하는 검사기의 0 은 거짓 음성이다.
-  const a = findOverlaps("네 단계는 나열된 목록이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다.", normalizeStripSpace(src), normalizeStripSpace, 20);
-  check("① 20자 이상 겹침을 검출한다", a.length > 0, true);
+  // ① 임계값 이상의 겹침을 실제로 찾는다. 찾지 못하는 검사기의 0 은 거짓 음성이다.
+  //    🔴 케이스 **이름**에도 상수를 태운다. 이름에 「20자」를 박아 두면 임계값을 바꾼
+  //    순간 출력이 거짓말을 한다 — 검사기가 출력하는 라벨도 자기 검사 항목이다(⑯).
+  const a = findOverlaps("네 단계는 나열된 목록이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다.", normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT);
+  check(`① ${MIN_DEFAULT}자 이상 겹침을 검출한다`, a.length > 0, true);
 
   // ② 겹치지 않는 문단에는 0 을 낸다.
-  const b = findOverlaps("전혀 다른 이야기를 여기에 길게 적어 두었으므로 겹칠 이유가 하나도 없다.", normalizeStripSpace(src), normalizeStripSpace, 20);
+  const b = findOverlaps("전혀 다른 이야기를 여기에 길게 적어 두었으므로 겹칠 이유가 하나도 없다.", normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT);
   check("② 겹치지 않으면 0건이다", b.length, 0);
 
   // ③ 임계값 미만은 검출하지 않는다.
-  const c = findOverlaps("네 단계는 나열된", normalizeStripSpace(src), normalizeStripSpace, 20);
+  const c = findOverlaps("네 단계는 나열된", normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT);
   check("③ 임계값 미만은 세지 않는다", c.length, 0);
 
   // ④ 최장으로 확장한다. 20자에서 멈추면 실제 겹침 길이를 과소보고한다.
-  check("④ 겹침을 최장으로 확장한다", a[0].length > 20, true);
+  //    ⚠️ `a[0]` 을 곧바로 읽으면 ①이 깨진 판에서 이 줄이 **예외로 죽어** 자기 검사가
+  //    FAIL 목록 대신 스택 트레이스를 낸다. 종료 코드는 1 로 같지만 무엇이 깨졌는지가
+  //    사라진다 — 죽는 검사기는 0 을 내는 검사기와 같은 부류의 실패다.
+  check("④ 겹침을 최장으로 확장한다", a.length > 0 && a[0].length > MIN_DEFAULT, true);
 
   // ⑤ 공백 보존이 공백 제거보다 더 많이 잡는다 — 편1 실측(7건 대 2건)의 기전이다.
   //    같은 20자 윈도우라도 공백이 섞이면 실질 내용이 줄어 그만큼 더 잘 걸린다.
   //    ①만 돌렸다면 놓쳤을 겹침이 실제로 있었으므로, 이 비대칭 자체가 증명 항목이다.
   const short = "여기서부터 네 단계는 나열된 목록이 아니라 의존 여기서 끝난다";
-  const keep = findOverlaps(short, normalizeKeepSpace(src), normalizeKeepSpace, 20);
-  const strip = findOverlaps(short, normalizeStripSpace(src), normalizeStripSpace, 20);
+  const keep = findOverlaps(short, normalizeKeepSpace(src), normalizeKeepSpace, MIN_DEFAULT);
+  const strip = findOverlaps(short, normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT);
   check("⑤ 공백 보존이 공백 제거보다 더 잡는다", [keep.length, strip.length], [1, 0]);
 
   // ⑥ frontmatter 는 대조 대상이 아니다 — 스키마 필드가 원본과 겹칠 이유가 없다.
@@ -284,17 +339,17 @@ function selfTest() {
   // ⑪ 라벨은 짧다. 20자 임계값을 대면 통째로 베낀 라벨도 0건이 되므로, 라벨 검사는
   //    임계값이 아니라 통째 일치로 판정해야 한다. 구조적 0 을 「깨끗하다」로 읽지 않기 위한 항목이다.
   const shortLabel = "④ 성장 다음 탐색 거리";
-  check("⑪ 라벨은 임계값으로는 잡히지 않는다", shortLabel.length < 20, true);
+  check("⑪ 라벨은 임계값으로는 잡히지 않는다", shortLabel.length < MIN_DEFAULT, true);
   check("⑪-b 통째 일치로는 잡힌다", new Set([shortLabel]).has(shortLabel), true);
 
   // ⑫ 🔴 굵게를 씌운 축자 복사가 ②에 걸린다 — 이 검사기의 실제 결함이었던 자리다.
   //    옛 판(공백만 제거)은 `**` 두 쌍만 들어가도 0건을 냈다. 내용이 같은데 통과하는
   //    경로가 있으면 그 검사의 0 은 결론이 아니다.
-  const bold = findOverlaps("네 단계는 **나열된 목록**이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다.", normalizeStripSpace(src), normalizeStripSpace, 20);
+  const bold = findOverlaps("네 단계는 **나열된 목록**이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다.", normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT);
   check("⑫ 굵게를 씌운 축자 복사도 ②가 잡는다", bold.length > 0, true);
 
   // ⑫-b 표 셀 경계를 넘는 일치도 잡는다 — `| 셀A | 셀B |` 와 산문이 같은 문자열로 수렴한다.
-  const cell = findOverlaps("| 네 단계는 나열된 목록이 아니라 | 의존 관계이며, 한 단계의 출력이 |", normalizeStripSpace(src), normalizeStripSpace, 20);
+  const cell = findOverlaps("| 네 단계는 나열된 목록이 아니라 | 의존 관계이며, 한 단계의 출력이 |", normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT);
   check("⑫-b 표 셀 경계를 넘는 일치를 잡는다", cell.length > 0, true);
 
   // ⑫-c 🔴 두 검사기가 **같은 함수**를 쓰는지 본다 — 값을 비교하지 않는다.
@@ -343,7 +398,7 @@ function selfTest() {
 
   const arrowHidden = "네 단계는 나열된 목록이 아니라 의존 관계이며, 한 단계의 출력이 여기서 갈린다. 화살표(-->)로 적어도 마찬가지다.";
   check("⑮-b 화살표가 섞여도 그 문단의 축자 복사가 잡힌다",
-    findOverlaps(toParagraphs(arrowHidden).map(normalizeStripSpace).join(" "), normalizeStripSpace(src), normalizeStripSpace, 20).length > 0, true);
+    findOverlaps(toParagraphs(arrowHidden).map(normalizeStripSpace).join(" "), normalizeStripSpace(src), normalizeStripSpace, MIN_DEFAULT).length > 0, true);
 
   // ⑮-c 펜스 안에 빈 줄이 있어도 도식은 **한 덩어리**로 남는다. 문단으로 먼저 쪼개면
   //     펜스가 조각나고, 조각 하나하나가 따로 분류돼 판정이 흐려진다.
@@ -365,10 +420,70 @@ function selfTest() {
   );
   check("⑯-b 발행본 라벨은 원시 개수로 센다", /발행본 라벨 4개/.test(dupLabelLine), true);
 
+  // ⑰ 🔴 자기 검사가 **실행 경로와 같은 임계값**을 쓴다 — 이 검사기의 실제 결함이었던 자리다.
+  //    옛 판은 `selfTest()` 가 `MIN_DEFAULT` 를 한 번도 참조하지 않고 20 을 열한 곳에
+  //    손복사해 두었다. `MIN_DEFAULT` 를 20 에서 200 으로 바꾸면 실제 스캔은 52자 축자
+  //    복사를 **0건**으로 보고하는데 자기 검사는 **28/28** 을 그대로 냈다(뮤테이션 M3 실측).
+  //    `normalize.mjs` 로 정규화의 손복사를 없앴더니 같은 드리프트가 **임계값에서**
+  //    되살아난 것이다 — **공용 모듈로 묶는 것은 묶은 것만 지킨다.**
+  //
+  //    ⑫-c 와 같은 처방을 쓴다. 값을 비교하지 않고 **손복사본의 부재**를 본다.
+  const selfSrc = fs.readFileSync(new URL("./source-overlap.mjs", import.meta.url), "utf8");
+  const selfBody = selfSrc.slice(selfSrc.indexOf("function selfTest()"), selfSrc.indexOf("/* ── 진입점"));
+  check("⑰ 자기 검사가 임계값을 손복사하지 않는다", /\bfindOverlaps\([^;]*,\s*\d+\s*\)/s.test(selfBody), false);
+  //    ⚠️ 「`selfBody` 에 그 이름이 나오는가」로 물으면 **케이스 이름과 주석에 그 이름을
+  //    적어 둔 것만으로 통과한다.** 실제로 첫 판이 그렇게 헛돌았다. 이름의 등장이 아니라
+  //    **호출의 인자**를 본다.
+  check("⑰-b 임계값을 상수에서 받아 findOverlaps 에 넘긴다",
+    /\bfindOverlaps\([^;]*,\s*MIN_DEFAULT\s*\)/s.test(selfBody), true);
+
+  // ⑱ 🔴 `--min` 파싱도 자기 검사 대상이다 — **조용한 0 이 나오는 경로**이기 때문이다.
+  //    옛 판은 파싱이 진입점에 인라인이라 어느 자기 검사도 보지 않았고, `--min xx` 를
+  //    주면 임계값이 **NaN** 이 되어 `i + NaN <= length` 가 언제나 거짓이 됐다. 실측으로
+  //    52자 축자 복사가 **0건 · 종료 코드 0** 으로 통과했다. 오타 하나가 검사를 통째로
+  //    무력화하면서 초록을 내는 것은 이 리포가 반복해서 당한 실패다.
+  // ⑲ 🔴 **도식이 아닌 펜스는 산문으로 남는다** — 원본 대조를 통째로 가리던 자리다.
+  //    옛 판은 펜스를 info string 과 무관하게 전부 도식 버킷으로 보냈고, 도식은 ①②를
+  //    거치지 않고 라벨만 대조된다. 그래서 원본 문장을 ```text 로 감싸기만 하면 52자
+  //    축자 복사가 **0건**이 됐다(실측: 손대지 않은 발행본과 출력이 완전히 동일).
+  //    회피가 세 글자로 끝나는 검사는 검사가 아니다.
+  const fenceSrc = "네 단계는 나열된 목록이 아니라 의존 관계이며, 한 단계의 출력이 그다음 단계의 입력이 된다.";
+  const textFence = toParagraphs("앞 문단이다.\n\n```text\n" + fenceSrc + "\n```");
+  check("⑲ 도식이 아닌 펜스는 산문으로 남는다", [[...textFence].length, textFence.diagrams.length], [2, 0]);
+  check("⑲-b 펜스 안의 축자 복사를 ②가 잡는다",
+    findOverlaps([...textFence].join(" "), normalizeStripSpace(fenceSrc), normalizeStripSpace, MIN_DEFAULT).length > 0, true);
+
+  // ⑲-c 회귀 방지 — **도식 펜스는 여전히 도식이다.** ⑲를 고치면서 이쪽을 함께 풀어 버리면
+  //     `flowchart LR` 같은 문법 토큰이 ①②에 쏟아져 실질 겹침을 순위에서 밀어낸다.
+  const mermaidFence = toParagraphs('앞 문단이다.\n\n```mermaid\nflowchart LR\n    A["가"] --> B["나"]\n```');
+  check("⑲-c mermaid 펜스는 도식으로 남는다", [[...mermaidFence].length, mermaidFence.diagrams.length], [1, 1]);
+
+  // ⑲-d info string 없이 도식 본체만 든 펜스도 도식이다 — 판정은 **내용의 첫 낱말**이다.
+  const bareFence = toParagraphs('앞 문단이다.\n\n```\nflowchart LR\n    A["가"] --> B["나"]\n```');
+  check("⑲-d info 없는 도식 펜스도 도식으로 센다", [[...bareFence].length, bareFence.diagrams.length], [1, 1]);
+
+  // ⑲-e info 판정을 고정한다. 현재 발행본의 mermaid 펜스 544개는 **전부** 다음 줄이 도식
+  //     선언이라, info 판정을 지워도 오늘의 수치는 하나도 변하지 않는다. 그래서 이 케이스가
+  //     없으면 지워져도 아무도 모른다 — 지시자(`%%{init}%%`)가 앞에 붙는 순간 도식 문법이
+  //     ①②로 쏟아진다.
+  const initFence = toParagraphs(
+    '앞 문단이다.\n\n```mermaid\n%%{init: {"theme": "neutral"}}%%\nflowchart LR\n    A["가"] --> B["나"]\n```'
+  );
+  check("⑲-e info 가 mermaid 면 첫 줄이 선언이 아니어도 도식이다",
+    [[...initFence].length, initFence.diagrams.length], [1, 1]);
+
+  check("⑱ --min 이 없으면 상수 기본값을 쓴다", parseMin(["a.md", "b.md"]), MIN_DEFAULT);
+  check("⑱-b --min 이 주어지면 그 값을 쓴다", parseMin(["a.md", "b.md", "--min", "30"]), 30);
+  check("⑱-c --min 값이 수가 아니면 거부한다", parseMin(["a.md", "b.md", "--min", "xx"]), null);
+  check("⑱-d --min 뒤가 비어 있으면 거부한다", parseMin(["a.md", "b.md", "--min"]), null);
+  check("⑱-e --min 0 은 거부한다 (모든 위치가 겹침이 된다)", parseMin(["a.md", "b.md", "--min", "0"]), null);
+
   let pass = 0;
   for (const c2 of cases) {
     console.log(`  ${c2.ok ? "PASS" : "FAIL"}  ${c2.name}`);
-    if (!c2.ok) console.log(`        기대 ${JSON.stringify(c2.expected)} · 실제 ${JSON.stringify(c2.actual)}`);
+    // 출력도 같은 인코딩을 쓴다. 다른 인코딩으로 찍으면 「기대 null · 실제 null」처럼
+    // 판정과 어긋나 보이는 줄이 나온다 — 라벨이 판정을 배신하는 자리다.
+    if (!c2.ok) console.log(`        기대 ${encode(c2.expected)} · 실제 ${encode(c2.actual)}`);
     if (c2.ok) pass += 1;
   }
   console.log(`\n원본 대조 자기 검사: ${pass}/${cases.length}`);
@@ -381,8 +496,12 @@ const argv = process.argv.slice(2);
 if (argv.includes("--self-test")) {
   selfTest();
 } else {
-  const minIndex = argv.indexOf("--min");
-  const min = minIndex === -1 ? MIN_DEFAULT : Number(argv[minIndex + 1]);
+  const min = parseMin(argv);
+  if (min === null) {
+    // 파일 없음과 같은 급으로 다룬다 — 조용한 0 을 내느니 멈추는 편이 낫다.
+    console.error("--min 은 1 이상의 정수여야 한다.");
+    process.exit(2);
+  }
   const positional = argv.filter((a, i) => !a.startsWith("--") && argv[i - 1] !== "--min");
   if (positional.length < 2) {
     console.error("사용법: node scripts/source-overlap.mjs <발행본> <원본> [--min 20]");

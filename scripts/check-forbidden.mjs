@@ -181,16 +181,81 @@ function selfTest() {
       text: '본문에 "author":{"@type":"Person","name":"허우용"} 를 그대로 적었다',
       expect: ["허우용"] },
   ];
+
+  // ── 커버리지 ──────────────────────────────────────────────────────
+  //
+  // 🔴 위의 손으로 쓴 케이스들은 HARD 18개 중 **5개**, SOFT 8개 중 **2개**만 증명했다.
+  //    나머지 19개는 목록에 적혀 있을 뿐 **한 번도 검출된 적이 없다.** 표기형 하나가
+  //    빠져 거짓 0 이 CHANGELOG 에 사실로 기록된 것이 이 검사기가 생긴 이유인데,
+  //    정작 자기 검사가 같은 실패에 열려 있었다.
+  //
+  //    낱말마다 케이스를 손으로 쓰면 새 낱말을 넣을 때 케이스를 빠뜨린다. 그래서
+  //    **목록을 순회해 생성한다** — 목록이 정본이므로 케이스도 목록에서 나와야 한다.
+  const NEUTRAL = "이 문장은 통제용이며 다른 낱말을 담지 않는다";
+  for (const w of [...HARD, ...SOFT]) {
+    cases.push({ name: `커버리지 — 「${w}」를 실제로 잡는다`, text: `${NEUTRAL} ${w} 뒤쪽도 중립이다`, expect: [w] });
+  }
+
+  // 한글 낱말은 조사가 붙어 이어진다. 라틴과 달리 단어 경계를 요구하지 않는 이유이며,
+  // 그 처리가 낱말별로 실제로 작동하는지는 붙여 봐야 안다.
+  //
+  // ⚠️ `allowExtra` — 조사가 붙으면 **다른 금칙어가 낱말 안쪽에 생긴다.** 실측으로
+  //    「수강」+「의」가 「강의」를 낳았다. 이 케이스가 묻는 것은 「조사가 붙어도 그
+  //    낱말을 잡는가」이므로 놓침만 본다. 겹침 자체는 아래에서 따로 못박는다.
+  for (const w of [...HARD, ...SOFT].filter((x) => !isAsciiWord(x))) {
+    cases.push({
+      name: `커버리지 — 「${w}」에 조사가 붙어도 잡는다`,
+      text: `${NEUTRAL} ${w}의 자리다`,
+      expect: [w],
+      allowExtra: true,
+    });
+  }
+
+  // 🔴 낱말 안쪽의 부분 일치는 **실재하며 고칠 대상이 아니다.** 한글은 조사가 붙어
+  //    이어지므로 단어 경계를 요구할 수 없고, 요구하면 「테디노트의」를 놓친다.
+  //    대가로 「수강의」가 「강의」로도 걸린다. 이것을 모른 채 스캔 결과를 읽으면
+  //    위양성을 진짜 위반으로 보고하게 되므로, 특성으로 고정해 둔다.
+  cases.push({
+    name: "🔴 「수강의」는 「강의」로도 걸린다 (낱말 안쪽 부분 일치는 검사기의 특성이다)",
+    text: "수강의 자리다",
+    expect: ["수강", "강의"],
+  });
+
+  // 🔴 한글에 단어 경계를 요구하면 **라틴·숫자에 바로 붙은 자리**를 놓친다.
+  //    한글 문맥에서는 조사도 경계로 잡히므로(한글은 `isWordChar` 가 아니다) 차이가
+  //    드러나지 않는다 — 뮤턴트가 살아남은 자리였다. 파일명·슬러그가 그 경로다.
+  cases.push({
+    name: "라틴·숫자에 바로 붙은 한글도 잡는다 (한글에 단어 경계를 요구하면 놓친다)",
+    text: "slug2024야나두page 를 참조한다",
+    expect: ["야나두"],
+  });
+
+  // 🔴 커버리지 루프는 **목록에 남아 있는** 낱말만 돈다. 낱말을 지우면 케이스도 함께
+  //    사라져 조용히 통과한다 — 이 검사기가 막으려던 바로 그 실패다. 개수를 못박아
+  //    「줄어듦」을 실패로 만든다. 늘어나는 것은 정책 강화이므로 통과시킨다.
+  const HARD_MIN = 18;
+  const SOFT_MIN = 8;
+  cases.push({ name: `목록이 줄어들지 않았다 (HARD ≥ ${HARD_MIN})`, listLen: HARD.length, listMin: HARD_MIN });
+  cases.push({ name: `목록이 줄어들지 않았다 (SOFT ≥ ${SOFT_MIN})`, listLen: SOFT.length, listMin: SOFT_MIN });
+
   let pass = 0, fail = 0;
   console.log("=== self-test — 검사기가 실제로 잡는지 증명한다 ===\n");
   for (const c of cases) {
+    // 목록 길이 케이스는 스캔이 아니다 — 목록 자체가 검사 대상이다.
+    if (c.listMin !== undefined) {
+      const ok = c.listLen >= c.listMin;
+      console.log(`  ${ok ? "✅" : "❌"} ${c.name}`);
+      if (!ok) console.log(`       ${c.listMin}개 이상이어야 하는데 ${c.listLen}개다 — 낱말이 지워졌다`);
+      ok ? pass++ : fail++;
+      continue;
+    }
     const hits = scanText(c.text, [...HARD, ...SOFT], {
       countAll: c.countAll === true,
       allow: c.built ? BUILT_ALLOW : [], // built 케이스만 면제를 켠다
     });
     const found = new Set(hits.map((h) => h.word));
     const missing = c.expect.filter((w) => !found.has(w));
-    const extra = [...found].filter((w) => !c.expect.includes(w));
+    const extra = c.allowExtra ? [] : [...found].filter((w) => !c.expect.includes(w));
     // counts 가 있으면 「몇 번 나왔는가」까지 본다. 산출물 HTML은 한 줄이 수십 KB라
     // 줄 단위로 세면 페이지당 2회가 1건으로 접힌다 — 그 접힘을 여기서 고정한다.
     const countMiss = [];

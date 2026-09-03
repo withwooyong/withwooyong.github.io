@@ -136,7 +136,7 @@ export function analyze(text) {
 
 const pct = (n, d) => (d === 0 ? "0.0" : ((n / d) * 100).toFixed(1));
 
-function render(sections) {
+function render(sections, actualBytes = null) {
   const out = [];
   const sum = EMPTY();
 
@@ -165,8 +165,32 @@ function render(sections) {
   // 🔴 규약을 찍는다. 이 한 줄이 없어서 편4 의 발행 B 가 같은 문서 안에서 19,352(compose)
   //    와 19,408(wc) 두 값으로 섞여 적혔고, 증분이 +56 으로 잘못 계산됐다(실제 +57).
   //    합계는 마지막 줄의 개행을 항상 세므로 `wc -c` 보다 **정확히 1 크다.**
-  out.push(`규약: 합계는 wc -c + 1 이다 (마지막 줄의 개행을 항상 센다). 이 파일의 wc -c 는 ${(sum.total - 1).toLocaleString()} 이다`);
+  out.push(conventionLine(sum.total, actualBytes));
   return out.join("\n");
+}
+
+/**
+ * 규약 줄을 만든다. **라벨도 자기 검사 항목이므로** 함수로 뽑았다.
+ *
+ * 🔴 옛 판은 「이 파일의 wc -c 는 N 이다」를 `sum.total - 1` 로 **유도해서 단언**했다.
+ *    파일에서 잰 값이 아니므로, `analyze` 가 무엇 하나를 빠뜨리면 그 문장은 조용히
+ *    거짓이 된다 — 자기가 계산한 값을 자기가 확인하는 셈이다. 183편에서 어긋남이
+ *    0 이라 해가 없었을 뿐, 「어긋나면 알 수 있는가」에는 아무도 답하지 않았다.
+ *    이제 실측을 받아 대조하고, 어긋나면 두 값을 **모두** 찍는다.
+ */
+function conventionLine(computedTotal, actualBytes) {
+  const computed = computedTotal - 1;
+  const head = "규약: 합계는 wc -c + 1 이다 (마지막 줄의 개행을 항상 센다).";
+  if (actualBytes === null || actualBytes === undefined) {
+    return `${head} 이 파일의 wc -c 는 ${computed.toLocaleString()} 이다 (계산값 — 실측 대조 없음)`;
+  }
+  if (computed === actualBytes) {
+    return `${head} 이 파일의 wc -c 는 ${computed.toLocaleString()} 이다 (실측 일치)`;
+  }
+  return (
+    `🔴 ${head} 계산 ${computed.toLocaleString()} · 실측 ${actualBytes.toLocaleString()} — ` +
+    `${(computed - actualBytes).toLocaleString()} 만큼 어긋난다. 이 표의 성분 합계를 믿지 마라`
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -296,6 +320,30 @@ function selfTest() {
     });
   }
 
+  // ⑫ 🔴 규약 줄이 **무엇을 근거로 말하는지** 고정한다.
+  //    옛 판은 「이 파일의 wc -c 는 N 이다」를 성분 합계에서 유도해 단언했다. 파일을
+  //    열어 잰 값이 아니므로 `analyze` 가 무엇을 빠뜨리면 그대로 거짓이 되는데,
+  //    어긋나도 알 방법이 없었다 — 자기가 계산한 값을 자기가 확인하는 구조다.
+  //    계산과 실측이 어긋나는 경우를 **케이스로** 두어야 그 자리가 비지 않는다.
+  cases.push({
+    name: "규약 줄 — 실측과 일치하면 그렇게 밝힌다",
+    text: "## A\n산문이다\n",
+    check: () => conventionLine(101, 100).includes("실측 일치"),
+  });
+  cases.push({
+    name: "규약 줄 — 어긋나면 🔴 와 두 값을 모두 찍는다",
+    text: "## A\n산문이다\n",
+    check: () => {
+      const line = conventionLine(101, 80);
+      return line.startsWith("🔴") && line.includes("100") && line.includes("80") && line.includes("20");
+    },
+  });
+  cases.push({
+    name: "규약 줄 — 실측이 없으면 계산값임을 밝힌다 (단언하지 않는다)",
+    text: "## A\n산문이다\n",
+    check: () => conventionLine(101, null).includes("실측 대조 없음"),
+  });
+
   let pass = 0;
   const fails = [];
   for (const c of cases) {
@@ -336,4 +384,4 @@ if (fenceErrors.length > 0) {
   process.exit(3);
 }
 
-console.log(render(sections));
+console.log(render(sections, Buffer.byteLength(readFileSync(arg, "utf8"), "utf8")));
