@@ -35,6 +35,7 @@
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { gfm } from "micromark-extension-gfm";
 import { gfmFromMarkdown } from "mdast-util-gfm";
@@ -210,39 +211,52 @@ function scan({ category = null, files = null } = {}) {
   }
   return { rows, scanned: targets.length };
 }
+// ---------------------------------------------------------------------------
+// 직접 실행할 때만 스캔한다.
+//
+// 🔴 가드가 없으면 이 파일을 `import` 하는 쪽에서 본 스캔이 통째로 돌아 버린다 —
+// 실측으로 분포를 세려고 함수 둘을 가져다 쓴 스크립트가 전량 스캔 출력 35KB 를
+// 뒤집어썼다. 검사기는 **실행 파일이자 모듈**이며, 후자를 잊으면 재사용이 막힌다.
+// ---------------------------------------------------------------------------
 
-if (process.argv.includes("--self-test")) {
-  selfTest();
-  process.exit(0);
-}
+function main() {
 
-const categoryIdx = process.argv.indexOf("--category");
-const category = categoryIdx >= 0 ? process.argv[categoryIdx + 1] : null;
-const filesIdx = process.argv.indexOf("--files");
-const files = filesIdx >= 0 ? process.argv.slice(filesIdx + 1).filter((a) => !a.startsWith("--")) : null;
-
-const { rows, scanned } = scan({ category, files });
-
-// 🔴 대상이 없으면 「0건」이 아니라 「모름」이다. 둘을 같은 종료 코드로 내면 오타 하나가
-// 통과로 보인다 — 이 리포에서 실제로 겪은 거짓 0 의 형태다.
-if (scanned === 0) {
-  const why = files ? " — 넘어온 경로에 .md 가 없다" : category ? ` — 카테고리 '${category}' 가 없다` : "";
-  console.error(`🔴 스캔 대상이 0개다${why}. 0건이 아니라 대상 없음이다.`);
-  process.exit(2);
-}
-
-let total = 0;
-for (const row of rows) {
-  console.log(`\n${row.id}  (${row.hits.length}곳)`);
-  for (const hit of row.hits) {
-    total++;
-    console.log(`  ${String(hit.line).padStart(4)}:${String(hit.column).padEnd(4)} ${hit.text}`);
+  if (process.argv.includes("--self-test")) {
+    selfTest();
+    process.exit(0);
   }
+
+  const categoryIdx = process.argv.indexOf("--category");
+  const category = categoryIdx >= 0 ? process.argv[categoryIdx + 1] : null;
+  const filesIdx = process.argv.indexOf("--files");
+  const files = filesIdx >= 0 ? process.argv.slice(filesIdx + 1).filter((a) => !a.startsWith("--")) : null;
+
+  const { rows, scanned } = scan({ category, files });
+
+  // 🔴 대상이 없으면 「0건」이 아니라 「모름」이다. 둘을 같은 종료 코드로 내면 오타 하나가
+  // 통과로 보인다 — 이 리포에서 실제로 겪은 거짓 0 의 형태다.
+  if (scanned === 0) {
+    const why = files ? " — 넘어온 경로에 .md 가 없다" : category ? ` — 카테고리 '${category}' 가 없다` : "";
+    console.error(`🔴 스캔 대상이 0개다${why}. 0건이 아니라 대상 없음이다.`);
+    process.exit(2);
+  }
+
+  let total = 0;
+  for (const row of rows) {
+    console.log(`\n${row.id}  (${row.hits.length}곳)`);
+    for (const hit of row.hits) {
+      total++;
+      console.log(`  ${String(hit.line).padStart(4)}:${String(hit.column).padEnd(4)} ${hit.text}`);
+    }
+  }
+
+  console.log(`\n스캔 ${scanned}개 파일 · 위반 ${rows.length}개 파일 · ${total}회`);
+  if (total > 0) {
+    console.log("\n교정: 닫는 별표 앞의 구두점을 강조 안에 두거나, 뒤의 조사를 강조 안으로 옮긴다.");
+    process.exit(1);
+  }
+  console.log("렌더되지 않는 강조가 없다.");
+
 }
 
-console.log(`\n스캔 ${scanned}개 파일 · 위반 ${rows.length}개 파일 · ${total}회`);
-if (total > 0) {
-  console.log("\n교정: 닫는 별표 앞의 구두점을 강조 안에 두거나, 뒤의 조사를 강조 안으로 옮긴다.");
-  process.exit(1);
-}
-console.log("렌더되지 않는 강조가 없다.");
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
