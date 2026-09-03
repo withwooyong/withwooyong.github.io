@@ -262,7 +262,7 @@ flowchart LR
 | index buffer | `indices.memory.index_buffer_size`(기본 힙 10%) 상향 |
 | 하드웨어 | 색인은 disk I/O 의존 → SSD/nVMe, 파일시스템 캐시에 메모리 절반 |
 
-> 대량 색인의 정석은 **"색인 중엔 refresh를 늦추고 replica를 끄고, 끝나면 되돌린다"**이다. [Elasticsearch 아키텍처](/blog/search-engineering/elasticsearch-architecture/)의 색인 내부동작(버퍼→refresh→segment→merge)을 이해하면 자연스럽게 나오는 결론이다.
+> 대량 색인의 정석은 **"색인 중엔 refresh를 늦추고 replica를 끄고, 끝나면 되돌린다"이다**. [Elasticsearch 아키텍처](/blog/search-engineering/elasticsearch-architecture/)의 색인 내부동작(버퍼→refresh→segment→merge)을 이해하면 자연스럽게 나오는 결론이다.
 
 ## 운영에서 실제로 겪는 어려움 (종합)
 

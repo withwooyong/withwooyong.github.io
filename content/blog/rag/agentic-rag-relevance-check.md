@@ -166,7 +166,7 @@ flowchart TD
 | `token_usage.*_details` | `reasoning_tokens`, `cached_tokens` | 캐시 적중·추론 토큰 분리 |
 | `response_metadata.finish_reason` | `tool_calls` = 툴 호출 후 종료 | 왜 턴이 끝났는지 판별 |
 
-> Agentic RAG의 장애는 대부분 **"도구를 안 불렀다 / 엉뚱한 인자로 불렀다"**에서 온다.
+> Agentic RAG의 장애는 대부분 **"도구를 안 불렀다 / 엉뚱한 인자로 불렀다"에서** 온다.
 >
 > 그 판단은 답변 텍스트가 아니라 `tool_calls` 필드를 봐야만 가능하다. **관찰 지점이 응답 본문이 아니라 메시지 메타데이터에 있다.**
 
@@ -275,7 +275,7 @@ def check_relevance(input: str, context: list[str]) -> bool:
     return retrieval_question_evaluator.invoke({"context": context, "input": input})
 ```
 
-`@tool` 데코레이터가 하는 일은 셋이다. 함수를 LLM이 호출 가능한 도구 스키마로 변환하고, **docstring이 곧 `description`**이 되어 도구 선택 근거가 되며, 타입힌트가 인자 스키마가 된다.
+`@tool` 데코레이터가 하는 일은 셋이다. 함수를 LLM이 호출 가능한 도구 스키마로 변환하고, **docstring이 곧 `description`이** 되어 도구 선택 근거가 되며, 타입힌트가 인자 스키마가 된다.
 
 ### 루프를 관찰하려면 스텁이 필요하다
 
@@ -290,9 +290,9 @@ def check_relevance_fake(input: str, context: list[str]) -> bool:
         return "no"
 ```
 
-두 분기 모두 `"no"`를 반환한다. 즉 **항상 `no`**다.
+두 분기 모두 `"no"`를 반환한다. 즉 **항상 `no`다**.
 
-> 이건 버그가 아니라 의도된 실험 장치다. 관련성이 절대 통과되지 않는 상황을 만들어 **"자기교정 루프가 실제로 도는가, 언제 멈추는가"**를 관찰하려는 것이다.
+> 이건 버그가 아니라 의도된 실험 장치다. 관련성이 절대 통과되지 않는 상황을 만들어 **"자기교정 루프가 실제로 도는가, 언제 멈추는가"를** 관찰하려는 것이다.
 >
 > 검증 루프를 설계할 때 **판정 결과를 강제로 고정할 수 있는 스텁**을 함께 만들어 두는 것은 그대로 이식할 만한 습관이다. **루프 로직은 정상 케이스에서는 절대 드러나지 않는다.**
 

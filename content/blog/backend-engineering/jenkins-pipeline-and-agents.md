@@ -56,7 +56,7 @@ Controller가 Agent에 붙는 기본 방식은 SSH 자격증명 등록(`SSH User
 
 오른쪽 열은 새 대조가 아니라 되짚기다 — 앞의 둘은 편4의 [무엇이 워크플로를 깨우는가](/blog/backend-engineering/github-actions-pipeline/#무엇이-워크플로를-깨우는가)와 [워크플로를 쓰는 문법](/blog/backend-engineering/github-actions-pipeline/#워크플로를-쓰는-문법)이 맡았다. 셋째 행만 짝이 없다. **「끝난 뒤에」를 일급 요소로 두는 것**이 이쪽 특징이고, 알림과 리포트와 승인이 걸리는 자리가 여기다.
 
-여기서 이름 하나가 층을 옮긴다. **Jenkins에서 `Job`은 등록된 작업 항목 전체를 가리킨다.** 편4에서 Job은 Workflow 아래 가운데 층이었지만([편1의 낱말 구분표](/blog/backend-engineering/cicd-pipeline-fundamentals/#시리즈-안에서-갈리는-넷)), 여기서는 위 표의 셋을 모두 담은 그릇 자체가 Job이고 **가운데 층의 이름은 Stage**다. 그 Job을 한 번 돌리는 것이 **빌드(Build)**이고, 실행마다 고유 ID가 붙어 로그도 결과도 그 ID로 추적한다.
+여기서 이름 하나가 층을 옮긴다. **Jenkins에서 `Job`은 등록된 작업 항목 전체를 가리킨다.** 편4에서 Job은 Workflow 아래 가운데 층이었지만([편1의 낱말 구분표](/blog/backend-engineering/cicd-pipeline-fundamentals/#시리즈-안에서-갈리는-넷)), 여기서는 위 표의 셋을 모두 담은 그릇 자체가 Job이고 **가운데 층의 이름은 Stage**다. 그 Job을 한 번 돌리는 것이 **빌드(Build)이고**, 실행마다 고유 ID가 붙어 로그도 결과도 그 ID로 추적한다.
 
 ## Freestyle과 Pipeline — 설정이 어디에 남는가
 

@@ -218,7 +218,7 @@ CrewAI는 Task 리스트가 유한해 끝이 구조적으로 보장된다. AutoG
 
 ## Q. CrewAI에서 품질을 좌우하는 필드는 무엇인가
 
-`description`이 아니라 **`expected_output`**이다.
+`description`이 아니라 **`expected_output`이다**.
 
 산출물 계약서 역할을 한다. 목차를 통째로 박아 형식을 강제하면 결과물의 편차가 크게 준다. 역할 설명을 아무리 다듬어도 출력 형태가 정해지지 않으면 매번 다른 것이 나온다.
 

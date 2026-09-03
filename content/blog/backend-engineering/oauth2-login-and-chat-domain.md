@@ -144,7 +144,7 @@ flowchart LR
 
 편의를 위한 선택이 기능 하나를 통째로 막는 형태이고, **막힌다는 사실이 기능을 만들 때에야 드러난다**는 점이 이 함정의 성질이다.
 
-두 번째 함정은 로딩 전략이다. JPA에서 **`@ManyToOne`은 기본이 즉시 로딩(EAGER), `@OneToMany`는 지연 로딩(LAZY)**이다. 메시지 100건을 조회하면 각 메시지가 발신자를 즉시 로딩하면서 쿼리가 101번 나간다. 메시지 쪽 연관을 `fetch = LAZY`로 바꾸지 않으면 목록 조회에서 곧바로 터진다. 이 문제의 일반적인 형태는 [트랜잭션과 동시성 제어](/blog/backend-engineering/transactions-and-concurrency-control/)에서 다뤘다.
+두 번째 함정은 로딩 전략이다. JPA에서 **`@ManyToOne`은 기본이 즉시 로딩(EAGER), `@OneToMany`는 지연 로딩(LAZY)이다**. 메시지 100건을 조회하면 각 메시지가 발신자를 즉시 로딩하면서 쿼리가 101번 나간다. 메시지 쪽 연관을 `fetch = LAZY`로 바꾸지 않으면 목록 조회에서 곧바로 터진다. 이 문제의 일반적인 형태는 [트랜잭션과 동시성 제어](/blog/backend-engineering/transactions-and-concurrency-control/)에서 다뤘다.
 
 ### 방 구독은 인가 검사를 동반한다
 

@@ -78,7 +78,7 @@ pages[0]
 # -> Document(metadata={'source': '...pdf', 'page': 0}, page_content='Retrieval-Augmented ...')
 ```
 
-모든 로더의 산출물은 동일하게 **`Document(page_content, metadata)`**다. `metadata`에 `source`와 `page`가 들어가는데, 이것이 나중에 **출처 표기(citation)**의 근거가 된다.
+모든 로더의 산출물은 동일하게 **`Document(page_content, metadata)`다**. `metadata`에 `source`와 `page`가 들어가는데, 이것이 나중에 **출처 표기(citation)의** 근거가 된다.
 
 | 메서드 | 동작 |
 |---|---|
@@ -334,11 +334,11 @@ flowchart LR
 
 도식은 다섯 갈래인데 표는 여섯 행이다. 표에만 있는 것이 **도구 사용 불가**다. 앞의 다섯은 전부 "검색을 더 잘하면 되는" 문제라 한 묶음이지만, 여섯 번째는 성격이 다르다 — **계산이 필요한 질문은 검색을 아무리 잘해도 안 풀린다.** 이 한 행이 RAG와 에이전트를 가르는 자리다. 표의 "Agentic RAG의 대응" 열도 도식이 담지 못하는 정보다. 한계를 아는 것과 그 한계를 무엇으로 푸는지 아는 것은 다르다.
 
-**구조적으로 말하면** 순수 RAG는 **DAG(비순환 그래프)**이고, Agentic RAG는 **사이클이 있는 그래프**다. LCEL의 `|`는 왼쪽 출력을 오른쪽 입력으로 넘기는 연산이라 사이클을 표현할 수 없다. 조건 분기와 반복을 표현하려면 상태(State)를 들고 노드 사이를 오갈 수 있는 실행 모델이 필요하고, 그것이 [**LangGraph**](/blog/ai-agent/langgraph-state-reducer/)다. LCEL 체인과 LangGraph가 각각 어떤 작업에 맞는지는 [체크포인터·HITL 편](/blog/ai-agent/langgraph-checkpointer-hitl/)에서 아홉 개 축으로 정리한다.
+**구조적으로 말하면** 순수 RAG는 **DAG(비순환 그래프)이고**, Agentic RAG는 **사이클이 있는 그래프**다. LCEL의 `|`는 왼쪽 출력을 오른쪽 입력으로 넘기는 연산이라 사이클을 표현할 수 없다. 조건 분기와 반복을 표현하려면 상태(State)를 들고 노드 사이를 오갈 수 있는 실행 모델이 필요하고, 그것이 [**LangGraph**](/blog/ai-agent/langgraph-state-reducer/)다. LCEL 체인과 LangGraph가 각각 어떤 작업에 맞는지는 [체크포인터·HITL 편](/blog/ai-agent/langgraph-checkpointer-hitl/)에서 아홉 개 축으로 정리한다.
 
 > 그래서 학습 순서가 이렇게 짜인다. **LCEL로 배관을 배우고 → 순수 RAG로 한계를 체감하고 → LangGraph로 루프를 얹는다.**
 >
-> "왜 LangGraph를 쓰나"라는 질문에 프레임워크 비교로 답하는 것은 두 번째로 좋은 답이다. 가장 좋은 답은 **"1회 검색으로 안 풀리는 질문이 실제로 있었다"**는 문제 서술이다.
+> "왜 LangGraph를 쓰나"라는 질문에 프레임워크 비교로 답하는 것은 두 번째로 좋은 답이다. 가장 좋은 답은 **"1회 검색으로 안 풀리는 질문이 실제로 있었다"는** 문제 서술이다.
 
 ---
 

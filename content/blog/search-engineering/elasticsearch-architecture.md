@@ -97,7 +97,7 @@ flowchart LR
 
 ## 세그먼트 — 불변성이 주는 것
 
-- 세그먼트는 한번 생성되면 **수정 불가(immutable)**다. 업데이트는 "기존 문서 삭제 플래그 + 새 세그먼트에 재색인", 삭제는 플래그로 처리한다.
+- 세그먼트는 한번 생성되면 **수정 불가(immutable)다**. 업데이트는 "기존 문서 삭제 플래그 + 새 세그먼트에 재색인", 삭제는 플래그로 처리한다.
 - **불변성의 이점**: 멀티스레드 동시 읽기에 Lock이 필요 없고, 색인이 빠르며, 동시성 문제가 사라진다.
 - **Segment Merge**: 쿼리는 모든 세그먼트를 순회하므로 파일이 많으면 느리다. 백그라운드에서 작은 세그먼트들을 큰 것으로 병합하며 **삭제 플래그가 붙은 문서를 물리적으로 제거**한다.
 - **Force Merge**(`POST /idx/_forcemerge`)는 디스크 I/O가 크므로 **쓰기가 끝난 읽기전용 인덱스에만** 쓴다.
@@ -161,7 +161,7 @@ flowchart LR
 
 **점수는 로컬 샤드에서 계산된다.** BM25의 TF(문서 내 빈도)는 로컬에서 알 수 있지만, IDF(전체 희소성)는 원래 전역 정보가 필요하다. 전역 계산은 비싸서 하지 않고, 데이터가 잘 분산돼 있으면 로컬 IDF도 거의 같아 문제없다. 정확한 전역 점수가 필요하면 `?search_type=dfs_query_then_fetch`를 쓴다.
 
-- **Deep pagination 함정**: `from + size`가 깊어지면 각 샤드가 `from+size`만큼 반환·정렬해야 해서 비용이 **샤드 수 × (from+size)**로 폭증한다. `search_after` + PIT로 회피한다([성능 튜닝 참고](/blog/search-engineering/elasticsearch-operations/)).
+- **Deep pagination 함정**: `from + size`가 깊어지면 각 샤드가 `from+size`만큼 반환·정렬해야 해서 비용이 **샤드 수 × (from+size)로** 폭증한다. `search_after` + PIT로 회피한다([성능 튜닝 참고](/blog/search-engineering/elasticsearch-operations/)).
 - **ARS(Adaptive Replica Selection)**: 느린 복제본(GC·네트워크·디스크 IO 지연)을 피해 응답 빠른 샤드로 라우팅한다.
 
 ## 캐시 4종

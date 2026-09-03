@@ -220,7 +220,7 @@ flowchart LR
 | 과제 | 새로운 UX에 대한 고민 / 실제로 시장에서 얼마나 큰 가치를 인정받을 수 있는가 |
 | 제안 | 기술이 아니라 비즈니스를 주제로 하는 개발자 모임의 필요성 |
 
-이 절이 시리즈 전체에서 갖는 위치는 분명하다. [평가·관측 편](/blog/ai-agent/agent-evaluation-observability/)이 "품질을 어떻게 재는가"였다면 이 절은 **"무엇을 품질로 삼을 것인가"**를 되묻는다. 메트릭 3계층에 Business Metrics 행이 존재하는 이유이기도 하다 — Cost·User Feedback·Topic Summarization은 저 질문에 답하기 위한 지표다.
+이 절이 시리즈 전체에서 갖는 위치는 분명하다. [평가·관측 편](/blog/ai-agent/agent-evaluation-observability/)이 "품질을 어떻게 재는가"였다면 이 절은 **"무엇을 품질로 삼을 것인가"를** 되묻는다. 메트릭 3계층에 Business Metrics 행이 존재하는 이유이기도 하다 — Cost·User Feedback·Topic Summarization은 저 질문에 답하기 위한 지표다.
 
 ## 2025년 10월 시점 갱신
 

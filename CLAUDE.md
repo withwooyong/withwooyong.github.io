@@ -19,6 +19,8 @@ Claude Code 가 이 리포에서 작업할 때 참고하는 지침이다.
 | `npm run check-forbidden:verify` | **가장 먼저.** 금칙어 스캐너가 실제로 잡는지 증명한다 |
 | `npm run check-forbidden` | `content/blog` 스캔. 발행 전 **HARD 0** 이어야 한다 |
 | `npm run check-forbidden:built` | **빌드 산출물**(`out/blog` + `_next/data`) 스캔. 빌드 뒤에 돌린다. 템플릿이 `og:image` 와 제목을 주입하므로 **소스가 깨끗해도 페이지는 오염될 수 있다.** 산출물이 없으면 거짓 0 대신 종료 코드 2 |
+| `npm run check-markup:verify` → `npm run check-markup` | 🔴 **렌더되지 않는 강조.** 기존 검사 다섯은 낱말과 바이트만 보고 **마크업 문법을 보지 않아** 별표가 화면에 찍힌 편이 75개·306회 쌓였다. 판정은 정규식이 아니라 **페이지를 그리는 파서**가 한다 — 코드 블록 안의 정당한 예시 109회가 저절로 빠진다. 기전이 둘이라 정규식으로는 반쪽만 잡힌다 |
+| `npm run fix-markup:verify` → `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다 — 기계가 조사의 경계를 안다는 전제를 두지 않는다. `--dry` 로 먼저 본다. 바이트가 보존되므로 **분량 예산과 역산 배율이 흔들리지 않는다** |
 | `npm run dup-scan:verify` → `npm run dup-scan -- --category <slug>` | 축자 복제 스캔. 순서는 같다 — 증명한 뒤 스캔. 대상이 없으면 종료 코드 1. 배치를 통째로 넘겨도 안전하다 |
 | `npm run source-overlap:verify` → `npm run source-overlap -- <발행본> <원본>` | **원본** 대조. `dup-scan` 은 발행본끼리만 보므로 리포 밖 원본과의 겹침은 여기서만 잡힌다. 공백 보존·공백 제거 두 정규화를 모두 돌리고, 도식 라벨은 임계값이 아니라 **통째 일치**로 판정한다 |
 | `npm run check-counts:verify` → `npm run check-counts` | 🔴 **README 의 발행본 수**가 실제와 맞는지. 이 표에서 빠져 있던 탓에 **편2~7 동안 Pages 배포가 계속 실패했다** — 로컬 빌드도 pre-commit 훅도 이것을 보지 않고 CI 의 `Check documented counts` 에서만 죽는다. 편을 발행했으면 README **세 자리**(요약표 · 디렉터리 트리 · 카테고리 내역)를 같은 커밋에 넣는다 |
