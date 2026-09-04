@@ -83,7 +83,11 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 15건) |
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
 | `npm run check-markup` | 🔴 **렌더되지 않는 강조** 스캔. 판정은 정규식이 아니라 **페이지를 그리는 파서**가 하므로 코드 블록 안의 정당한 예시는 저절로 빠진다. `-- --category <slug>` 로 좁히고, `-- --files <경로...>` 로 발행본 밖의 문서도 본다 |
-| `npm run check-markup:verify` | 위 검사의 자체 검사 (`--self-test` 19건) |
+| `npm run check-markup:docs` | 위 검사를 **발행본 밖의 리포 문서 전량**에 돌린다. 대상 수집은 검사기가 직접 한다 — `git ls-files` 로 뽑아 넘기면 한글 경로가 따옴표에 감싸여 조용히 빠진다 |
+| `npm run check-markup:verify` | 위 검사의 자체 검사 (`--self-test` 24건) |
+| `npm run check-links` | 🔴 **깨진 링크** 스캔(발행본). `/blog/<카테고리>/<슬러그>/` 는 실제 편을 가리켜야 하고, 상대 `.md` 는 정적 export 에서 **반드시 404** 다. 판정은 파서가 한다 — 정규식으로 세면 코드 블록 안의 예시와 앵커 때문에 **없는 위반**이 생긴다 |
+| `npm run check-links:docs` | 위 검사를 리포 문서에 돌린다. 문서의 상대 `.md` 는 그 파일이 있어야 하며 **기준은 리포 루트가 아니라 그 문서의 디렉터리**다 |
+| `npm run check-links:verify` | 위 검사의 자체 검사 (`--self-test` 23건) |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
@@ -92,7 +96,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
-| `npm run mutate` | 알려진 결함 28개를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run mutate` | 알려진 결함 38개를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
