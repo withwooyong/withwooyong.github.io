@@ -1,4 +1,5 @@
 import { CategoryTree } from "@/components/blog/category-tree";
+import { SearchDialog } from "@/components/blog/search-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { BlogTree, TocEntry } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
@@ -51,6 +52,7 @@ export function BlogShell({ tree, activePostSlug, toc, children }: BlogShellProp
               이 링크가 포트폴리오로 가는 유일한 경로다 (요구사항 FR-4.3).
               위키(wiki-shell)는 noindex라 sm:block으로 숨겨도 됐지만 블로그는 색인된다.
             */}
+            <SearchDialog tree={tree} />
             <Link
               href="/"
               className="shrink-0 text-sm text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400"
