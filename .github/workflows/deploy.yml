@@ -78,6 +78,19 @@ jobs:
       - name: Scan repo docs links
         run: npm run check-links:docs
 
+      # 도식이 그려지는지는 mermaid 자신이 판정한다. 이 검사기의 진짜 위험은 위반을 놓치는
+      # 것이 아니라 거짓 0 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽는데, 그것을
+      # 「위반 없음」으로 세면 초록이 나온다. 실측으로 649개 중 621개가 그렇게 빠졌다.
+      # 그래서 검사기는 판정에 도달한 수를 함께 세고, 못 미치면 종료 코드 2 로 죽는다.
+      - name: Prove mermaid checker
+        run: npm run check-mermaid:verify
+
+      - name: Scan published diagrams
+        run: npm run check-mermaid
+
+      - name: Scan repo docs diagrams
+        run: npm run check-mermaid:docs
+
       # 문서에 적힌 발행본 수가 실제와 맞는지 본다. README 세 곳이 128편에서 멈춰 있는 동안
       # 실제로는 149편이었다(인수인계 §11). 세는 사람이 없으면 숫자는 반드시 낡는다.
       #

@@ -290,6 +290,76 @@ const MUTANTS = [
     from: '  "고", "라",\n',
     to: "",
   },
+  {
+    id: "CM1",
+    file: "scripts/check-mermaid.mjs",
+    desc: "DOM 전역 설치를 되돌린다 (실측 649개 중 621개가 파서에 닿지 못했던 상태다)",
+    from: '  define("window", win);',
+    to: "",
+  },
+  {
+    id: "CM2",
+    file: "scripts/check-mermaid.mjs",
+    desc: "환경 오류 목록을 비운다 (DOM 붕괴가 문법 위반으로 둔갑해 649곳이 거짓 양성이 된다)",
+    from: 'const ENVIRONMENT_ERRORS = new Set(["TypeError", "ReferenceError"]);',
+    to: "const ENVIRONMENT_ERRORS = new Set([]);",
+  },
+  {
+    id: "CM3",
+    file: "scripts/check-mermaid.mjs",
+    desc: "모든 오류를 환경 탓으로 돌린다 (진짜 문법 위반이 전부 사라진다)",
+    from: '  return ENVIRONMENT_ERRORS.has(name) ? "environment" : "syntax";',
+    to: '  return "environment";',
+  },
+  {
+    id: "CM4",
+    file: "scripts/check-mermaid.mjs",
+    desc: "언어 표기를 보지 않는다 (```js 블록까지 mermaid 로 파싱해 없는 위반을 만든다)",
+    from: '    .filter((node) => (node.lang ?? "").trim().toLowerCase() === "mermaid")',
+    to: "    .filter(() => true)",
+  },
+  {
+    id: "CM5",
+    file: "scripts/check-mermaid.mjs",
+    desc: "카나리 실패를 무시한다 (죽은 파서로 돌린 위반 0 이 결론으로 나간다)",
+    from: "  if (canary) return { code: 2,",
+    to: "  if (false) return { code: 2,",
+  },
+  {
+    id: "CM6",
+    file: "scripts/check-mermaid.mjs",
+    desc: "판정 미도달을 무시한다 (못 본 도식이 있어도 위반 0 을 초록으로 낸다)",
+    from: "  if (unreachable > 0) return { code: 2,",
+    to: "  if (false) return { code: 2,",
+  },
+  {
+    id: "CM7",
+    file: "scripts/check-mermaid.mjs",
+    desc: "일부 누락 가드를 뺀다 (넘긴 것 중 일부만 보고 0곳을 보고한다)",
+    from: "  if (rejected > 0) return { code: 2,",
+    to: "  if (false) return { code: 2,",
+  },
+  {
+    id: "CM8",
+    file: "scripts/check-mermaid.mjs",
+    desc: "대상 0개 가드를 뺀다 (대상 없음이 위반 없음으로 읽힌다)",
+    from: "  if (scanned === 0) return { code: 2,",
+    to: "  if (false) return { code: 2,",
+  },
+  {
+    id: "CM9",
+    file: "scripts/check-mermaid.mjs",
+    desc: "위반이 있어도 0 으로 끝낸다 (검사기가 아무것도 막지 않는다)",
+    from: "  if (violations > 0) return { code: 1,",
+    to: "  if (false) return { code: 1,",
+  },
+  {
+    id: "CM10",
+    file: "scripts/check-mermaid.mjs",
+    desc: "수집에서 core.quotePath 를 끄는 것을 되돌린다 (한글 경로가 따옴표에 감싸여 빠진다)",
+    from: '  return execFileSync("git", ["-c", "core.quotePath=false", "ls-files", "--", "*.md"], { encoding: "utf8" })',
+    to: '  return execFileSync("git", ["ls-files", "--", "*.md"], { encoding: "utf8" })',
+  },
 ];
 
 const CHECKS = [
@@ -300,6 +370,7 @@ const CHECKS = [
   ["check-markup", "npm run --silent check-markup:verify"],
   ["fix-markup", "npm run --silent fix-markup:verify"],
   ["check-links", "npm run --silent check-links:verify"],
+  ["check-mermaid", "npm run --silent check-mermaid:verify"],
 ];
 
 function run(cmd) {
