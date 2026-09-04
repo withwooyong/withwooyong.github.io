@@ -1,5 +1,15 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { MIN_QUERY_LENGTH, normalize, search, tokenize, type SearchIndex } from "@/lib/blog/search";
+import {
+  MIN_QUERY_LENGTH,
+  SCHEMA_VERSION,
+  isSearchIndex,
+  normalize,
+  search,
+  tokenize,
+  type SearchIndex,
+} from "@/lib/blog/search";
 
 const INDEX: SearchIndex = {
   v: 1,
@@ -144,12 +154,18 @@ describe("tokenize", () => {
     expect(tokenize("랭그래프 state")).toEqual(["랭그래프", "state"]);
   });
 
-  it(`${MIN_QUERY_LENGTH}자 미만 토큰을 버린다`, () => {
-    expect(tokenize("a 랭그래프")).toEqual(["랭그래프"]);
+  // 🔴 뜻이 뒤집힌 케이스다. 예전에는 `${MIN_QUERY_LENGTH}자 미만 토큰을 버린다` 였는데,
+  // 그 규칙이 「AI 훅」을 「ai」 하나로 줄여 훅과 무관한 20건을 냈다. 문턱은 토큰이
+  // 아니라 질의 전체에만 적용되므로 여기서는 **아무것도 버리지 않아야** 한다.
+  it(`🔴 ${MIN_QUERY_LENGTH}자 미만 토큰도 버리지 않는다 — 훅·앱·봇이 이 블로그의 주제어다`, () => {
+    expect(tokenize("a 랭그래프")).toEqual(["a", "랭그래프"]);
+    expect(tokenize("ai 훅")).toEqual(["ai", "훅"]);
   });
 
-  it("남는 토큰이 없으면 빈 배열이다", () => {
-    expect(tokenize("a b")).toEqual([]);
+  it("빈 질의에서만 빈 배열이다 — 짧은 토큰뿐이어도 살아남는다", () => {
+    expect(tokenize("a b")).toEqual(["a", "b"]);
+    expect(tokenize("   ")).toEqual([]);
+    expect(tokenize("")).toEqual([]);
   });
 });
 
@@ -170,9 +186,26 @@ describe("search", () => {
     expect(hits.map((h) => h.post.s)).toEqual(["langgraph-state-reducer"]);
   });
 
-  it(`${MIN_QUERY_LENGTH}자 미만 질의는 0건이다`, () => {
+  // 🔴 문턱을 지키는 유일한 케이스다. `MIN_QUERY_LENGTH` 를 1 로 낮추면 「랭」이
+  // 세 편 중 두 편에 걸려 빈 배열이 아니게 되므로 이 케이스가 떨어진다.
+  // 토큰이 아니라 **질의 전체**를 재는 것이 새 규칙이라, 이것이 없으면 상수를 바꿔도
+  // 아무 케이스도 반응하지 않는다.
+  it(`🔴 ${MIN_QUERY_LENGTH}자 미만 질의는 0건이다 — 문턱은 질의 전체에 걸린다`, () => {
     expect(search(INDEX, "랭")).toEqual([]);
+    expect(search(INDEX, "그")).toEqual([]);
+    expect(search(INDEX, " 랭 ")).toEqual([]);
     expect(search(INDEX, "")).toEqual([]);
+  });
+
+  // 🔴 「AI 훅」 회귀. 1글자 토큰이 버려지면 AND 가 「랭그래프」 하나로 줄어 세 편이
+  // 전부 나온다. 「검」은 rag-standalone 의 제목에만 있으므로 결과는 한 편이어야 한다.
+  it("🔴 1글자 토큰도 AND 에 참여한다 — 「랭그래프 검」이 「랭그래프」와 달라야 한다", () => {
+    expect(search(INDEX, "랭그래프").map((h) => h.post.s)).toHaveLength(3);
+    expect(search(INDEX, "랭그래프 검").map((h) => h.post.s)).toEqual(["rag-standalone"]);
+  });
+
+  it("🔴 1글자 토큰이 어디에도 없으면 그 편은 탈락한다", () => {
+    expect(search(INDEX, "랭그래프 ㅋ")).toEqual([]);
   });
 
   it("제목 매치가 설명 매치보다 앞선다", () => {
@@ -216,5 +249,31 @@ describe("search", () => {
     const hits = search(TIE_INDEX, "tiebreak");
     expect(hits.map((h) => h.score)).toEqual([20, 20, 20, 20, 20]);
     expect(hits.map((h) => h.post.s)).toEqual(["tie-a", "tie-b", "tie-alpha-2", "tie-alpha-1", "tie-no-o"]);
+  });
+});
+
+describe("스키마 판", () => {
+  // 🔴 생성기는 `.mjs` 라 TypeScript 상수를 import 할 수 없다. 그래서 두 값이 조용히
+  // 어긋날 수 있는데, 어긋나면 팔레트가 인덱스를 통째로 거부해 검색이 죽는다.
+  // 소스에서 리터럴을 직접 읽어 대조한다 — 한쪽만 바꾸면 여기가 빨개진다.
+  it("🔴 생성기와 클라이언트의 SCHEMA_VERSION 이 같다", () => {
+    const source = readFileSync(resolve(process.cwd(), "scripts/build-search-index.mjs"), "utf8");
+    const found = source.match(/^const SCHEMA_VERSION = (\d+);$/m);
+    // 대조할 것이 실제로 있는지 먼저 센다. 못 찾으면 「같다」가 아니라 검사 실패다.
+    expect(found).not.toBeNull();
+    expect(Number(found![1])).toBe(SCHEMA_VERSION);
+  });
+
+  it("🔴 판이 다른 JSON 을 거부한다 — 통과하면 search 가 렌더 중에 던진다", () => {
+    expect(isSearchIndex({ v: SCHEMA_VERSION, posts: [] })).toBe(true);
+    expect(isSearchIndex({ v: SCHEMA_VERSION + 1, posts: [] })).toBe(false);
+    expect(isSearchIndex({ v: SCHEMA_VERSION })).toBe(false);
+    expect(isSearchIndex({ posts: [] })).toBe(false);
+    expect(isSearchIndex(null)).toBe(false);
+    expect(isSearchIndex("문자열")).toBe(false);
+  });
+
+  it("픽스처 인덱스가 실제 판과 같다 — 픽스처가 낡으면 테스트가 헛돈다", () => {
+    expect(INDEX.v).toBe(SCHEMA_VERSION);
   });
 });

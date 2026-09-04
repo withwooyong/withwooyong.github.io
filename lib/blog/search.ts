@@ -9,6 +9,12 @@
  * 그래서 판정은 **부분 문자열 포함**이다. 대신 1자 질의는 결과가 폭증하고 순위가
  * 무의미해지므로 2자를 하한으로 둔다.
  *
+ * 🔴 **하한을 재는 대상은 질의 전체이지 토큰이 아니다.** 토큰마다 재면 「AI 훅」이
+ * 「ai」 하나로 줄어 훅과 무관한 편이 쏟아지는데, 낱말이 버려졌다는 표시가 사용자에게
+ * 없다 (실측 20건). 「훅 설계」가 「설계」와 완전히 같은 결과를 내기도 했다. 훅·앱·봇·폼
+ * 같은 1음절 명사가 이 블로그의 주제어이므로, `tokenize` 는 **아무 토큰도 버리지 않고**
+ * 문턱은 `search` 가 정규화한 질의 전체에 한 번만 적용한다.
+ *
  * `fs` 도 DOM 도 모른다. 인덱스 없이 픽스처만으로 테스트된다.
  */
 
@@ -34,6 +40,30 @@ export type IndexPost = {
 
 export type SearchIndex = { v: number; posts: IndexPost[] };
 
+/**
+ * 이 파일이 읽을 줄 아는 인덱스 스키마의 판.
+ *
+ * 🔴 정본은 `scripts/build-search-index.mjs` 의 `SCHEMA_VERSION` 이고 이것은 그 사본이다.
+ * `.mjs` 는 TypeScript 를 import 할 수 없어 상수를 공유할 수 없으므로, 둘이 조용히
+ * 어긋나지 못하게 `tests/blog/search.test.ts` 가 생성기 소스에서 리터럴을 읽어 대조한다.
+ * 한쪽만 바꾸면 그 케이스가 떨어진다.
+ */
+export const SCHEMA_VERSION = 1;
+
+/**
+ * 네트워크로 받은 JSON 이 이 파일이 다룰 수 있는 인덱스인가.
+ *
+ * 🔴 이것이 없으면 형태가 다른 JSON 이 `search` 안에서 던지는데, 그 예외는 렌더 중에
+ * 나가므로 **팔레트가 아니라 페이지 전체가 죽는다** (실측: `search({v:2}, "…")` →
+ * `TypeError: index.posts is not iterable`). `res.ok` 만 보는 실패 처리로는 이 경로를
+ * 받지 못한다.
+ */
+export function isSearchIndex(value: unknown): value is SearchIndex {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as { v?: unknown; posts?: unknown };
+  return candidate.v === SCHEMA_VERSION && Array.isArray(candidate.posts);
+}
+
 export type SearchHit = {
   post: IndexPost;
   score: number;
@@ -51,11 +81,15 @@ export function normalize(text: string): string {
   return text.normalize("NFC").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
-/** 질의를 공백으로 나누고 짧은 토큰을 버린다 */
+/**
+ * 질의를 공백으로 나눈다. **길이로 토큰을 버리지 않는다** — 1글자 토큰도 살린다.
+ *
+ * 빈 문자열만 걸러낸다 (정규화가 연속 공백을 이미 줄였으므로 빈 질의일 때만 생긴다).
+ */
 export function tokenize(query: string): string[] {
   return normalize(query)
     .split(" ")
-    .filter((t) => t.length >= MIN_QUERY_LENGTH);
+    .filter((t) => t.length > 0);
 }
 
 /** 한 필드에서 토큰 하나가 얻는 점수. 매치가 없으면 0 */
@@ -104,6 +138,9 @@ function scorePost(post: IndexPost, tokens: string[]): SearchHit | null {
  * 빌드마다 다른 차례로 나오는데, 그러면 같은 질의가 다른 화면을 만든다.
  */
 export function search(index: SearchIndex, query: string): SearchHit[] {
+  // 🔴 문턱은 여기 한 곳에만 있다. 토큰마다 재면 낱말이 조용히 버려진다.
+  if (normalize(query).length < MIN_QUERY_LENGTH) return [];
+
   const tokens = tokenize(query);
   if (tokens.length === 0) return [];
 

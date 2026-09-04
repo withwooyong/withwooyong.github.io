@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { search, type SearchHit, type SearchIndex } from "@/lib/blog/search";
+import { isSearchIndex, search, type SearchHit, type SearchIndex } from "@/lib/blog/search";
 import type { BlogTree } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
 import { Hash, Search } from "lucide-react";
@@ -41,7 +41,14 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
     setState("loading");
     fetch(INDEX_URL)
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
-      .then((json: SearchIndex) => {
+      // 🔴 받은 JSON 을 단정하지 않는다. 판이 다르거나 형태가 어긋난 것을 그대로
+      // `search` 에 넘기면 `useMemo` 안에서 던지고, 그 예외는 렌더 중에 나가므로
+      // 팔레트가 아니라 페이지 전체가 죽는다. 실패 상태로 보내 카테고리 폴백을 그린다.
+      .then((json: unknown) => {
+        if (!isSearchIndex(json)) {
+          setState("failed");
+          return;
+        }
         setIndex(json);
         setState("ready");
       })

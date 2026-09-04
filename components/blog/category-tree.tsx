@@ -1,4 +1,4 @@
-import { STANDALONE_SLUG, type BlogTree, type TreeSeries } from "@/lib/blog/types";
+import type { BlogTree, TreeSeries } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -51,7 +51,7 @@ export function CategoryTree({ tree, activePostSlug, onNavigate }: Props) {
                             aria-hidden
                           />
                           <span className="min-w-0">
-                            {series.slug === STANDALONE_SLUG ? "독립편" : series.name}
+                            {series.name}
                           </span>
                         </span>
                         <span className="shrink-0 tabular-nums text-slate-400 dark:text-slate-500">

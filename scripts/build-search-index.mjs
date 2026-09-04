@@ -64,9 +64,16 @@ export function checkCanary(posts) {
  *
  * 순서가 규칙이다. **못 본 것이 있으면 본 것의 결과를 말하지 않는다.**
  */
-export function decideExit({ target, sourceCount, indexed, canary }) {
+export function decideExit({ target, ambiguous, sourceCount, indexed, canary }) {
   if (!target) {
     return { code: 2, why: `${DATA_ROOT} 가 없다. 먼저 \`npm run build\` 를 돌려라 — 안 만든 것을 「깨끗함」으로 세지 않는다.` };
+  }
+  // 🔴 buildId 디렉터리가 둘 남으면 사전순 첫 항목이 조용히 뽑힌다. 편 수가 같으면
+  // 수 대조도 카나리도 통과해 초록이 나오는데, 그것이 이 리포가 경계하는 「거짓 0」이다.
+  // `next build` 가 out/ 을 비우므로 정규 경로로는 안 생기지만 `npm run search-index` 를
+  // 단독으로 돌리는 경로가 있다. 어느 쪽인지 모르겠다를 고르지 않는다.
+  if (ambiguous) {
+    return { code: 2, why: `${DATA_ROOT} 아래 buildId 디렉터리가 둘 이상이다. 어느 빌드의 산출물인지 모르므로 고르지 않는다 — \`out/\` 을 지우고 \`npm run build\` 를 다시 돌려라.` };
   }
   if (sourceCount === 0) {
     return { code: 2, why: `${CONTENT_ROOT} 에서 .md 를 하나도 찾지 못했다. 0건이 아니라 대상 없음이다.` };
@@ -114,14 +121,20 @@ function walkJson(dir, out = []) {
   return out;
 }
 
-/** out/_next/data/<buildId>/blog 를 찾는다. buildId 는 빌드마다 바뀐다 */
-export function findBlogDataRoot(root = DATA_ROOT) {
-  if (!existsSync(root)) return null;
+/**
+ * out/_next/data/<buildId>/blog 후보를 **전부** 모은다. buildId 는 빌드마다 바뀐다.
+ *
+ * 🔴 첫 항목을 고르지 않고 전부 돌려주는 이유는 판정을 `decideExit` 에 모으기 위해서다.
+ * 고르는 일이 여기 있으면 「둘 중 하나를 조용히 골랐다」가 자기 검사에 보이지 않는다.
+ */
+export function findBlogDataRoots(root = DATA_ROOT) {
+  if (!existsSync(root)) return [];
+  const found = [];
   for (const buildId of readdirSync(root)) {
     const candidate = join(root, buildId, "blog");
-    if (existsSync(candidate) && statSync(candidate).isDirectory()) return candidate;
+    if (existsSync(candidate) && statSync(candidate).isDirectory()) found.push(candidate);
   }
-  return null;
+  return found;
 }
 
 /** 산출물 JSON 이 편인가. 카테고리·태그 페이지의 JSON 도 같은 트리에 있다 */
@@ -171,6 +184,13 @@ const EXIT_CASES = [
   ["④ 🔴 소스보다 많이 담겨도 종료 2 다", { target: "x", sourceCount: 184, indexed: 185, canary: null }, 2],
   ["⑤ 🔴 카나리가 실패하면 종료 2 다", { target: "x", sourceCount: 184, indexed: 184, canary: "헤딩 0개" }, 2],
   ["⑥ 전부 맞으면 종료 0 이다", { target: "x", sourceCount: 184, indexed: 184, canary: null }, 0],
+  // ⑯ 은 ⑥ 과 `ambiguous` 하나만 다르다. 나머지 집계가 전부 정상이어야, 이 가드를
+  // 지웠을 때 다른 가드가 대신 걸려 통과하는 일이 없다 — ①이 겪었던 실패의 모양이다.
+  [
+    "⑯ 🔴 buildId 디렉터리가 둘 이상이면 종료 2 다 — 사전순 첫 항목을 조용히 고르지 않는다",
+    { target: "x", ambiguous: true, sourceCount: 184, indexed: 184, canary: null },
+    2,
+  ],
 ];
 
 // 실측 카나리 편(ai-agent-qna-fundamentals)의 헤딩 수와 맞춘 고정값이다. CANARY_MIN_HEADINGS
@@ -248,12 +268,15 @@ export function selfTest() {
 function main() {
   if (process.argv.includes("--self-test")) process.exit(selfTest());
 
-  const blogDataRoot = findBlogDataRoot();
-  const posts = blogDataRoot ? collectPosts(blogDataRoot) : [];
+  const roots = findBlogDataRoots();
+  const ambiguous = roots.length > 1;
+  const blogDataRoot = roots.length === 0 ? null : roots[0];
+  // 모호하면 어느 쪽도 읽지 않는다. 읽어 버리면 그 수가 판정에 섞인다.
+  const posts = blogDataRoot && !ambiguous ? collectPosts(blogDataRoot) : [];
   const sourceCount = countSourcePosts();
-  const canary = blogDataRoot ? checkCanary(posts) : null;
+  const canary = blogDataRoot && !ambiguous ? checkCanary(posts) : null;
 
-  const verdict = decideExit({ target: blogDataRoot, sourceCount, indexed: posts.length, canary });
+  const verdict = decideExit({ target: blogDataRoot, ambiguous, sourceCount, indexed: posts.length, canary });
 
   if (verdict.code !== 0) {
     console.error(`\n🔴 ${verdict.why}`);

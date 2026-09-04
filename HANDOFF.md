@@ -12,7 +12,7 @@
 | 항목 | 값 |
 | --- | --- |
 | 발행 완료 | **A 편1~9 + B 편1~편8 (184편)** · 시리즈 B 완결 |
-| 검사기 | ✅ `scripts/` **열 종** + `tests/blog/` **8파일 82케이스** · 뮤턴트 **58/58 잡힘 · 생존 0** |
+| 검사기 | ✅ `scripts/` **열 종** + `tests/blog/` **8파일 87케이스** · 뮤턴트 **58/58 잡힘 · 생존 0** |
 | 훅 | ✅ 발행본 **9단** · 문서 **6단** · 코드만이면 즉시 통과 |
 | CI | ✅ **22스텝** |
 | 강조 렌더 실패 | ✅ 발행본 **0회 · 184편** · 리포 문서 **0회 · 55개** |
@@ -173,7 +173,7 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 | `fix-markup` | 위 위반의 교정 | 19건 |
 | `check-links` | 깨진 링크 (R1·R2·R3) | 23건 |
 | `check-mermaid` | 그려지지 않는 도식 (R1) | 26건 |
-| `build-search-index` | 검색 인덱스 (가드 넷) | **15건** |
+| `build-search-index` | 검색 인덱스 (가드 다섯) | **16건** |
 
 `npm run mutate` 로 뮤턴트 **58개**를 되살려 검사 **열 개**(위 검사기 열 종 중 `check-counts` 를
 제외한 아홉 + `blog-unit` Vitest)의 자기 검사가 잡는지 본다. 검사기를 고쳤으면 반드시 돌린다.
@@ -190,8 +190,8 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 | `tests/blog/loader.test.ts` | `readPosts` · 카테고리 · 인접 편 | 13 |
 | `tests/blog/toc.test.ts` | `buildToc` 단위 | 6 |
 | `tests/blog/tree.test.ts` | `buildTree` 단위 | 7 |
-| `tests/blog/search.test.ts` | 🔴 조사 매칭 · 다중 토큰 AND · 점수 | 15 |
-| | **합계** | **82** |
+| `tests/blog/search.test.ts` | 🔴 조사 매칭 · 다중 토큰 AND · 점수 · 1글자 토큰 보존 · 스키마 판 대조 | 20 |
+| | **합계** | **87** |
 
 발행본 **전량**을 보는 것은 `tests/blog/content/` 의 세 파일(18케이스)이고 나머지는 단위
 테스트다. 슬러거처럼 TypeScript 부품이 필요한 판정은 구조적으로 이쪽에만 살 수 있다.
@@ -273,7 +273,7 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 
 | 세션 | 어디 | 적혀 있던 값 | 실제 |
 | --- | --- | ---: | ---: |
-| 2026-09-04 (블로그 탐색 개편 Task 8) | `CLAUDE.md`·`README.md`·`HANDOFF.md` 검사기 종 수 · 뮤턴트 수 · `tests/blog` 파일·케이스 수 | 아홉 종 · 50개 · 5파일 54케이스 | **열 종 · 58개 · 8파일 82케이스** |
+| 2026-09-04 (블로그 탐색 개편 Task 8) | `CLAUDE.md`·`README.md`·`HANDOFF.md` 검사기 종 수 · 뮤턴트 수 · `tests/blog` 파일·케이스 수 | 아홉 종 · 50개 · 5파일 54케이스 | **열 종 · 58개 · 8파일 87케이스** |
 | 2026-09-04 (이번) | 자기 검사 건수 다섯 자리 | 15 · 15 · 7 · 28 · 여덟 | **63 · 63 · 12 · 42 · 아홉** |
 | 2026-09-04 (직전) | `CLAUDE.md`·`README.md` 뮤턴트 수 | 16 · 38 | 48 |
 | 2026-09-04 (직전) | `CLAUDE.md` 훅 단수 | 7단 | 9단 |

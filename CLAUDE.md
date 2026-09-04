@@ -27,7 +27,7 @@ Claude Code 가 이 리포에서 작업할 때 참고하는 지침이다.
 | `npm run dup-scan:verify` → `npm run dup-scan -- --category <slug>` | 축자 복제 스캔. 순서는 같다 — 증명한 뒤 스캔. 대상이 없으면 종료 코드 1. 배치를 통째로 넘겨도 안전하다 |
 | `npm run source-overlap:verify` → `npm run source-overlap -- <발행본> <원본>` | **원본** 대조. `dup-scan` 은 발행본끼리만 보므로 리포 밖 원본과의 겹침은 여기서만 잡힌다. 공백 보존·공백 제거 두 정규화를 모두 돌리고, 도식 라벨은 임계값이 아니라 **통째 일치**로 판정한다 |
 | `npm run check-counts:verify` → `npm run check-counts` | 🔴 **README 의 발행본 수**가 실제와 맞는지. 이 표에서 빠져 있던 탓에 **편2~7 동안 Pages 배포가 계속 실패했다** — 로컬 빌드도 pre-commit 훅도 이것을 보지 않고 CI 의 `Check documented counts` 에서만 죽는다. 편을 발행했으면 README **세 자리**(요약표 · 디렉터리 트리 · 카테고리 내역)를 같은 커밋에 넣는다 |
-| `npm run search-index:verify` → `npm run search-index` | 🔴 **검색 인덱스.** `out/_next/data` 의 `post.toc` 를 재사용해 `out/blog/search-index.json` 을 만든다 — 소스를 다시 파싱하지 않으므로 헤딩 텍스트와 앵커 id 의 진실원이 하나다. `npm run build` 안에서 sitemap 다음에 돈다. 가드 넷이 **대상 없음 · 수 대조(184 = 184) · 카나리 · `decideExit` 순수 함수**를 본다. 루트가 아니라 `out/blog/` 아래에 두는 이유는 `check-forbidden --built` 의 스캔 범위이기 때문이다 — 루트에 두면 제목·설명·헤딩 2,671개가 금칙어 검사를 우회한다 |
+| `npm run search-index:verify` → `npm run search-index` | 🔴 **검색 인덱스.** `out/_next/data` 의 `post.toc` 를 재사용해 `out/blog/search-index.json` 을 만든다 — 소스를 다시 파싱하지 않으므로 헤딩 텍스트와 앵커 id 의 진실원이 하나다. `npm run build` 안에서 sitemap 다음에 돈다. 가드 다섯이 **대상 없음 · buildId 모호(디렉터리가 둘 이상이면 사전순 첫 항목을 고르지 않고 종료 2) · 수 대조(184 = 184) · 카나리 · `decideExit` 순수 함수**를 본다. 루트가 아니라 `out/blog/` 아래에 두는 이유는 `check-forbidden --built` 의 스캔 범위이기 때문이다 — 루트에 두면 제목·설명·헤딩 2,671개가 금칙어 검사를 우회한다 |
 | `npm run compose -- <발행본>` | **복제를 지운 뒤 다시 돌린다.** 겹침을 피해 고쳐 쓴 문장은 원래보다 길어져 분량이 는다 — 실측 **+232 B** 로 밴드 상단 여유가 296 에서 **65** 로 줄었다. 밴드를 판정한 값과 실제 발행되는 값이 **다른 파일**이 되는데, 검사도 빌드도 통과하므로 다음 편에서 배율을 역산할 때에야 드러난다 |
 
 **증명하기 전에는 0을 믿지 마라.** 증명되지 않은 「0건」은 거짓 음성과 구분되지 않는다.
@@ -39,7 +39,7 @@ Claude Code 가 이 리포에서 작업할 때 참고하는 지침이다.
 건수 다섯 자리(15·15·7·28·여덟 대 63·63·12·42·아홉). **문서의 수치도 대조군 없이는 근거가
 아니다.** 특히 `dup-scan`·`fix-markup` 처럼 **검사기가 요약 숫자를 내지 않는 자리**가 낡는다.
 이번에도 `scripts/` 검사기가 아홉 종에서 **열 종**(`build-search-index` 추가)으로, 뮤턴트가
-50개에서 **58개**로, `tests/blog` 가 5파일 54케이스에서 **8파일 82케이스**로 늘며 세 수가
+50개에서 **58개**로, `tests/blog` 가 5파일 54케이스에서 **8파일 87케이스**로 늘며 세 수가
 `CLAUDE.md`·`README.md`·`HANDOFF.md` 에 갈라져 있었다 — 「검사기 종 수」와 「뮤테이션이 돌리는
 검사 수(그중 `check-counts` 는 빠지고 `blog-unit` 이 더해진다)」는 애초에 다른 수이므로 나눠 썼다.
 

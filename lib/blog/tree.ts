@@ -1,5 +1,5 @@
 import type { BlogCategory } from "@/content/blog/categories";
-import type { BlogSeries } from "@/content/blog/series";
+import { seriesOfCategory, type BlogSeries } from "@/content/blog/series";
 import {
   STANDALONE_SLUG,
   type BlogTree,
@@ -59,7 +59,10 @@ function toTreePost(post: PostSummary): TreePost {
  * 먼저 잡지만, 그 검사를 지워도 빌드가 서도록 여기에도 둔다.
  */
 function groupBySeries(posts: PostSummary[], series: BlogSeries[], categorySlug: string): TreeSeries[] {
-  const defined = series.filter((s) => s.categorySlug === categorySlug).sort((a, b) => a.order - b.order);
+  // 🔴 필터·정렬을 여기 다시 적지 않는다. 인라인으로 복제해 두었더니 series.ts 의
+  // 뒤섞은 픽스처 케이스가 화면을 그리는 이 경로를 지키지 못했다. `series` 를 주입
+  // 인자로 그대로 넘기므로 이 함수는 여전히 순수하고 `fs` 를 모른다.
+  const defined = seriesOfCategory(categorySlug, series);
   const out: TreeSeries[] = [];
 
   for (const post of posts) {
