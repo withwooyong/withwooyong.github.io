@@ -83,8 +83,10 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
       setCursor((c) => (c - 1 + rows.length) % rows.length);
     } else if (event.key === "Enter") {
       event.preventDefault();
+      const target = rows[cursor];
+      if (!target) return;
       setOpen(false);
-      void router.push(rows[cursor].href);
+      void router.push(target.href);
     }
   }
 
@@ -106,7 +108,7 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="top-24 max-w-xl translate-y-0 gap-0 p-0">
           <div className="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-            <Search className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+            <Search className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500" aria-hidden />
             <input
               ref={inputRef}
               autoFocus
@@ -115,6 +117,10 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
               onKeyDown={onInputKey}
               placeholder="제목 · 태그 · 목차에서 찾기 (2자 이상)"
               aria-label="검색어"
+              role="combobox"
+              aria-expanded={rows.length > 0}
+              aria-controls="search-dialog-listbox"
+              aria-activedescendant={rows[cursor] ? `search-dialog-option-${cursor}` : undefined}
               className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
           </div>
@@ -123,11 +129,11 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
             {state === "failed" ? (
               <Fallback tree={tree} message="검색을 불러오지 못했습니다. 카테고리로 찾아보세요." />
             ) : state === "loading" ? (
-              <p className="px-2 py-6 text-center text-sm text-slate-500 dark:text-slate-400">불러오는 중…</p>
+              <p className="px-2 py-6 text-center text-sm break-keep text-slate-500 dark:text-slate-400">불러오는 중…</p>
             ) : rows.length > 0 ? (
-              <ul>
+              <ul id="search-dialog-listbox" role="listbox">
                 {rows.map((row, i) => (
-                  <li key={row.href}>
+                  <li key={row.href} id={`search-dialog-option-${i}`} role="option" aria-selected={i === cursor}>
                     <a
                       href={row.href}
                       onClick={() => setOpen(false)}
@@ -139,7 +145,7 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
                       )}
                     >
                       {row.kind === "heading" ? (
-                        <Hash className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden />
+                        <Hash className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" aria-hidden />
                       ) : null}
                       <span className="min-w-0">{row.label}</span>
                     </a>
@@ -149,7 +155,7 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
             ) : query.trim().length > 0 ? (
               <Fallback tree={tree} message={`「${query}」에 맞는 글이 없습니다.`} />
             ) : (
-              <p className="px-2 py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+              <p className="px-2 py-6 text-center text-sm break-keep text-slate-500 dark:text-slate-400">
                 제목 · 태그 · 목차를 찾습니다. ↑↓ 로 옮기고 Enter 로 엽니다.
               </p>
             )}
