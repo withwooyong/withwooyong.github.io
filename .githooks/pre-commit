@@ -22,22 +22,31 @@ fi
 if [ -n "$BLOG" ]; then
   echo "[gate] content/blog 변경 감지 — 소스 검사를 실행한다"
 
-  echo "[gate] 1/5 금칙어 검사기 자기 증명"
+  echo "[gate] 1/7 금칙어 검사기 자기 증명"
   node scripts/check-forbidden.mjs --self-test || exit 1
 
-  echo "[gate] 2/5 콘텐츠 불변식"
+  echo "[gate] 2/7 콘텐츠 불변식"
   npx vitest run tests/blog || exit 1
 
-  echo "[gate] 3/5 금칙어 스캔"
+  echo "[gate] 3/7 금칙어 스캔"
   node scripts/check-forbidden.mjs || exit 1
 
-  echo "[gate] 4/5 마크업 검사기 자기 증명"
+  echo "[gate] 4/7 마크업 검사기 자기 증명"
   node scripts/check-markup.mjs --self-test || exit 1
 
   # 184편 전량을 본다. 옛 편 306회를 비우기 전에는 「이번 커밋이 건드린 파일만」이었는데,
   # 전량이 0 이 된 지금은 그럴 이유가 없다 — 좁게 보면 **다른 편을 깨뜨리는 변경**이 지나간다.
-  echo "[gate] 5/5 마크업 스캔"
+  echo "[gate] 5/7 마크업 스캔"
   node scripts/check-markup.mjs || exit 1
+
+  echo "[gate] 6/7 링크 검사기 자기 증명"
+  node scripts/check-links.mjs --self-test || exit 1
+
+  # 편을 지우거나 슬러그를 바꾸면 그 편을 가리키던 **다른 편**의 링크가 깨진다. 그래서
+  # 이 검사도 전량을 본다 — 이번 커밋이 건드린 파일만 보면 깨뜨린 쪽이 아니라 깨진 쪽이
+  # 통과한다. 실측으로 발행본 1,612개 링크가 전부 온전하다.
+  echo "[gate] 7/7 링크 스캔"
+  node scripts/check-links.mjs || exit 1
 fi
 
 if [ -n "$DOCS" ]; then
@@ -52,6 +61,14 @@ if [ -n "$DOCS" ]; then
 
   echo "[gate] 문서 마크업 스캔"
   node scripts/check-markup.mjs --docs || exit 1
+
+  # 링크도 같은 이유로 여기 있다. 문서 42곳이 깨진 채 남아 있던 것을 비운 직후이며,
+  # 0 인 지금이 아니면 걸 수 없다.
+  echo "[gate] 링크 검사기 자기 증명"
+  node scripts/check-links.mjs --self-test || exit 1
+
+  echo "[gate] 문서 링크 스캔"
+  node scripts/check-links.mjs --docs || exit 1
 fi
 
 echo "[gate] 통과"

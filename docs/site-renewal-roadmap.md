@@ -172,7 +172,7 @@ GitHub Pages 배포 URL이 고정이면 빌드 타임 환경변수나 상수로 
 | ESLint | `next build` 시 내장 실행 | `package.json`에 `"lint": "next lint"` 추가 후 CI에서 `npm run lint` |
 | 타입 검사 | 빌드에 포함 | `"typecheck": "tsc --noEmit"` 선택 |
 | Node 버전 | [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)에서 `18` | LTS 정책에 맞춰 20/22 검토, 로컬와 통일 |
-| README | [`README.md`](README.md)에 `npm run export` 안내 | Next 14 정적 export는 `next build`만으로 `out/` 생성. 문서 정정 |
+| README | [`README.md`](../README.md)에 `npm run export` 안내 | Next 14 정적 export는 `next build`만으로 `out/` 생성. 문서 정정 |
 | 의존성 | `next@14.0.0` 고정 | 보안 패치를 위해 마이너 업데이트 주기 점검, 변경 시 `output: export` 회귀 테스트 |
 
 ---

@@ -193,6 +193,55 @@ const MUTANTS = [
     to: '    if (!path.endsWith(".md")) {',
   },
   {
+    id: "CL1",
+    file: "scripts/check-links.mjs",
+    desc: "발행본의 상대 .md 를 통과시킨다 (사이트에 .md 경로가 없어 반드시 404 가 된다)",
+    from: '      return { code: "R2", why: "발행본의 .md 링크는 정적 export 에서 404 다 (/blog/…/…/ 로 써라)" };',
+    to: "      return null;",
+  },
+  {
+    id: "CL2",
+    file: "scripts/check-links.mjs",
+    desc: "앵커를 벗기지 않는다 (편은 있고 앵커만 붙은 29건이 거짓 양성으로 올라온다)",
+    from: '  const [rawPath] = url.split("#");',
+    to: "  const rawPath = url;",
+  },
+  {
+    id: "CL3",
+    file: "scripts/check-links.mjs",
+    desc: "참조식 링크의 정의 노드를 뽑지 않는다 ([가][ref] 형식이 통째로 빠진다)",
+    from: '    if ((node.type === "link" || node.type === "definition") && node.url) {',
+    to: '    if (node.type === "link" && node.url) {',
+  },
+  {
+    id: "CL4",
+    file: "scripts/check-links.mjs",
+    desc: "끝 슬래시를 지우지 않는다 (/blog/rag/a/ 가 전부 없는 편으로 뒤집힌다)",
+    from: '      const key = rawPath.replace(/^\\/blog\\//, "").replace(/\\/$/, "");',
+    to: '      const key = rawPath.replace(/^\\/blog\\//, "");',
+  },
+  {
+    id: "CL5",
+    file: "scripts/check-links.mjs",
+    desc: "카테고리 목록 링크를 편으로만 판정한다 (/blog/rag/ 가 위반이 된다)",
+    from: "      if (ctx.hasSlug(key) || ctx.hasCategory(key)) return null;",
+    to: "      if (ctx.hasSlug(key)) return null;",
+  },
+  {
+    id: "CL6",
+    file: "scripts/check-links.mjs",
+    desc: "일부 누락 가드를 뺀다 (넘긴 것 중 일부만 보고 0곳을 보고한다)",
+    from: "  if (rejected.length) {",
+    to: "  if (false) {",
+  },
+  {
+    id: "CL7",
+    file: "scripts/check-links.mjs",
+    desc: "수집에서 core.quotePath 를 끄는 것을 되돌린다 (한글 경로가 따옴표에 감싸여 빠진다)",
+    from: '  return execFileSync("git", ["-c", "core.quotePath=false", "ls-files", "--", "*.md"], { encoding: "utf8" })',
+    to: '  return execFileSync("git", ["ls-files", "--", "*.md"], { encoding: "utf8" })',
+  },
+  {
     id: "F1",
     file: "scripts/fix-markup.mjs",
     desc: "조사 목록을 짧은 것부터 본다 (「에서」가 「에」로 잘려 낱말이 쪼개진다)",
@@ -250,6 +299,7 @@ const CHECKS = [
   ["compose", "npm run --silent compose:verify"],
   ["check-markup", "npm run --silent check-markup:verify"],
   ["fix-markup", "npm run --silent fix-markup:verify"],
+  ["check-links", "npm run --silent check-links:verify"],
 ];
 
 function run(cmd) {

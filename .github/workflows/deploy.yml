@@ -66,6 +66,18 @@ jobs:
       - name: Scan repo docs markup
         run: npm run check-markup:docs
 
+      # 링크가 어디로 가는지는 검사기 여섯 중 아무도 보지 않았고, 문서에 42곳이 깨진 채
+      # 남아 있었다. 발행본 1,612개는 온전했다 — 없는 문제를 고치러 가지 않도록 판정은
+      # 파서가 한다. 정규식으로 세면 코드 블록 안의 예시 링크가 위반으로 올라온다.
+      - name: Prove link checker
+        run: npm run check-links:verify
+
+      - name: Scan published links
+        run: npm run check-links
+
+      - name: Scan repo docs links
+        run: npm run check-links:docs
+
       # 문서에 적힌 발행본 수가 실제와 맞는지 본다. README 세 곳이 128편에서 멈춰 있는 동안
       # 실제로는 149편이었다(인수인계 §11). 세는 사람이 없으면 숫자는 반드시 낡는다.
       #
