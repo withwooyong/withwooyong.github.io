@@ -1,5 +1,6 @@
 import { STANDALONE_SLUG, type BlogTree, type TreeSeries } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
@@ -42,10 +43,16 @@ export function CategoryTree({ tree, activePostSlug, onNavigate }: Props) {
               <ul className="mt-0.5 space-y-0.5 border-l border-slate-200 pl-2 dark:border-slate-800">
                 {category.series.map((series) => (
                   <li key={series.slug}>
-                    <details open={seriesHasPost(series, activePostSlug)}>
-                      <summary className="flex cursor-pointer list-none items-baseline justify-between gap-2 rounded-md px-2 py-1.5 text-xs text-slate-500 transition-colors hover:bg-slate-100 break-keep dark:text-slate-400 dark:hover:bg-slate-800">
-                        <span className="min-w-0">
-                          {series.slug === STANDALONE_SLUG ? "독립편" : series.name}
+                    <details className="group" open={seriesHasPost(series, activePostSlug)}>
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs text-slate-500 transition-colors hover:bg-slate-100 break-keep dark:text-slate-400 dark:hover:bg-slate-800">
+                        <span className="flex min-w-0 items-center gap-1">
+                          <ChevronRight
+                            className="h-3 w-3 shrink-0 transition-transform group-open:rotate-90"
+                            aria-hidden
+                          />
+                          <span className="min-w-0">
+                            {series.slug === STANDALONE_SLUG ? "독립편" : series.name}
+                          </span>
                         </span>
                         <span className="shrink-0 tabular-nums text-slate-400 dark:text-slate-500">
                           {series.posts.length}
@@ -91,7 +98,7 @@ export function CategoryTree({ tree, activePostSlug, onNavigate }: Props) {
         <Link
           href="/blog/tags/"
           onClick={onNavigate}
-          className="mt-2 block rounded-md border-t border-slate-200 px-3 pt-3 text-sm text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+          className="mt-2 block rounded-md border-t border-slate-200 px-3 pt-3 text-sm text-slate-600 transition-colors break-keep hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           태그 전체
         </Link>
