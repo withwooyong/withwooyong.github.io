@@ -33,3 +33,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# superpowers SDD 작업 공간 (원장·브리프·리뷰 패키지)
+/.superpowers/
