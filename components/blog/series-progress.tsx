@@ -32,7 +32,7 @@ export function SeriesProgress({ context, categorySlug, currentSlug }: Props) {
           <Layers className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />
           <span className="min-w-0">{series.name}</span>
         </h2>
-        <p className="shrink-0 text-xs tabular-nums text-slate-500 dark:text-slate-400">
+        <p className="shrink-0 text-xs tabular-nums break-keep text-slate-500 dark:text-slate-400">
           {posts.length}편 중 {position}번째
         </p>
       </div>
