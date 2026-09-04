@@ -1,17 +1,19 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostMeta } from "@/components/blog/post-meta";
 import { SeriesNav } from "@/components/blog/series-nav";
+import { SeriesProgress } from "@/components/blog/series-progress";
 import { TagList } from "@/components/blog/tag-list";
 import { Markdown } from "@/components/markdown";
 import { SiteHead } from "@/components/site-head";
-import { getAdjacentPosts, getAllPosts, getBlogTree, getPost } from "@/lib/blog/loader";
+import { getAdjacentPosts, getAllPosts, getBlogTree, getPost, getSeriesContext } from "@/lib/blog/loader";
 import { absoluteUrl } from "@/lib/site";
-import type { BlogTree, Post, PostSummary } from "@/lib/blog/types";
+import type { BlogTree, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
 type Props = {
   tree: BlogTree;
   post: Post;
+  seriesContext: SeriesContext | null;
   prev: PostSummary | null;
   next: PostSummary | null;
 };
@@ -27,10 +29,18 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const post = getPost(category, slug);
   const { prev, next } = getAdjacentPosts(category, slug);
 
-  return { props: { tree: getBlogTree(category), post, prev, next } };
+  return {
+    props: {
+      tree: getBlogTree(category),
+      post,
+      seriesContext: getSeriesContext(category, slug),
+      prev,
+      next,
+    },
+  };
 };
 
-export default function BlogPostPage({ tree, post, prev, next }: Props) {
+export default function BlogPostPage({ tree, post, seriesContext, prev, next }: Props) {
   const path = `/blog/${post.categorySlug}/${post.slug}/`;
 
   const jsonLd = {
@@ -64,6 +74,8 @@ export default function BlogPostPage({ tree, post, prev, next }: Props) {
           </header>
 
           <Markdown>{post.body}</Markdown>
+
+          <SeriesProgress context={seriesContext} categorySlug={post.categorySlug} currentSlug={post.slug} />
 
           <SeriesNav prev={prev} next={next} />
         </article>
