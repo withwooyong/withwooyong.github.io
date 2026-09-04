@@ -2,14 +2,15 @@ import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
 import { SiteHead } from "@/components/site-head";
 import type { BlogCategory } from "@/content/blog/categories";
-import { getPostSummaries, getPublishedCategories } from "@/lib/blog/loader";
-import type { PostSummary } from "@/lib/blog/types";
+import { getBlogTree, getPostSummaries, getPublishedCategories } from "@/lib/blog/loader";
+import type { BlogTree, PostSummary } from "@/lib/blog/types";
 import Link from "next/link";
 import type { GetStaticProps } from "next";
 
 type CategoryWithCount = BlogCategory & { count: number };
 
 type Props = {
+  tree: BlogTree;
   categories: CategoryWithCount[];
   featured: PostSummary[];
   recent: PostSummary[];
@@ -20,6 +21,7 @@ export const getStaticProps: GetStaticProps<Props> = () => {
 
   return {
     props: {
+      tree: getBlogTree(null),
       // 글이 있는 카테고리만. 여기서 세는 count는 항상 1 이상이 된다.
       categories: getPublishedCategories().map((c) => ({
         ...c,
@@ -31,7 +33,7 @@ export const getStaticProps: GetStaticProps<Props> = () => {
   };
 };
 
-export default function BlogHomePage({ categories, featured, recent }: Props) {
+export default function BlogHomePage({ tree, categories, featured, recent }: Props) {
   return (
     <>
       <SiteHead
@@ -40,7 +42,7 @@ export default function BlogHomePage({ categories, featured, recent }: Props) {
         path="/blog/"
       />
 
-      <BlogShell categories={categories}>
+      <BlogShell tree={tree}>
         <div className="max-w-4xl space-y-12">
           <header className="space-y-2">
             <h1 className="text-2xl font-bold break-keep sm:text-3xl">기술 노트</h1>

@@ -1,6 +1,6 @@
+import { CategoryTree } from "@/components/blog/category-tree";
 import { ThemeToggle } from "@/components/theme-toggle";
-import type { BlogCategory } from "@/content/blog/categories";
-import type { TocEntry } from "@/lib/blog/types";
+import type { BlogTree, TocEntry } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
 import { Menu, PenLine, X } from "lucide-react";
 import Link from "next/link";
@@ -8,65 +8,22 @@ import { useState, type ReactNode } from "react";
 
 type BlogShellProps = {
   /**
-   * 사이드바에 띄울 카테고리. 글이 있는 것만 담아 넘긴다(getPublishedCategories).
+   * 사이드바 트리. 현재 카테고리만 펼쳐진 상태로 넘어온다(getBlogTree).
    *
-   * 이 컴포넌트는 클라이언트에서도 렌더되므로 파일시스템을 읽을 수 없다 — 글 수를
-   * 스스로 알 방법이 없어 호출하는 쪽의 getStaticProps가 넘겨야 한다.
+   * 이 컴포넌트는 클라이언트에서도 렌더되므로 파일시스템을 읽을 수 없다 —
+   * 호출하는 쪽의 getStaticProps 가 넘겨야 한다.
    * **선택 인자로 두지 않는다.** 폴백을 두면 한 페이지에서 빠뜨렸을 때
-   * 그 페이지만 등록된 12개를 전부 보여주는 불일치가 조용히 생긴다.
+   * 그 페이지만 다르게 보이는 불일치가 조용히 생긴다.
    * 필수로 두면 빠뜨린 곳이 타입 오류로 드러난다.
    */
-  categories: BlogCategory[];
-  activeCategory?: string;
+  tree: BlogTree;
+  /** 본문 페이지에서만 넘어온다. 현재 편이 속한 시리즈를 펼쳐 그린다 */
+  activePostSlug?: string;
   toc?: TocEntry[];
   children: ReactNode;
 };
 
-function CategoryList({
-  categories,
-  activeCategory,
-  onNavigate,
-}: {
-  categories: BlogCategory[];
-  activeCategory?: string;
-  onNavigate?: () => void;
-}) {
-  return (
-    <ul className="space-y-1">
-      {categories.map((c) => {
-        const active = c.slug === activeCategory;
-        return (
-          <li key={c.slug}>
-            <Link
-              href={`/blog/${c.slug}/`}
-              onClick={onNavigate}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "block rounded-md px-3 py-2 text-sm transition-colors break-keep",
-                active
-                  ? "bg-blue-50 font-semibold text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
-                  : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-              )}
-            >
-              {c.name}
-            </Link>
-          </li>
-        );
-      })}
-      <li>
-        <Link
-          href="/blog/tags/"
-          onClick={onNavigate}
-          className="block rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-        >
-          태그 전체
-        </Link>
-      </li>
-    </ul>
-  );
-}
-
-export function BlogShell({ categories, activeCategory, toc, children }: BlogShellProps) {
+export function BlogShell({ tree, activePostSlug, toc, children }: BlogShellProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -107,7 +64,7 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
 
       {open ? (
         <div className="border-b border-slate-200 bg-white px-3 py-3 lg:hidden sm:px-4 dark:border-slate-800 dark:bg-slate-950">
-          <CategoryList categories={categories} activeCategory={activeCategory} onNavigate={() => setOpen(false)} />
+          <CategoryTree tree={tree} activePostSlug={activePostSlug} onNavigate={() => setOpen(false)} />
         </div>
       ) : null}
 
@@ -118,7 +75,7 @@ export function BlogShell({ categories, activeCategory, toc, children }: BlogShe
             <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               카테고리
             </p>
-            <CategoryList categories={categories} activeCategory={activeCategory} />
+            <CategoryTree tree={tree} activePostSlug={activePostSlug} />
           </nav>
         </aside>
 
