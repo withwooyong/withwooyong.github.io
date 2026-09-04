@@ -102,6 +102,11 @@ jobs:
       - name: Check documented counts
         run: npm run check-counts
 
+      # 인덱스 생성기는 빌드 안에서 돈다. 증명은 그보다 먼저다 — 증명되지 않은 「184편」은
+      # 거짓 음성과 구분되지 않는다. 가드 넷이 대상 없음 · 수 어긋남 · 카나리를 본다.
+      - name: Prove search index builder
+        run: npm run search-index:verify
+
       - name: Build
         run: npm run build
 
