@@ -90,7 +90,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-links:verify` | 위 검사의 자체 검사 (`--self-test` 23건) |
 | `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 544개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
 | `npm run check-mermaid:docs` | 위 검사를 리포 문서 105개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
-| `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 21건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
+| `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 26건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
@@ -99,7 +99,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
-| `npm run mutate` | 알려진 결함 48개를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run mutate` | 알려진 결함 50개를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 

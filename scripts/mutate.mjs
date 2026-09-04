@@ -360,6 +360,20 @@ const MUTANTS = [
     from: '  return execFileSync("git", ["-c", "core.quotePath=false", "ls-files", "--", "*.md"], { encoding: "utf8" })',
     to: '  return execFileSync("git", ["ls-files", "--", "*.md"], { encoding: "utf8" })',
   },
+  {
+    id: "CM11",
+    file: "scripts/check-mermaid.mjs",
+    desc: "engines 범위를 무조건 허용한다 (CI 의 Node 에서 못 도는 판이 로컬에서 통과한다)",
+    from: '      if (op === ">=" || op === ">") return major >= declared;',
+    to: "      return true;",
+  },
+  {
+    id: "CM12",
+    file: "scripts/check-mermaid.mjs",
+    desc: "CI 의 Node 버전을 읽지 못한다 (대조할 기준이 사라져 검사가 헛돈다)",
+    from: "  return match ? Number(match[1]) : null;",
+    to: "  return null;",
+  },
 ];
 
 const CHECKS = [
