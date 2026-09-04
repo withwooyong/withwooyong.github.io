@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { blogSeries, findSeries, seriesOfCategory } from "@/content/blog/series";
+import { blogSeries, findSeries, seriesOfCategory, type BlogSeries } from "@/content/blog/series";
 import { blogCategories } from "@/content/blog/categories";
 import { readPosts } from "@/lib/blog/loader";
 
@@ -54,6 +54,21 @@ describe("시리즈 정의", () => {
   });
 
   it("seriesOfCategory 가 order 오름차순으로 돌려준다", () => {
+    // 🔴 blogSeries 는 이미 카테고리별 오름차순으로 나열돼 있어, 함수 반환값을
+    // 다시 정렬해 자기 자신과 비교하면 정렬 로직을 지워도 통과한다. 그래서
+    // order 를 일부러 뒤섞은 픽스처로 검사한다 — 이것이 진짜 정렬을 지킨다.
+    const shuffled: BlogSeries[] = [
+      { slug: "c-third", name: "c-third", categorySlug: "x", order: 30 },
+      { slug: "a-first", name: "a-first", categorySlug: "x", order: 10 },
+      { slug: "b-second", name: "b-second", categorySlug: "x", order: 20 },
+    ];
+    expect(seriesOfCategory("x", shuffled).map((s) => s.slug)).toEqual([
+      "a-first",
+      "b-second",
+      "c-third",
+    ]);
+
+    // 실데이터에서도 오름차순인지 함께 확인한다.
     for (const c of blogCategories) {
       const list = seriesOfCategory(c.slug);
       const sorted = [...list].sort((a, b) => a.order - b.order);

@@ -81,6 +81,9 @@ export function findSeries(slug: string): BlogSeries | undefined {
   return blogSeries.find((s) => s.slug === slug);
 }
 
-export function seriesOfCategory(categorySlug: string): BlogSeries[] {
-  return blogSeries.filter((s) => s.categorySlug === categorySlug).sort((a, b) => a.order - b.order);
+/**
+ * @param source 시리즈 목록. 테스트에서 픽스처를 주입하기 위한 선택 인자다.
+ */
+export function seriesOfCategory(categorySlug: string, source: BlogSeries[] = blogSeries): BlogSeries[] {
+  return source.filter((s) => s.categorySlug === categorySlug).sort((a, b) => a.order - b.order);
 }
