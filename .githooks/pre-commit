@@ -1,31 +1,57 @@
 #!/bin/sh
 # 게이트 1단 — 소스 검사.
 #
-# content/blog 변경이 없으면 즉시 통과한다. 코드만 고치는 커밋을 콘텐츠 검사로 막지 않는다.
+# 커밋이 무엇을 건드렸는지에 따라 두 갈래로 갈린다. 코드만 고치는 커밋을 콘텐츠 검사로
+# 막지 않기 위해서다.
+#
+#   content/blog/*.md 를 건드림  →  발행본 5단 (금칙어 · 불변식 · 마크업)
+#   그 밖의 *.md 를 건드림       →  문서 마크업 스캔
+#
 # 빌드가 필요한 검사(--built · check-baseline)는 여기 두지 않는다 — 커밋이 수십 초 걸리면
 # --no-verify 로 우회하게 되고, 그러면 훅이 있으나 마나다. 그것들은 CI가 받는다.
 
-if ! git diff --cached --name-only | grep -q '^content/blog/'; then
+STAGED=$(git diff --cached --name-only)
+
+echo "$STAGED" | grep -q '^content/blog/' && BLOG=1 || BLOG=
+echo "$STAGED" | grep '\.md$' | grep -qv '^content/blog/' && DOCS=1 || DOCS=
+
+if [ -z "$BLOG" ] && [ -z "$DOCS" ]; then
   exit 0
 fi
 
-echo "[gate] content/blog 변경 감지 — 소스 검사를 실행한다"
+if [ -n "$BLOG" ]; then
+  echo "[gate] content/blog 변경 감지 — 소스 검사를 실행한다"
 
-echo "[gate] 1/5 금칙어 검사기 자기 증명"
-node scripts/check-forbidden.mjs --self-test || exit 1
+  echo "[gate] 1/5 금칙어 검사기 자기 증명"
+  node scripts/check-forbidden.mjs --self-test || exit 1
 
-echo "[gate] 2/5 콘텐츠 불변식"
-npx vitest run tests/blog || exit 1
+  echo "[gate] 2/5 콘텐츠 불변식"
+  npx vitest run tests/blog || exit 1
 
-echo "[gate] 3/5 금칙어 스캔"
-node scripts/check-forbidden.mjs || exit 1
+  echo "[gate] 3/5 금칙어 스캔"
+  node scripts/check-forbidden.mjs || exit 1
 
-echo "[gate] 4/5 마크업 검사기 자기 증명"
-node scripts/check-markup.mjs --self-test || exit 1
+  echo "[gate] 4/5 마크업 검사기 자기 증명"
+  node scripts/check-markup.mjs --self-test || exit 1
 
-# 184편 전량을 본다. 옛 편 306회를 비우기 전에는 「이번 커밋이 건드린 파일만」이었는데,
-# 전량이 0 이 된 지금은 그럴 이유가 없다 — 좁게 보면 **다른 편을 깨뜨리는 변경**이 지나간다.
-echo "[gate] 5/5 마크업 스캔"
-node scripts/check-markup.mjs || exit 1
+  # 184편 전량을 본다. 옛 편 306회를 비우기 전에는 「이번 커밋이 건드린 파일만」이었는데,
+  # 전량이 0 이 된 지금은 그럴 이유가 없다 — 좁게 보면 **다른 편을 깨뜨리는 변경**이 지나간다.
+  echo "[gate] 5/5 마크업 스캔"
+  node scripts/check-markup.mjs || exit 1
+fi
+
+if [ -n "$DOCS" ]; then
+  # 🔴 이 단이 없던 동안 리포 문서에 렌더 실패가 250회 쌓였다. 발행본만 지키고 문서는
+  # 아무도 보지 않았기 때문이다. 전량이 0 이 된 지금 거는 이유가 그것이다 — 쌓인 뒤에
+  # 걸면 문서를 건드리는 커밋이 전부 막히고, 그러면 --no-verify 가 습관이 된다.
+  #
+  # 발행본 5단과 마찬가지로 스테이징된 파일이 아니라 **전량**을 본다(실측 1.9초).
+  # 좁게 보면 다른 문서를 깨뜨리는 변경이 지나간다.
+  echo "[gate] 문서 변경 감지 — 마크업 검사기 자기 증명"
+  node scripts/check-markup.mjs --self-test || exit 1
+
+  echo "[gate] 문서 마크업 스캔"
+  node scripts/check-markup.mjs --docs || exit 1
+fi
 
 echo "[gate] 통과"

@@ -172,6 +172,27 @@ const MUTANTS = [
     to: '    () => "",',
   },
   {
+    id: "M6",
+    file: "scripts/check-markup.mjs",
+    desc: "일부 누락 가드를 뺀다 (54개를 넘겼는데 50개만 보고 0건을 내던 그 실패다)",
+    from: "  if (rejected.length) {",
+    to: "  if (false) {",
+  },
+  {
+    id: "M7",
+    file: "scripts/check-markup.mjs",
+    desc: "수집에서 core.quotePath 를 끄는 것을 되돌린다 (한글 경로가 따옴표에 감싸여 빠진다)",
+    from: '    ["-c", "core.quotePath=false", "ls-files", "--", "*.md"],',
+    to: '    ["ls-files", "--", "*.md"],',
+  },
+  {
+    id: "M8",
+    file: "scripts/check-markup.mjs",
+    desc: "넘어온 경로의 존재를 보지 않는다 (없는 파일에서 ENOENT 스택으로 죽는다)",
+    from: '    if (!path.endsWith(".md") || !existsSync(path)) {',
+    to: '    if (!path.endsWith(".md")) {',
+  },
+  {
     id: "F1",
     file: "scripts/fix-markup.mjs",
     desc: "조사 목록을 짧은 것부터 본다 (「에서」가 「에」로 잘려 낱말이 쪼개진다)",

@@ -50,6 +50,22 @@ jobs:
       - name: Scan source for forbidden words
         run: npm run check-forbidden
 
+      # 🔴 마크업 검사는 훅에만 있고 CI에는 없었다. 훅은 --no-verify 로 지나갈 수 있고
+      # 웹 UI 편집은 애초에 훅을 타지 않으므로, 훅만 있는 검사는 지켜지지 않는 검사다.
+      - name: Prove markup checker
+        run: npm run check-markup:verify
+
+      - name: Scan published markup
+        run: npm run check-markup
+
+      # 발행본 밖의 리포 문서. 아무도 보지 않는 동안 렌더 실패가 250회 쌓였고, 발견한 것은
+      # 검사기가 아니라 GitHub에서 별표가 그대로 보이는 화면이었다.
+      #
+      # ⚠️ 대상 수집은 검사기 안에 있다(`--docs`). 여기서 `git ls-files` 로 뽑아 넘기지 마라 —
+      # core.quotePath 기본값이 한글 경로를 따옴표로 감싸는 바람에 4개가 조용히 빠진 적이 있다.
+      - name: Scan repo docs markup
+        run: npm run check-markup:docs
+
       # 문서에 적힌 발행본 수가 실제와 맞는지 본다. README 세 곳이 128편에서 멈춰 있는 동안
       # 실제로는 149편이었다(인수인계 §11). 세는 사람이 없으면 숫자는 반드시 낡는다.
       #
