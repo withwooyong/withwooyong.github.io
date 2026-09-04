@@ -80,7 +80,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. 인자는 **`--` 뒤에** 넘긴다 — `npm run dup-scan -- --category <slug>` · `-- --min N`(기본 20자) · `-- <파일...>`. `--` 없이 쓰면 npm이 플래그를 먹어 「대상이 없다」로 종료한다 |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
-| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 15건) |
+| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 63건) |
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
 | `npm run check-markup` | 🔴 **렌더되지 않는 강조** 스캔. 판정은 정규식이 아니라 **페이지를 그리는 파서**가 하므로 코드 블록 안의 정당한 예시는 저절로 빠진다. `-- --category <slug>` 로 좁히고, `-- --files <경로...>` 로 발행본 밖의 문서도 본다 |
 | `npm run check-markup:docs` | 위 검사를 **발행본 밖의 리포 문서 전량**에 돌린다. 대상 수집은 검사기가 직접 한다 — `git ls-files` 로 뽑아 넘기면 한글 경로가 따옴표에 감싸여 조용히 빠진다 |

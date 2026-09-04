@@ -158,9 +158,9 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 
 | 검사기 | 무엇을 | 자기 검사 |
 | --- | --- | ---: |
-| `check-forbidden` | 금칙어 (소스 · 빌드 산출물) | 15건 |
-| `dup-scan` | 발행본 사이의 축자 복제 | 7건 |
-| `source-overlap` | 리포 밖 **원본**과의 겹침 | 28건 |
+| `check-forbidden` | 금칙어 (소스 · 빌드 산출물) | 63건 |
+| `dup-scan` | 발행본 사이의 축자 복제 | 12건 |
+| `source-overlap` | 리포 밖 **원본**과의 겹침 | 42건 |
 | `compose` | 성분별 분해 (분량 예산) | — |
 | `check-counts` | README·CHANGELOG 의 발행본 수 | — |
 | `check-markup` | 렌더되지 않는 강조 | 24건 |
@@ -231,8 +231,10 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 
 | 무엇 | 왜 남겼나 | 확인할 진실원 |
 | --- | --- | --- |
-| README 에 없는 npm 스크립트 `check-counts:verify` · `check-counts:print` · `map-terms:verify` · `compose:verify` · `source-overlap:verify` · `mutate:verify` | 전부 `:verify` 계열이고, README 는 본 명령 줄에 「`:verify` 는 자체 검사」로 함께 적는 방식을 쓴다. **일관된 의도로 보이므로** 세션 끝에 판단해 바꾸지 않았다 | `README.md` 의 서술 방식 |
-| `check-forbidden:verify` 의 「15건」 | 두 세션 연속 건드리지 않았고 출력 형식이 달라 자동 대조가 안 됐다 | `node scripts/check-forbidden.mjs --self-test` |
+| README 에 없는 npm 스크립트 `check-counts:verify` · `check-counts:print` · `map-terms:verify` · `compose:verify` · `source-overlap:verify` · `mutate:verify` | 전부 `:verify` 계열이고, README 는 본 명령 줄에 「`:verify` 는 자체 검사」로 함께 적는 방식을 쓴다. **일관된 의도로 보이므로** 세션 끝에 판단해 바꾸지 않았다 (실측 **6개 그대로**) | `README.md` 의 서술 방식 |
+
+✅ `check-forbidden:verify` 의 「15건」은 **63건**으로 정정했다. 함께 어긋나 있던 두 자리도
+같은 커밋에서 고쳤다 — 아래 「문서가 낡던 자리」를 보라.
 
 ⚠️ 수집 스크립트의 `ENV_KEYS_IN_CODE_BUT_NOT_IN_README`(`OPENAI_API_KEY` 등 5개)는
 **오탐이다.** 코드에는 없고 **블로그 본문 3편의 코드 예시**에서 왔다. 이 프로젝트는 정적
@@ -241,13 +243,45 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 ⚠️ `[LOW] SCRIPTS_DIR_MISSING_IN_README`(`check-mermaid.mjs` 등)도 **오탐이다.** README 는
 파일명이 아니라 **npm 스크립트 이름**으로 문서화한다.
 
-### 문서가 낡던 자리 — 이번에 고친 것
+### 문서가 낡던 자리 — 자기 검사 건수 다섯 자리 (2026-09-04 정정)
 
-| 어디 | 적혀 있던 값 | 실제 |
+아홉 검사기의 `--self-test` 를 **전부 돌려** 문서의 값과 대조했다. 넷이 정확히 일치했으므로
+계수 방식은 문서의 관례와 같고, 어긋난 자리는 값이 낡은 것이다.
+
+| 어디 | 적혀 있던 값 | 실측 |
 | --- | ---: | ---: |
-| `CLAUDE.md` 뮤턴트 수 | 16개 | **48개** |
-| `README.md` 뮤턴트 수 | 38개 | **48개** |
-| `CLAUDE.md` 훅 단수 | 7단 | **9단** |
+| `README.md:83` `check-forbidden:verify` | 15건 | **63** |
+| `HANDOFF.md` 표 `check-forbidden` | 15건 | **63** |
+| `HANDOFF.md` 표 `dup-scan` | 7건 | **12** |
+| `HANDOFF.md` 표 `source-overlap` | 28건 | **42** |
+| `CLAUDE.md:51` 검사기 개수 | 여덟 | **아홉** |
+| `check-markup` · `fix-markup` · `check-links` · `check-mermaid` | 24 · 19 · 23 · 26 | ✅ 동일 |
+| 뮤턴트 수 (`README.md` · `CLAUDE.md`) | 50개 | ✅ 50 |
+
+🔴 **직전 세션은 `check-forbidden` 하나만 낡았다고 기록했지만 실제로는 셋이었다.** 한 자리를
+「자동 대조가 안 된다」는 이유로 남기면, **같은 이유로 낡은 옆자리는 아예 세어 보지 않게 된다.**
+
+⚠️ **어긋난 셋은 검사기가 요약 숫자를 내지 않거나 형식이 다른 것들이다.** 대조법은 아래와 같다.
+
+| 검사기 | 자기 검사 건수를 어떻게 읽나 |
+| --- | --- |
+| `check-markup` · `check-links` · `check-mermaid` · `source-overlap` | 검사기가 `24/24` 형태로 **스스로 출력한다** — 그대로 읽는다 |
+| `check-forbidden` | 형식이 달라 `통과 63 / 실패 0` 으로 낸다 |
+| 🔴 `dup-scan` · `fix-markup` | **요약 숫자를 내지 않는다.** `PASS` 줄을 세야 한다 |
+
+⇒ 요약 숫자를 내지 않는 검사기가 낡는다. 계수 명령은 다음 하나다.
+
+```
+node scripts/<검사기>.mjs --self-test 2>&1 | grep -cE '(PASS|✅)'
+```
+
+### 그 전 세션이 고친 자리 (기록)
+
+| 어디 | 적혀 있던 값 | 그때의 실제 |
+| --- | ---: | ---: |
+| `CLAUDE.md` 뮤턴트 수 | 16개 | 48개 |
+| `README.md` 뮤턴트 수 | 38개 | 48개 |
+| `CLAUDE.md` 훅 단수 | 7단 | 9단 |
 
 `CLAUDE.md` 의 16개는 **세 세션 동안 낡아 있었다.** 뮤턴트를 추가할 때 문서를 함께 세는
 습관이 없으면 반드시 어긋난다.
