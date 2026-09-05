@@ -1,7 +1,13 @@
 name: Deploy to GitHub Pages
 
+# 🔴 PR 에도 걸어야 검사가 merge 전에 돈다. 이 트리거가 push 뿐이던 동안
+# 22스텝은 main 에 들어간 뒤에야 돌았고, 이 리포에는 프리뷰 환경이 없어
+# main 이 곧 프로덕션이다 — 걸러야 할 것이 프로덕션에서 드러나는 구조였다.
+# 실제로 다크 모드 대비 1.06 결함이 그 경로로 배포됐다(PR #4·#5).
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -10,9 +16,12 @@ permissions:
   pages: write
   id-token: write
 
+# ⚠️ 그룹을 "pages" 하나로 두면 PR 검사가 배포와 같은 큐에 끼어든다.
+# ref 로 나누면 main 배포는 지금처럼 직렬로 남고 PR 끼리는 서로를 막지 않는다.
+# 취소는 PR 에서만 한다 — 배포를 중간에 끊으면 Pages 가 어중간한 상태로 남는다.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -135,12 +144,17 @@ jobs:
       # - name: GC-6 baseline
       #   run: npm run check-baseline
 
+      # PR 에서는 배포하지 않으므로 아티팩트도 만들지 않는다.
+      # 위의 검사 스텝은 전부 돈다 — 빌드 산출물 스캔이 여기까지 와야 의미가 있다.
       - name: Upload artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./out
 
   deploy:
+    # PR 은 검사까지만이다. build 가 통과해도 이 job 은 건너뛴다.
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
