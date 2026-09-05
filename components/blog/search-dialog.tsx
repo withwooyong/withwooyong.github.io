@@ -34,6 +34,11 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
   const [index, setIndex] = useState<SearchIndex | null>(null);
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  // 서버는 macOS 인지 알 수 없다. 첫 렌더를 Ctrl 로 고정해 하이드레이션 불일치를 피하고,
+  // 마운트한 뒤에만 Cmd 로 바꾼다. 두 키 모두 실제로 팔레트를 연다.
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.userAgent)), []);
 
   // 인덱스는 첫 Cmd+K 에만 가져온다. gzip 96 KB 라 첫 화면에 얹을 이유가 없다.
   const load = useCallback(() => {
@@ -108,7 +113,7 @@ export function SearchDialog({ tree }: { tree: BlogTree }) {
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="hidden sm:inline">검색</span>
         <kbd className="hidden rounded border border-slate-200 px-1 text-xs sm:inline dark:border-slate-700">
-          Cmd K
+          {isMac ? "Cmd" : "Ctrl"} K
         </kbd>
       </button>
 
