@@ -89,7 +89,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-links:docs` | 위 검사를 리포 문서에 돌린다. 문서의 상대 `.md` 는 그 파일이 있어야 하며 **기준은 리포 루트가 아니라 그 문서의 디렉터리**다 |
 | `npm run check-links:verify` | 위 검사의 자체 검사 (`--self-test` 23건) |
 | `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 544개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
-| `npm run check-mermaid:docs` | 위 검사를 리포 문서 55개의 도식 110개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
+| `npm run check-mermaid:docs` | 위 검사를 리포 문서 56개의 도식 112개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
 | `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 26건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
