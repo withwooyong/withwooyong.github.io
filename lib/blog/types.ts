@@ -97,3 +97,37 @@ export type SeriesContext = {
   /** 1부터 센다. posts 안에서 현재 편이 몇 번째인가 */
   position: number;
 };
+
+/**
+ * 지역 그래프의 노드 하나.
+ *
+ * 페이지 HTML 에 JSON 으로 직렬화되므로 링크를 만들 최소한만 담는다 —
+ * `TreePost` 가 같은 이유로 세 필드만 담고 있다.
+ */
+export type GraphNode = {
+  /** `<categorySlug>/<slug>`. 그래프 안에서 노드를 가리키는 유일한 값이다 */
+  id: string;
+  categorySlug: string;
+  slug: string;
+  title: string;
+};
+
+/** 방향 있는 연결선. `from` 의 본문이 `to` 를 가리킨다 */
+export type GraphEdge = { from: string; to: string };
+
+/**
+ * 본문 페이지에 실리는 지역 그래프.
+ *
+ * `neighbors` 는 상한까지만 담고 잘린 수는 `hiddenCount` 에 남긴다 —
+ * 화면에서 「+N」 으로 보여 주어 숨기지 않기 위함이다.
+ *
+ * `edges` 는 중심과 이웃 사이뿐 아니라 **이웃끼리의 연결선도** 담는다.
+ * 중심에서 뻗은 선만 담으면 배치가 언제나 바퀴살 모양이 되어 힘 계산이 무의미해진다.
+ */
+export type LocalGraph = {
+  center: GraphNode;
+  neighbors: GraphNode[];
+  edges: GraphEdge[];
+  /** 상한을 넘어 잘린 이웃의 수. 0 이면 전부 담겼다 */
+  hiddenCount: number;
+};

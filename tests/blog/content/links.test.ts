@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readPosts } from "@/lib/blog/loader";
+import { extractOutboundIds } from "@/lib/blog/graph";
 import { headingIds } from "@/lib/toc";
 import type { Post } from "@/lib/blog/types";
 
@@ -12,29 +13,39 @@ import type { Post } from "@/lib/blog/types";
  */
 
 /**
- * 본문의 /blog/<category>/<slug>/ 링크를 뽑는다. 앵커(#)와 질의(?)는 떼어 낸다.
+ * 본문의 `/blog/<category>/<slug>/` 링크를 뽑는다.
  *
- * 꼬리의 `(?:[#?][^)]*)?` 를 지우지 마라. `[^)#?]` 가 #·? 를 배제하므로 이 그룹이 없으면
- * 앵커 링크는 「떼어 내지는」 것이 아니라 **매칭 자체가 실패해 통째로 사라진다.**
- * 그러면 죽은 링크 검사와 inbound 계수가 그 링크를 조용히 빠뜨린다.
- *
- * tsconfig의 `target`이 es5라 이터레이터를 for-of로 직접 돌면 TS2802가 난다.
- * vitest는 esbuild로 타입을 벗겨 내 통과시키지만 `tsc --noEmit`은 잡는다 —
- * 그래서 이 파일의 순회는 전부 Array.from으로 배열화한 뒤 돈다.
+ * 🔴 판정은 이 파일이 하지 않는다. `lib/blog/graph.ts` 가 정본이며 여기서는 부르기만 한다.
+ * 예전에는 이 자리에 정규식이 있었는데, 그 정규식은 코드 블록 안의 예시 링크를 연결선으로
+ * 셌고 참조식 링크를 놓쳤다. 파서로 옮기면서 두 결함이 함께 사라졌다.
+ * 교체 시점의 실측으로 정규식과 파서가 모두 921개를 냈고 차집합은 양쪽 0개였다.
  */
 function outboundKeys(post: Post): string[] {
-  const keys: string[] = [];
-  for (const m of Array.from(post.body.matchAll(/\]\(\/blog\/([^)#?]+?)\/?(?:[#?][^)]*)?\)/g))) {
-    const target = m[1].replace(/\/$/, "");
-    // <category>/<slug> 두 조각이 아닌 것은 카테고리 인덱스 링크다. 편 대 편 관계가 아니다.
-    if (target.split("/").length === 2) keys.push(target);
-  }
-  return keys;
+  return extractOutboundIds(post.body);
 }
 
 const posts = readPosts();
 const key = (p: Post) => `${p.categorySlug}/${p.slug}`;
 const published = new Set(posts.map(key));
+
+/**
+ * 발행본 전량의 추출 결과. **파일당 한 번만 만든다.**
+ *
+ * 🔴 케이스마다 `outboundKeys` 를 부르면 184편을 케이스 수만큼 다시 판다. 정규식일
+ * 때는 그래도 됐지만 파서로 옮긴 뒤로는 1회가 실측 1.5초여서, CI 에서 한 케이스가
+ * 5초 타임아웃을 넘겨 배포가 실패했다. **로컬은 통과했다** — 러너보다 빠르기 때문이다.
+ *
+ * `buildLinkIndex` 를 쓰지 않는 이유는 그것이 실재하지 않는 대상을 이미 버리기
+ * 때문이다. 죽은 링크를 찾는 것이 아래 첫 케이스의 임무이므로 걸러진 지형으로는
+ * 그 케이스가 언제나 통과한다.
+ *
+ * 자기검사 케이스는 지어낸 본문을 넘기므로 이 맵을 쓰지 않고 `outboundKeys` 를
+ * 직접 부른다. 키가 같고 본문만 다르기 때문에, 키로 조회하면 검사가 헛돈다.
+ */
+const outboundByKey = new Map<string, string[]>(posts.map((p) => [key(p), outboundKeys(p)]));
+
+/** 발행본 하나의 나가는 링크. 위 맵에서 꺼내며 다시 파싱하지 않는다 */
+const outboundOf = (post: Post): string[] => outboundByKey.get(key(post)) ?? [];
 
 describe("링크 무결성", () => {
   it("발행본을 읽었다", () => {
@@ -45,7 +56,7 @@ describe("링크 무결성", () => {
   it("내부 링크의 대상이 전부 실재한다", () => {
     const dead: string[] = [];
     for (const post of posts) {
-      for (const target of outboundKeys(post)) {
+      for (const target of outboundOf(post)) {
         if (!published.has(target)) dead.push(`${key(post)} -> ${target}`);
       }
     }
@@ -68,6 +79,12 @@ describe("링크 무결성", () => {
     }
     expect(bad, `슬래시 누락 ${bad.length}건`).toEqual([]);
   });
+
+  it("🔴 코드 블록 안의 편 링크는 연결선으로 세지 않는다", () => {
+    // 이 케이스는 옛 정규식으로 되돌리면 반드시 실패한다. 정규식은 코드 블록을 구분하지 못한다.
+    const fenced = "```md\n[예시](/blog/rag/a/)\n```\n";
+    expect(outboundKeys({ ...posts[0], body: fenced })).toEqual([]);
+  });
 });
 
 describe("링크 고립", () => {
@@ -76,7 +93,7 @@ describe("링크 고립", () => {
 
     for (const post of posts) {
       // 같은 편을 여러 번 가리켜도 관계는 하나다.
-      for (const target of Array.from(new Set(outboundKeys(post)))) {
+      for (const target of Array.from(new Set(outboundOf(post)))) {
         if (target === key(post)) continue;
         if (inbound.has(target)) inbound.set(target, inbound.get(target)! + 1);
       }
@@ -186,7 +203,7 @@ describe("카테고리 고립", () => {
     const nodes: Node[] = posts.map((p) => ({
       cat: p.categorySlug,
       id: key(p),
-      links: outboundKeys(p).filter((t) => published.has(t)),
+      links: outboundOf(p).filter((t) => published.has(t)),
     }));
 
     const broken = brokenCategories(nodes);

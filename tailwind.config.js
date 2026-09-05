@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // 화면이 낮으면 그래프가 카테고리 트리를 밀어낸다. 세로 기준으로만 켠다.
+      screens: {
+        tall: { raw: "(min-height: 720px)" },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

@@ -5,9 +5,9 @@ import { SeriesProgress } from "@/components/blog/series-progress";
 import { TagList } from "@/components/blog/tag-list";
 import { Markdown } from "@/components/markdown";
 import { SiteHead } from "@/components/site-head";
-import { getAdjacentPosts, getAllPosts, getBlogTree, getPost, getSeriesContext } from "@/lib/blog/loader";
+import { getAdjacentPosts, getAllPosts, getBlogTree, getLocalGraph, getPost, getSeriesContext } from "@/lib/blog/loader";
 import { absoluteUrl } from "@/lib/site";
-import type { BlogTree, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
+import type { BlogTree, LocalGraph, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
   seriesContext: SeriesContext | null;
   prev: PostSummary | null;
   next: PostSummary | null;
+  graph: LocalGraph;
 };
 
 export const getStaticPaths: GetStaticPaths = () => ({
@@ -36,11 +37,12 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
       seriesContext: getSeriesContext(category, slug),
       prev,
       next,
+      graph: getLocalGraph(category, slug),
     },
   };
 };
 
-export default function BlogPostPage({ tree, post, seriesContext, prev, next }: Props) {
+export default function BlogPostPage({ tree, post, seriesContext, prev, next, graph }: Props) {
   const path = `/blog/${post.categorySlug}/${post.slug}/`;
 
   const jsonLd = {
@@ -64,7 +66,7 @@ export default function BlogPostPage({ tree, post, seriesContext, prev, next }: 
         jsonLd={jsonLd}
       />
 
-      <BlogShell tree={tree} activePostSlug={post.slug} toc={post.toc}>
+      <BlogShell tree={tree} activePostSlug={post.slug} toc={post.toc} graph={graph}>
         <article className="max-w-4xl">
           <header className="space-y-3 border-b border-slate-200 pb-6 dark:border-slate-800">
             <PostMeta post={post} />

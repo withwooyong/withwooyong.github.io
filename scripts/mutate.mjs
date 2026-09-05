@@ -430,6 +430,61 @@ const MUTANTS = [
     from: "      throw new Error(",
     to: "      if (false) throw new Error(",
   },
+  {
+    id: "G1",
+    file: "lib/blog/graph.ts",
+    desc: "🔴 파서를 정규식으로 되돌린다 — 코드 블록 안의 예시가 연결선이 된다",
+    from: "  const tree: Root = fromMarkdown(body, {",
+    to:
+      "  for (const m of Array.from(body.matchAll(/\\]\\(\\/blog\\/([^)#?]+?)\\/?(?:[#?][^)]*)?\\)/g))) {\n" +
+      "    const t = m[1].replace(/\\/$/, \"\");\n" +
+      "    if (t.split(\"/\").length === 2) ids.push(t);\n" +
+      "  }\n" +
+      "  return ids;\n" +
+      "  const tree: Root = fromMarkdown(body, {",
+  },
+  {
+    id: "G2",
+    file: "lib/blog/graph.ts",
+    desc: "참조식 링크를 놓치게 한다",
+    from: 'node.type === "link" || node.type === "definition"',
+    to: 'node.type === "link"',
+  },
+  {
+    id: "G3",
+    file: "lib/blog/graph.ts",
+    desc: "이웃 상한을 없앤다",
+    from: "const kept = candidates.slice(0, limit);",
+    to: "const kept = candidates.slice(0);",
+  },
+  {
+    id: "G4",
+    file: "lib/blog/graph.ts",
+    desc: "이웃끼리의 연결선을 버린다 (중심에서 뻗은 것만 남긴다)",
+    from: "if (shown.has(to)) edges.push({ from, to });",
+    to: "if (shown.has(to) && (from === centerId || to === centerId)) edges.push({ from, to });",
+  },
+  {
+    id: "G5",
+    file: "lib/blog/graph.ts",
+    desc: "자를 때의 우선순위를 무너뜨린다",
+    from: "if (outgoing.has(id) && incoming.has(id)) return 0;",
+    to: "if (false) return 0;",
+  },
+  {
+    id: "G6",
+    file: "lib/blog/graph-layout.ts",
+    desc: "🔴 겹침 해소 벡터를 0 으로 만든다 — 0 으로 나누기가 살아난다",
+    from: "return { dx: Math.cos(angle) * EPSILON, dy: Math.sin(angle) * EPSILON };",
+    to: "return { dx: 0, dy: 0 };",
+  },
+  {
+    id: "G7",
+    file: "lib/blog/graph-layout.ts",
+    desc: "가로 축의 축소 계산을 없앤다 — 노드가 뷰박스 밖으로 나간다",
+    from: "maxX > 0 ? (width / 2 - pad) / maxX : 1,",
+    to: "1,",
+  },
 ];
 
 const CHECKS = [
@@ -442,7 +497,7 @@ const CHECKS = [
   ["check-links", "npm run --silent check-links:verify"],
   ["check-mermaid", "npm run --silent check-mermaid:verify"],
   ["build-search-index", "npm run --silent search-index:verify"],
-  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts"],
+  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts"],
 ];
 
 function run(cmd) {
