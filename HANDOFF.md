@@ -16,7 +16,7 @@
 | 발행 완료 | **A 편1~9 + B 편1~편8 (184편)** · 시리즈 B 완결 |
 | 검사기 | ✅ `scripts/` **열 종** + `tests/blog/` **8파일 87케이스** · 뮤턴트 **58/58 잡힘 · 생존 0** |
 | 훅 | ✅ 발행본 **9단** · 문서 **6단** · 코드만이면 즉시 통과 |
-| CI | ✅ **22스텝** |
+| CI | ✅ `build` **23스텝** + `deploy` 1스텝 · **`main` 푸시와 PR 양쪽에서 돈다** (PR 은 22스텝) |
 | 강조 렌더 실패 | ✅ 발행본 **0회 · 184편** · 리포 문서 **0회 · 56개** |
 | 깨진 링크 | ✅ 발행본 **0곳** · 리포 문서 **0곳** |
 | 깨지는 도식 | ✅ 발행본 **0곳**(544개) · 리포 문서 **0곳**(112개) — **판정 도달 전량** |
@@ -54,7 +54,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 형태 | **Agent Skill · 플러그인.** Claude Code 는 `/plugin marketplace add cathrynlavery/diagram-design` 로 설치한다 |
+| 형태 | **Agent Skill · 플러그인.** 🔴 **이미 설치되어 있다** — `diagram-design` **v2.6.12** 가 `~/.claude/plugins/cache/` 에 있고 스킬 여섯 종(`diagram-design`·`import-mermaid`·`import-drawio`·`export-diagram`·`profile`·`doctor`)이 스킬 목록에 뜬다. `/plugin marketplace add` 를 다시 할 필요가 없다 |
 | 산출물 | **자체 완결 HTML + 인라인 SVG.** PNG 는 Playwright 로 래스터화한다 |
 | 도식 종류 | 39종 · `import-mermaid` · `import-drawio` 커맨드가 있다 |
 | 라이선스 | MIT |
@@ -75,7 +75,7 @@
 | 후보 | 대상 | 왜 여기는 되나 |
 | --- | ---: | --- |
 | **A. 포트폴리오 홈의 손그림 SVG** | `components/system-diagram-card.tsx` (110줄) · 도식 **5개** | 이미 마크다운 밖의 React·SVG 다. 1·2번 제약을 받지 않고, 방문자가 가장 먼저 보는 화면이다 |
-| **B. Mermaid 테마만 교체** | `components/mermaid.tsx` 의 `themeVariables` | 콘텐츠를 **한 글자도 건드리지 않고** 544개가 전부 달라진다. 검사기도 그대로 산다. **비용 대비 효과가 가장 크다** |
+| **B. Mermaid 테마 신설** | `components/mermaid.tsx` 의 `themeVariables` | 콘텐츠를 **한 글자도 건드리지 않고** 544개가 전부 달라진다. 검사기도 그대로 산다. **비용 대비 효과가 가장 크다.** ⚠️ 「교체」가 아니다 — 실측으로 지금 `themeVariables` 는 `{ fontSize: "14px" }` **하나뿐**이고 테마는 mermaid 내장 `default`/`dark` 를 그대로 쓴다 (mermaid **11.16.0**) |
 | **C. 대표 도식 몇 개만 승격** | 편별 헤드라인 도식 | 1번 제약 때문에 `.md` 가 아니라 **컴포넌트**로 옮겨야 한다. 구조를 먼저 설계해야 하므로 A·B 뒤 |
 
 **권장 순서는 B → A → C 다.** B 는 되돌리기 쉽고 효과를 즉시 눈으로 잴 수 있으며, 실패해도
@@ -84,13 +84,36 @@
 ### 검토할 때 먼저 답할 질문 넷
 
 1. 스킬이 만드는 HTML 이 **다크 모드에서도 읽히는가.** 이번 세션의 실측 방법(모달 배경 대비 글자색의 WCAG 대비)을 그대로 쓸 수 있다
-2. Google Fonts 셋을 **정적 export 에 들이는 것이 맞는가.** 지금 사이트는 Inter 하나다
-3. 스킬의 산출물이 **재현 가능한가.** LLM 생성물이라면 도식 하나를 고칠 때마다 전체가 흔들린다
+2. Google Fonts 를 **정적 export 에 들이는 것이 맞는가.** ⚠️ 「지금 사이트는 Inter 하나다」는 틀렸다 — 실측으로 `pages/_document.tsx` 가 **이미 Google Fonts 링크를 쓰고**(Nanum Pen Script) Inter 는 `next/font/google` 로 셀프 호스팅된다. 즉 폰트가 둘이고 적재 방식도 둘이다. 스킬이 요구하는 것은 다섯이다 — Instrument Serif · Geist · Geist Mono **+ 한글용 Noto Sans KR · Noto Serif KR**. **이 질문은 후보 B 에는 해당하지 않는다** (B 는 색 값만 빌린다)
+3. 스킬의 산출물이 **재현 가능한가.** LLM 생성물이라면 도식 하나를 고칠 때마다 전체가 흔들린다. **이 질문도 후보 B 에는 해당하지 않는다** — B 는 색 값이 코드에 고정되므로 재생성이라는 개념이 없다. ⚠️ 스킬 자신이 「`assets/` 의 예제 HTML **155개는 이전 스킨**으로 만들어졌다」고 적어 두었으므로, 예제를 근거로 팔레트를 판단하지 마라
 4. B(테마 교체)만으로 사용자가 말한 「깔끔함」이 충족되는가 — **A·C 를 하기 전에 B 를 배포해 보고 물어라**
 
 ---
 
 ## 🔴 다음 세션이 반드시 먼저 알아야 할 것
+
+### 0. 🔴 **「CI 에 있다」와 「merge 전에 돈다」는 다른 말이었다**
+
+`.github/workflows/deploy.yml` 의 트리거가 **`push: [main]` 하나뿐**이었다. 워크플로도 하나뿐이라
+`gh pr checks` 가 `no checks reported` 를 냈고, **23스텝은 merge 된 뒤에야 돌았다.**
+
+| 무엇 | 그 결과 |
+| --- | --- |
+| 프리뷰 환경이 없다 | `main` 이 곧 프로덕션이다 |
+| 검사가 merge 뒤에 돈다 | PR 단계에서 걸러야 할 것이 **프로덕션에서 드러난다** |
+| 실측 | 다크 모드 대비 1.06 결함이 그 경로로 배포됐고, 잡은 것은 검사기가 아니라 **사용자의 눈**이었다 |
+
+세 세션이 「CI ✅ 22스텝」이라고만 적었을 뿐 **언제 도는지를 아무도 적지 않았다.** 검사의 목록은
+계속 세면서 검사가 도는 시점은 세지 않은 것이다.
+
+⇒ 지금은 `pull_request: branches: [main]` 이 함께 걸려 있고, `deploy` job 과 `Upload artifact`
+스텝만 `github.event_name != 'pull_request'` 로 빠진다. `concurrency` 그룹도
+`${{ github.workflow }}-${{ github.ref }}` 로 나눴다 — `"pages"` 하나로 두면 **PR 검사가 배포와
+같은 큐에 끼어들기 때문이다.**
+
+🔴 **워크플로를 하나로 유지한 이유는 검사 목록이 두 벌이 되는 것을 막기 위해서다.** `ci.yml` 을
+따로 만들면 스텝을 더할 때 한쪽만 고쳐지고 다른 쪽이 낡는다 — 이 리포가 뮤턴트 수 · 훅 단수 ·
+검사기 종 수에서 **세 세션 연속으로 겪은 실패가 정확히 그 유형이다.**
 
 ### 1. 🔴 **인수인계 문서에 적힌 수치는 검증된 적이 없었다**
 
@@ -345,7 +368,7 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 
 | 무엇 | 왜 남겼나 | 확인할 진실원 |
 | --- | --- | --- |
-| README 에 없는 npm 스크립트 `check-counts:verify` · `check-counts:print` · `map-terms:verify` · `compose:verify` · `source-overlap:verify` · `mutate:verify` | 전부 `:verify` 계열이고, README 는 본 명령 줄에 「`:verify` 는 자체 검사」로 함께 적는 방식을 쓴다. **일관된 의도로 보이므로** 판단을 남겼다. 실측 **6개 그대로**이며 두 세션째 같은 상태다 | `README.md` 의 서술 방식 |
+| `:verify` 스크립트의 **서술 방식이 두 가지**다 | 🔴 「README 에 없는 6개」로 적어 왔으나 **틀렸다.** 실측으로 `package.json` 의 `:verify` 는 **12개**이고 **12개 전부 README 에 있다** — 독립 행이 7개(`dup-scan`·`check-forbidden`·`check-markup`·`check-links`·`check-mermaid`·`fix-markup`·`search-index`), 본 명령 설명 안에 병기한 것이 5개(`check-counts` 98행 · `compose` 101행 · `map-terms` 102행 · `source-overlap` 103행 · `mutate` 104행)다. `check-counts:print` 도 98행에 있다. **미해결 작업이 아니라 표기 통일 여부의 판단**이며, 「일관된 의도로 보인다」는 종전 판단 자체는 실측과 맞는다 | `README.md` 81~104행 |
 
 ⚠️ 수집 스크립트의 `ENV_KEYS_IN_CODE_BUT_NOT_IN_README`(`OPENAI_API_KEY` 등 5개)는 **오탐이다.**
 코드에는 없고 **블로그 본문 3편의 코드 예시**에서 왔다. 이 프로젝트는 정적 포트폴리오라 그런
@@ -358,6 +381,8 @@ node scripts/.tmp-x.mjs --self-test; rm -f scripts/.tmp-x.mjs
 
 | 세션 | 어디 | 적혀 있던 값 | 실제 |
 | --- | --- | ---: | ---: |
+| 2026-09-05 (CI 트리거 세션) | `HANDOFF.md` CI 스텝 수 | 22스텝 | **`build` 23 + `deploy` 1** |
+| 2026-09-05 (CI 트리거 세션) | `HANDOFF.md` README 에 없는 `:verify` | 6개가 없다 | **12개가 전부 있다** |
 | 2026-09-05 (이번) | `CLAUDE.md`·`README.md`·`HANDOFF.md` 리포 문서 도식 수 | 55파일 110개 | **56파일 112개** |
 | 2026-09-04 (블로그 탐색 개편 Task 8) | `CLAUDE.md`·`README.md`·`HANDOFF.md` 검사기 종 수 · 뮤턴트 수 · `tests/blog` 파일·케이스 수 | 아홉 종 · 50개 · 5파일 54케이스 | **열 종 · 58개 · 8파일 87케이스** |
 | 2026-09-04 (이번) | 자기 검사 건수 다섯 자리 | 15 · 15 · 7 · 28 · 여덟 | **63 · 63 · 12 · 42 · 아홉** |

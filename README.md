@@ -169,7 +169,7 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 | 자리 | 언제 | 무엇 |
 |------|------|------|
 | **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | `content/blog`를 건드린 커밋 | 금칙어 self-test → 콘텐츠 불변식 → 금칙어 스캔. 하나라도 실패하면 커밋이 막힙니다 |
-| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다 |
+| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 23스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 22스텝이 돕니다 |
 
 훅은 `npm install` 시 `prepare` 스크립트가 자동으로 설정합니다(`git config core.hooksPath .githooks`).
 수동으로 켜려면 같은 명령을 직접 실행하세요. husky 같은 의존성은 쓰지 않습니다.
