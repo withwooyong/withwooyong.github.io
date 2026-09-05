@@ -28,6 +28,25 @@ const posts = readPosts();
 const key = (p: Post) => `${p.categorySlug}/${p.slug}`;
 const published = new Set(posts.map(key));
 
+/**
+ * 발행본 전량의 추출 결과. **파일당 한 번만 만든다.**
+ *
+ * 🔴 케이스마다 `outboundKeys` 를 부르면 184편을 케이스 수만큼 다시 판다. 정규식일
+ * 때는 그래도 됐지만 파서로 옮긴 뒤로는 1회가 실측 1.5초여서, CI 에서 한 케이스가
+ * 5초 타임아웃을 넘겨 배포가 실패했다. **로컬은 통과했다** — 러너보다 빠르기 때문이다.
+ *
+ * `buildLinkIndex` 를 쓰지 않는 이유는 그것이 실재하지 않는 대상을 이미 버리기
+ * 때문이다. 죽은 링크를 찾는 것이 아래 첫 케이스의 임무이므로 걸러진 지형으로는
+ * 그 케이스가 언제나 통과한다.
+ *
+ * 자기검사 케이스는 지어낸 본문을 넘기므로 이 맵을 쓰지 않고 `outboundKeys` 를
+ * 직접 부른다. 키가 같고 본문만 다르기 때문에, 키로 조회하면 검사가 헛돈다.
+ */
+const outboundByKey = new Map<string, string[]>(posts.map((p) => [key(p), outboundKeys(p)]));
+
+/** 발행본 하나의 나가는 링크. 위 맵에서 꺼내며 다시 파싱하지 않는다 */
+const outboundOf = (post: Post): string[] => outboundByKey.get(key(post)) ?? [];
+
 describe("링크 무결성", () => {
   it("발행본을 읽었다", () => {
     // 0편이면 아래 검사가 전부 공허참이 된다.
@@ -37,7 +56,7 @@ describe("링크 무결성", () => {
   it("내부 링크의 대상이 전부 실재한다", () => {
     const dead: string[] = [];
     for (const post of posts) {
-      for (const target of outboundKeys(post)) {
+      for (const target of outboundOf(post)) {
         if (!published.has(target)) dead.push(`${key(post)} -> ${target}`);
       }
     }
@@ -74,7 +93,7 @@ describe("링크 고립", () => {
 
     for (const post of posts) {
       // 같은 편을 여러 번 가리켜도 관계는 하나다.
-      for (const target of Array.from(new Set(outboundKeys(post)))) {
+      for (const target of Array.from(new Set(outboundOf(post)))) {
         if (target === key(post)) continue;
         if (inbound.has(target)) inbound.set(target, inbound.get(target)! + 1);
       }
@@ -184,7 +203,7 @@ describe("카테고리 고립", () => {
     const nodes: Node[] = posts.map((p) => ({
       cat: p.categorySlug,
       id: key(p),
-      links: outboundKeys(p).filter((t) => published.has(t)),
+      links: outboundOf(p).filter((t) => published.has(t)),
     }));
 
     const broken = brokenCategories(nodes);
