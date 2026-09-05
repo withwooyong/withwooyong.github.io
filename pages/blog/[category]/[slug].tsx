@@ -1,18 +1,19 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { PostMeta } from "@/components/blog/post-meta";
 import { SeriesNav } from "@/components/blog/series-nav";
+import { SeriesProgress } from "@/components/blog/series-progress";
 import { TagList } from "@/components/blog/tag-list";
 import { Markdown } from "@/components/markdown";
 import { SiteHead } from "@/components/site-head";
-import type { BlogCategory } from "@/content/blog/categories";
-import { getAdjacentPosts, getAllPosts, getPost, getPublishedCategories } from "@/lib/blog/loader";
+import { getAdjacentPosts, getAllPosts, getBlogTree, getPost, getSeriesContext } from "@/lib/blog/loader";
 import { absoluteUrl } from "@/lib/site";
-import type { Post, PostSummary } from "@/lib/blog/types";
+import type { BlogTree, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
 type Props = {
-  categories: BlogCategory[];
+  tree: BlogTree;
   post: Post;
+  seriesContext: SeriesContext | null;
   prev: PostSummary | null;
   next: PostSummary | null;
 };
@@ -28,10 +29,18 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const post = getPost(category, slug);
   const { prev, next } = getAdjacentPosts(category, slug);
 
-  return { props: { categories: getPublishedCategories(), post, prev, next } };
+  return {
+    props: {
+      tree: getBlogTree(category),
+      post,
+      seriesContext: getSeriesContext(category, slug),
+      prev,
+      next,
+    },
+  };
 };
 
-export default function BlogPostPage({ categories, post, prev, next }: Props) {
+export default function BlogPostPage({ tree, post, seriesContext, prev, next }: Props) {
   const path = `/blog/${post.categorySlug}/${post.slug}/`;
 
   const jsonLd = {
@@ -55,7 +64,7 @@ export default function BlogPostPage({ categories, post, prev, next }: Props) {
         jsonLd={jsonLd}
       />
 
-      <BlogShell categories={categories} activeCategory={post.categorySlug} toc={post.toc}>
+      <BlogShell tree={tree} activePostSlug={post.slug} toc={post.toc}>
         <article className="max-w-4xl">
           <header className="space-y-3 border-b border-slate-200 pb-6 dark:border-slate-800">
             <PostMeta post={post} />
@@ -65,6 +74,8 @@ export default function BlogPostPage({ categories, post, prev, next }: Props) {
           </header>
 
           <Markdown>{post.body}</Markdown>
+
+          <SeriesProgress context={seriesContext} categorySlug={post.categorySlug} currentSlug={post.slug} />
 
           <SeriesNav prev={prev} next={next} />
         </article>

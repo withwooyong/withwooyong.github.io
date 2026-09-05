@@ -2,11 +2,11 @@ import { BlogShell } from "@/components/blog/blog-shell";
 import { PostCard } from "@/components/blog/post-card";
 import { SiteHead } from "@/components/site-head";
 import { findCategory, type BlogCategory } from "@/content/blog/categories";
-import { getPostsByCategory, getPublishedCategories } from "@/lib/blog/loader";
-import type { PostSummary } from "@/lib/blog/types";
+import { getBlogTree, getPostsByCategory, getPublishedCategories } from "@/lib/blog/loader";
+import type { BlogTree, PostSummary } from "@/lib/blog/types";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
-type Props = { categories: BlogCategory[]; category: BlogCategory; posts: PostSummary[] };
+type Props = { tree: BlogTree; category: BlogCategory; posts: PostSummary[] };
 
 // 글이 있는 카테고리만 경로를 만든다. 빈 카테고리는 페이지 자체가 생기지 않으므로
 // out/을 스캔하는 sitemap 생성기에서도 자동으로 빠진다.
@@ -20,10 +20,10 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
   const category = findCategory(slug);
   if (!category) throw new Error(`[blog] 없는 카테고리입니다: ${slug}`);
 
-  return { props: { categories: getPublishedCategories(), category, posts: getPostsByCategory(slug) } };
+  return { props: { tree: getBlogTree(slug), category, posts: getPostsByCategory(slug) } };
 };
 
-export default function BlogCategoryPage({ categories, category, posts }: Props) {
+export default function BlogCategoryPage({ tree, category, posts }: Props) {
   return (
     <>
       <SiteHead
@@ -32,7 +32,7 @@ export default function BlogCategoryPage({ categories, category, posts }: Props)
         path={`/blog/${category.slug}/`}
       />
 
-      <BlogShell categories={categories} activeCategory={category.slug}>
+      <BlogShell tree={tree}>
         <div className="max-w-4xl">
           <header className="border-b border-slate-200 pb-5 dark:border-slate-800">
             <h1 className="text-2xl font-bold break-keep sm:text-3xl">{category.name}</h1>

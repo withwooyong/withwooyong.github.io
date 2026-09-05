@@ -1,22 +1,22 @@
 import { BlogShell } from "@/components/blog/blog-shell";
 import { SiteHead } from "@/components/site-head";
-import type { BlogCategory } from "@/content/blog/categories";
-import { getAllTags, getPublishedCategories } from "@/lib/blog/loader";
+import { getAllTags, getBlogTree } from "@/lib/blog/loader";
+import type { BlogTree } from "@/lib/blog/types";
 import Link from "next/link";
 import type { GetStaticProps } from "next";
 
-type Props = { categories: BlogCategory[]; tags: { tag: string; count: number }[] };
+type Props = { tree: BlogTree; tags: { tag: string; count: number }[] };
 
 export const getStaticProps: GetStaticProps<Props> = () => ({
-  props: { categories: getPublishedCategories(), tags: getAllTags() },
+  props: { tree: getBlogTree(null), tags: getAllTags() },
 });
 
-export default function BlogTagIndexPage({ categories, tags }: Props) {
+export default function BlogTagIndexPage({ tree, tags }: Props) {
   return (
     <>
       <SiteHead title="태그 | 기술 노트" description="기술 노트의 전체 태그 목록." path="/blog/tags/" />
 
-      <BlogShell categories={categories}>
+      <BlogShell tree={tree}>
         <div className="max-w-4xl">
           <h1 className="text-2xl font-bold break-keep sm:text-3xl">태그</h1>
           <ul className="mt-6 flex flex-wrap gap-2">

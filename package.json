@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/generate-sitemap.mjs",
+    "build": "next build && node scripts/generate-sitemap.mjs && node scripts/build-search-index.mjs",
     "start": "next start",
     "lint": "next lint",
     "prepare": "git config core.hooksPath .githooks",
@@ -37,7 +37,9 @@
     "source-overlap": "node scripts/source-overlap.mjs",
     "source-overlap:verify": "node scripts/source-overlap.mjs --self-test",
     "mutate": "node scripts/mutate.mjs",
-    "mutate:verify": "node scripts/mutate.mjs --self-test"
+    "mutate:verify": "node scripts/mutate.mjs --self-test",
+    "search-index": "node scripts/build-search-index.mjs",
+    "search-index:verify": "node scripts/build-search-index.mjs --self-test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

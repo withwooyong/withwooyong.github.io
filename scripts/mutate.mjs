@@ -374,6 +374,62 @@ const MUTANTS = [
     from: "  return match ? Number(match[1]) : null;",
     to: "  return null;",
   },
+  {
+    id: "X1",
+    file: "scripts/build-search-index.mjs",
+    desc: "산출물 없음 가드를 없앤다 (빌드 안 한 상태에서 빈 인덱스가 성공으로 나간다)",
+    from: "  if (!target) {",
+    to: "  if (false) {",
+  },
+  {
+    id: "X2",
+    file: "scripts/build-search-index.mjs",
+    desc: "🔴 수 대조를 없앤다 (일부만 담긴 인덱스가 통과한다)",
+    from: "  if (indexed !== sourceCount) {",
+    to: "  if (false) {",
+  },
+  {
+    id: "X3",
+    file: "scripts/build-search-index.mjs",
+    desc: "🔴 카나리 판정을 없앤다 (구조가 바뀌어 toc 를 못 읽어도 초록이 나온다)",
+    from: "  if (canary) {",
+    to: "  if (false) {",
+  },
+  {
+    id: "X4",
+    file: "scripts/build-search-index.mjs",
+    desc: "카나리 헤딩 임계를 0 으로 내린다 (자기 검사가 상수와 끊겨 있으면 통과한다)",
+    from: "export const CANARY_MIN_HEADINGS = 20;",
+    to: "export const CANARY_MIN_HEADINGS = 0;",
+  },
+  {
+    id: "X5",
+    file: "scripts/build-search-index.mjs",
+    desc: "헤딩의 앵커 id 를 버린다 (검색이 편으로만 착지하고 절로 못 간다)",
+    from: "    h: (post.toc ?? []).map((entry) => [entry.text, entry.id]),",
+    to: "    h: (post.toc ?? []).map((entry) => [entry.text, \"\"]),",
+  },
+  {
+    id: "X6",
+    file: "lib/blog/search.ts",
+    desc: "🔴 전 토큰 AND 를 없앤다 (한 토큰만 맞아도 결과가 된다)",
+    from: "    if (best === 0) return null;",
+    to: "    if (false) return null;",
+  },
+  {
+    id: "X7",
+    file: "lib/blog/search.ts",
+    desc: "🔴 질의 최소 길이를 1 로 내린다 (한 글자가 결과를 폭증시킨다)",
+    from: "export const MIN_QUERY_LENGTH = 2;",
+    to: "export const MIN_QUERY_LENGTH = 1;",
+  },
+  {
+    id: "X8",
+    file: "lib/blog/tree.ts",
+    desc: "정의되지 않은 시리즈를 조용히 흘린다 (사이드바에 영문 슬러그가 찍힌다)",
+    from: "      throw new Error(",
+    to: "      if (false) throw new Error(",
+  },
 ];
 
 const CHECKS = [
@@ -385,6 +441,8 @@ const CHECKS = [
   ["fix-markup", "npm run --silent fix-markup:verify"],
   ["check-links", "npm run --silent check-links:verify"],
   ["check-mermaid", "npm run --silent check-mermaid:verify"],
+  ["build-search-index", "npm run --silent search-index:verify"],
+  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts"],
 ];
 
 function run(cmd) {

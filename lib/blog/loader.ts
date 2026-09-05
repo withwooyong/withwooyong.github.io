@@ -2,9 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
+import { blogSeries, findSeries } from "@/content/blog/series";
 import { validateFrontmatter } from "@/lib/blog/frontmatter";
+import { buildTree } from "@/lib/blog/tree";
 import { buildToc } from "@/lib/toc";
-import type { Post, PostSummary } from "@/lib/blog/types";
+import type { BlogTree, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
 
 /**
  * 발행본 마크다운 로더 — 빌드 타임 전용.
@@ -176,4 +178,36 @@ export function getAdjacentPosts(
   }
 
   return neighbors(list, slug);
+}
+
+/**
+ * 사이드바 트리. `expanded` 로 준 카테고리만 시리즈까지 펼친다.
+ *
+ * 페이지의 getStaticProps 에서만 부른다 — readPosts 가 fs 를 쓴다.
+ */
+export function getBlogTree(expanded: string | null = null): BlogTree {
+  return buildTree(getPostSummaries(), getPublishedCategories(), blogSeries, expanded);
+}
+
+/**
+ * 본문 페이지의 「n편 중 k번째」에 쓸 시리즈 문맥.
+ *
+ * 시리즈에 속하지 않는 편이면 null 이다 — 실측 20편이 그렇다.
+ * `getAdjacentPosts` 가 이미 시리즈를 닫힌 단위로 잇고 있으므로, 이 함수는
+ * 그 이웃 관계를 다시 만들지 않고 **목록과 현재 위치만** 돌려준다.
+ */
+export function getSeriesContext(categorySlug: string, slug: string): SeriesContext | null {
+  const list = getPostsByCategory(categorySlug);
+  const current = list.find((p) => p.slug === slug);
+  if (!current?.series) return null;
+
+  const series = findSeries(current.series);
+  if (!series) throw new Error(`[blog] series.ts 에 없는 시리즈입니다: ${current.series}`);
+
+  const members = list
+    .filter((p) => p.series === current.series)
+    .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0))
+    .map((p) => ({ slug: p.slug, title: p.title, seriesOrder: p.seriesOrder ?? null }));
+
+  return { series, posts: members, position: members.findIndex((p) => p.slug === slug) + 1 };
 }

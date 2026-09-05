@@ -73,7 +73,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | 명령 | 설명 |
 |------|------|
 | `npm run dev` | 개발 서버 |
-| `npm run build` | 정적 export → `out/` (빌드 후 `scripts/generate-sitemap.mjs` 실행) |
+| `npm run build` | 정적 export → `out/` (빌드 후 `scripts/generate-sitemap.mjs` · `scripts/build-search-index.mjs` 실행) |
 | `npm run start` | 프로덕션 서버 (로컬 검증용) |
 | `npm run lint` | Next.js ESLint |
 | `npm test` | Vitest — 블로그 로더·frontmatter 검증·목차 생성 단위 테스트 |
@@ -89,17 +89,19 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-links:docs` | 위 검사를 리포 문서에 돌린다. 문서의 상대 `.md` 는 그 파일이 있어야 하며 **기준은 리포 루트가 아니라 그 문서의 디렉터리**다 |
 | `npm run check-links:verify` | 위 검사의 자체 검사 (`--self-test` 23건) |
 | `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 544개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
-| `npm run check-mermaid:docs` | 위 검사를 리포 문서 105개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
+| `npm run check-mermaid:docs` | 위 검사를 리포 문서 55개의 도식 110개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
 | `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 26건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
 | `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
 | `npm run check-counts` | README 3자리와 CHANGELOG의 **발행본 편수**가 실제와 맞는지 검사합니다. 어긋나면 종료 코드 1. `:verify`는 자체 검사, `:print`는 실제 수치만 출력합니다 |
+| `npm run search-index` | 🔴 **검색 인덱스 생성.** 빌드 뒤에 `out/_next/data` 를 읽어 `out/blog/search-index.json` 을 만듭니다. `npm run build` 가 이미 부르므로 따로 돌릴 일은 드뭅니다. 산출물이 없거나 buildId 디렉터리가 둘 이상이거나 편 수가 소스와 다르거나 카나리 편이 빠지면 종료 코드 2 |
+| `npm run search-index:verify` | 위 생성기의 자체 검사 (`--self-test`) |
 | `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
-| `npm run mutate` | 알려진 결함 50개를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run mutate` | 알려진 결함 **58개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
