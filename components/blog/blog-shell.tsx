@@ -1,7 +1,8 @@
 import { CategoryTree } from "@/components/blog/category-tree";
+import { LocalGraphPanel } from "@/components/blog/local-graph";
 import { SearchDialog } from "@/components/blog/search-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
-import type { BlogTree, TocEntry } from "@/lib/blog/types";
+import type { BlogTree, LocalGraph, TocEntry } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
 import { Menu, PenLine, X } from "lucide-react";
 import Link from "next/link";
@@ -21,10 +22,17 @@ type BlogShellProps = {
   /** 본문 페이지에서만 넘어온다. 현재 편이 속한 시리즈를 펼쳐 그린다 */
   activePostSlug?: string;
   toc?: TocEntry[];
+  /**
+   * 본문 페이지에서만 넘어온다. 지역 그래프를 사이드바 바닥에 그린다.
+   *
+   * `tree` 와 달리 선택 인자로 둔다 — 카테고리 목록·태그·블로그 홈에는 중심이 될 편이
+   * 없어 그래프를 만들 수 없기 때문이다. 「빠뜨렸다」와 「없는 것이 정상이다」가 다르다.
+   */
+  graph?: LocalGraph;
   children: ReactNode;
 };
 
-export function BlogShell({ tree, activePostSlug, toc, children }: BlogShellProps) {
+export function BlogShell({ tree, activePostSlug, toc, graph, children }: BlogShellProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -71,14 +79,26 @@ export function BlogShell({ tree, activePostSlug, toc, children }: BlogShellProp
       ) : null}
 
       <div className="mx-auto flex max-w-[90rem] gap-8 px-3 sm:px-4">
-        {/* 좌측 — 카테고리 */}
+        {/* 좌측 — 카테고리와 지역 그래프 */}
         <aside className="hidden w-56 shrink-0 lg:block">
-          <nav className="sticky top-20 py-8" aria-label="카테고리">
-            <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              카테고리
-            </p>
-            <CategoryTree tree={tree} activePostSlug={activePostSlug} />
-          </nav>
+          {/*
+            ⚠️ 트리가 자기 영역 안에서 스크롤되도록 바꾼다. 지금까지는 페이지 전체와 함께
+            움직였다. 이 변경은 그래프를 두지 않는 카테고리 목록·태그·블로그 홈에도 함께
+            적용된다 — 레이아웃 골격이 이 파일 하나이기 때문이다. 의도한 변경이다.
+          */}
+          <div className="sticky top-20 flex h-[calc(100vh-5rem)] flex-col py-8">
+            <nav className="min-h-0 flex-1 overflow-y-auto" aria-label="카테고리">
+              <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                카테고리
+              </p>
+              <CategoryTree tree={tree} activePostSlug={activePostSlug} />
+            </nav>
+            {graph ? (
+              <div className="hidden shrink-0 tall:block">
+                <LocalGraphPanel graph={graph} />
+              </div>
+            ) : null}
+          </div>
         </aside>
 
         {/* 본문 */}

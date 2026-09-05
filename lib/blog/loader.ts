@@ -4,9 +4,10 @@ import matter from "gray-matter";
 import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
 import { blogSeries, findSeries } from "@/content/blog/series";
 import { validateFrontmatter } from "@/lib/blog/frontmatter";
+import { buildLinkIndex, buildLocalGraph, type LinkIndex } from "@/lib/blog/graph";
 import { buildTree } from "@/lib/blog/tree";
 import { buildToc } from "@/lib/toc";
-import type { BlogTree, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
+import type { BlogTree, LocalGraph, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
 
 /**
  * 발행본 마크다운 로더 — 빌드 타임 전용.
@@ -210,4 +211,28 @@ export function getSeriesContext(categorySlug: string, slug: string): SeriesCont
     .map((p) => ({ slug: p.slug, title: p.title, seriesOrder: p.seriesOrder ?? null }));
 
   return { series, posts: members, position: members.findIndex((p) => p.slug === slug) + 1 };
+}
+
+/**
+ * 링크 지형의 빌드 단위 캐시.
+ *
+ * 🔴 **이 캐시가 없으면 빌드가 약 262초 늘어난다.** 184편의 본문을 파서로 한 번 훑는 데
+ * 실측 1,426 ms 가 드는데, `getStaticProps` 가 페이지마다 부르면 184번 반복된다.
+ * 한 번의 빌드 안에서 발행본은 바뀌지 않으므로 모듈 수준에 담아 둔다.
+ */
+let linkIndexCache: LinkIndex | null = null;
+
+function getLinkIndex(posts: Post[]): LinkIndex {
+  if (!linkIndexCache) linkIndexCache = buildLinkIndex(posts);
+  return linkIndexCache;
+}
+
+/**
+ * 본문 페이지에 실을 지역 그래프.
+ *
+ * 페이지의 getStaticProps 에서만 부른다 — `readPosts` 가 fs 를 쓴다.
+ */
+export function getLocalGraph(categorySlug: string, slug: string): LocalGraph {
+  const posts = readPosts();
+  return buildLocalGraph(posts, getLinkIndex(posts), `${categorySlug}/${slug}`);
 }
