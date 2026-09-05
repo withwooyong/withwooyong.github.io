@@ -57,6 +57,16 @@ html {
 body {
   word-break: keep-all;
   overflow-wrap: break-word;
+
+  /*
+   * 전경색을 여기서 정하는 이유는 포털 때문이다.
+   * Radix 의 DialogContent 는 body 바로 아래에 그려져 blog-shell 의 dark:text-slate-100 을
+   * 상속받지 못한다. body 에 색이 없던 동안 그 안의 요소들은 브라우저 기본값인 검정을
+   * 물려받았고, 검색 팔레트의 편 제목과 입력창이 대비 1.06 으로 배포됐다.
+   * DialogContent 자신도 text-foreground 를 갖지만, 그것은 그 컴포넌트 하나만 지킨다.
+   * 여기서 정해 두면 앞으로 어떤 포털 컴포넌트를 더해도 같은 결함이 나지 않는다.
+   */
+  color: hsl(var(--foreground));
 }
 
 @media (prefers-reduced-motion: reduce) {
