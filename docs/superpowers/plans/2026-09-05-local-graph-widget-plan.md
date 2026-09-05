@@ -903,7 +903,7 @@ function toViewBox(
 - [ ] **Step 4: 테스트가 통과하는지 확인한다**
 
 실행: `npx vitest run tests/blog/graph-layout.test.ts`
-예상: 13케이스 PASS
+예상: 12케이스 PASS
 
 「최소 간격」케이스가 실패하면 `REPULSION` 의 계수 8을 12, 16 순으로 올린다. **임계값 `minGap / 2` 를 낮추지 마라.**
 

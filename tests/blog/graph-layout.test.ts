@@ -52,11 +52,21 @@ describe("좌표 계산", () => {
   });
 
   it("모든 좌표가 뷰박스 안에 있다", () => {
-    for (const p of layout(ring(12))) {
-      expect(p.x).toBeGreaterThanOrEqual(0);
-      expect(p.x).toBeLessThanOrEqual(OPT.width);
-      expect(p.y).toBeGreaterThanOrEqual(0);
-      expect(p.y).toBeLessThanOrEqual(OPT.height);
+    // 🔴 기본 뷰박스 하나만 보면 **가로 축의 축소 계산을 통째로 지워도 통과한다.**
+    // `width` 가 `height` 보다 넓어 세로 한계가 늘 먼저 걸리기 때문이다 — 뮤턴트 G7 이
+    // 실측으로 그렇게 생존했다. 가로가 좁은 뷰박스를 함께 넣어야 두 축이 각각 검사된다.
+    const boxes: Array<[string, typeof OPT]> = [
+      ["기본", OPT],
+      ["가로가 좁은 뷰박스", { ...OPT, width: 80 }],
+      ["최소 간격이 큰 뷰박스", { ...OPT, width: 96, minGap: 40 }],
+    ];
+    for (const [name, opt] of boxes) {
+      for (const p of layout(ring(12), opt)) {
+        expect(p.x, `${name}: ${p.id}.x`).toBeGreaterThanOrEqual(0);
+        expect(p.x, `${name}: ${p.id}.x`).toBeLessThanOrEqual(opt.width);
+        expect(p.y, `${name}: ${p.id}.y`).toBeGreaterThanOrEqual(0);
+        expect(p.y, `${name}: ${p.id}.y`).toBeLessThanOrEqual(opt.height);
+      }
     }
   });
 
