@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readPosts } from "@/lib/blog/loader";
+import { extractOutboundIds } from "@/lib/blog/graph";
 import { headingIds } from "@/lib/toc";
 import type { Post } from "@/lib/blog/types";
 
@@ -12,24 +13,15 @@ import type { Post } from "@/lib/blog/types";
  */
 
 /**
- * 본문의 /blog/<category>/<slug>/ 링크를 뽑는다. 앵커(#)와 질의(?)는 떼어 낸다.
+ * 본문의 `/blog/<category>/<slug>/` 링크를 뽑는다.
  *
- * 꼬리의 `(?:[#?][^)]*)?` 를 지우지 마라. `[^)#?]` 가 #·? 를 배제하므로 이 그룹이 없으면
- * 앵커 링크는 「떼어 내지는」 것이 아니라 **매칭 자체가 실패해 통째로 사라진다.**
- * 그러면 죽은 링크 검사와 inbound 계수가 그 링크를 조용히 빠뜨린다.
- *
- * tsconfig의 `target`이 es5라 이터레이터를 for-of로 직접 돌면 TS2802가 난다.
- * vitest는 esbuild로 타입을 벗겨 내 통과시키지만 `tsc --noEmit`은 잡는다 —
- * 그래서 이 파일의 순회는 전부 Array.from으로 배열화한 뒤 돈다.
+ * 🔴 판정은 이 파일이 하지 않는다. `lib/blog/graph.ts` 가 정본이며 여기서는 부르기만 한다.
+ * 예전에는 이 자리에 정규식이 있었는데, 그 정규식은 코드 블록 안의 예시 링크를 연결선으로
+ * 셌고 참조식 링크를 놓쳤다. 파서로 옮기면서 두 결함이 함께 사라졌다.
+ * 교체 시점의 실측으로 정규식과 파서가 모두 921개를 냈고 차집합은 양쪽 0개였다.
  */
 function outboundKeys(post: Post): string[] {
-  const keys: string[] = [];
-  for (const m of Array.from(post.body.matchAll(/\]\(\/blog\/([^)#?]+?)\/?(?:[#?][^)]*)?\)/g))) {
-    const target = m[1].replace(/\/$/, "");
-    // <category>/<slug> 두 조각이 아닌 것은 카테고리 인덱스 링크다. 편 대 편 관계가 아니다.
-    if (target.split("/").length === 2) keys.push(target);
-  }
-  return keys;
+  return extractOutboundIds(post.body);
 }
 
 const posts = readPosts();
@@ -67,6 +59,12 @@ describe("링크 무결성", () => {
       }
     }
     expect(bad, `슬래시 누락 ${bad.length}건`).toEqual([]);
+  });
+
+  it("🔴 코드 블록 안의 편 링크는 연결선으로 세지 않는다", () => {
+    // 이 케이스는 옛 정규식으로 되돌리면 반드시 실패한다. 정규식은 코드 블록을 구분하지 못한다.
+    const fenced = "```md\n[예시](/blog/rag/a/)\n```\n";
+    expect(outboundKeys({ ...posts[0], body: fenced })).toEqual([]);
   });
 });
 
