@@ -76,7 +76,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run build` | 정적 export → `out/` (빌드 후 `scripts/generate-sitemap.mjs` · `scripts/build-search-index.mjs` 실행) |
 | `npm run start` | 프로덕션 서버 (로컬 검증용) |
 | `npm run lint` | Next.js ESLint |
-| `npm test` | Vitest — `tests/blog/` **11파일 126케이스**. 로더·frontmatter·목차·트리·검색·그래프 단위 테스트 + `tests/blog/content/` 24케이스의 발행본 전량 불변식 |
+| `npm test` | Vitest — `tests/blog/` **13파일 155케이스**. 로더·frontmatter·목차·트리·검색·그래프 단위 테스트 + `tests/blog/content/` 24케이스의 발행본 전량 불변식 |
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. 인자는 **`--` 뒤에** 넘긴다 — `npm run dup-scan -- --category <slug>` · `-- --min N`(기본 20자) · `-- <파일...>`. `--` 없이 쓰면 npm이 플래그를 먹어 「대상이 없다」로 종료한다 |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
@@ -101,7 +101,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
-| `npm run mutate` | 알려진 결함 **65개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run mutate` | 알려진 결함 **74개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 

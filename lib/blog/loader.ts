@@ -5,6 +5,7 @@ import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
 import { blogSeries, findSeries } from "@/content/blog/series";
 import { validateFrontmatter } from "@/lib/blog/frontmatter";
 import { buildLinkIndex, buildLocalGraph, type LinkIndex } from "@/lib/blog/graph";
+import { memoizeWhen } from "@/lib/blog/memo";
 import { buildTree } from "@/lib/blog/tree";
 import { buildToc } from "@/lib/toc";
 import type { BlogTree, LocalGraph, Post, PostSummary, SeriesContext } from "@/lib/blog/types";
@@ -20,7 +21,7 @@ import type { BlogTree, LocalGraph, Post, PostSummary, SeriesContext } from "@/l
 const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
 
 /** 테스트에서 다른 루트를 넘길 수 있도록 인자로 받는다. */
-export function readPosts(root: string = CONTENT_DIR): Post[] {
+function scanPosts(root: string): Post[] {
   if (!fs.existsSync(root)) return [];
 
   const posts: Post[] = [];
@@ -65,6 +66,39 @@ export function readPosts(root: string = CONTENT_DIR): Post[] {
 
   // 날짜 내림차순. 같은 날이면 제목순으로 안정 정렬한다.
   return posts.sort((a, b) => (a.date === b.date ? a.title.localeCompare(b.title, "ko") : b.date.localeCompare(a.date)));
+}
+
+/**
+ * 편 목록을 캐시해도 되는 환경인가.
+ *
+ * 🔴 **가드를 호출부에 인라인으로 두지 않고 순수 함수로 뽑았다.** 흩어져 있으면 통째로
+ * 지워도 케이스가 전부 통과한다 — 캐시가 켜지든 꺼지든 결과 자체는 같기 때문이다.
+ *
+ * 개발 서버에서 캐시하지 않는 이유는 `getLinkIndex` 와 같다. 편을 고쳤는데 새로고침해도
+ * 옛 본문이 남으면, 조용히 틀린 화면이 된다. 느린 화면이 낫다.
+ */
+export function shouldCachePosts(env: string | undefined): boolean {
+  return env === "production";
+}
+
+/**
+ * 발행본 전량. 프로덕션 빌드에서는 한 번만 읽는다.
+ *
+ * 🔴 **캐시가 없던 동안 `getStaticProps` 한 번이 이 함수를 여섯 번 불렀다.** fs 와
+ * gray-matter 만으로 1회 46~51 ms 이고 184편이면 회당 약 9초다. 편 페이지가 184개이므로
+ * 빌드 전체로는 그 몇 배가 된다.
+ *
+ * 🔴 **픽스처 루트는 캐시를 거치지 않는다.** 캐시 하나를 여러 루트가 나눠 쓰면 먼저 읽은
+ * 픽스처의 결과가 나중 것을 덮어 케이스가 서로를 오염시킨다.
+ */
+const cachedContentPosts = memoizeWhen(
+  () => scanPosts(CONTENT_DIR),
+  () => shouldCachePosts(process.env.NODE_ENV)
+);
+
+export function readPosts(root: string = CONTENT_DIR): Post[] {
+  if (root !== CONTENT_DIR) return scanPosts(root);
+  return cachedContentPosts();
 }
 
 function toSummary(post: Post): PostSummary {

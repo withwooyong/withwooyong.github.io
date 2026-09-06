@@ -1,6 +1,11 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { getAdjacentPosts, getPublishedCategories, readPosts } from "@/lib/blog/loader";
+import {
+  getAdjacentPosts,
+  getPublishedCategories,
+  readPosts,
+  shouldCachePosts,
+} from "@/lib/blog/loader";
 
 const FIXTURES = path.join(__dirname, "fixtures");
 
@@ -108,5 +113,36 @@ describe("getAdjacentPosts", () => {
     const ok = getAdjacentPosts("search-engineering", "ok", FIXTURES_SERIES);
     expect(ok.prev?.slug).toBe("series-1");
     expect(ok.next?.slug).toBe("older");
+  });
+});
+
+describe("편 목록 캐시", () => {
+  it("프로덕션 빌드에서만 캐시한다", () => {
+    expect(shouldCachePosts("production")).toBe(true);
+  });
+
+  it("개발 서버에서는 캐시하지 않는다 — 편을 고치면 새로고침만으로 반영되어야 한다", () => {
+    expect(shouldCachePosts("development")).toBe(false);
+  });
+
+  it("테스트에서는 캐시하지 않는다 — 케이스끼리 결과를 물려받으면 안 된다", () => {
+    expect(shouldCachePosts("test")).toBe(false);
+  });
+
+  it("환경 변수가 비어 있으면 캐시하지 않는다 — 모르면 안전한 쪽으로 간다", () => {
+    expect(shouldCachePosts(undefined)).toBe(false);
+  });
+
+  it("🔴 픽스처 루트를 넘기면 다른 픽스처의 결과가 섞이지 않는다", () => {
+    const fixtures = readPosts(FIXTURES).map((p) => p.slug).sort();
+    const order = readPosts(FIXTURES_ORDER).map((p) => p.slug).sort();
+    const again = readPosts(FIXTURES).map((p) => p.slug).sort();
+
+    expect(again).toEqual(fixtures);
+    expect(again).not.toEqual(order);
+  });
+
+  it("🔴 픽스처 루트는 부를 때마다 다시 읽는다 — 캐시를 나눠 쓰면 픽스처가 서로를 덮는다", () => {
+    expect(readPosts(FIXTURES)).not.toBe(readPosts(FIXTURES));
   });
 });

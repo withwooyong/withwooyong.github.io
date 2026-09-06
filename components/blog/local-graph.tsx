@@ -1,8 +1,9 @@
+import { startTickAnimation } from "@/lib/blog/graph-animation";
 import { DEFAULT_LAYOUT_OPTIONS, layout } from "@/lib/blog/graph-layout";
 import type { GraphNode, LocalGraph } from "@/lib/blog/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 /**
  * 지역 그래프 위젯.
@@ -24,7 +25,6 @@ export function LocalGraphPanel({ graph }: { graph: LocalGraph }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   // 서버와 첫 렌더는 최종 배치를 그린다. 스크립트가 꺼져 있어도 그래프가 보여야 한다.
   const [ticks, setTicks] = useState(DEFAULT_LAYOUT_OPTIONS.ticks);
-  const started = useRef(false);
 
   const nodeIds = useMemo(
     () => [graph.center.id].concat(graph.neighbors.map((n) => n.id)),
@@ -42,26 +42,22 @@ export function LocalGraphPanel({ graph }: { graph: LocalGraph }) {
     return map;
   }, [points]);
 
-  useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-
-    // 움직임을 줄이도록 설정한 방문자에게는 애니메이션 없이 최종 배치를 남긴다.
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-
-    let frame = 0;
-    let raf = 0;
-    const step = () => {
-      frame += 1;
-      const next = frame * TICKS_PER_FRAME;
-      setTicks(Math.min(next, DEFAULT_LAYOUT_OPTIONS.ticks));
-      if (next < DEFAULT_LAYOUT_OPTIONS.ticks) raf = window.requestAnimationFrame(step);
-    };
-    setTicks(0);
-    raf = window.requestAnimationFrame(step);
-    return () => window.cancelAnimationFrame(raf);
-  }, []);
+  // 🔴 진행 규칙 전체가 startTickAnimation 안에 있다. 여기에 「이미 시작했다」 같은 상태를
+  // 다시 두면 StrictMode 의 2회차 마운트가 즉시 돌아가 초기 원형 배치에 갇힌다.
+  useEffect(
+    () =>
+      startTickAnimation({
+        totalTicks: DEFAULT_LAYOUT_OPTIONS.ticks,
+        ticksPerFrame: TICKS_PER_FRAME,
+        setTicks,
+        host: {
+          requestFrame: (cb) => window.requestAnimationFrame(cb),
+          cancelFrame: (handle) => window.cancelAnimationFrame(handle),
+          prefersReducedMotion: () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        },
+      }),
+    []
+  );
 
   const active: GraphNode | null =
     activeId === graph.center.id
