@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { mermaidThemeVariables, repaintHardcodedStrokes } from "@/lib/mermaid-theme";
 import { cn } from "@/lib/utils";
 import { Maximize2, Minus, Plus, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
@@ -79,7 +80,8 @@ export function Mermaid({ chart }: MermaidProps) {
           theme: isDark ? "dark" : "default",
           securityLevel: "strict",
           fontFamily: "inherit",
-          themeVariables: { fontSize: "14px" },
+          // 색은 사이트 팔레트를 따른다. 값과 대비 근거는 lib/mermaid-theme.ts에 있다.
+          themeVariables: mermaidThemeVariables(isDark),
           // 도식을 자연 크기로 그린 뒤, 표시 크기는 CSS가 정하게 둔다.
           flowchart: { useMaxWidth: false },
           sequence: { useMaxWidth: false },
@@ -91,7 +93,7 @@ export function Mermaid({ chart }: MermaidProps) {
         });
 
         const { svg: rendered } = await mermaid.render(renderId, chart);
-        if (!cancelled) setSvg(rendered);
+        if (!cancelled) setSvg(repaintHardcodedStrokes(rendered, isDark));
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
