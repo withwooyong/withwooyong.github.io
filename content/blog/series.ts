@@ -64,8 +64,9 @@ export const blogSeries: BlogSeries[] = [
   { slug: "auth-service-on-kubernetes", name: "쿠버네티스 인증 서비스", categorySlug: "backend-engineering", order: 70 },
   { slug: "cicd-automation", name: "CI/CD 자동화", categorySlug: "backend-engineering", order: 80 },
 
-  // product-management — 1개 · 8편
+  // product-management — 2개 · 9편
   { slug: "product-management-domains", name: "도메인별 프로덕트 매니지먼트", categorySlug: "product-management", order: 10 },
+  { slug: "product-management-practice", name: "프로덕트 실무 — 지표 · 데이터 · 팀 · 협업", categorySlug: "product-management", order: 20 },
 
   // rag — 7개 · 23편
   { slug: "rag-core-concepts", name: "RAG 핵심 개념", categorySlug: "rag", order: 10 },
