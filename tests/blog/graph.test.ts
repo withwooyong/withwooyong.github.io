@@ -4,6 +4,7 @@ import {
   buildLinkIndex,
   buildLocalGraph,
   extractOutboundIds,
+  pickCategoryHubId,
   postId,
 } from "@/lib/blog/graph";
 import type { GraphSource } from "@/lib/blog/graph";
@@ -150,5 +151,85 @@ describe("지역 그래프 조립", () => {
 
   it("postId 는 카테고리와 슬러그를 슬래시로 잇는다", () => {
     expect(postId({ categorySlug: "rag", slug: "a" })).toBe("rag/a");
+  });
+});
+
+/**
+ * 카테고리의 허브 편 선정.
+ *
+ * 카테고리 목록 페이지에는 「지금 보고 있는 편」이 없으므로 중심을 골라야 한다.
+ * 🔴 판정이 결정론적이어야 한다 — 빌드마다 중심이 바뀌면 같은 커밋에서 다른 화면이 나온다.
+ */
+describe("카테고리 허브", () => {
+  it("피인용이 가장 많은 편을 고른다", () => {
+    const posts = [
+      post("rag", "a", "가", "[다](/blog/rag/c/)"),
+      post("rag", "b", "나", "[다](/blog/rag/c/)"),
+      post("rag", "c", "다"),
+    ];
+    expect(pickCategoryHubId(posts, buildLinkIndex(posts), "rag")).toBe("rag/c");
+  });
+
+  it("피인용은 카테고리 밖에서 온 것도 센다", () => {
+    const posts = [
+      post("ai-agent", "z", "저", "[다](/blog/rag/c/)"),
+      post("rag", "a", "가"),
+      post("rag", "c", "다"),
+    ];
+    // rag/c 는 rag 안에서는 아무도 가리키지 않지만 밖에서 한 번 인용된다.
+    expect(pickCategoryHubId(posts, buildLinkIndex(posts), "rag")).toBe("rag/c");
+  });
+
+  it("🔴 그 카테고리의 편만 후보다", () => {
+    const posts = [
+      post("ai-agent", "z", "저"),
+      post("rag", "a", "가", "[저](/blog/ai-agent/z/)"),
+      post("rag", "b", "나", "[저](/blog/ai-agent/z/)"),
+      post("rag", "c", "다", "[가](/blog/rag/a/)"),
+    ];
+    // 피인용 최다는 ai-agent/z(2회)지만 rag 의 허브는 rag/a(1회)여야 한다.
+    expect(pickCategoryHubId(posts, buildLinkIndex(posts), "rag")).toBe("rag/a");
+  });
+
+  it("🔴 피인용이 같으면 나가는 링크가 많은 편을 고른다", () => {
+    const posts = [
+      post("rag", "a", "가", "[나](/blog/rag/b/)"),
+      post("rag", "b", "나", "[다](/blog/rag/c/) [저](/blog/ai-agent/z/)"),
+      post("rag", "c", "다", "[라](/blog/rag/d/)"),
+      post("rag", "d", "라", "[가](/blog/rag/a/)"),
+      post("ai-agent", "z", "저"),
+    ];
+    // 순환으로 네 편의 피인용이 1회씩 같고, 나가는 링크만 rag/b 가 2개로 많다.
+    // 사전순 1등은 rag/a 이므로, 2차 기준이 실제로 작동해야만 rag/b 가 나온다.
+    expect(pickCategoryHubId(posts, buildLinkIndex(posts), "rag")).toBe("rag/b");
+  });
+
+  it("🔴 둘 다 같으면 id 사전순으로 고른다 — 순서가 흔들리면 안 된다", () => {
+    const posts = [
+      post("rag", "b", "나"),
+      post("rag", "a", "가"),
+      post("rag", "c", "다"),
+    ];
+    // 셋 다 피인용 0회·나가는 링크 0개다. 입력 순서와 무관하게 같은 답이 나와야 한다.
+    expect(pickCategoryHubId(posts, buildLinkIndex(posts), "rag")).toBe("rag/a");
+    const reversed = posts.slice().reverse();
+    expect(pickCategoryHubId(reversed, buildLinkIndex(reversed), "rag")).toBe("rag/a");
+  });
+
+  it("편이 없는 카테고리는 null 이다 — 던지지 않는다", () => {
+    const posts = [post("rag", "a", "가")];
+    expect(pickCategoryHubId(posts, buildLinkIndex(posts), "search-engineering")).toBeNull();
+  });
+
+  it("자기 자신을 가리키는 링크는 피인용으로 세지 않는다", () => {
+    const posts = [
+      post("rag", "a", "가", "[가](/blog/rag/a/)"),
+      post("rag", "b", "나", "[가](/blog/rag/a/)"),
+      post("rag", "c", "다"),
+    ];
+    // buildLinkIndex 가 이미 자기 링크를 버리므로 rag/a 의 피인용은 1회다.
+    const links = buildLinkIndex(posts);
+    expect(links.get("rag/a")?.has("rag/a")).toBe(false);
+    expect(pickCategoryHubId(posts, links, "rag")).toBe("rag/a");
   });
 });

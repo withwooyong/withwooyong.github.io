@@ -1,5 +1,5 @@
 import { CategoryTree } from "@/components/blog/category-tree";
-import { LocalGraphPanel } from "@/components/blog/local-graph";
+import { LocalGraphPanel, type GraphVariant } from "@/components/blog/local-graph";
 import { SearchDialog } from "@/components/blog/search-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { BlogTree, LocalGraph, TocEntry } from "@/lib/blog/types";
@@ -23,12 +23,16 @@ type BlogShellProps = {
   activePostSlug?: string;
   toc?: TocEntry[];
   /**
-   * 본문 페이지에서만 넘어온다. 지역 그래프를 사이드바 바닥에 그린다.
+   * 지역 그래프를 사이드바 바닥에 그린다. 본문과 카테고리 목록에서 넘어온다.
    *
-   * `tree` 와 달리 선택 인자로 둔다 — 카테고리 목록·태그·블로그 홈에는 중심이 될 편이
-   * 없어 그래프를 만들 수 없기 때문이다. 「빠뜨렸다」와 「없는 것이 정상이다」가 다르다.
+   * `tree` 와 달리 선택 인자로 둔다 — 태그와 블로그 홈에는 중심으로 삼을 편이 없어
+   * 그래프를 만들 수 없기 때문이다. 「빠뜨렸다」와 「없는 것이 정상이다」가 다르다.
+   *
+   * 🔴 **데이터와 문맥을 한 객체로 받는다.** `variant` 를 따로 받아 기본값을 두면
+   * 카테고리 페이지에서 빠뜨렸을 때 본문용 문구(「이어진 글」)가 조용히 나오고,
+   * 중심 노드도 링크가 아닌 채로 그려진다. 묶어 두면 빠뜨린 곳이 타입 오류로 드러난다.
    */
-  graph?: LocalGraph;
+  graph?: { data: LocalGraph; variant: GraphVariant };
   children: ReactNode;
 };
 
@@ -95,7 +99,7 @@ export function BlogShell({ tree, activePostSlug, toc, graph, children }: BlogSh
             </nav>
             {graph ? (
               <div className="hidden shrink-0 tall:block">
-                <LocalGraphPanel graph={graph} />
+                <LocalGraphPanel graph={graph.data} variant={graph.variant} />
               </div>
             ) : null}
           </div>
