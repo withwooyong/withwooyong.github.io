@@ -61,7 +61,18 @@ export function layout(input: LayoutInput, options: LayoutOptions = DEFAULT_LAYO
 
   const indexOf = new Map<string, number>();
   nodeIds.forEach((id, i) => indexOf.set(id, i));
-  const centerIndex = indexOf.get(centerId) ?? 0;
+
+  // 🔴 **`graph.ts` 의 buildLocalGraph 와 같은 방침이다.** 종전에는 `?? 0` 으로 0번 노드를
+  // 대신 중심에 놓았는데, 그러면 화면에는 그래프가 **그려지되 중심이 다른 편**이 된다.
+  // 조용히 틀린 화면은 원인을 찾을 수 없다.
+  //
+  // 던져도 프로덕션에 도달하지 않는다: 이 위젯은 정적 export 라 빌드 시점에도 렌더되고,
+  // 입력은 buildLocalGraph 의 출력에서만 오며 그쪽이 이미 중심의 실존을 보장한다.
+  // 그러므로 이 오류가 나는 상황은 배포될 화면이 아니라 **깨져야 할 빌드**다.
+  const centerIndex = indexOf.get(centerId);
+  if (centerIndex === undefined) {
+    throw new Error(`[blog] 그래프 좌표 계산: 중심 노드가 nodeIds 에 없습니다: ${centerId}`);
+  }
 
   // 초기 배치 — 중심은 원점, 나머지는 원주 위에 인덱스 순서대로 균등 배치한다.
   const radius = Math.min(width, height) / 3;

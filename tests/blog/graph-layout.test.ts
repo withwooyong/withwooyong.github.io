@@ -108,3 +108,19 @@ describe("좌표 계산", () => {
     for (const d of ds) expect(d).toBeCloseTo(ds[0], 6);
   });
 });
+
+describe("없는 중심에 대한 방침", () => {
+  it("🔴 nodeIds 에 없는 centerId 를 주면 던진다 — 0번 노드를 대신 놓으면 화면이 그럴듯하게 틀린다", () => {
+    const r = ring(4);
+    expect(() => layout({ ...r, centerId: "없는-편" })).toThrow();
+  });
+
+  it("오류 메시지에 찾지 못한 id 가 들어간다 — 없으면 어느 편에서 났는지 알 수 없다", () => {
+    const r = ring(4);
+    expect(() => layout({ ...r, centerId: "없는-편" })).toThrow(/없는-편/);
+  });
+
+  it("중심이 nodeIds 에 있으면 던지지 않는다", () => {
+    expect(() => layout(ring(4))).not.toThrow();
+  });
+});
