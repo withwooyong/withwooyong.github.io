@@ -122,6 +122,30 @@ mermaid 11 의 `insertStickTopArrowHead`·`insertStickBottomArrowHead` 는 화�
 | `scripts/` 검사기 종 수 | 열 종 | 열 종 (그대로) |
 | 뮤테이션이 돌리는 검사 수 | 열 개 | 열 개 (그대로) |
 
+### 이 세션의 끝 — 재귀가 실제로 닫혔다
+
+이 절을 담은 PR 은 문서만 고치는 PR 이 아니라 **코드와 문서를 함께 실은 PR** 이었다. 그래서
+자기 자신의 병합 기록을 남기지 못하는 자리가 딱 한 칸으로 줄었고, 그 한 칸을 **뒤이은 세션이
+실측으로 채웠다.** 아래 값은 옮겨 적은 것이 아니라 `gh run view --json` 과 `git log --format=%P`
+로 다시 잰 것이다.
+
+| 단계 | 값 | 어떻게 쟀나 |
+| --- | --- | --- |
+| PR CI | run `34010490249` **success** · 전체 **99초** · `build` **95초** · `Upload artifact` 와 `deploy` job 이 설계대로 **skipped** | `gh run view --json jobs` |
+| merge | PR #16 이 **merge 커밋 `16c1107`** 로 닫혔다 (부모 둘: `827c3e2` + `7631c1c`) | `git log -1 --format=%P` |
+| 배포 | run `34011795806` **success** · 전체 **130초** · `build` **115초** · `deploy` **9초** · `headSha` 가 `16c1107` | `gh run view --json` |
+| 브랜치 | `docs/session-handoff-branch-cleanup` 을 원격·로컬에서 지웠다. 끝 커밋 `7631c1c` 가 `main` 에서 도달 가능함을 삭제 전후로 확인했고, **원격에는 `main` 만 남았다** | `git merge-base --is-ancestor` · `git branch -r` |
+
+⚠️ **`build` 시간이 134초에서 115초로 줄었지만 개선의 근거로 삼지 마라.** 같은 워크플로가
+같은 스텝을 도는데도 PR run 은 95초였다. 러너 부하가 달라 세 값이 흩어진 것이므로, 비교하려면
+같은 조건에서 잰 대조군이 있어야 한다.
+
+| 해시 | 무엇 |
+| --- | --- |
+| `211fd55` | 도식: mermaid 색을 사이트 팔레트로 바꾸고 대비를 검사기에 넣는다 |
+| `7631c1c` | 문서: 도식 팔레트 작업을 인수인계·변경기록·함정 문서에 반영한다 |
+| `16c1107` | Merge pull request #16 |
+
 ---
 
 ## 2026-09-06 — **문서만 고치는 PR 은 자기 자신의 병합 기록을 남기지 못한다.** PR #14 의 값을 채우고 병합이 끝난 브랜치 35개를 정리했다 (PR [#15](https://github.com/withwooyong/withwooyong.github.io/pull/15))
