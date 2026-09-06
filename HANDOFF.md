@@ -5,6 +5,8 @@
 > 빌드가 대조군 대비 **21.2% 빨라졌고**, 뮤턴트가 **74개**로 늘었다.
 > 그 뒤 PR [#13](https://github.com/withwooyong/withwooyong.github.io/pull/13) 이 merge 커밋
 > `e77a9d1` 로 닫혔고 배포가 **success** 로 끝났다 (run `34004539240`).
+> 그 결과를 기록한 문서 PR [#14](https://github.com/withwooyong/withwooyong.github.io/pull/14) 도 merge 커밋 `16d51a3` 으로 닫혔고,
+> 배포가 **success** 였다 (run `34006877177` · 전체 **150초**).
 > 🔴 **새 뮤턴트 아홉 중 여덟이 처음에 생존했다** — `blog-unit` 이 파일을 이름으로 나열하기
 > 때문이다. 아래 「검사 목록에 있다는 것과…」를 보라
 
@@ -28,8 +30,8 @@
 | 지역 그래프 위젯 | ✅ 본문 사이드바 하단 · 이웃 상한 **12** · 초과분은 `+N` 으로 표시 · `tall`(높이 720px) 미만이면 감춘다 |
 | 빌드 시간 | **30.3초** (2026-09-06 실측) — 편 목록 캐시 뒤의 값이다. **같은 세션 대조군은 38.4초**(캐시만 끔)였다. 종전 기준선 55.9초는 다른 날 다른 부하에서 잰 값이라 직접 비교하지 마라 |
 | 분량 하한 SOFT | **3편** (세션 시작 5편) — 남은 셋은 **정당하다고 판정했다.** 아래 판정 표를 보라 |
-| 커밋 | 이번 세션 `2214afa`·`37b4ce6`·`833ea4c`·`89acd64` · **PR [#13](https://github.com/withwooyong/withwooyong.github.io/pull/13) 은 merge 커밋 `e77a9d1` 로 닫혔다** |
-| 푸시 · 배포 | ✅ **success** (run `34004539240` · 전체 **153초** · `build` 138초 · `deploy` **8초**). 머지 방식은 **merge 커밋**이다 — PR #11·#12·#13 의 부모가 전부 둘이며, 이 리포는 squash 를 쓴 적이 없다 |
+| 커밋 | 이번 세션 `2214afa`·`37b4ce6`·`833ea4c`·`89acd64`·`3661a4f` · **PR [#13](https://github.com/withwooyong/withwooyong.github.io/pull/13) 은 merge 커밋 `e77a9d1` 로, 문서 PR [#14](https://github.com/withwooyong/withwooyong.github.io/pull/14) 는 merge 커밋 `16d51a3` 으로 닫혔다** |
+| 푸시 · 배포 | ✅ **success 두 번** · PR #13 은 run `34004539240` (전체 **153초** · `build` 138초 · `deploy` **8초**), 문서 PR #14 는 run `34006877177` (전체 **150초** · `build` 132초 · `deploy` **10초**). 머지 방식은 **merge 커밋**이다 — PR #11·#12·#13·#14 의 부모가 전부 둘이며, 이 리포는 squash 를 쓴 적이 없다 |
 | 프로덕션 실측 | ✅ `withwooyong.github.io` 에서 이웃 **12** · 연결선 **18** · 중심거리 표준편차 **19.15**(원형이면 0 이므로 힘 계산이 실제로 돌았다) · 이웃 간 최소 간격 **42.05** |
 | 다음 단계 | 아래 **「다음 세션의 작업」** — 우선순위 표를 먼저 보라 |
 
@@ -52,6 +54,7 @@
 | merge | PR [#13](https://github.com/withwooyong/withwooyong.github.io/pull/13) 이 **merge 커밋 `e77a9d1`** 로 닫혔다 (부모 둘) |
 | 배포 | run `34004539240` **success** · 전체 **153초** · `build` 138초 · `deploy` **8초** |
 | 프로덕션 실측 | 이웃 **12** · 연결선 **18** · 중심거리 표준편차 **19.15** · 이웃 간 최소 간격 **42.05** |
+| 문서 반영 | 위 세 줄을 인수인계와 변경 기록에 적은 것이 커밋 `3661a4f` 이고, 문서 PR [#14](https://github.com/withwooyong/withwooyong.github.io/pull/14) 가 **merge 커밋 `16d51a3`** 으로 닫혀 배포까지 끝났다 (run `34006877177` **success** · 전체 **150초** · `build` 132초 · `deploy` **10초**) |
 
 표준편차가 0 이 아니라는 것이 이 실측의 핵심이다. 초기 배치는 반지름이 같은 원형이라 표준편차가
 정확히 0 이므로, 0 에서 벗어난 값은 **힘 계산이 배포된 화면에서 실제로 돌았다**는 뜻이다.
