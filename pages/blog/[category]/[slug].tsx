@@ -66,7 +66,7 @@ export default function BlogPostPage({ tree, post, seriesContext, prev, next, gr
         jsonLd={jsonLd}
       />
 
-      <BlogShell tree={tree} activePostSlug={post.slug} toc={post.toc} graph={graph}>
+      <BlogShell tree={tree} activePostSlug={post.slug} toc={post.toc} graph={{ data: graph, variant: "post" }}>
         <article className="max-w-4xl">
           <header className="space-y-3 border-b border-slate-200 pb-6 dark:border-slate-800">
             <PostMeta post={post} />
