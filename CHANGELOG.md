@@ -16,6 +16,81 @@
 
 ---
 
+## 2026-09-06 — 🔴 **도식 라벨의 마지막 글자가 잘리던 것을 닫았다** — 리포 전체 549개 · 이미 배포되어 있었다 (발행본 186편, 변동 없음)
+
+> 콘텐츠 변경은 없다. 직전 세션이 실물에서 발견하고 넘긴 항목 하나를 근본 원인까지 내려가
+> 고쳤다. 검사기 열 종이 전부 초록인 동안 화면만 틀려 있었다 — **문법도 링크도 색도 개수도
+> 멀쩡했고, 잘림은 브라우저가 레이아웃을 계산한 뒤에야 드러난다.**
+
+### 무엇이 보이던가
+
+「순이익」이 「순이읙」으로, 「꺼내는 장치」가 「꺼내는 장」으로, 「Discovery」가 「Discover」로
+보였다. 한 편의 라벨 34개 가운데 **17개**가 2~10px 넘쳤다.
+
+### 원인 — 폰트 이름이 아니라 **재는 자리와 그리는 자리**가 달랐다
+
+mermaid 는 라벨 폭을 재려고 임시 컨테이너를 **`document.body` 바로 아래**에 붙인다
+(`render` 에 `svgContainingElement` 를 주지 않는 경로). 그 경로에서는
+`initialize({ fontFamily })` 가 **인라인 스타일로도 걸리지 않는다.**
+
+| 자리 | 계산된 `font-family` | 무엇에 쓰이나 |
+| --- | --- | --- |
+| `body` 직속 임시 컨테이너 | `"Noto Sans KR"` | **폭을 잰다** |
+| `.mermaid-figure` 안 | `__Inter_…, __Inter_Fallback_…, Inter, system-ui, sans-serif` | **그린다** |
+
+`next/font` 가 만드는 `--font-inter` 변수가 `_app.tsx` 의 `<div>` 에만 있어 `body` 는 브라우저
+기본 글꼴로 떨어진다. 재는 글꼴이 좁으면 상자가 그만큼 좁게 만들어지고, `foreignObject` 는
+**SVG 사양상 자기 폭 밖을 클리핑한다** — `overflow: visible` 이어도 소용없다.
+
+### 어떻게 확정했나 — 첫 가설을 브라우저가 기각했다
+
+`document.body.style.fontFamily` 를 본문과 같게 맞추고 재렌더시켰는데 **폭이 소수점까지
+그대로**였다. 확정은 같은 문자열을 두 컨텍스트에서 **직접 잰 것**이 냈다 — 「순이익」이 body
+기본 폰트에서 **38.65**, Inter 체인에서 **42** 였고 앞의 값이 `foreignObject.width` 와
+소수점까지 일치했다. 도식만 body 폰트로 강제하니 넘침이 **17 → 0**, 되돌리니 다시 **17** 이었다.
+
+### 고친 것
+
+| 파일 | 무엇을 |
+| --- | --- |
+| `lib/mermaid-theme.ts` | `resolveDiagramFontFamily` — 상속에 맡기는 값(`inherit`·`initial`·`unset`·`revert`·빈 값)을 거부하는 순수 함수와 대체 스택 |
+| `components/mermaid.tsx` | 도식이 그려질 자리에서 `getComputedStyle` 로 **해석된** 스택을 읽어 넘긴다. 웹폰트 로드 전 측정을 막으려고 `document.fonts.ready` 를 기다린다 |
+
+계산된 값은 `var()` 가 이미 풀린 뒤이므로 `body` 아래의 측정 컨테이너에서도 똑같이 해석된다.
+🔴 **확대 뷰어도 함께 닫혔다** — 포털이라 `body` 아래에 그려지는데 폰트 스택이 SVG 자체에
+박히므로 본문과 같은 글꼴이 된다.
+
+### 실측 — 여섯 편 · 도식 29개 · 라벨 361개 · 라이트와 다크 양쪽
+
+| 편 | 라벨 | 수정 전 | 수정 후 |
+| --- | ---: | ---: | ---: |
+| `product-cycle-and-metric-hierarchy` | 34 | **17** (최대 9.61px) | **0** |
+| `search-system-overview` | 35 | **17** | **0** |
+| `pm-practice-map` | 16 | 5 | **0** |
+| `agent-pattern-catalog` | 214 | — | **0** |
+| `langgraph-checkpointer-hitl` | 41 | — | **0** |
+| `autogen-conversation-agents` | 21 | — | **0** |
+
+확대 뷰어 라벨 **18개**도 0이다.
+
+### 무엇으로 지키나
+
+jsdom 에는 레이아웃이 없어 `scrollWidth` 가 언제나 0이므로 잘림 자체는 단위 테스트로 재현할
+수 없다. 그래서 묶은 것은 **상속 키워드가 다시 들어오는 길**이다.
+
+| 항목 | 이전 | 이번 |
+| --- | ---: | ---: |
+| `tests/blog` | 14파일 194케이스 | 14파일 **200**케이스 |
+| 뮤턴트 | 96 | **98** (TH19 · TH20 추가 · 둘 다 잡힘) |
+| `docs/TOOL-TRAPS.md` | 48건 | **49건** |
+
+`npm run mutate` 는 **98/98 잡힘 · 생존 0 · 치환실패 0** 이다.
+
+⚠️ `CLAUDE.md` 게이트 절의 `tests/blog/content/` 케이스 수가 **24** 로 낡아 있었다(실제 **31**).
+앞 세션이 `README.md` 와 `HANDOFF.md` 만 고치고 이 자리를 빠뜨린 것이며 같은 커밋에서 고쳤다.
+
+---
+
 ## 2026-09-06 — `product-management` **프로덕트 실무 편2**(총 186편) · 🔴 **k 는 옳았고 고정 비용 상수가 틀렸다** — 초과의 59%가 배율이 아닌 곳에서 나왔다
 
 > 설계서 [`2026-09-06-pm-practice-split-design.md`](docs/superpowers/plans/2026-09-06-pm-practice-split-design.md) 의

@@ -239,6 +239,39 @@ export function mermaidThemeVariables(isDark: boolean): Record<string, string> {
   return { ...MERMAID_THEME_COLORS[isDark ? "dark" : "light"], fontSize: MERMAID_FONT_SIZE };
 }
 
+/**
+ * 폰트를 조상에게 맡기는 값. 도식에는 이 가운데 무엇도 쓸 수 없다.
+ *
+ * mermaid 는 라벨 폭을 잴 때 임시 컨테이너를 `document.body` 바로 아래에 붙인다
+ * (`render` 에 `svgContainingElement` 를 주지 않는 경로이며, 그 경로에서는 `fontFamily`
+ * 설정이 인라인 스타일로도 걸리지 않는다). 그런데 도식이 실제로 그려지는 자리는
+ * `font-sans` 가 걸린 본문 안이다. 조상이 서로 다르므로 상속에 맡기면 **재는 폰트와
+ * 그리는 폰트가 갈린다.**
+ *
+ * 두 폰트의 자폭 차이만큼 상자가 좁게 만들어지고, `foreignObject` 는 SVG 사양상 자기 폭
+ * 밖을 클리핑하므로(`overflow: visible` 이어도 소용없다) 라벨의 마지막 글자가 잘린다.
+ * 조사가 붙는 한국어에서 특히 잘 드러난다 — 실측으로 한 편의 라벨 34개 가운데 **17개**가
+ * 2~10px 넘쳐 「순이익」이 「순이읙」으로, 「꺼내는 장치」가 「꺼내는 장」으로 보였다.
+ */
+const INHERITING_FONT_VALUES = ["inherit", "initial", "unset", "revert", "revert-layer"];
+
+/** 해석된 값을 얻지 못했을 때 쓰는 스택. 변수를 담지 않으므로 어느 조상 아래에서도 같게 풀린다. */
+export const DIAGRAM_FONT_FALLBACK = "Inter, system-ui, sans-serif";
+
+/**
+ * `mermaid.initialize` 의 `fontFamily` 에 넣을 값을 정한다.
+ *
+ * 인자는 도식이 그려질 자리에서 읽은 `getComputedStyle(...).fontFamily` 다. 그 값은 이미
+ * `var()` 가 풀린 뒤이므로 body 아래의 측정 컨테이너에서도 똑같이 해석된다.
+ * 상속에 맡기는 값이 들어오면 위 결함이 되살아나므로 거부한다.
+ */
+export function resolveDiagramFontFamily(computed: string | null | undefined): string {
+  const value = (computed ?? "").trim();
+  if (value === "") return DIAGRAM_FONT_FALLBACK;
+  if (INHERITING_FONT_VALUES.includes(value.toLowerCase())) return DIAGRAM_FONT_FALLBACK;
+  return value;
+}
+
 /** mermaid 가 렌더 결과에 속성으로 직접 박아 넣는 색. `themeVariables` 로는 닿지 않는다. */
 const HARDCODED_STROKE = 'stroke="black"';
 
