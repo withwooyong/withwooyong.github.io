@@ -72,6 +72,20 @@ describe("조건부 메모이제이션", () => {
     expect(fresh).not.toBe(cached);
   });
 
+  it("🔴 꺼졌다 켜지면 원래 캐시가 그대로 나온다 — 꺼진 동안의 값이 캐시를 덮으면 안 된다", () => {
+    // 위 케이스는 「꺼진 호출이 새 값을 준다」만 보므로, 그 값이 캐시를 덮어도 통과한다.
+    let enabled = true;
+    const memo = memoizeWhen(() => ({ n: 1 }), () => enabled);
+
+    const cached = memo();
+    enabled = false;
+    const off = memo();
+    enabled = true;
+
+    expect(memo()).toBe(cached);
+    expect(memo()).not.toBe(off);
+  });
+
   it("🔴 계산 결과가 null 이어도 캐시한다 — 거짓값 판정으로 쓰면 매번 다시 계산한다", () => {
     const { compute, calls } = counted<null>(() => null);
     const memo = memoizeWhen(compute, () => true);

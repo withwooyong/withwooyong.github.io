@@ -83,6 +83,21 @@ describe("마운트 애니메이션", () => {
     expect(Math.max(...h.seen)).toBe(30);
   });
 
+  it("🔴 totalTicks 가 ticksPerFrame 의 배수가 아니어도 정확히 거기서 멈춘다", () => {
+    // 위 케이스의 30 과 6 은 나누어떨어져, 상한을 씌우지 않아도 마지막 값이 우연히 맞는다.
+    const fake = fakeHost();
+    const seen: number[] = [];
+    startTickAnimation({
+      totalTicks: 20,
+      ticksPerFrame: 6,
+      setTicks: (t) => seen.push(t),
+      host: fake.host,
+    });
+    for (let i = 0; i < 10; i++) fake.runFrame();
+
+    expect(seen).toEqual([0, 6, 12, 18, 20]);
+  });
+
   it("totalTicks 에 닿으면 프레임을 더 예약하지 않는다", () => {
     const h = harness();
     h.start();

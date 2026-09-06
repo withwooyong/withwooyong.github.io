@@ -485,6 +485,69 @@ const MUTANTS = [
     from: "maxX > 0 ? (width / 2 - pad) / maxX : 1,",
     to: "1,",
   },
+  {
+    id: "G8",
+    file: "lib/blog/graph-layout.ts",
+    desc: "🔴 없는 중심에 대한 가드를 없앤다 — 좌표가 NaN 이 되고 SVG 가 조용히 아무것도 그리지 않는다",
+    from: "  if (centerIndex === undefined) {",
+    to: "  if (centerIndex === undefined && false) {",
+  },
+  {
+    id: "MC1",
+    file: "lib/blog/loader.ts",
+    desc: "🔴 편 목록 캐시를 개발 서버에서 켠다 — 편을 고쳐도 옛 본문이 남는다",
+    from: '  return env === "production";',
+    to: '  return env !== "production";',
+  },
+  {
+    id: "MC2",
+    file: "lib/blog/loader.ts",
+    desc: "🔴 픽스처 루트도 캐시를 타게 한다 — 먼저 읽은 픽스처가 나중 것을 덮는다",
+    from: "  if (root !== CONTENT_DIR) return scanPosts(root);",
+    to: "  if (false) return scanPosts(root);",
+  },
+  {
+    id: "MC3",
+    file: "lib/blog/memo.ts",
+    desc: "🔴 꺼져 있는 동안 계산한 값을 캐시에 남긴다 — 다시 켰을 때 그 값이 나온다",
+    from: "    if (!enabled()) return compute();",
+    to: "    if (!enabled()) { cached = compute(); filled = true; return cached; }",
+  },
+  {
+    id: "MC4",
+    file: "lib/blog/memo.ts",
+    desc: "🔴 캐시가 찼는지를 값의 참·거짓으로 판정한다 — 결과가 null 이면 영영 채워지지 않는다",
+    from: "    if (!filled) {",
+    to: "    if (!cached) {",
+  },
+  {
+    id: "A1",
+    file: "lib/blog/graph-animation.ts",
+    desc: "🔴 중단 표시를 무시한다 — 취소를 놓친 프레임이 새 애니메이션과 겹쳐 돈다",
+    from: "    if (stopped) return;",
+    to: "    if (false) return;",
+  },
+  {
+    id: "A2",
+    file: "lib/blog/graph-animation.ts",
+    desc: "마지막 틱에 상한을 씌우지 않는다 — totalTicks 를 지나쳐 배치가 흔들린다",
+    from: "    const next = Math.min(frame * ticksPerFrame, totalTicks);",
+    to: "    const next = frame * ticksPerFrame;",
+  },
+  {
+    id: "A3",
+    file: "lib/blog/graph-animation.ts",
+    desc: "움직임 축소 설정을 무시한다 — 그렇게 요청한 방문자에게도 애니메이션을 돌린다",
+    from: "  if (host.prefersReducedMotion()) return () => {};",
+    to: "  if (false) return () => {};",
+  },
+  {
+    id: "A4",
+    file: "lib/blog/graph-animation.ts",
+    desc: "시작할 때 틱을 0 으로 되돌리지 않는다 — 최종 배치에서 출발해 움직임이 보이지 않는다",
+    from: "  setTicks(0);",
+    to: "  ;",
+  },
 ];
 
 const CHECKS = [
@@ -497,7 +560,7 @@ const CHECKS = [
   ["check-links", "npm run --silent check-links:verify"],
   ["check-mermaid", "npm run --silent check-mermaid:verify"],
   ["build-search-index", "npm run --silent search-index:verify"],
-  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts"],
+  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts"],
 ];
 
 function run(cmd) {
