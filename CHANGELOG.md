@@ -113,6 +113,19 @@
 | 조사 전문 | [`docs/superpowers/reports/2026-09-06-diagram-semantics-survey.md`](docs/superpowers/reports/2026-09-06-diagram-semantics-survey.md) |
 | 판정과 반박할 것 셋 | `HANDOFF.md` 의 「도식 의미 검사 — 조사를 마쳤고 만들지 않기로 판정했다」 |
 
+### merge · 배포
+
+| 항목 | 값 |
+| --- | --- |
+| merge | PR #18 이 **merge 커밋 `0a0583d`** 로 닫혔다 (부모 둘: `572a849` + `5dc1aeb`) |
+| 배포 | run `34021838010` **success** · 전체 **2분 38초** · `build` **2분 21초** · `deploy` **10초** |
+| PR 단계 CI | run `34021022251` **success** · 전체 **2분 35초** · `Upload artifact` 와 `deploy` 가 설계대로 **skipped** |
+| 화면 | **달라진 것이 없다.** 이번 변경은 문서뿐이라 `out/` 에 들어가지 않는다 |
+
+**이 표가 말하는 것**: 배포가 success 인 것과 화면이 바뀐 것은 다른 말이다. 문서만 바뀐 배치는
+파이프라인이 끝까지 도는 동안에도 산출물이 그대로이며, **그 사실 자체를 적어 두지 않으면
+다음 세션이 「배포됐는데 왜 안 보이나」를 묻게 된다.**
+
 ---
 
 ## 2026-09-06 — **카테고리 목록에 그래프가 없던 것은 화면 높이가 아니라 데이터였다.** 지역 그래프를 카테고리 목록에도 띄운다 (PR [#17](https://github.com/withwooyong/withwooyong.github.io/pull/17))
