@@ -157,3 +157,43 @@ export function buildLocalGraph(
 function toNode(post: GraphSource): GraphNode {
   return { id: postId(post), categorySlug: post.categorySlug, slug: post.slug, title: post.title };
 }
+
+/**
+ * 카테고리 목록 페이지의 그래프 중심으로 삼을 편을 고른다. 편이 없으면 null 이다.
+ *
+ * 🔴 **판정이 결정론적이어야 한다.** 빌드마다 중심이 달라지면 같은 커밋에서 다른 화면이
+ * 나오고, 그 차이를 재현할 방법이 없다. 그래서 세 기준을 끝까지 세워 전순서를 만든다.
+ *
+ * | 순위 | 기준 | 왜 |
+ * | --- | --- | --- |
+ * | 1 | 피인용 수 내림차순 | 다른 편이 많이 가리키는 편이 그 카테고리의 관문이다 |
+ * | 2 | 나가는 링크 수 내림차순 | 동점이면 이웃이 더 많이 붙는 쪽이 그래프를 채운다 |
+ * | 3 | id 사전순 오름차순 | 둘 다 같아도 답이 하나로 정해진다 |
+ *
+ * 피인용은 **카테고리 밖에서 온 것도 센다.** `buildLocalGraph` 가 만드는 이웃이 카테고리
+ * 경계를 넘으므로, 안쪽 피인용만 세면 중심을 고른 기준과 그려지는 범위가 어긋난다.
+ */
+export function pickCategoryHubId(
+  posts: GraphSource[],
+  links: LinkIndex,
+  categorySlug: string
+): string | null {
+  const incoming = new Map<string, number>();
+  for (const entry of Array.from(links)) {
+    const [from, targets] = entry;
+    for (const to of Array.from(targets)) {
+      // 자기 링크는 buildLinkIndex 가 이미 버리지만, 다른 경로로 들어온 지형도 받는다.
+      if (to !== from) incoming.set(to, (incoming.get(to) ?? 0) + 1);
+    }
+  }
+
+  const ranked = posts
+    .filter((p) => p.categorySlug === categorySlug)
+    .map((p) => {
+      const id = postId(p);
+      return { id, inbound: incoming.get(id) ?? 0, outbound: (links.get(id) ?? new Set<string>()).size };
+    })
+    .sort((a, b) => b.inbound - a.inbound || b.outbound - a.outbound || a.id.localeCompare(b.id));
+
+  return ranked.length > 0 ? ranked[0].id : null;
+}

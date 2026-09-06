@@ -4,7 +4,7 @@ import matter from "gray-matter";
 import { sortedCategories, type BlogCategory } from "@/content/blog/categories";
 import { blogSeries, findSeries } from "@/content/blog/series";
 import { validateFrontmatter } from "@/lib/blog/frontmatter";
-import { buildLinkIndex, buildLocalGraph, type LinkIndex } from "@/lib/blog/graph";
+import { buildLinkIndex, buildLocalGraph, pickCategoryHubId, type LinkIndex } from "@/lib/blog/graph";
 import { memoizeWhen } from "@/lib/blog/memo";
 import { buildTree } from "@/lib/blog/tree";
 import { buildToc } from "@/lib/toc";
@@ -277,4 +277,30 @@ function getLinkIndex(posts: Post[]): LinkIndex {
 export function getLocalGraph(categorySlug: string, slug: string): LocalGraph {
   const posts = readPosts();
   return buildLocalGraph(posts, getLinkIndex(posts), `${categorySlug}/${slug}`);
+}
+
+/**
+ * 카테고리 목록 페이지에 실을 지역 그래프. 그릴 것이 없으면 null 이다.
+ *
+ * 본문과 달리 중심이 정해져 있지 않으므로 `pickCategoryHubId` 가 허브를 고른다.
+ * 그리는 대상은 여전히 **한 편의 이웃**이라서 `buildLocalGraph` 를 그대로 쓴다.
+ *
+ * 🔴 **null 을 내는 자리가 둘이며 뜻이 다르다.** 편이 없는 카테고리는 허브 자체가 없고,
+ * 편은 있으나 아무 링크도 없으면 이웃이 0개다. 후자를 그리면 점 하나만 남아
+ * 「고장났다」로 읽히므로 위젯을 아예 두지 않는다.
+ * `undefined` 가 아니라 `null` 을 내는 이유는 getStaticProps 가 `undefined` 를
+ * 직렬화하지 못해 빌드가 깨지기 때문이다.
+ */
+export function getCategoryGraph(categorySlug: string): LocalGraph | null {
+  const posts = readPosts();
+  // 편이 없으면 지형을 만들 이유가 없다. 184편을 파싱하는 데 실측 1.4초가 들고,
+  // 개발·테스트에서는 그 결과를 캐시하지도 않는다.
+  if (!posts.some((p) => p.categorySlug === categorySlug)) return null;
+
+  const links = getLinkIndex(posts);
+  const hubId = pickCategoryHubId(posts, links, categorySlug);
+  if (!hubId) return null;
+
+  const graph = buildLocalGraph(posts, links, hubId);
+  return graph.neighbors.length > 0 ? graph : null;
 }
