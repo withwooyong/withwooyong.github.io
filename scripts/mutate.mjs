@@ -702,6 +702,20 @@ const MUTANTS = [
     from: "        if (!cancelled) setSvg(repaintHardcodedStrokes(rendered, isDark));",
     to: "        if (!cancelled) setSvg(rendered);",
   },
+  {
+    id: "TH19",
+    file: "lib/mermaid-theme.ts",
+    desc: "🔴 상속 키워드 거부를 지운다 — 폭을 재는 폰트와 그리는 폰트가 갈려 끝 글자가 잘린다",
+    from: "  if (INHERITING_FONT_VALUES.includes(value.toLowerCase())) return DIAGRAM_FONT_FALLBACK;",
+    to: "",
+  },
+  {
+    id: "TH20",
+    file: "lib/mermaid-theme.ts",
+    desc: "🔴 대체 스택을 상속 키워드로 되돌린다 — 거부는 도는데 거부한 것과 같은 값을 내놓는다",
+    from: 'export const DIAGRAM_FONT_FALLBACK = "Inter, system-ui, sans-serif";',
+    to: 'export const DIAGRAM_FONT_FALLBACK = "inherit";',
+  },
 ];
 
 const CHECKS = [
