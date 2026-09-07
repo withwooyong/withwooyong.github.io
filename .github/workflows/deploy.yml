@@ -100,6 +100,19 @@ jobs:
       - name: Scan repo docs diagrams
         run: npm run check-mermaid:docs
 
+      # 표의 열 수는 위 검사 어느 것도 보지 않는다 — 강조와 링크와 도식을 볼 뿐이다.
+      # 셀이 머리 행보다 많으면 GFM 이 초과분을 버리므로 쓴 내용이 화면에서 사라지는데,
+      # 실측으로 발행본 2곳 · 리포 문서 2곳이 그 상태였고 검사 셋이 전부 통과시켰다.
+      # 넷 중 셋의 기전은 코드 스팬 안의 세로줄이다 — 백틱은 세로줄을 보호하지 않는다.
+      - name: Prove table checker
+        run: npm run check-table:verify
+
+      - name: Scan published tables
+        run: npm run check-table
+
+      - name: Scan repo docs tables
+        run: npm run check-table:docs
+
       # 문서에 적힌 발행본 수가 실제와 맞는지 본다. README 세 곳이 128편에서 멈춰 있는 동안
       # 실제로는 149편이었다(인수인계 §11). 세는 사람이 없으면 숫자는 반드시 낡는다.
       #

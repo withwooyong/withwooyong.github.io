@@ -233,7 +233,7 @@ CrewAI는 Task 리스트가 유한해 끝이 구조적으로 보장된다. AutoG
 | Chunking / Overlap | 문서를 검색 단위로 자르는 것 / 경계 손실을 줄이려 앞 조각 끝을 겹치는 것 |
 | Embedding | 텍스트를 의미를 담은 실수 벡터로 변환. 질문과 문서는 **같은 모델**이어야 함 |
 | Retriever | 질문을 받아 관련 문서를 돌려주는 인터페이스 |
-| LCEL | `|`로 컴포넌트를 잇는 LangChain 표현식. 합성이 닫혀 있어 스트리밍·재시도가 따라옴 |
+| LCEL | `\|`로 컴포넌트를 잇는 LangChain 표현식. 합성이 닫혀 있어 스트리밍·재시도가 따라옴 |
 | Runnable | `invoke`/`stream`/`batch`를 갖는 LangChain 공통 인터페이스 |
 | StateGraph | 상태 스키마를 받아 노드·엣지를 조립하는 LangGraph 그래프 빌더 |
 | ReAct | 추론 → 도구 호출 → 관찰을 반복하는 에이전트 패턴 |
