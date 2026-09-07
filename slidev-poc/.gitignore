@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+dist
+dist-*
+*.local
+.vite-inspect
+.remote-assets
+components.d.ts
+
+# 내보낸 산출물 (재생성 가능)
+*.pdf
