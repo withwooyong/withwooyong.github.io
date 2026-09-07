@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { mermaidThemeVariables, repaintHardcodedStrokes } from "@/lib/mermaid-theme";
+import { mermaidThemeVariables, repaintHardcodedStrokes, resolveDiagramFontFamily } from "@/lib/mermaid-theme";
 import { cn } from "@/lib/utils";
 import { Maximize2, Minus, Plus, RotateCcw } from "lucide-react";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 /** <html class="dark"> 변화를 구독한다. 이 저장소의 테마는 컨텍스트 없이 클래스만 토글한다. */
 function useIsDark(): boolean {
@@ -61,6 +61,7 @@ type MermaidProps = { chart: string };
 export function Mermaid({ chart }: MermaidProps) {
   const reactId = useId();
   const isDark = useIsDark();
+  const figureRef = useRef<HTMLElement>(null);
   const [svg, setSvg] = useState("");
   const [failed, setFailed] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
@@ -75,11 +76,22 @@ export function Mermaid({ chart }: MermaidProps) {
 
     import("mermaid")
       .then(async ({ default: mermaid }) => {
+        // 폰트를 상속에 맡기면 재는 자리와 그리는 자리의 폰트가 갈려 라벨 끝 글자가 잘린다.
+        // 왜 그런지와 실측은 lib/mermaid-theme.ts의 resolveDiagramFontFamily에 적어 두었다.
+        // 확대 뷰어는 포털이라 body 아래에 그려지는데, 이 값이 SVG에 박히므로 본문과 같은 폰트가 된다.
+        const fontFamily = resolveDiagramFontFamily(
+          figureRef.current ? getComputedStyle(figureRef.current).fontFamily : null
+        );
+
+        // 웹폰트가 로드되기 전에 재면 대체 글꼴의 자폭으로 상자가 만들어진다.
+        await document.fonts?.ready;
+        if (cancelled) return;
+
         mermaid.initialize({
           startOnLoad: false,
           theme: isDark ? "dark" : "default",
           securityLevel: "strict",
-          fontFamily: "inherit",
+          fontFamily,
           // 색은 사이트 팔레트를 따른다. 값과 대비 근거는 lib/mermaid-theme.ts에 있다.
           themeVariables: mermaidThemeVariables(isDark),
           // 도식을 자연 크기로 그린 뒤, 표시 크기는 CSS가 정하게 둔다.
@@ -142,7 +154,7 @@ export function Mermaid({ chart }: MermaidProps) {
   }
 
   return (
-    <figure className="my-6">
+    <figure ref={figureRef} className="my-6">
       {/* 본문 미리보기 — 폭에 맞춰 전체가 보이도록 축소한다. */}
       <button
         type="button"
