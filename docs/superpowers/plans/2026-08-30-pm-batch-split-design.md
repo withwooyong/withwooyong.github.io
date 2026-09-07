@@ -2558,7 +2558,7 @@ frontmatter 를 **포함한다**」로 이미 정의했고, 고정 비용 상수
 
 | 무엇을 했나 | 내용 |
 | --- | --- |
-| 정규화 | `scripts/source-overlap.mjs` 의 `normalizeStripSpace` 를 `dup-scan` 의 `normalizeLine` 과 맞췄다 — 링크는 제목만, `` [|*_`#>~] `` 제거, 공백 제거 |
+| 정규화 | `scripts/source-overlap.mjs` 의 `normalizeStripSpace` 를 `dup-scan` 의 `normalizeLine` 과 맞췄다 — 링크는 제목만, `` [\|*_`#>~] `` 제거, 공백 제거 |
 | 자기 검사 | **⑫ ⑫-b ⑫-c** 를 추가했다. 굵게를 씌운 축자 복사 · 표 셀 경계를 넘는 일치 · 두 검사기 정규화의 문자열 대조. **12/12 → 15/15** |
 | 🔴 뮤테이션 증명 | 정규화를 **옛 판으로 되돌리자 새 케이스 셋이 전부 FAIL** 했다(15/15 → 12/15). 케이스가 실제로 그 결함을 잡는다는 뜻이다 |
 
