@@ -1,6 +1,6 @@
 # HANDOFF
 
-> 마지막 갱신 2026-09-06 · `pm` 배치 **시리즈 A 9/9 · 시리즈 B 8/8 완결** ·
+> 마지막 갱신 2026-09-07 (작업은 2026-09-06 에 시작했다) · `pm` 배치 **시리즈 A 9/9 · 시리즈 B 8/8 완결** ·
 > **이번 세션은 앞선 세 세션의 Slidev 검증을 조사 문서 한 편으로 모았다.**
 > 마크다운 발행본을 발표 슬라이드로 옮길 수 있는지가 물음이었고, 답은 **기능은 전부
 > 동작하고 걸리는 것은 분량과 링크**다. 넘친 슬라이드 네 장은 **전부 표가 있는 장**이었고
@@ -1245,6 +1245,7 @@ WCAG AA 기준 4.5 가 필요하다. 「이어진 글」·「카테고리」·�
 | 무엇 | 왜 남겼나 | 확인할 진실원 |
 | --- | --- | --- |
 | `:verify` 스크립트의 **서술 방식이 두 가지**다 | 🔴 「README 에 없는 6개」로 적어 왔으나 **틀렸다.** 실측으로 `package.json` 의 `:verify` 는 **12개**이고 **12개 전부 README 에 있다** — 독립 행이 7개(`dup-scan`·`check-forbidden`·`check-markup`·`check-links`·`check-mermaid`·`fix-markup`·`search-index`), 본 명령 설명 안에 병기한 것이 5개(`check-counts` 98행 · `compose` 101행 · `map-terms` 102행 · `source-overlap` 103행 · `mutate` 104행)다. `check-counts:print` 도 98행에 있다. **미해결 작업이 아니라 표기 통일 여부의 판단**이며, 「일관된 의도로 보인다」는 종전 판단 자체는 실측과 맞는다 | `README.md` 81~104행 |
+| 🆕 `TOOL-TRAPS.md` 에 **48·49 번이 비어 있다** | 이번 세션이 `CLAUDE.md` 요약표에 함정 둘을 더했으나(셸의 백슬래시 확장분 · `git ls-files` 의 미추적 파일) **재현 절차와 실측값은 쓰지 않았다.** 요약표는 「전체 47건이 저기 있다」고 말하므로 그 문장이 두 행에 대해서는 참이 아니며, `CLAUDE.md` 에 그 사실을 명시해 두었다. **다음 세션이 47번 항목의 형식(증상 · 기전 · 대응)을 따라 두 항목을 써 넣고 47 을 49 로 고쳐라** | `CLAUDE.md` 의 함정 표 마지막 두 행 · `docs/TOOL-TRAPS.md` 의 47번 |
 | `README.md` 139행의 `scripts/` 나열이 낡았다 | `scripts/` 의 `.mjs` 는 **14개**인데 트리에는 **6개**만 적혀 있다 (`generate-sitemap`·`dup-scan`·`check-forbidden`·`check-baseline`·`check-counts`·`compose`). 빠진 여덟은 `build-search-index`·`check-links`·`check-markup`·`check-mermaid`·`fix-markup`·`map-terms`·`mutate`·`source-overlap` 이다. **대표 예시를 드는 줄인지 전량 나열인지 판단이 필요**하고, 이 리포는 「검사기 종 수」가 세 세션 연속 낡았던 자리라 세션 끝의 얕은 컨텍스트에서 손대지 않았다 | `ls scripts/` · `README.md` 139행 |
 
 
