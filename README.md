@@ -91,6 +91,9 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 544개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
 | `npm run check-mermaid:docs` | 위 검사를 리포 문서 64개의 도식 130개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
 | `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 26건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
+| `npm run check-table` | 🔴 **표의 열 수가 어긋난 행** 스캔(발행본). GFM 은 셀이 머리 행보다 많으면 **초과분을 버리고** 적으면 빈 칸으로 채운다 — 오류가 아니라 조용한 오작동이라 화면을 보기 전에는 드러나지 않는다. 판정은 정규식이 아니라 파서가 한다 |
+| `npm run check-table:docs` | 위 검사를 발행본 밖의 리포 문서 전량에 돌린다. 실측으로 리포 전체 표 3,718개 중 어긋난 행이 **4곳**이었고 넷 다 진짜였다 |
+| `npm run check-table:verify` | 위 검사의 자체 검사 (`--self-test` 22건). 판정에 **도달한** 표 수를 함께 세어 대상 수와 대조한다 |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
@@ -171,7 +174,7 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 | 자리 | 언제 | 무엇 |
 |------|------|------|
 | **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | `content/blog`를 건드린 커밋 | 금칙어 self-test → 콘텐츠 불변식 → 금칙어 스캔. 하나라도 실패하면 커밋이 막힙니다 |
-| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 23스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 22스텝이 돕니다 |
+| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 26스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 25스텝이 돕니다 |
 
 훅은 `npm install` 시 `prepare` 스크립트가 자동으로 설정합니다(`git config core.hooksPath .githooks`).
 수동으로 켜려면 같은 명령을 직접 실행하세요. husky 같은 의존성은 쓰지 않습니다.

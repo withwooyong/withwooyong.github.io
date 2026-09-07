@@ -702,6 +702,59 @@ const MUTANTS = [
     from: "        if (!cancelled) setSvg(repaintHardcodedStrokes(rendered, isDark));",
     to: "        if (!cancelled) setSvg(rendered);",
   },
+
+  // 표의 열 수 — `check-table`. 이 검사기가 없던 동안 어긋난 행 4곳(발행본 2 · 문서 2)이
+  // 마크업 · 링크 · 도식 검사 셋을 전부 통과했다. 아래 일곱은 그 판정이 실제로 무언가를
+  // 지키는지 본다.
+  {
+    id: "TB1",
+    file: "scripts/check-table.mjs",
+    desc: "셀이 모자란 행을 위반으로 보지 않는다 (초과만 잡고 부족을 놓친다)",
+    from: "        if (actual !== head) {",
+    to: "        if (actual > head) {",
+  },
+  {
+    id: "TB2",
+    file: "scripts/check-table.mjs",
+    desc: "머리 행이 아니라 첫 데이터 행을 기준으로 삼는다 (기준 자체가 어긋난다)",
+    from: "      const head = node.children[0]?.children.length ?? 0;",
+    to: "      const head = node.children[1]?.children.length ?? 0;",
+  },
+  {
+    id: "TB3",
+    file: "scripts/check-table.mjs",
+    desc: "첫 데이터 행을 대조에서 건너뛴다 (표의 맨 윗 행이 깨져 있으면 놓친다)",
+    from: "      for (const row of node.children.slice(1)) {",
+    to: "      for (const row of node.children.slice(2)) {",
+  },
+  {
+    id: "TB4",
+    file: "scripts/check-table.mjs",
+    desc: "표의 첫 줄을 보고한다 (어느 행이 어긋난 것인지를 잃는다)",
+    from: "            line: row.position.start.line,",
+    to: "            line: node.position.start.line,",
+  },
+  {
+    id: "TB5",
+    file: "scripts/check-table.mjs",
+    desc: "어긋남의 종류를 늘 초과로 적는다 (화면에서 사라지는 쪽인지 아닌지가 뭉개진다)",
+    from: '            kind: actual > head ? "초과" : "부족",',
+    to: '            kind: "초과",',
+  },
+  {
+    id: "TB6",
+    file: "scripts/check-table.mjs",
+    desc: "🔴 스캔에서 빠진 경로를 알리지 않는다 (일부만 검사한 결과가 0건으로 보인다)",
+    from: "  if (rejected.length) {",
+    to: "  if (false) {",
+  },
+  {
+    id: "TB7",
+    file: "scripts/check-table.mjs",
+    desc: "🔴 대상 0개를 통과로 센다 (카테고리 이름의 오타 하나가 위반 0 이 된다)",
+    from: "  if (scanned === 0) {",
+    to: "  if (false) {",
+  },
 ];
 
 const CHECKS = [
@@ -713,6 +766,7 @@ const CHECKS = [
   ["fix-markup", "npm run --silent fix-markup:verify"],
   ["check-links", "npm run --silent check-links:verify"],
   ["check-mermaid", "npm run --silent check-mermaid:verify"],
+  ["check-table", "npm run --silent check-table:verify"],
   ["build-search-index", "npm run --silent search-index:verify"],
   ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts"],
 ];
