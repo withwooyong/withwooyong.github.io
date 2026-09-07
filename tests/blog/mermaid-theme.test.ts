@@ -4,11 +4,13 @@ import { describe, expect, it } from "vitest";
 import { AA_NON_TEXT, AA_TEXT, contrastRatio, parseHex, relativeLuminance } from "@/lib/contrast";
 import {
   CONTRAST_PAIRS,
+  DIAGRAM_FONT_FALLBACK,
   MERMAID_FONT_SIZE,
   MERMAID_THEME_COLORS,
   auditContrast,
   mermaidThemeVariables,
   repaintHardcodedStrokes,
+  resolveDiagramFontFamily,
   uncheckedKeys,
 } from "@/lib/mermaid-theme";
 
@@ -133,6 +135,62 @@ describe("mermaid.initialize에 넘기는 값", () => {
   it("글자 크기는 색 지도 안에 들어 있지 않다", () => {
     expect(MERMAID_THEME_COLORS.light.fontSize).toBeUndefined();
     expect(MERMAID_THEME_COLORS.dark.fontSize).toBeUndefined();
+  });
+});
+
+/**
+ * mermaid 는 라벨 폭을 body 바로 아래의 임시 컨테이너에서 재는데, 도식이 그려지는 자리는
+ * font-sans 가 걸린 본문이다. 조상이 다르므로 폰트를 상속에 맡기면 재는 폰트와 그리는
+ * 폰트가 갈리고, 자폭 차이만큼 좁게 만들어진 상자가 마지막 글자를 잘라낸다.
+ *
+ * 🔴 이 결함은 기존 검사기가 판정하지 못한다. 문법도 링크도 색도 멀쩡하고, 잘림은 브라우저가
+ * 레이아웃을 계산한 뒤에야 드러나기 때문이다 — 실제로 도식 549개를 담은 채 배포됐고 세 세션
+ * 동안 아무 검사도 이것을 보지 못했다. 그래서 판정을 순수 함수로 뽑아 여기에 묶는다.
+ * 여기 케이스가 지키는 것은 잘림 자체가 아니라 **상속 키워드가 다시 들어오는 길**이다.
+ */
+describe("도식에 넘길 폰트의 판정", () => {
+  it("그려질 자리에서 해석된 스택은 그대로 쓴다", () => {
+    const resolved = "__Inter_f367f3, __Inter_Fallback_f367f3, Inter, system-ui, sans-serif";
+    expect(resolveDiagramFontFamily(resolved)).toBe(resolved);
+  });
+
+  // TH19: 이 한 줄이 결함이 되살아나는 자리다. 되돌리기 쉽고, 되돌려도 다른 검사는 울지 않는다.
+  it("상속에 맡기는 값은 거부한다", () => {
+    for (const keyword of ["inherit", "initial", "unset", "revert", "revert-layer"]) {
+      expect(resolveDiagramFontFamily(keyword)).toBe(DIAGRAM_FONT_FALLBACK);
+      expect(resolveDiagramFontFamily(keyword.toUpperCase())).toBe(DIAGRAM_FONT_FALLBACK);
+      expect(resolveDiagramFontFamily(`  ${keyword}  `)).toBe(DIAGRAM_FONT_FALLBACK);
+    }
+  });
+
+  // 요소가 아직 붙지 않았거나 계산된 값이 비어 있는 경우. 빈 값을 그대로 넘기면 mermaid 가
+  // 자기 기본값으로 되돌아가는데, 그 기본값이 본문 폰트와 같다는 보장이 없다.
+  it("값을 얻지 못하면 대체 스택을 준다", () => {
+    for (const empty of [null, undefined, "", "   "]) {
+      expect(resolveDiagramFontFamily(empty)).toBe(DIAGRAM_FONT_FALLBACK);
+    }
+  });
+
+  // TH20: 대체 스택 자신이 상속 키워드를 담고 있으면 위 세 케이스가 전부 헛돈다.
+  // var() 를 담아도 마찬가지다 — body 아래에서는 변수가 정의되지 않아 선언째로 무효가 된다.
+  it("대체 스택은 상속 키워드도 CSS 변수도 담지 않는다", () => {
+    expect(DIAGRAM_FONT_FALLBACK).not.toMatch(/var\(/);
+    expect(resolveDiagramFontFamily(DIAGRAM_FONT_FALLBACK)).toBe(DIAGRAM_FONT_FALLBACK);
+  });
+
+  // 반환값이 그대로 mermaid 설정에 들어가므로, 어떤 입력에도 상속 키워드가 새어 나가면 안 된다.
+  it("어떤 입력에도 상속 키워드를 그대로 돌려주지 않는다", () => {
+    const inputs = ["inherit", "INHERIT", " unset ", "", null, undefined, "Inter, sans-serif"];
+    for (const input of inputs) {
+      const out = resolveDiagramFontFamily(input);
+      expect(["inherit", "initial", "unset", "revert", "revert-layer"]).not.toContain(out.toLowerCase());
+    }
+  });
+
+  // 상속 키워드를 「담고 있을」 뿐인 폰트 이름까지 거부하면 멀쩡한 스택이 대체값으로 바뀐다.
+  it("이름 안에 키워드가 들어 있을 뿐인 스택은 거부하지 않는다", () => {
+    const stack = "Inherit Sans, system-ui, sans-serif";
+    expect(resolveDiagramFontFamily(stack)).toBe(stack);
   });
 });
 
