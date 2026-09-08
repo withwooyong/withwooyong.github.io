@@ -27,6 +27,8 @@
 > **금칙어 예고는 어느 낱말을 쓸지가 아직 정해지지 않았다는 것을 함께 적어야 한다.**
 >
 > 함께 실은 것은 PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 의 merge 커밋과 배포 run 을 아래 「푸시 · 배포」 행에 채운 것이다.
+> 이 세션의 산출은 PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 로 열려 있고 CI run `34181470670` 이 **success** 다
+> (전체 133초 · `deploy` 는 PR 이라 건너뛴다). **`main` 으로의 merge 는 아직 받지 않았다.**
 >
 > 🔴 **같은 함정을 두 세션이 각각 썼고, 이쪽 판을 버렸다.** 이 세션도 `CLAUDE.md` 가 비워 둔
 > 자리에 백슬래시 함정을 50번으로 썼는데, 병렬로 진행된 PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 이 같은 번호에 더 깊은
@@ -150,7 +152,7 @@
 | 🆕 도식 라벨 폭 | ✅ **닫았다.** 그려질 자리에서 해석된 폰트 스택을 `mermaid.initialize` 에 넘긴다(`resolveDiagramFontFamily`). 브라우저 실측 **여섯 편 · 라벨 361개 · 라이트와 다크 모두 넘침 0** 이고 확대 뷰어도 **18개 0** 이다. 판정은 jsdom 으로 못 한다 — 케이스 여섯과 뮤턴트 둘이 지키는 것은 **상속 키워드가 다시 들어오는 길**이다 |
 | 훅 | ✅ 발행본 **11단** · 문서 **8단** · 코드만이면 즉시 통과 (🆕 표 증명 · 표 스캔이 각각 끝에 붙었다) |
 | CI | ✅ `build` **26스텝** + `deploy` 1스텝 · **`main` 푸시와 PR 양쪽에서 돈다** (PR 은 25스텝) |
-| ⚠️ CI 스텝 수를 세는 법 | `gh run view --json jobs` 는 `build` 를 **27스텝**으로 보고한다. 러너가 `Set up job`·`Post Setup Node`·`Post Checkout`·`Complete job` **넷**을 붙이기 때문이다. 문서의 수(지금은 **26**)는 워크플로 정의의 것이며 둘 다 맞다 — **다른 수를 대조하고 「문서가 낡았다」고 판단하지 마라.** 🔴 **이번 세션이 정확히 그 실수를 했다** — 27 을 보고 「23 은 낡았다」고 사용자에게 보고했다가 이 행을 읽고 되돌렸다. 이 행이 없었다면 멀쩡한 문서를 고쳤을 것이다 |
+| ⚠️ CI 스텝 수를 세는 법 | `gh run view --json jobs` 는 `build` 를 **30스텝**으로 보고한다. 러너가 `Set up job`·`Post Setup Node`·`Post Checkout`·`Complete job` **넷**을 붙이기 때문이다. 문서의 수(지금은 **26**)는 워크플로 정의의 것이며 둘 다 맞다 — **다른 수를 대조하고 「문서가 낡았다」고 판단하지 마라.** 🔴 **이번 세션이 정확히 그 실수를 했다** — 27 을 보고 「23 은 낡았다」고 사용자에게 보고했다가 이 행을 읽고 되돌렸다. 이 행이 없었다면 멀쩡한 문서를 고쳤을 것이다 |
 | 강조 렌더 실패 | ✅ 발행본 **0회 · 187편** · 리포 문서 **0회 · 75개** |
 | 깨진 링크 | ✅ 발행본 **0곳** · 리포 문서 **0곳** |
 | 깨지는 도식 | ✅ 발행본 **0곳**(552개) · 리포 문서 **0곳**(176개) — **판정 도달 전량** · 합계 **728개** |
@@ -165,6 +167,8 @@
 | 분량 하한 SOFT | **3편** (세션 시작 5편) — 남은 셋은 **정당하다고 판정했다.** 아래 판정 표를 보라 |
 | 커밋 | 이번 세션은 `content/pm-practice-part3` 에서 넷이다 — 문서·함정 `ee9c68c`(그때 쓴 50번은 아래대로 버렸다) · 편3 발행 `2ef9e60` · 표 검사기 갈래 병합 `b904194` · 함정 52번과 수치 갱신이다. 그 앞은 두 갈래가 병렬로 진행됐다: `pm-po-domains` 가 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 로 PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) → merge `4d924ae`, `presentation-format` 이 `08925ee` 외 넷으로 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 다 |
 | 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 이 merge 커밋 `4d924ae` 로 닫혔다.** 배포 run `34092570743` 이 **success** 였고 전체 **159초** · `build` **142초** · `deploy` **9초** 였다. ⚠️ 그에 앞서 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 그 병합이 커밋 `3dded94` 다. PR 단계의 CI 는 run `34037314763` **success**(전체 **133초** · `build` **130초** · `deploy` **skipped**)였다 |
+| 🆕 이번 푸시 · CI | ✅ **PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 를 열었고 CI run `34181470670` 이 success 였다** (전체 **133초** · `build` **성공** · `deploy` **skipped**). `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다 — 충돌하는 PR 은 빨간 것이 아니라 run 이 0개다. **merge 커밋과 배포 run 은 뒤이은 세션이 채운다** |
+| 🔴 이 워크트리의 `out/` 이 잠겨 있다 | 빈 디렉터리인데 `rmdir`·`mv` 가 모두 `EBUSY` 다. 이 워크트리를 대상으로 띄웠던 정적 서버(PID 39464)를 종료해도 풀리지 않았고 잔여 빌드 프로세스도 없다. ⇒ **로컬 빌드가 여기서 죽으므로**, 빌드 검증은 `git worktree add --detach` 로 임시 워크트리를 띄워 거기서 했다(정션 연결 → 빌드 → `cmd /c rmdir` 로 정션만 제거 → `worktree remove`). **워크트리를 정리할 때 이 디렉터리가 걸림돌이 된다** |
 | 🆕 커밋 (표 검사기 갈래) | `content/presentation-decks` 넷이다 — 검사기와 발표본 `f1d8c13` · main 병합 `9b13056` · 문서 수치 `a292caa` · 기준선 기록 `9be4c1d`. PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 이며 merge 커밋과 배포 run 은 뒤이은 세션이 채운다 |
 | 🆕 푸시 · CI (표 검사기 갈래) | ✅ **PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 을 열었고 CI run `34107722092` 이 success 였다** (`build` **success · 120초 · 30스텝** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 와 `deploy` job 은 설계대로 skipped). **새 표 검사 세 스텝이 PR 에서 실제로 돌았다** — 19 `Prove table checker` · 20 `Scan published tables` · 21 `Scan repo docs tables` 가 전부 success 다. `mergeable` 은 `MERGEABLE` 이다 |
 | 커밋 | **두 갈래가 병렬로 진행됐다.** `pm-po-domains` 는 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 다섯이고, `presentation-format` 은 `08925ee` 외 넷이 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 로 닫혔다. 그 앞은 PR [#18](https://github.com/withwooyong/withwooyong.github.io/pull/18) → merge `0a0583d` 다 |

@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-07 — `product-management` **프로덕트 실무 편3**(총 187편) · 🔴 **이번에는 초과의 67%가 배율 안에서 나왔다** — 편2와 정반대라 고친 상수는 건드리지 않았다
+## 2026-09-07 — `product-management` **프로덕트 실무 편3**(총 187편) · 🔴 **이번에는 초과의 67%가 배율 안에서 나왔다** — 편2와 정반대라 고친 상수는 건드리지 않았다 (PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22))
 
 > 편3 [`why-data-and-metric-dictionary`](content/blog/product-management/why-data-and-metric-dictionary.md) 를 발행했다. 원본 `11-데이터-드리븐` 의 §1~§4 를 배정받아
 > 데이터가 필요한 이유 · 정량과 정성의 분업 · 퍼널 지표의 정의 · 정성 데이터를 모으는
