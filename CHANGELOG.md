@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-08 — `product-management` **프로덕트 실무 편4**(총 188편) · ✅ **초고가 목표의 +2.5%로 들어왔다** — 고친 상수를 지지하는 두 번째 대조군이다
+## 2026-09-08 — `product-management` **프로덕트 실무 편4**(총 188편) · ✅ **초고가 목표의 +2.5%로 들어왔다** — 고친 상수를 지지하는 두 번째 대조군이다 (PR [#23](https://github.com/withwooyong/withwooyong.github.io/pull/23))
 
 > 편4 [`data-driven-project-walkthrough`](content/blog/product-management/data-driven-project-walkthrough.md) 를 발행했다. 원본 `11-데이터-드리븐` 의 §5·§6 을 배정받아
 > 목표 수립 · 우선순위 · 요구사항 문서 · 지표 설정 · 성과 분석까지 가상 프로젝트 한 바퀴를
