@@ -145,15 +145,16 @@
 
 ## 지금 상태
 
-발행본 **186편**이다. 앞 배치가 편8로 끝난 뒤 열네 세션이 검사기의 사각지대를 닫았고, 그 뒤
-설계서 · 편1 · **편2** 가 이어졌다. 남은 것은 편3~편8 **여섯 편**이다.
+발행본 **188편**이다. 앞 배치가 편8로 끝난 뒤 열네 세션이 검사기의 사각지대를 닫았고, 그 뒤
+설계서 · 편1 · 편2 · 편3 · **편4** 가 이어졌다. 남은 것은 편5~편8 **네 편**이다.
 
-🔴 **편3 부터는 §3-2 의 새 예산표를 쓴다** — 초판의 목표 B 를 그대로 쓰면 여섯 편이 같은
-초과를 반복한다. 편3 의 목표는 15,871 이 아니라 **17,162**(밴드 16,203 ~ 18,120)다.
+✅ **§3-2 의 예산표가 두 편 연속으로 지지되었다.** 편3 의 역산 k 가 2.050, 편4 가 **2.033** 으로
+0.017 차이이며 둘 다 밴드(1.81 ~ 2.09) 안이다. 편2 에서 고친 고정 비용 3,746 을 유지하므로
+**편5 의 목표는 20,004**(밴드 18,840 ~ 21,167)이고 재환산하지 않는다.
 
 | 항목 | 값 |
 | --- | --- |
-| 발행 완료 | **A 편1~9 + B 편1~편8 + `pm-practice` 편1·편2 (186편)** · 새 시리즈 **2/8** |
+| 발행 완료 | **A 편1~9 + B 편1~편8 + `pm-practice` 편1~편4 (188편)** · 새 시리즈 **4/8** |
 | 검사기 | ✅ `scripts/` **열한 종**(🆕 `check-table`) + `tests/blog/` **14파일 200케이스** · 뮤턴트 **105개** |
 | 도식 팔레트 | ✅ `lib/mermaid-theme.ts` — 라이트·다크 각 **42색** · 대비 짝 **43개**(글자 21 · 비텍스트 22) · 위반 **0** · 브라우저 실측 **양쪽 모드 0** |
 | 🆕 도식 라벨 폭 | ✅ **닫았다.** 그려질 자리에서 해석된 폰트 스택을 `mermaid.initialize` 에 넘긴다(`resolveDiagramFontFamily`). 브라우저 실측 **여섯 편 · 라벨 361개 · 라이트와 다크 모두 넘침 0** 이고 확대 뷰어도 **18개 0** 이다. 판정은 jsdom 으로 못 한다 — 케이스 여섯과 뮤턴트 둘이 지키는 것은 **상속 키워드가 다시 들어오는 길**이다 |
@@ -167,7 +168,7 @@
 | 도식의 의미 | ✅ 조사를 마쳤고 검사기를 만들지 않기로 판정했다. 다시 꺼내려거든 아래 판정 절의 셋을 먼저 반박하라 |
 | 발표 슬라이드 | ✅ 🆕 **발표본이 넷이다.** `slides-patterns` 29장 · `slides-team-ops` 30장 · `slides-governance` 25장 · `slides-search` 35장(`pages/` 로 6부 분할). 조사 문서가 「확인하지 않았다」고 남긴 `pages/` 분할이 **실제로 빌드된다.** 119장의 넘침을 카나리 대조군을 세워 실측해 **6장**을 찾았고 표 패딩을 줄여 전부 552px 안으로 넣었다 |
 | 앵커 실존 | ✅ **28개 전부 헤딩에 닿는다** — 훅과 CI 양쪽에서 돈다 |
-| 검색 인덱스 | ✅ `out/blog/search-index.json` · **187편 · 헤딩 2,712개 · 316 KB** (2026-09-07 빌드 실측 · 편3 포함). 산출물 금칙어는 **537개 파일에서 HARD 0회**이고 sitemap 은 **272개 URL** 이다 |
+| 검색 인덱스 | ✅ `out/blog/search-index.json` · **188편 · 헤딩 2,723개 · 318 KB** (2026-09-08 빌드 실측 · 편4 포함). 산출물 금칙어는 **541개 파일에서 HARD 0회**이고 sitemap 은 **274개 URL** 이다. 자기 검사 **16/16** |
 | 지역 그래프 위젯 | ✅ **본문과 카테고리 목록** 사이드바 하단 · 이웃 상한 **12** · 초과분은 `+N` · `tall`(높이 720px) 미만이면 감춘다 |
 | 카테고리 그래프 | ✅ 피인용 최다 편을 허브로 삼는다(동점은 나가는 링크 → id 사전순) · **중심이 링크다** · 캡션은 `h-12`(3줄) · 카테고리 **여덟 전부**에서 그려진다 |
 | 빌드 시간 | **30.3초** (2026-09-06 실측) — 편 목록 캐시 뒤의 값이다. **같은 세션 대조군은 38.4초**(캐시만 끔)였다. 종전 기준선 55.9초는 다른 날 다른 부하에서 잰 값이라 직접 비교하지 마라 |
@@ -175,14 +176,15 @@
 | 커밋 | 이번 세션은 `content/pm-practice-part3` 에서 넷이다 — 문서·함정 `ee9c68c`(그때 쓴 50번은 아래대로 버렸다) · 편3 발행 `2ef9e60` · 표 검사기 갈래 병합 `b904194` · 함정 52번과 수치 갱신이다. 그 앞은 두 갈래가 병렬로 진행됐다: `pm-po-domains` 가 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 로 PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) → merge `4d924ae`, `presentation-format` 이 `08925ee` 외 넷으로 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 다 |
 | 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 이 merge 커밋 `4d924ae` 로 닫혔다.** 배포 run `34092570743` 이 **success** 였고 전체 **159초** · `build` **142초** · `deploy` **9초** 였다. ⚠️ 그에 앞서 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 그 병합이 커밋 `3dded94` 다. PR 단계의 CI 는 run `34037314763` **success**(전체 **133초** · `build` **130초** · `deploy` **skipped**)였다 |
 | 🆕 이번 푸시 · CI | ✅ **PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 를 열었고 CI run `34181470670` 이 success 였다** (전체 **133초** · `build` **성공** · `deploy` **skipped**). `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다 — 충돌하는 PR 은 빨간 것이 아니라 run 이 0개다. 🆕 **PR 은 merge 커밋 `0ae98c5` 로 `main` 에 닫혔고 배포 run `34182320489` 도 success 다** (`build` **success · 30스텝 · 133초** · `deploy` **success · 9초**) |
-| 🔴 이 워크트리의 `out/` 이 잠겨 있다 | 빈 디렉터리인데 `rmdir`·`mv` 가 모두 `EBUSY` 다. 이 워크트리를 대상으로 띄웠던 정적 서버(PID 39464)를 종료해도 풀리지 않았고 잔여 빌드 프로세스도 없다. ⇒ **로컬 빌드가 여기서 죽으므로**, 빌드 검증은 `git worktree add --detach` 로 임시 워크트리를 띄워 거기서 했다(정션 연결 → 빌드 → `cmd /c rmdir` 로 정션만 제거 → `worktree remove`). **워크트리를 정리할 때 이 디렉터리가 걸림돌이 된다** |
+| 🔴 `out/` 잠금은 **한 워크트리의 문제가 아니다** | 빈 디렉터리인데 `rmdir`·`mv` 가 모두 `EBUSY` 다. 리포 루트에서 처음 관측했고 **2026-09-08 세션이 `…-pm-practice` 워크트리에서도 같은 것을 겪었다** — 거기서는 `out/` 이 없는 상태로 빌드를 시작했는데도 Next 가 산출 직전 `rmdir out` 에서 죽었고, 283페이지 생성까지는 정상이었다. 삭제를 시도하면 `being used by another process` 가 뜬다. 정적 서버를 종료해도, 잔여 빌드 프로세스가 없어도 풀리지 않는다. ⇒ **워크트리를 옮겨 다녀도 피할 수 없으므로 처음부터 임시 워크트리에서 빌드하라**: `git worktree add --detach <경로> <커밋>` → junction 연결 → 빌드 → `cmd /c rmdir` 로 **junction 만** 제거 → `worktree remove --force`. 이 절차는 2026-09-08 에 다시 통과했다 (junction 제거 뒤 원본 577패키지 보존 확인) |
 | 🆕 커밋 (표 검사기 갈래) | `content/presentation-decks` 넷이다 — 검사기와 발표본 `f1d8c13` · main 병합 `9b13056` · 문서 수치 `a292caa` · 기준선 기록 `9be4c1d`. PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 이 merge 커밋 `fb737d8` 로 `main` 에 닫혔다 (부모 둘: `4d924ae` + `a6a595f`) |
 | 🆕 푸시 · CI (표 검사기 갈래) | ✅ **PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 을 열었고 CI run `34107722092` 이 success 였다** (`build` **success · 120초 · 30스텝** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 와 `deploy` job 은 설계대로 skipped). **새 표 검사 세 스텝이 PR 에서 실제로 돌았다** — 19 `Prove table checker` · 20 `Scan published tables` · 21 `Scan repo docs tables` 가 전부 success 다. `mergeable` 은 `MERGEABLE` 이었고 그대로 merge 됐다. 🆕 **merge 뒤의 배포 run `34111770418` 도 success 다** (`build` **success · 30스텝 · 120초** · `deploy` **success · 9초**) — PR 단계와 달리 `Upload artifact` 와 `deploy` 가 설계대로 돌았다 |
 | 커밋 | **두 갈래가 병렬로 진행됐다.** `pm-po-domains` 는 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 다섯이고, `presentation-format` 은 `08925ee` 외 넷이 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 로 닫혔다. 그 앞은 PR [#18](https://github.com/withwooyong/withwooyong.github.io/pull/18) → merge `0a0583d` 다 |
 | 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 을 열었고 CI run `34037314763` 이 success 였다** (전체 **133초** · `build` **130초** · `deploy` **skipped**). ⚠️ 그 직후 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 이 커밋이 그 병합이다. 🆕 **PR 은 merge 커밋 `4d924ae` 로 닫혔고 배포 run `34092570743` 이 success 였다** (전체 **159초** · `build` **142초** · `deploy` **9초**) — 같은 내용이 위 「푸시 · 배포」 행에도 있다 |
 | 직전까지의 푸시 · 배포 | ✅ **PR [#18](https://github.com/withwooyong/withwooyong.github.io/pull/18) 이 merge 커밋 `0a0583d` 로 닫혔다** (부모 둘: `572a849` + `5dc1aeb`). 배포 run `34021838010` 이 **success** 였고 전체 **2분 38초** · `build` **2분 21초** · `deploy` **10초** 였다. PR 단계의 CI 는 run `34021022251` **success**(전체 **2분 35초**)이며 `Upload artifact` 스텝과 `deploy` job 이 설계대로 **skipped** 되었다. ⚠️ 그 앞 run `34020945588` 은 **실패가 아니라 취소**다 — 뒤이은 푸시가 같은 ref 의 run 을 대체했다. ⚠️ **그 배포로 화면이 달라지지는 않았다** — 변경이 문서뿐이라 `out/` 에 들어가지 않는다. 그 앞은 PR #17 의 run `34018339741`(123초), PR #16 의 run `34011795806`(130초), PR #15 의 run `34007702350`(150초), PR #14 의 run `34006877177`(150초)였다. 머지 방식은 **merge 커밋**이다: PR #11~#18 이 전부 부모가 둘이며, 이 리포는 squash 를 쓴 적이 없다 |
 | 프로덕션 실측 | ✅ **카테고리 목록과 본문이 서로 다른 그래프를 그린다는 것을 화면에서 확인했다.** `/blog/ai-agent/` 는 앵커 **13개**(중심 1 + 이웃 12) · 중심이 **링크**(`/blog/ai-agent/langgraph-state-reducer/`) · 연결선 **36개** · 캡션 **두 줄 48px** 로 잘리지 않았고, 중심거리 표준편차 **15.72** · 이웃 간 최소 간격 **23.86** 이었다. 본문 페이지는 앵커 **7개** · 중심이 링크가 **아니고** 캡션 **32px** 여서 둘의 문맥이 섞이지 않았다. 그 앞 세션의 본문 실측은 이웃 **12** · 연결선 **18** · 표준편차 **19.15** · 최소 간격 **42.05** 였다 |
-| 브랜치 | `content/pm-practice-part3` 다 (기점 `origin/main` = `4d924ae`). ⚠️ **이 저장소는 워크트리를 셋 쓴다** — 리포 루트가 `content/presentation-decks` 를, `…-presentation` 이 `research/presentation-format` 을 잡고 있어 이 세션은 `withwooyong.github.io-pm-practice` 를 새로 만들어 썼다. **브랜치를 만들기 전에 `git worktree list` 와 `git status` 를 먼저 읽고 기점을 명시하라.** 새 워크트리에는 `node_modules` 가 없으므로 루트의 것을 junction 으로 연결하고 (`cmd /c mklink /J`) 끝나면 `cmd /c rmdir` 로 링크만 지운다 — `npm install` 은 금지다 |
+| 🆕 이번 푸시 · CI | ✅ **PR [#23](https://github.com/withwooyong/withwooyong.github.io/pull/23) 을 열었고 CI run `34223275846` 이 success 였다** (`build` **success · 30스텝 · 2분 53초** · `deploy` **skipped** — PR 이므로 설계대로다). `MERGEABLE / CLEAN` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다. ⚠️ **30스텝은 문서의 26 이 낡았다는 뜻이 아니다** — 러너가 `Set up job`·`Post Setup Node`·`Post Checkout`·`Complete job` 넷을 붙인다. ⏳ **merge 와 배포 run 은 아직 비어 있다** |
+| 브랜치 | `content/pm-practice-part4` 다 (기점 `origin/main` = `680c519`). ⚠️ **이 저장소는 워크트리를 셋 쓴다** — 리포 루트가 `main` 을, `…-pm-practice` 가 편4 갈래를, `…-ops` 가 `chore/baseline-and-slides` 를 잡고 있다. **브랜치를 만들기 전에 `git worktree list` 와 `git status` 를 먼저 읽고 기점을 명시하라.** 새 워크트리에는 `node_modules` 가 없으므로 루트의 것을 junction 으로 연결하고 끝나면 `cmd /c rmdir` 로 링크만 지운다 — `npm install` 은 금지다. 🔴 **junction 은 PowerShell 의 `New-Item -ItemType Junction` 으로 만들어라** — Bash 에서 `cmd /c mklink /J` 를 돌리면 **출력을 버렸을 때 실패가 성공으로 보고된다**(2026-09-08 실측: 「연결 성공」을 찍고 실제로는 만들어지지 않았다). 만든 뒤 **패키지 수를 원본과 대조하라** |
 | 🆕 새 배치 | ⏳ **`product-management-practice` 8편.** 원본은 `pm-po` 07 · 10 · 11 · 12 이고 배정 원본 **67,741 B** · 배치 총량 **156,366 B** 다. 카테고리는 기존 `product-management` 를 쓰고 **새 카테고리도 새 태그도 만들지 않는다.** 설계서를 승인받은 뒤 편1(지도)부터 쓴다 |
 | 다음 단계 | 아래 **「다음 세션의 작업」** — 우선순위 표를 먼저 보라 |
 
@@ -833,7 +835,7 @@ slate-900 사이의 **전환 애니메이션 보간값**이었고, `scrollIntoVi
 | ~~10~~ | ~~발표본을 **몇 편 더** 만든다~~ | 중간 | 낮음 | 받았다 | ✅ **이번 세션이 넷을 만들었다** — `patterns` 29장 · `team-ops` 30장 · `governance` 25장 · `search` 35장. 표본이 20 → **119장**이 되었고 넘침을 카나리 대조군을 세워 실측해 **6장**을 찾아 전부 닫았다. 🔴 **넘침 검사기는 아직 만들지 않았다** — 판정에 브라우저 렌더가 필요해 `scripts/` 의 다른 검사기와 성격이 다르다. 아래 「넘침을 어떻게 쟀나」를 먼저 읽어라 |
 | **11** | 발표본을 GitHub Pages 에 **실제로 배포한다** | 낮음 | 중간 | **필요** | ⬜ `slidev build --base /<리포>/` 까지는 확인했으나 배포는 하지 않았다. **어느 경로에 둘지**(`/slides/` 따위)와 본체 배포와 어떻게 나눌지가 결정 사항이다 |
 | ~~6~~ | ~~시리즈 A·B 밖의 **새 배치**~~ | 매우 높음 | — | 받았다 | 🎯 **이번 세션이 설계까지 마쳤다.** 원본은 `pm-po` 07·10·11·12 이고 8편 구성이다. ⏳ **남은 것은 집필이며 설계서 승인이 먼저다** — [`2026-09-06-pm-practice-split-design.md`](docs/superpowers/plans/2026-09-06-pm-practice-split-design.md) 를 읽고 §3(예산) · §4(경계) · §7(위험)에 이견이 없는지 보라 |
-| **6-b** | 위 배치의 **집필 8편** | 매우 높음 | — | **설계서 승인** | 🎯 **편3 발행 완료 (3/8).** 다음은 **편4**(`data-driven-project-walkthrough`)이며 원본 `11` §5·§6 이다. **목표 18,674**(밴드 17,606 ~ 19,741) — 편3 이 상수를 건드리지 않았으므로 §3-2 의 값이 그대로 유효하다. 🔴 **편4 는 고정 비용 상수의 두 번째 대조군이다**(설계서 §10-3-a). 편3 이 지표 정의만 다루고 넘겼으므로 **정의를 다시 설명하지 말고 편3 을 링크한다** |
+| **6-b** | 위 배치의 **집필 8편** | 매우 높음 | — | **설계서 승인** | 🎯 **편4 발행 완료 (4/8).** 다음은 **편5**(`team-building-and-agile-org`)이며 원본 `12` §1~§3 이다. **목표 20,004**(밴드 18,840 ~ 21,167) — 편3·편4 가 상수를 두 편 연속 지지했으므로 §3-2 의 값이 그대로 유효하다. 🔴 **발행할 때 자기 파일만 고치지 마라** — 지도편 편 목록 표의 자기 행을 링크로 바꾸고 **앞 편의 마지막 예고 문장**에 자기 링크를 걸어야 한다. 편4 가 두 곳을 비운 채 고립 검사에 걸렸다 (설계서 §10-4-b) |
 | ~~12~~ | ~~도식 라벨의 **마지막 글자가 잘린다**~~ | 낮음 | **높음** | 불필요 | ✅ **이번 세션이 닫았다.** 리포 전체 549개 도식에 걸려 있었고 이미 배포된 상태였다. 실측 여섯 편 · 라벨 361개 · 라이트와 다크 모두 **0** |
 | ~~—~~ | ~~`diagram-design` 후보 B~~ | 중간 | 낮음 | 약간 | ✅ **그보다 앞선 세션이 닫았다** — 위를 보라 |
 | ~~7~~ | ~~`diagram-design` 후보 A · C~~ | 중간에서 높음 | 낮음 | 받았다 | ⬜ **사용자 판단으로 보류했다** (2026-09-06). 아래 **「후보 A 를 하지 않기로 한 근거」를** 읽고, 다시 꺼내려거든 그 여섯 줄을 먼저 반박하라 |
