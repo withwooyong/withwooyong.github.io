@@ -1,6 +1,6 @@
 # HANDOFF
 
-> 마지막 갱신 2026-09-07 · `pm-practice` 배치 **편3/8 발행** · 발행본 **187편** ·
+> 마지막 갱신 2026-09-08 · `pm-practice` 배치 **편3/8 발행** · 발행본 **187편** ·
 > **고친 고정 비용 상수에 첫 대조군이 붙었다.**
 >
 > **이번 세션 —** 편3 [`why-data-and-metric-dictionary`](content/blog/product-management/why-data-and-metric-dictionary.md)(**17,850 B** · 목표 17,162 · 밴드 16,203 ~ 18,120)를
@@ -27,8 +27,15 @@
 > **금칙어 예고는 어느 낱말을 쓸지가 아직 정해지지 않았다는 것을 함께 적어야 한다.**
 >
 > 함께 실은 것은 PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 의 merge 커밋과 배포 run 을 아래 「푸시 · 배포」 행에 채운 것이다.
-> 이 세션의 산출은 PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 로 열려 있고 CI run `34181470670` 이 **success** 다
-> (전체 133초 · `deploy` 는 PR 이라 건너뛴다). **`main` 으로의 merge 는 아직 받지 않았다.**
+> 이 세션의 산출은 PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 이며 CI run `34181470670` 이 **success** 였다
+> (전체 133초 · `deploy` 는 PR 이라 건너뛴다).
+>
+> 🆕 **그 뒤의 기록 갱신 —** PR #20 · #21 · #22 가 전부 `main` 에 닫혔고, 이 커밋이 세 PR 의
+> **merge 커밋과 배포 run 을 상태 표에 채운 것**이다. `4d924ae`(run `34092570743`) ·
+> `fb737d8`(run `34111770418`) · `0ae98c5`(run `34182320489`)이며 셋 다 배포까지 **success** 다.
+> 🔴 **「뒤이은 세션이 채운다」로 남겨 둔 행이 네 개까지 쌓여 있었다** — 문서 갱신만을 위한
+> PR 을 열지 않는 규칙 때문에 기록이 한 칸씩 뒤처지는데, 그것을 **다음 실질 작업의 PR 이
+> 아니라 병합 직후에 바로 채우면** 밀리지 않는다.
 >
 > 🔴 **같은 함정을 두 세션이 각각 썼고, 이쪽 판을 버렸다.** 이 세션도 `CLAUDE.md` 가 비워 둔
 > 자리에 백슬래시 함정을 50번으로 썼는데, 병렬로 진행된 PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 이 같은 번호에 더 깊은
@@ -167,12 +174,12 @@
 | 분량 하한 SOFT | **3편** (세션 시작 5편) — 남은 셋은 **정당하다고 판정했다.** 아래 판정 표를 보라 |
 | 커밋 | 이번 세션은 `content/pm-practice-part3` 에서 넷이다 — 문서·함정 `ee9c68c`(그때 쓴 50번은 아래대로 버렸다) · 편3 발행 `2ef9e60` · 표 검사기 갈래 병합 `b904194` · 함정 52번과 수치 갱신이다. 그 앞은 두 갈래가 병렬로 진행됐다: `pm-po-domains` 가 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 로 PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) → merge `4d924ae`, `presentation-format` 이 `08925ee` 외 넷으로 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 다 |
 | 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 이 merge 커밋 `4d924ae` 로 닫혔다.** 배포 run `34092570743` 이 **success** 였고 전체 **159초** · `build` **142초** · `deploy` **9초** 였다. ⚠️ 그에 앞서 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 그 병합이 커밋 `3dded94` 다. PR 단계의 CI 는 run `34037314763` **success**(전체 **133초** · `build` **130초** · `deploy` **skipped**)였다 |
-| 🆕 이번 푸시 · CI | ✅ **PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 를 열었고 CI run `34181470670` 이 success 였다** (전체 **133초** · `build` **성공** · `deploy` **skipped**). `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다 — 충돌하는 PR 은 빨간 것이 아니라 run 이 0개다. **merge 커밋과 배포 run 은 뒤이은 세션이 채운다** |
+| 🆕 이번 푸시 · CI | ✅ **PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 를 열었고 CI run `34181470670` 이 success 였다** (전체 **133초** · `build` **성공** · `deploy` **skipped**). `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다 — 충돌하는 PR 은 빨간 것이 아니라 run 이 0개다. 🆕 **PR 은 merge 커밋 `0ae98c5` 로 `main` 에 닫혔고 배포 run `34182320489` 도 success 다** (`build` **success · 30스텝 · 133초** · `deploy` **success · 9초**) |
 | 🔴 이 워크트리의 `out/` 이 잠겨 있다 | 빈 디렉터리인데 `rmdir`·`mv` 가 모두 `EBUSY` 다. 이 워크트리를 대상으로 띄웠던 정적 서버(PID 39464)를 종료해도 풀리지 않았고 잔여 빌드 프로세스도 없다. ⇒ **로컬 빌드가 여기서 죽으므로**, 빌드 검증은 `git worktree add --detach` 로 임시 워크트리를 띄워 거기서 했다(정션 연결 → 빌드 → `cmd /c rmdir` 로 정션만 제거 → `worktree remove`). **워크트리를 정리할 때 이 디렉터리가 걸림돌이 된다** |
-| 🆕 커밋 (표 검사기 갈래) | `content/presentation-decks` 넷이다 — 검사기와 발표본 `f1d8c13` · main 병합 `9b13056` · 문서 수치 `a292caa` · 기준선 기록 `9be4c1d`. PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 이며 merge 커밋과 배포 run 은 뒤이은 세션이 채운다 |
-| 🆕 푸시 · CI (표 검사기 갈래) | ✅ **PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 을 열었고 CI run `34107722092` 이 success 였다** (`build` **success · 120초 · 30스텝** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 와 `deploy` job 은 설계대로 skipped). **새 표 검사 세 스텝이 PR 에서 실제로 돌았다** — 19 `Prove table checker` · 20 `Scan published tables` · 21 `Scan repo docs tables` 가 전부 success 다. `mergeable` 은 `MERGEABLE` 이다 |
+| 🆕 커밋 (표 검사기 갈래) | `content/presentation-decks` 넷이다 — 검사기와 발표본 `f1d8c13` · main 병합 `9b13056` · 문서 수치 `a292caa` · 기준선 기록 `9be4c1d`. PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 이 merge 커밋 `fb737d8` 로 `main` 에 닫혔다 (부모 둘: `4d924ae` + `a6a595f`) |
+| 🆕 푸시 · CI (표 검사기 갈래) | ✅ **PR [#21](https://github.com/withwooyong/withwooyong.github.io/pull/21) 을 열었고 CI run `34107722092` 이 success 였다** (`build` **success · 120초 · 30스텝** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 와 `deploy` job 은 설계대로 skipped). **새 표 검사 세 스텝이 PR 에서 실제로 돌았다** — 19 `Prove table checker` · 20 `Scan published tables` · 21 `Scan repo docs tables` 가 전부 success 다. `mergeable` 은 `MERGEABLE` 이었고 그대로 merge 됐다. 🆕 **merge 뒤의 배포 run `34111770418` 도 success 다** (`build` **success · 30스텝 · 120초** · `deploy` **success · 9초**) — PR 단계와 달리 `Upload artifact` 와 `deploy` 가 설계대로 돌았다 |
 | 커밋 | **두 갈래가 병렬로 진행됐다.** `pm-po-domains` 는 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 다섯이고, `presentation-format` 은 `08925ee` 외 넷이 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 로 닫혔다. 그 앞은 PR [#18](https://github.com/withwooyong/withwooyong.github.io/pull/18) → merge `0a0583d` 다 |
-| 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 을 열었고 CI run `34037314763` 이 success 였다** (전체 **133초** · `build` **130초** · `deploy` **skipped**). ⚠️ 그 직후 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 이 커밋이 그 병합이다. merge 커밋과 배포 run 은 뒤이은 세션이 채운다 |
+| 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 을 열었고 CI run `34037314763` 이 success 였다** (전체 **133초** · `build` **130초** · `deploy` **skipped**). ⚠️ 그 직후 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 이 커밋이 그 병합이다. 🆕 **PR 은 merge 커밋 `4d924ae` 로 닫혔고 배포 run `34092570743` 이 success 였다** (전체 **159초** · `build` **142초** · `deploy` **9초**) — 같은 내용이 위 「푸시 · 배포」 행에도 있다 |
 | 직전까지의 푸시 · 배포 | ✅ **PR [#18](https://github.com/withwooyong/withwooyong.github.io/pull/18) 이 merge 커밋 `0a0583d` 로 닫혔다** (부모 둘: `572a849` + `5dc1aeb`). 배포 run `34021838010` 이 **success** 였고 전체 **2분 38초** · `build` **2분 21초** · `deploy` **10초** 였다. PR 단계의 CI 는 run `34021022251` **success**(전체 **2분 35초**)이며 `Upload artifact` 스텝과 `deploy` job 이 설계대로 **skipped** 되었다. ⚠️ 그 앞 run `34020945588` 은 **실패가 아니라 취소**다 — 뒤이은 푸시가 같은 ref 의 run 을 대체했다. ⚠️ **그 배포로 화면이 달라지지는 않았다** — 변경이 문서뿐이라 `out/` 에 들어가지 않는다. 그 앞은 PR #17 의 run `34018339741`(123초), PR #16 의 run `34011795806`(130초), PR #15 의 run `34007702350`(150초), PR #14 의 run `34006877177`(150초)였다. 머지 방식은 **merge 커밋**이다: PR #11~#18 이 전부 부모가 둘이며, 이 리포는 squash 를 쓴 적이 없다 |
 | 프로덕션 실측 | ✅ **카테고리 목록과 본문이 서로 다른 그래프를 그린다는 것을 화면에서 확인했다.** `/blog/ai-agent/` 는 앵커 **13개**(중심 1 + 이웃 12) · 중심이 **링크**(`/blog/ai-agent/langgraph-state-reducer/`) · 연결선 **36개** · 캡션 **두 줄 48px** 로 잘리지 않았고, 중심거리 표준편차 **15.72** · 이웃 간 최소 간격 **23.86** 이었다. 본문 페이지는 앵커 **7개** · 중심이 링크가 **아니고** 캡션 **32px** 여서 둘의 문맥이 섞이지 않았다. 그 앞 세션의 본문 실측은 이웃 **12** · 연결선 **18** · 표준편차 **19.15** · 최소 간격 **42.05** 였다 |
 | 브랜치 | `content/pm-practice-part3` 다 (기점 `origin/main` = `4d924ae`). ⚠️ **이 저장소는 워크트리를 셋 쓴다** — 리포 루트가 `content/presentation-decks` 를, `…-presentation` 이 `research/presentation-format` 을 잡고 있어 이 세션은 `withwooyong.github.io-pm-practice` 를 새로 만들어 썼다. **브랜치를 만들기 전에 `git worktree list` 와 `git status` 를 먼저 읽고 기점을 명시하라.** 새 워크트리에는 `node_modules` 가 없으므로 루트의 것을 junction 으로 연결하고 (`cmd /c mklink /J`) 끝나면 `cmd /c rmdir` 로 링크만 지운다 — `npm install` 은 금지다 |
