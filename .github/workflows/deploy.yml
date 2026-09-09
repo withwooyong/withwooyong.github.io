@@ -129,6 +129,11 @@ jobs:
       - name: Prove search index builder
         run: npm run search-index:verify
 
+      # 마스킹이 이 검사의 전부다. 증명이 없으면 「전량 통과」와 「전량을 마스킹했다」가
+      # 구분되지 않는다. 케이스 16개 가운데 넷이 마스킹이 넓어지지 않았음을 본다.
+      - name: Prove baseline checker
+        run: npm run check-baseline:verify
+
       - name: Build
         run: npm run build
 
@@ -137,25 +142,28 @@ jobs:
       - name: Scan built output
         run: npm run check-forbidden:built
 
-      # GC-6 baseline — 2026-08-18 CI에서 비활성화. 로컬 검사로만 쓴다.
+      # GC-6 baseline — 2026-09-09 되살렸다. 2026-08-18 부터 이 자리는 주석이었다.
       #
-      # 이유: 기준선(scripts/baseline.json)이 **빌드 환경에 종속**된다. Windows 로컬에서 만든
-      # 기준선을 ubuntu CI에서 검사하니 Next.js가 생성한 13개 파일이 전부 「변경」으로 잡혔다
-      # (run 32103823116). public/ 에서 그대로 복사되는 notion/index.html 하나만 일치했다 —
-      # 즉 buildId 마스킹 문제가 아니라 산출물 자체가 환경에 따라 다르다.
+      # 껐던 이유는 기준선이 **빌드 환경에 종속**된다는 것이었다. Windows 로컬에서 만든
+      # 기준선을 ubuntu CI 에서 검사하니 13개가 전부 「변경」으로 잡혔고, public/ 에서 그대로
+      # 복사되는 notion/index.html 하나만 일치했다 (run 32103823116).
       #
-      # 이 상태로 두면 검사가 늘 실패하고, 복구 수단인 --update 를 CI가 돌리게 만들고 싶어진다.
-      # 그러면 scripts/check-baseline.mjs 헤더가 경고한 「검사가 아무것도 막지 못한다」가 된다.
+      # 그때 주석은 「무엇이 다른지 먼저 실측하라」고 남겼다. 2026-09-09 에 그 실측을 했다 —
+      # 배포된 실물이 곧 ubuntu 산출물이므로 같은 커밋(8dfbf9c)의 로컬 빌드와 대조했다.
       #
-      # 되살리려면 둘 중 하나를 해야 한다:
-      #   (a) 기준선을 CI와 같은 환경(ubuntu-latest, node 20)에서 만들어 커밋한다
-      #   (b) CI 안에서 두 번 빌드해 서로 비교한다 — 기준선 파일 자체를 없앤다
-      # 무엇이 다른지 먼저 실측하라. 아티팩트를 받아 13개 파일을 diff 하면 나온다.
+      #   차이는 **JS 청크 파일명의 콘텐츠 해시 하나**였다. index.html 의 청크 참조 10개 중
+      #   `_app` 하나만 갈렸고(CI 38524cbf… · 로컬 64080f6e…), css 와 media 의 해시는 같았다.
+      #   길이가 같아 **파일 크기는 바이트까지 일치했다** — 크기 대조로는 드러나지 않는다.
+      #   그 자리를 buildId 와 같은 방식으로 마스킹하니 15개 전량이 일치했다 (15/15).
       #
-      # 로컬에서는 그대로 유효하다: npm run build && npm run check-baseline
+      # 그래서 주석이 제시했던 두 방법은 필요하지 않았다:
+      #   (a) 기준선을 ubuntu 에서 만들어 커밋한다 — 불필요
+      #   (b) CI 안에서 두 번 빌드해 비교한다 — 불필요. 기준선 파일을 없애면 「빌드가
+      #       결정적인가」만 보게 되어 GC-6 의 목적(비블로그 페이지 불변)을 잃는다
       #
-      # - name: GC-6 baseline
-      #   run: npm run check-baseline
+      # ⚠️ --update 는 CI 가 돌리지 않는다. 자동 갱신하는 순간 이 검사는 아무것도 막지 못한다.
+      - name: Check non-blog baseline
+        run: npm run check-baseline
 
       # PR 에서는 배포하지 않으므로 아티팩트도 만들지 않는다.
       # 위의 검사 스텝은 전부 돈다 — 빌드 산출물 스캔이 여기까지 와야 의미가 있다.

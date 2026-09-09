@@ -29,6 +29,7 @@
     "fix-markup": "node scripts/fix-markup.mjs",
     "fix-markup:verify": "node scripts/fix-markup.mjs --self-test",
     "check-baseline": "node scripts/check-baseline.mjs",
+    "check-baseline:verify": "node scripts/check-baseline.mjs --self-test",
     "check-baseline:update": "node scripts/check-baseline.mjs --update",
     "check-counts": "node scripts/check-counts.mjs",
     "check-counts:verify": "node scripts/check-counts.mjs --self-test",
