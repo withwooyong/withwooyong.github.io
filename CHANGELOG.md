@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-09 — `product-management` **프로덕트 실무 편6**(총 190편) · 🔴 **초고가 목표를 +24.0% 넘겼고 원인이 두 갈래였다** — 규칙 16 을 편3 이후 처음으로 다시 발동했다
+## 2026-09-09 — `product-management` **프로덕트 실무 편6**(총 190편) · 🔴 **초고가 목표를 +24.0% 넘겼고 원인이 두 갈래였다** — 규칙 16 을 편3 이후 처음으로 다시 발동했다 (PR [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25))
 
 > 편6 [`roles-and-organizational-culture`](content/blog/product-management/roles-and-organizational-culture.md) 를 발행했다. 원본 `12-팀빌딩` 의 §4~§7 을 배정받아
 > 직무 · 직급 · 직책의 구분, 팀 빌딩에서 제품 담당자가 하는 일, 그리고 국내 조직문화
