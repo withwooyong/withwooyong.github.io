@@ -342,7 +342,9 @@
 | PR | [#28](https://github.com/withwooyong/withwooyong.github.io/pull/28) · `MERGEABLE` |
 | PR 단계 CI | run **34334630292** `success` · `build` 117초 · 러너 보고 **32스텝** · `deploy` 는 skipped |
 | 🔴 핵심 스텝 | **`Check non-blog baseline: success`** — ubuntu CI 가 **Windows 로컬에서 만든 기준선으로** 통과했다. 환경 독립이 실증된 자리이며, 이것이 통과하지 못했다면 되살리기가 성립하지 않는다 |
-| ⏳ merge | **아직 하지 않았다.** 보호 브랜치 merge 는 별도 승인이다 |
+| merge | ✅ **`6ab7eed`** — 승인을 받아 `main` 에 merge 했다 |
+| 배포 run | ✅ **34336637777** `success` · `build` 32스텝 170초 · `deploy` 3스텝 10초 · **`Check non-blog baseline: success`** |
+| 실물 확인 | ✅ `/` · `/404.html` · `/product-lead/` · `/blog/` · `/tving-brief/` 전부 HTTP 200 · `search-index.json` **192편**. 🔴 **`404.html` 56,452 B 와 `product-lead/index.html` 85,577 B 가 작업 전에 잰 값과 같다** — 비블로그 페이지가 실제로 불변임을 실물이 확인한다 |
 
 ⚠️ **직전 세션의 문서 커밋 배포 run `34324289481`(success · 172초)이 어느 문서에도 적히지
 않은 채였다.** 이 절에 함께 남긴다 — 기록이 한 칸 뒤처지는 것을 막는 유일한 방법이 실질

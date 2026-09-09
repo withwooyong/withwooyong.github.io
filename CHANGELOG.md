@@ -64,6 +64,13 @@ PR 단계 CI(run **34334630292** · `build` 117초)에서 **`Check non-blog base
 통과하지 못했다면 되살리기 자체가 성립하지 않는다. `Upload artifact` 와 `deploy` 는
 PR 이므로 예정대로 skipped 였다.
 
+merge 커밋은 **`6ab7eed`** 이고 배포 run **34336637777** 도 `success` 다
+(`build` 32스텝 170초 · `deploy` 3스텝 10초 · 이 run 에서도 baseline 두 스텝 통과).
+배포된 실물에서 `/` · `/404.html` · `/product-lead/` · `/blog/` · `/tving-brief/` 가 전부
+HTTP 200 이고 `search-index.json` 은 192편이다. 🔴 **`404.html` 56,452 B 와
+`product-lead/index.html` 85,577 B 가 작업 전에 잰 값과 같다** — 비블로그 페이지가
+실제로 불변임을 실물이 확인한다.
+
 ⇒ 검사기 **열한 종 → 열두 종** · 뮤턴트 **105 → 112개** · CI `build` **26 → 28스텝**
 (러너 보고 기준으로는 30 → **32스텝**).
 직전 세션이 적어 둔 「기준선에 지금 없는 `notion/index.html` 이 남아 있다」는 **사실이 아니었다** —
