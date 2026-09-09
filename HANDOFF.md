@@ -6,7 +6,8 @@
 > **이번 세션 —** 편6 [`roles-and-organizational-culture`](content/blog/product-management/roles-and-organizational-culture.md)(**20,909 B** · 목표 20,009 · 밴드 18,845 ~ 21,172 · 역산 k **2.059**)를
 > 발행했다. 원본 `12-팀빌딩` 의 §4~§7 을 배정받아 직무 · 직급 · 직책의 구분, 팀 빌딩에서
 > 제품 담당자가 하는 일, 국내 조직문화 세 유형의 비교를 다룬다. PR [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25) 이며 PR 단계
-> CI run `34304057103` 이 **success** 였다. ⏳ **merge 와 배포 run 은 아직 비어 있다.**
+> CI run `34304057103` 이 **success** 였다. PR 은 merge 커밋 `871bf73` 으로 닫혔고 배포 run
+> `34304850034` 도 **success** 다.
 >
 > 🔴 **초고가 목표를 24.0% 넘겨 규칙 16 을 편3 이후 처음으로 다시 발동했다.** 절별 배율이
 > 초과를 **배정 절(+1,887 B)** 과 **고정 3절(+2,087 B)** 두 갈래로 갈랐는데, **편5 를 대조군으로
@@ -202,7 +203,7 @@
 | 분량 하한 SOFT | **3편** (세션 시작 5편) — 남은 셋은 **정당하다고 판정했다.** 아래 판정 표를 보라 |
 | 커밋 | 이번 세션은 `content/pm-practice-part3` 에서 넷이다 — 문서·함정 `ee9c68c`(그때 쓴 50번은 아래대로 버렸다) · 편3 발행 `2ef9e60` · 표 검사기 갈래 병합 `b904194` · 함정 52번과 수치 갱신이다. 그 앞은 두 갈래가 병렬로 진행됐다: `pm-po-domains` 가 설계서 `dce2b01` · 편1 `3b0530d` · 편2 `aa76d40` · 도식 배치 교정 `422c0a4` · **라벨 잘림 교정 `1573ae7`** 로 PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) → merge `4d924ae`, `presentation-format` 이 `08925ee` 외 넷으로 PR [#19](https://github.com/withwooyong/withwooyong.github.io/pull/19) → merge `20eb85e` 다 |
 | 푸시 · 배포 | ✅ **PR [#20](https://github.com/withwooyong/withwooyong.github.io/pull/20) 이 merge 커밋 `4d924ae` 로 닫혔다.** 배포 run `34092570743` 이 **success** 였고 전체 **159초** · `build` **142초** · `deploy` **9초** 였다. ⚠️ 그에 앞서 PR #19 가 먼저 merge 되어 `main` 이 **9커밋** 전진했고 PR #20 이 `CLEAN` → **`DIRTY`** 가 되었다 — **충돌은 문서 넷뿐이었고 코드와 콘텐츠는 겹치지 않았다.** 그 병합이 커밋 `3dded94` 다. PR 단계의 CI 는 run `34037314763` **success**(전체 **133초** · `build` **130초** · `deploy` **skipped**)였다 |
-| 🆕 편6 의 푸시 · CI | ✅ **PR [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25) 를 열었고 PR 단계 CI run `34304057103` 이 success 였다** (`build` **success · 30스텝 · 150초** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 스텝과 `deploy` job 은 설계대로 skipped). `mergeable` 은 `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다. ⚠️ **브랜치의 기점이 `origin/main` 이 아니라 로컬 `main` 의 미푸시 커밋 `a5e5497` 이다** — 직전 세션의 문서 갱신을 이 PR 에 함께 실으라는 지시였다. ⏳ **merge 와 배포 run 은 아직 비어 있다 — 뒤이은 세션이 채운다** |
+| 🆕 편6 의 푸시 · CI | ✅ **PR [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25) 를 열었고 PR 단계 CI run `34304057103` 이 success 였다** (`build` **success · 30스텝 · 150초** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 스텝과 `deploy` job 은 설계대로 skipped). `mergeable` 은 `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다. ⚠️ **브랜치의 기점이 `origin/main` 이 아니라 로컬 `main` 의 미푸시 커밋 `a5e5497` 이다** — 직전 세션의 문서 갱신을 이 PR 에 함께 실으라는 지시였다. 🆕 **PR 은 merge 커밋 `871bf73` 으로 `main` 에 닫혔고**(부모 둘: `b81986d` + `30d20ae`) **배포 run `34304850034` 도 success 다** (전체 **182초** · `build` **success · 30스텝 · 163초** · `deploy` **success · 3스텝 · 12초**). 인수인계를 채운 두 번째 커밋 `30d20ae` 의 PR 단계 run `34304560309` 도 success 였다 |
 | 편5 의 푸시 · CI | ✅ **PR [#24](https://github.com/withwooyong/withwooyong.github.io/pull/24) 를 열었고 PR 단계 CI run `34294874618` 이 success 였다** (`build` **success · 30스텝** — 워크플로 정의의 26 에 러너가 넷을 붙인 수다. `Upload artifact` 와 `deploy` job 은 설계대로 skipped). `mergeable` 은 `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다. 🆕 **PR 은 merge 커밋 `b81986d` 로 `main` 에 닫혔고**(부모 둘: `ff6aba4` + `21274a4`) **배포 run `34300603982` 도 success 다** (`build` **success · 30스텝 · 148초** · `deploy` **success · 9초**). 인수인계를 채운 두 번째 커밋 `21274a4` 의 PR 단계 run `34295171853` 도 success 였다 |
 | 🆕 이번 푸시 · CI | ✅ **PR [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) 를 열었고 CI run `34181470670` 이 success 였다** (전체 **133초** · `build` **성공** · `deploy` **skipped**). `MERGEABLE` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다 — 충돌하는 PR 은 빨간 것이 아니라 run 이 0개다. 🆕 **PR 은 merge 커밋 `0ae98c5` 로 `main` 에 닫혔고 배포 run `34182320489` 도 success 다** (`build` **success · 30스텝 · 133초** · `deploy` **success · 9초**) |
 | 🔴 `out/` 잠금은 **한 워크트리의 문제가 아니다** | 빈 디렉터리인데 `rmdir`·`mv` 가 모두 `EBUSY` 다. 리포 루트에서 처음 관측했고 **2026-09-08 세션이 `…-pm-practice` 워크트리에서도 같은 것을 겪었다** — 거기서는 `out/` 이 없는 상태로 빌드를 시작했는데도 Next 가 산출 직전 `rmdir out` 에서 죽었고, 283페이지 생성까지는 정상이었다. 삭제를 시도하면 `being used by another process` 가 뜬다. 정적 서버를 종료해도, 잔여 빌드 프로세스가 없어도 풀리지 않는다. ⇒ **워크트리를 옮겨 다녀도 피할 수 없으므로 처음부터 임시 워크트리에서 빌드하라**: `git worktree add --detach <경로> <커밋>` → junction 연결 → 빌드 → `cmd /c rmdir` 로 **junction 만** 제거 → `worktree remove --force`. 이 절차는 2026-09-08 에 다시 통과했다 (junction 제거 뒤 원본 577패키지 보존 확인) |
@@ -279,8 +280,9 @@
 | 항목 | 값 |
 | --- | --- |
 | 커밋 | `d86226c` — 발행본 1편 + 지도편 · 편5 링크 + 개수 네 자리 + 설계서 §6-2 · §7-2 · §10-6 |
-| PR | [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25) · `MERGEABLE` |
-| PR 단계 CI | run `34304057103` **success** · `build` 30스텝 · **150초** · `Upload artifact` 와 `deploy` job 은 설계대로 skipped |
+| PR | [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25) · **MERGED** (merge 커밋 `871bf73` · 부모 `b81986d` + `30d20ae`) |
+| PR 단계 CI | run `34304057103` **success** · `build` 30스텝 · **150초** · `Upload artifact` 와 `deploy` job 은 설계대로 skipped. 두 번째 커밋 `30d20ae` 의 run `34304560309` 도 **success** |
+| 배포 | run `34304850034` **success** · 전체 **182초** · `build` **163초** · `deploy` **12초** |
 | 로컬 빌드 | **32.7초** · sitemap **277 URL** · 검색 인덱스 **190편 · 헤딩 2,743개 · 321 KB** |
 | 산출물 금칙어 | **547개 파일 · HARD 0회** |
 | 발행 전 검사 | 여덟 전부 통과 · 훅 **11단 + 문서 8단** 통과 · `tests/blog` **14파일 200케이스** |
