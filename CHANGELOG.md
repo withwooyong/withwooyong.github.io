@@ -121,6 +121,21 @@ grep -o '/blog/product-management/[a-z-]*/' … | sort -u | wc -l
 - `CHANGELOG.md` 본체를 규칙대로 세 절로 줄이며 편5 절을 [`docs/changelog/2026-09.md`](docs/changelog/2026-09.md) 로 옮기고
   상대 링크를 그 파일 기준으로 고쳤다.
 
+### merge 와 배포 — 실물까지 확인했다
+
+| 자리 | 값 |
+| --- | --- |
+| PR 단계 CI | run `34318644234`(커밋 `4931fce`) · `34318935183`(커밋 `f5ef194`) 이 **둘 다 success** 다. 뒤쪽이 전체 164초 · `build` 30스텝 159초이고 skipped 하나는 `Upload artifact` 다 |
+| merge 커밋 | **`85b96bc`** — 부모 둘이 `eb92250` + `f5ef194` 이고 실린 커밋은 셋(`2b9a987` + `4931fce` + `f5ef194`)이다. 앞 세션의 문서 갱신 `2b9a987` 이 이 PR 에 함께 실렸다 |
+| 배포 run | **`34321271566` success** — 전체 179초 · `build` success 30스텝 157초 · `deploy` success 3스텝 11초다. push 이벤트이므로 `Upload artifact` 와 `deploy` 가 설계대로 돌아 skipped 가 하나도 없다 |
+| 배포된 실물 | 편8 페이지가 `HTTP 200 · 188,111 B` 이고 `<title>` 이 편8 의 것이다. `search-index.json` 은 `HTTP 200 · 332,701 B · 192편`으로 로컬 빌드 실측(192편 · 325 KB)과 일치한다 |
+
+배포 파이프라인의 네 자리가 모두 success 이고, 편수는 로컬과 배포 양쪽에서 192 로 같다.
+
+⚠️ **페이지 크기만은 대조군이 없다.** 편8 을 빌드한 임시 워크트리가 정리되어 `out/` 이 남아 있지
+않으므로, 편7 때처럼 「로컬 빌드와 같은 크기」라고 말할 근거가 이번에는 없다. 검색 인덱스는
+편수와 크기가 인수인계에 기록되어 있어 대조가 되었다.
+
 ## 2026-09-09 — `product-management` **프로덕트 실무 편7**(총 191편) · 🔴 **초고가 두 편 연속 +24% 였고 이번에는 배율이 초과의 81% 였다** — 편6 이 만든 대조군 절차를 그대로 밟았다 (PR [#26](https://github.com/withwooyong/withwooyong.github.io/pull/26))
 
 > 편7 [`global-collaboration-process`](content/blog/product-management/global-collaboration-process.md) 를 발행했다. 원본 `10-글로벌-협업` 의 §1~§4 를 배정받아
