@@ -1,0 +1,6 @@
+[
+  { "slug": "patterns", "source": "slides-patterns.md" },
+  { "slug": "team-ops", "source": "slides-team-ops.md" },
+  { "slug": "governance", "source": "slides-governance.md" },
+  { "slug": "search", "source": "slides-search.md" }
+]

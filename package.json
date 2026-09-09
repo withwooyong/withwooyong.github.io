@@ -26,6 +26,8 @@
     "check-mermaid": "node scripts/check-mermaid.mjs",
     "check-mermaid:verify": "node scripts/check-mermaid.mjs --self-test",
     "check-mermaid:docs": "node scripts/check-mermaid.mjs --docs",
+    "check-slides": "node scripts/check-slides.mjs",
+    "check-slides:verify": "node scripts/check-slides.mjs --self-test",
     "fix-markup": "node scripts/fix-markup.mjs",
     "fix-markup:verify": "node scripts/fix-markup.mjs --self-test",
     "check-baseline": "node scripts/check-baseline.mjs",
