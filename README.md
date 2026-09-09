@@ -96,7 +96,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-table:verify` | 위 검사의 자체 검사 (`--self-test` 22건). 판정에 **도달한** 표 수를 함께 세어 대상 수와 대조한다 |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
-| `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2 |
+| `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2. 2026-08-18 부터 CI 에서 꺼져 있다가 **2026-09-09 에 되살렸습니다** — 환경 종속의 원인이 JS 청크 파일명 해시 하나였고, 그것을 마스킹하니 ubuntu CI 와 Windows 로컬의 산출물 15개가 전량 일치했습니다 |
+| `npm run check-baseline:verify` | 위 검사의 자체 검사 (`--self-test` 16건). 넷은 **마스킹이 넓어지지 않았는지**를 봅니다 — CSS·폰트 해시와 본문의 16진수는 지우지 않아야 하고, 본문이 바뀌면 여전히 잡혀야 합니다 |
 | `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
 | `npm run check-counts` | README 3자리와 CHANGELOG의 **발행본 편수**가 실제와 맞는지 검사합니다. 어긋나면 종료 코드 1. `:verify`는 자체 검사, `:print`는 실제 수치만 출력합니다 |
 | `npm run search-index` | 🔴 **검색 인덱스 생성.** 빌드 뒤에 `out/_next/data` 를 읽어 `out/blog/search-index.json` 을 만듭니다. `npm run build` 가 이미 부르므로 따로 돌릴 일은 드뭅니다. 산출물이 없거나 buildId 디렉터리가 둘 이상이거나 편 수가 소스와 다르거나 카나리 편이 빠지면 종료 코드 2 |
@@ -141,7 +142,11 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── flow-diagram/       # 흐름 다이어그램 (2)
 │   └── ui/                 # shadcn/ui — badge · button · card · dialog
 ├── data/                   # portfolio.ts · product-lead-*.ts · diagrams/ (시스템 다이어그램 10종)
-├── scripts/                # generate-sitemap.mjs · dup-scan.mjs · check-forbidden.mjs · check-baseline.mjs · check-counts.mjs · compose.mjs
+├── scripts/                # .mjs 15개 (전량) — 검사기 열두 종: check-forbidden · check-markup ·
+│                           # check-links · check-mermaid · check-table · check-counts ·
+│                           # check-baseline · dup-scan · source-overlap · compose ·
+│                           # fix-markup · build-search-index / 그 밖: generate-sitemap ·
+│                           # map-terms · mutate(뮤테이션 러너)
 ├── tests/blog/             # Vitest — frontmatter · loader · toc · tree · search · graph (+ fixtures)
 ├── public/                 # 이미지, favicon, robots.txt, sitemap.xml
 ├── styles/                 # 전역 CSS (테마·모션)
@@ -174,7 +179,7 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 | 자리 | 언제 | 무엇 |
 |------|------|------|
 | **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | 커밋이 건드린 것에 따라 갈립니다 | `content/blog` 를 건드렸으면 **11단** — 금칙어 증명·불변식·금칙어 스캔·마크업 증명·마크업 스캔·링크 증명·링크 스캔·도식 증명·도식 스캔·표 증명·표 스캔. 그 밖의 `.md` 는 **8단**(네 검사의 증명과 `--docs` 스캔), 코드만이면 즉시 통과합니다. 하나라도 실패하면 커밋이 막힙니다 |
-| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 26스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 25스텝이 돕니다 |
+| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 28스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 27스텝이 돕니다 |
 
 훅은 `npm install` 시 `prepare` 스크립트가 자동으로 설정합니다(`git config core.hooksPath .githooks`).
 수동으로 켜려면 같은 명령을 직접 실행하세요. husky 같은 의존성은 쓰지 않습니다.

@@ -768,6 +768,60 @@ const MUTANTS = [
     desc: "🔴 대체 스택을 상속 키워드로 되돌린다 — 거부는 도는데 거부한 것과 같은 값을 내놓는다",
     from: 'export const DIAGRAM_FONT_FALLBACK = "Inter, system-ui, sans-serif";',
     to: 'export const DIAGRAM_FONT_FALLBACK = "inherit";',  },
+
+  // 비블로그 산출물의 불변 — `check-baseline`. 이 검사기는 2026-08-18 부터 2026-09-09 까지
+  // CI 에서 꺼져 있었고 자기 검사도 없었다. 마스킹이 이 검사의 전부이므로, 아래 일곱은
+  // **마스킹이 사라지는 쪽**과 **마스킹이 넓어지는 쪽**을 양방향으로 되살린다.
+  // 넓어지는 쪽이 더 위험하다 — 전량이 조용히 통과하며 초록불이 된다.
+  {
+    id: "B1",
+    file: "scripts/check-baseline.mjs",
+    desc: "청크 해시 마스킹이 아무것에도 닿지 않는다 (CI 와 로컬이 영영 다른 것으로 남는다)",
+    from: "/\\/_next\\/static\\/chunks\\/([^\"'\\s]+)-[0-9a-f]{16}\\.js/g",
+    to: "/\\/_next\\/static\\/CHUNKS_THAT_DO_NOT_EXIST\\/([^\"'\\s]+)-[0-9a-f]{16}\\.js/g",
+  },
+  {
+    id: "B2",
+    file: "scripts/check-baseline.mjs",
+    desc: "🔴 마스킹을 static/ 전체로 넓힌다 — css 해시까지 지워 검사가 못 보는 영역이 는다",
+    from: "/\\/_next\\/static\\/chunks\\/([^\"'\\s]+)-[0-9a-f]{16}\\.js/g",
+    to: "/\\/_next\\/static\\/[a-z]+\\/([^\"'\\s]*)[0-9a-f]{16}\\.(?:js|css)/g",
+  },
+  {
+    id: "B3",
+    file: "scripts/check-baseline.mjs",
+    desc: "🔴 확장자를 보지 않는다 — 폰트 파일명 해시까지 함께 지워진다",
+    from: "/\\/_next\\/static\\/chunks\\/([^\"'\\s]+)-[0-9a-f]{16}\\.js/g",
+    to: "/\\/_next\\/static\\/[a-z]+\\/([^\"'\\s]*)[0-9a-f]{16}/g",
+  },
+  {
+    id: "B4",
+    file: "scripts/check-baseline.mjs",
+    desc: "🔴 경로를 보지 않고 16진수 16자를 전부 지운다 — 본문의 커밋 해시까지 사라진다",
+    from: "/\\/_next\\/static\\/chunks\\/([^\"'\\s]+)-[0-9a-f]{16}\\.js/g",
+    to: "/[0-9a-f]{16}/g",
+  },
+  {
+    id: "B5",
+    file: "scripts/check-baseline.mjs",
+    desc: "🔴 삭제를 세지 않는다 — 페이지가 통째로 사라져도 통과한다",
+    from: "  for (const rel of Object.keys(base)) if (!(rel in current)) removed.push(rel);",
+    to: "  for (const rel of Object.keys(base)) if (rel in current) void rel;",
+  },
+  {
+    id: "B6",
+    file: "scripts/check-baseline.mjs",
+    desc: "buildId 를 JSON 필드에서만 지운다 — 경로에 박힌 같은 값이 남아 매번 실패한다",
+    from: '  if (m) text = text.split(m[1]).join("<BUILD_ID>");',
+    to: '  if (m) text = text.replace(\'"buildId":"\' + m[1] + \'"\', \'"buildId":"<BUILD_ID>"\');',
+  },
+  {
+    id: "B7",
+    file: "scripts/check-baseline.mjs",
+    desc: "featuredPosts 마스킹이 없는 키를 찾는다 — 글을 추천할 때마다 GC-6 가 실패한다",
+    from: '  text = maskJsonArray(text, "featuredPosts", "<FEATURED_POSTS>", file);',
+    to: '  text = maskJsonArray(text, "featuredPostsNotAKey", "<FEATURED_POSTS>", file);',
+  },
 ];
 
 const CHECKS = [
@@ -781,6 +835,7 @@ const CHECKS = [
   ["check-mermaid", "npm run --silent check-mermaid:verify"],
   ["check-table", "npm run --silent check-table:verify"],
   ["build-search-index", "npm run --silent search-index:verify"],
+  ["check-baseline", "npm run --silent check-baseline:verify"],
   ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts"],
 ];
 
