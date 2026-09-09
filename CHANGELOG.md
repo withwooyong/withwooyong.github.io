@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-09 — `product-management` **프로덕트 실무 편7**(총 191편) · 🔴 **초고가 두 편 연속 +24% 였고 이번에는 배율이 초과의 81% 였다** — 편6 이 만든 대조군 절차를 그대로 밟았다
+## 2026-09-09 — `product-management` **프로덕트 실무 편7**(총 191편) · 🔴 **초고가 두 편 연속 +24% 였고 이번에는 배율이 초과의 81% 였다** — 편6 이 만든 대조군 절차를 그대로 밟았다 (PR [#26](https://github.com/withwooyong/withwooyong.github.io/pull/26))
 
 > 편7 [`global-collaboration-process`](content/blog/product-management/global-collaboration-process.md) 를 발행했다. 원본 `10-글로벌-협업` 의 §1~§4 를 배정받아
 > 사람을 들이는 과정, 두 매니저 자리의 분담, 관문으로 다루는 검토와 추진, 그리고 도구 위에서
