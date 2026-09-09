@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-09 — `product-management` **프로덕트 실무 편8**(총 192편) · ✅ **시리즈 여덟 편이 끝났다** — 여섯 편의 역산 k 가 0.043 폭 안에 그대로 있다
+## 2026-09-09 — `product-management` **프로덕트 실무 편8**(총 192편) · ✅ **시리즈 여덟 편이 끝났다** — 여섯 편의 역산 k 가 0.043 폭 안에 그대로 있다 (PR [#27](https://github.com/withwooyong/withwooyong.github.io/pull/27))
 
 > 편8 [`global-decision-and-communication`](content/blog/product-management/global-decision-and-communication.md) 를 발행하며 `product-management-practice` 시리즈를 닫았다.
 > 원본 `10-글로벌-협업` 의 §5~§7 을 배정받아 주간 공유 · 의사결정의 구조 · 소통 원칙 셋 ·
