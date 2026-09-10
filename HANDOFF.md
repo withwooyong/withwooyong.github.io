@@ -6,8 +6,12 @@
 > **이번 세션 —** 직전 세션이 멈춘 **Task 1 Step 8** 부터 이어받아 계획서 여섯 Task 를 전부
 > 닫았다. 검사기 `check-slides` 를 세우고 `check-baseline`(발표본 제외) · `check-forbidden`
 > (발표본 소스 13개 추가) 둘을 고쳤으며, CI `build` job 이 **28 에서 32스텝**이 되었다.
-> 뮤턴트는 **118개**이고 검사기는 **열세 종**이다. 커밋 넷은 `3438d19` · `9118712` ·
-> `bdc2568` · `d5daba3` 이며 ⏳ **PR 은 아직 열지 않았다.**
+> 뮤턴트는 **118개**이고 검사기는 **열세 종**이다.
+>
+> ✅ **PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) 을 열었고 CI run
+> `34433738192` 이 success 다** (전체 **179초** · `build` **176초 · 36스텝** · `deploy` **skipped**).
+> `MERGEABLE` 이며 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다.
+> ⏳ **merge 와 배포 run 은 아직 비어 있다.**
 >
 > 🔴 **발표본의 「운영」 의존성 넷이 Node 22 이상을 요구하는데 `--omit=dev` 로 빠지지 않는다.**
 > `commander` 15 · `postcss-nested` 8 · `unplugin-vue-markdown` 32 · `vite-plugin-static-copy` 4 다.
@@ -15,6 +19,8 @@
 > `npm install` 이 `engines` 를 강제하지 않는다는 함정의 **두 번째 사례**다.
 > ⚠️ **본체 빌드도 함께 22 에서 돈다** — 산출물이 달라지면 GC-6 가 잡으며 그 판정은
 > **PR 단계의 `Check non-blog baseline` 스텝**이 한다. 로컬에 Node 20 이 없어 미리 재지 못했다.
+> ✅ **그 스텝이 PR #29 에서 통과했다** — Node 를 올려도 비블로그 산출물은 불변이며, 이것은
+> 추정이 아니라 실측이다. 발표본 스텝 넷(26 · 28 · 29 · 30)도 전부 success 다.
 >
 > 🔴 **전량 뮤테이션은 「3~5분」이 아니라 118개 기준 약 28분이다.** 뮤턴트와 검사가 함께 늘어
 > 소요가 곱으로 커졌는데 아무도 다시 재지 않았다. ⇒ **세션 시작에 백그라운드로 걸어라.**
@@ -328,7 +334,7 @@
 | 🆕 이번 푸시 · CI | ✅ **PR [#23](https://github.com/withwooyong/withwooyong.github.io/pull/23) 을 열었고 CI run `34223275846` 이 success 였다** (`build` **success · 30스텝 · 2분 53초** · `deploy` **skipped** — PR 이므로 설계대로다). `MERGEABLE / CLEAN` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다. ⚠️ **30스텝은 문서의 26 이 낡았다는 뜻이 아니다** — 러너가 `Set up job`·`Post Setup Node`·`Post Checkout`·`Complete job` 넷을 붙인다. ⏳ **merge 와 배포 run 은 아직 비어 있다** |
 | 🆕 브랜치 | 🆕 `content/pm-practice-part8` 다 (기점 **`2b9a987`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 편7 PR 의 merge 커밋과 배포 run 을 채운 문서 갱신이 그 커밋이며, 편8 PR 에 함께 실린다). 앞 세션은 `content/pm-practice-part7` 이었다 (기점 **`8d0b3c9`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 편6 PR 의 merge 커밋과 배포 run 을 채운 문서 갱신이 그 커밋이며, 편7 PR 에 함께 실린다). 앞 세션은 `content/pm-practice-part6` 였다 (기점 **`a5e5497`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 그래야 직전 세션의 문서 갱신이 이 PR 에 함께 실린다). ⚠️ **이 저장소는 워크트리를 셋 쓴다** — 리포 루트가 `main` 을, `…-pm-practice` 가 편6 갈래를, `…-ops` 가 `chore/baseline-and-slides` 를 잡고 있다. **브랜치를 만들기 전에 `git worktree list` 와 `git status` 를 먼저 읽고 기점을 명시하라.** 새 워크트리에는 `node_modules` 가 없으므로 루트의 것을 junction 으로 연결하고 끝나면 `cmd /c rmdir` 로 링크만 지운다 — `npm install` 은 금지다. 🔴 **junction 은 PowerShell 의 `New-Item -ItemType Junction` 으로 만들어라** — Bash 에서 `cmd /c mklink /J` 를 돌리면 **출력을 버렸을 때 실패가 성공으로 보고된다**(2026-09-08 실측: 「연결 성공」을 찍고 실제로는 만들어지지 않았다). 만든 뒤 **패키지 수를 원본과 대조하라** |
 | 🆕 새 배치 | ✅ **`product-management-practice` 8편을 모두 냈다.** 발행 시점 합계 **172,120 B** · 평균 21,515 (§3-2 예측 166,206 대비 +3.6%). 🔴 지금 파일을 재면 **172,967 B** 로 커진다 — **뒤 편이 나올 때마다 앞 편이 링크를 받아 커지므로**(지도편 +489 B) §10 의 「최종 B」와 지금 잰 값을 비교하지 마라 (§10-8-f). 원본은 `pm-po` 07 · 10 · 11 · 12 이고 배정 원본 **67,741 B** · 배치 총량 **156,366 B** 다. 카테고리는 기존 `product-management` 를 쓰고 **새 카테고리도 새 태그도 만들지 않는다.** 설계서를 승인받은 뒤 편1(지도)부터 쓴다 |
-| 🆕 이번 브랜치 | 🆕 `feat/deploy-slides` 다 (기점 **`9b1c23d`** — `origin/main` 과 같은 커밋이다). 루트 워크트리에서 잡고 있으므로 **루트가 더 이상 `main` 이 아니다.** 커밋은 여덟이다 — `58ef146` 설계서 · `bd030bc` 계획서 · `6dc5a39` Task 1 · `88827b8` 중간 인수인계 · `3438d19` Task 2 · `9118712` Task 3 · `bdc2568` Task 4 · `d5daba3` Task 5 이고, 여기에 Task 6 의 문서 커밋이 더해진다. ⏳ **PR 은 아직 열지 않았다** — 계획서 여섯 Task 는 전부 끝났고 남은 것은 푸시와 PR 이다 |
+| 🆕 이번 브랜치 | 🆕 `feat/deploy-slides` 다 (기점 **`9b1c23d`** — `origin/main` 과 같은 커밋이다). 루트 워크트리에서 잡고 있으므로 **루트가 더 이상 `main` 이 아니다.** 커밋은 여덟이다 — `58ef146` 설계서 · `bd030bc` 계획서 · `6dc5a39` Task 1 · `88827b8` 중간 인수인계 · `3438d19` Task 2 · `9118712` Task 3 · `bdc2568` Task 4 · `d5daba3` Task 5 · `2d29e5a` Task 6 문서이고, 여기에 PR 번호를 채운 커밋이 더해진다. ✅ **PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) 을 열었고 CI 가 success 다.** ⚠️ **브랜치는 이 세션 이전에 이미 origin 에 있었다** — 인수인계는 「PR 은 아직 열지 않았다」만 적었고 푸시 여부는 적지 않았는데, `git push` 가 `88827b8..2d29e5a` 범위를 냈다. ⏳ **남은 것은 `main` merge 이며 승인이 필요하다** |
 | ~~아직 기록되지 않은 배포 run~~ | ✅ **닫았다. 다만 앞 세션의 진술이 절반 틀렸다** — `34336637777` 은 이미 `CHANGELOG.md` 의 PR #28 절과 이 파일에 기록되어 있었고, 없던 것은 `34340890496`(merge 뒤 문서 커밋) 하나다. 그것을 `CHANGELOG.md` 의 이번 절에 적었다. 🔴 **인수인계에 적힌 「없다」도 대조 없이는 근거가 아니다** — 「푸시 완료」가 거짓이었던 사례와 같은 부류이고, 이번에는 `grep` 한 번으로 갈렸다 |
 | 다음 단계 | 아래 **「다음 세션의 작업」** — 우선순위 표를 먼저 보라 |
 

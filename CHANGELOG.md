@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 (PR [#PENDING](https://github.com/withwooyong/withwooyong.github.io/pulls))
+## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29))
 
 > `slidev-poc` 의 발표본 넷(`patterns` · `team-ops` · `governance` · `search`)을 같은 도메인의
 > `/slides/<슬러그>/` 에 배포한다. 본체에서 링크하지 않고 `robots.txt` 로 색인만 막으므로
@@ -93,6 +93,25 @@ Pages 는 아티팩트가 하나이므로 본체 산출물과 발표본이 **한
 | 뮤턴트 id 배정 | 계획서가 지정한 `F9` 를 **`C5`** 로 바꿨다. `F` 는 `fix-markup` 계열이고 `check-forbidden` 은 `C1`~`C4` 를 쓴다 |
 | 뮤테이션 소요 | 「3~5분」이 아니라 **118개 기준 약 28분**이다. 세션 끝이 아니라 시작에 백그라운드로 건다 |
 | 배포 run `34340890496` | PR #28 이 merge 된 뒤의 문서 커밋이 낸 run 이며 `success` 다. 어느 문서에도 없어 여기 적는다 |
+
+### ✅ PR 단계의 CI 가 Node 22 를 검증했다
+
+run [`34433738192`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34433738192) 이
+**success** 다 (전체 **179초** · `build` **176초 · 36스텝** · `deploy` **skipped**). 36 은 워크플로
+정의 **32** 에 러너가 붙이는 넷(`Set up job` · `Post Setup Node` · `Post Checkout` · `Complete job`)을
+더한 값이다.
+
+| 스텝 | 결과 |
+| --- | :---: |
+| 26 `Prove slides checker` | ✅ |
+| 28 `Install slides dependencies` (Node 22 · `--omit=dev`) | ✅ |
+| 29 `Build slides into out/slides` | ✅ |
+| 30 `Check slides output` | ✅ |
+| 32 **`Check non-blog baseline`** | ✅ |
+
+🔴 **32번이 이 변경의 마지막 방어선이었다.** 본체 빌드도 Node 22 에서 돌므로 산출물이 달라지면
+GC-6 가 여기서 잡는데, 로컬에 Node 20 이 없어 미리 잴 수 없었다. **통과했으므로 Node 를 올려도
+비블로그 산출물은 불변이다** — 추정이 아니라 실측이다.
 
 ⚠️ **인수인계가 「배포 run 둘이 어느 문서에도 없다」고 적었으나 하나는 이미 있었다.**
 `34336637777` 은 바로 위 절과 `HANDOFF.md` 에 기록되어 있었고 없던 것은 `34340890496`
