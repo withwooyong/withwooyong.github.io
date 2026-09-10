@@ -41,6 +41,12 @@
 > ⚠️ **`curl "…/#/2"` 로는 확인할 수 없다** — 프래그먼트는 서버로 전송되지 않아 실제 요청은
 > `/slides/<슬러그>/` 이고 200 이 나오는 것이 당연하다. **브라우저로 열어 확인했다.**
 >
+> ✅ **PR [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30) 을 열었고 CI run
+> [`34449385717`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34449385717)
+> 이 success 다** (전체 **182초** · `build` **178초 · 36스텝** · `deploy` **skipped**).
+> `MERGEABLE / CLEAN` 이며 브랜치는 `fix/slides-hash-router`(기점 `48a91c6`)다.
+> ⏳ **merge 와 배포 run 은 아직 비어 있다 — merge 는 승인이 필요하다.**
+>
 > ---
 >
 > **아래 문단들은 편8 세션(2026-09-09)의 기록이다.**

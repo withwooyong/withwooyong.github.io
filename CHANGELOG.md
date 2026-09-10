@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 · 🔴 **그 배포의 장별 URL 이 전부 404 였다** — GitHub Pages 는 사이트 루트의 `404.html` 만 쓴다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29))
+## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 · 🔴 **그 배포의 장별 URL 이 전부 404 였다** — GitHub Pages 는 사이트 루트의 `404.html` 만 쓴다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) · [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30))
 
 > `slidev-poc` 의 발표본 넷(`patterns` · `team-ops` · `governance` · `search`)을 같은 도메인의
 > `/slides/<슬러그>/` 에 배포한다. 본체에서 링크하지 않고 `robots.txt` 로 색인만 막으므로
@@ -168,6 +168,11 @@ flowchart TD
 되돌려 확인했다. 실제 `slides-search.md` 를 history 로 바꾸니 본 검사가 종료 코드 1 을 내고
 ⑰ 이 FAIL 로 떨어졌으며, `SL5` 를 격리 실행하니 ⑪ 이 FAIL 로 잡았다. **통과만 보고는 케이스가
 헛도는지 알 수 없다.**
+
+✅ **PR [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30) 의 CI run
+[`34449385717`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34449385717)
+이 success 다** (전체 **182초** · `build` **178초 · 36스텝** · `deploy` **skipped**).
+`MERGEABLE / CLEAN` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다.
 
 ### merge 와 배포
 
