@@ -45,7 +45,12 @@
 > [`34449385717`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34449385717)
 > 이 success 다** (전체 **182초** · `build` **178초 · 36스텝** · `deploy` **skipped**).
 > `MERGEABLE / CLEAN` 이며 브랜치는 `fix/slides-hash-router`(기점 `48a91c6`)다.
-> ⏳ **merge 와 배포 run 은 아직 비어 있다 — merge 는 승인이 필요하다.**
+> ✅ **merge 커밋은 `bc35821` 이고 배포 run
+> [`34451040468`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34451040468)
+> 이 success 다** (201초 · `build` · `deploy` 둘 다 success).
+> 🔴 **배포된 실물을 브라우저로 열어 404 가 닫힌 것을 확인했다** — `team-ops#/2` · `governance#/7` ·
+> `patterns#/4`(`4 / 29`) · `search#/11`(`11 / 35`) 넷이 다 열리고, `governance` 에서 **F5 를 눌러도
+> 7장이 유지된다.** 발표 중 새로고침이 이 결함의 본체였다.
 >
 > ---
 >

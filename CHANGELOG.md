@@ -174,6 +174,26 @@ flowchart TD
 이 success 다** (전체 **182초** · `build` **178초 · 36스텝** · `deploy` **skipped**).
 `MERGEABLE / CLEAN` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다.
 
+### ✅ 배포된 실물에서 404 가 닫혔다
+
+| 항목 | 값 |
+| --- | --- |
+| merge 커밋 | [`bc35821`](https://github.com/withwooyong/withwooyong.github.io/commit/bc35821) |
+| 배포 run | [`34451040468`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34451040468) · **success** · 201초 · `build` · `deploy` 둘 다 success |
+
+확인은 브라우저로 했다. `curl` 은 프래그먼트를 서버로 보내지 않으므로 근거가 되지 못한다.
+
+| 연 주소 | 그려진 것 |
+| --- | --- |
+| `/slides/team-ops/#/2` | 2장 (「이론이 무엇이 존재하는가라면…」) |
+| `/slides/governance/#/7` | 7장 (「상한선과 한계가 같은 자리에 있습니다」) |
+| `/slides/patterns/#/4` | **`4 / 29`** — 장 표시를 텍스트로 읽었다 |
+| `/slides/search/#/11` | **`11 / 35`** · 도식도 그려진다 |
+| `governance` 에서 **F5 새로고침** | 🔴 **7장이 그대로 유지된다** — 발표 중 새로고침이 이 결함의 본체였다 |
+
+네 발표본 모두 장별 URL 로 직접 열린다. 배포 run 의 success 는 「배포가 끝났다」만 말하므로
+**실물을 열어 세는 일은 따로 한다.**
+
 ### merge 와 배포
 
 | 항목 | 값 |
