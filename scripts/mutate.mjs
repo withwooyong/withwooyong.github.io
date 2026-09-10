@@ -822,6 +822,13 @@ const MUTANTS = [
     from: '  text = maskJsonArray(text, "featuredPosts", "<FEATURED_POSTS>", file);',
     to: '  text = maskJsonArray(text, "featuredPostsNotAKey", "<FEATURED_POSTS>", file);',
   },
+  {
+    id: "B8",
+    file: "scripts/check-baseline.mjs",
+    desc: "🔴 발표본 제외를 슬래시 없이 적는다 — slidesheet.html 처럼 이름이 겹치는 것까지 빠진다",
+    from: '!norm.startsWith("slides/")',
+    to: '!norm.startsWith("slides")',
+  },
 
   // check-slides — 산출물이 빠진 것을 못 보는 쪽으로 되살린다.
   // slidev build 의 성공은 「빌드가 됐다」만 말한다. 배포될 자리에 있는지는 다른 질문이다.

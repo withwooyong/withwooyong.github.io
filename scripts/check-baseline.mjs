@@ -26,10 +26,17 @@ import crypto from "node:crypto";
 const OUT = "out";
 const BASELINE = path.join("scripts", "baseline.json");
 
-/** 블로그 산출물은 이 검사의 대상이 아니다 — 글을 더하면 당연히 바뀐다. */
+/**
+ * 블로그 산출물은 이 검사의 대상이 아니다 — 글을 더하면 당연히 바뀐다.
+ * 발표본도 같은 이유로 뺀다. 슬라이드를 고치면 산출물이 바뀌는 것이 정상이며,
+ * 청크 파일명 해시가 매 빌드 갈리므로 불변을 요구할 자리가 아니다.
+ *
+ * ⚠️ 슬래시까지 포함해 비교한다. `startsWith("slides")` 로 적으면 `slidesheet.html`
+ *    같은 이름이 함께 빠지는데, 그것은 위반을 놓치는 쪽의 실수라 통과만 보고는 드러나지 않는다.
+ */
 function isTarget(rel) {
   const norm = rel.split(path.sep).join("/");
-  return norm.endsWith(".html") && !norm.startsWith("blog/");
+  return norm.endsWith(".html") && !norm.startsWith("blog/") && !norm.startsWith("slides/");
 }
 
 function walk(dir, base, acc) {
@@ -323,6 +330,19 @@ function selfTest() {
         const d = diff({ a: "1", b: "1" }, { a: "2", c: "1" });
         return d.changed.length === 1 && d.added.length === 1 && d.removed.length === 1 && d.total === 3;
       },
+    },
+    // ── 발표본 제외 ────────────────────────────────────────────────────────
+    {
+      name: "⑰ slides/ 아래는 대상이 아니다",
+      run: () => !isTarget("slides/patterns/index.html"),
+    },
+    {
+      name: "⑱ 🔴 이름이 비슷할 뿐인 것은 빠지지 않는다 — 제외가 넓어지면 검사가 못 보는 영역이 는다",
+      run: () => isTarget("slidesheet.html") && isTarget("slides-archive.html"),
+    },
+    {
+      name: "⑲ 제외가 기존 대상을 삼키지 않았다",
+      run: () => isTarget("index.html") && isTarget("notion/index.html"),
     },
   ];
 
