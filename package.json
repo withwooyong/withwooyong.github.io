@@ -28,6 +28,8 @@
     "check-mermaid:docs": "node scripts/check-mermaid.mjs --docs",
     "check-slides": "node scripts/check-slides.mjs",
     "check-slides:verify": "node scripts/check-slides.mjs --self-test",
+    "check-engines": "node scripts/check-engines.mjs",
+    "check-engines:verify": "node scripts/check-engines.mjs --self-test",
     "build-slides": "node scripts/build-slides.mjs",
     "fix-markup": "node scripts/fix-markup.mjs",
     "fix-markup:verify": "node scripts/fix-markup.mjs --self-test",

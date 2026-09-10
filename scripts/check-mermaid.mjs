@@ -204,46 +204,11 @@ export function decideExit({ canary, rejected, scanned, unreachable, violations 
   return { code: 0, why: "깨지는 도식이 없다." };
 }
 
-// ---------------------------------------------------------------------------
-// CI 와 로컬의 Node 가 다르다
-// ---------------------------------------------------------------------------
-
-const WORKFLOW = ".github/workflows/deploy.yml";
-
-/**
- * CI 가 쓰는 Node 메이저 버전을 워크플로 파일에서 읽는다. **워크플로가 정본이다.**
- *
- * 🔴 `npm install` 은 의존성의 `engines` 를 강제하지 않는다. 그래서 로컬 Node 에서만
- * 만족되는 devDependency 가 조용히 설치되고, **CI 에서만 죽는다.** 실측으로 jsdom 30
- * (`^22.22.2 || ^24.15.0 || >=26.0.0`)이 로컬 Node 24 에서 21/21 을 내고 CI 의 Node 20
- * 에서 `webidl.util.markAsUncloneable is not a function` 으로 죽었다.
- */
-export function ciNodeMajor(source) {
-  const text = source ?? readFileSync(WORKFLOW, "utf8");
-  const match = text.match(/node-version:\s*"?(\d+)/);
-  return match ? Number(match[1]) : null;
-}
-
-/**
- * `engines.node` 범위가 그 메이저 대역을 허용하는지 본다.
- *
- * ⚠️ 판정은 **메이저 단위**다. `^20.19.0` 은 통과시키는데, `actions/setup-node` 가 그
- * 대역의 최신 patch 를 주므로 실질적으로 맞다. patch 까지 보려면 CI 가 실제로 설치한
- * 버전을 알아야 하는데, 그것은 워크플로 파일에 없다.
- */
-export function rangeAllowsMajor(range, major) {
-  if (!range || major === null) return true;
-  return String(range)
-    .split("||")
-    .some((part) => {
-      const match = part.trim().match(/^(\^|~|>=|>)?\s*(\d+)/);
-      if (!match) return false;
-      const [, op, digits] = match;
-      const declared = Number(digits);
-      if (op === ">=" || op === ">") return major >= declared;
-      return declared === major;
-    });
-}
+// 🔴 CI 와 로컬의 Node 가 다른 것을 판정하던 자리가 여기 있었다. `scripts/check-engines.mjs`
+//    로 옮겼다 — 도식 검사기 안에 있어서는 다음 사람이 그것을 찾지 못하고, 실제로 그 판정이
+//    보던 것은 **리포 루트의 node_modules 하나**뿐이라 slidev-poc 가 통째로 사각지대였다.
+//    옮긴 곳은 설치된 트리 전량을 본다. 복사하지 않고 옮긴 이유는 두 곳에 두면 갈라지기
+//    때문이다 — 이 리포가 「검사 기준을 문서로 복사하지 마라」로 여러 번 겪은 실패다.
 
 // ---------------------------------------------------------------------------
 // 자기 검사
@@ -300,14 +265,6 @@ const EXTRACT_CASES = [
   ],
 ];
 
-// engines 판정 케이스. 이번에 실제로 CI 를 깨뜨린 값을 그대로 쓴다.
-const ENGINES_CASES = [
-  ["㉒ jsdom 30 의 요구는 Node 20 을 허용하지 않는다", "^22.22.2 || ^24.15.0 || >=26.0.0", 20, false],
-  ["㉓ jsdom 26 의 요구는 Node 20 을 허용한다", ">=18", 20, true],
-  ["㉔ 캐럿은 그 메이저 대역만 허용한다", "^20.19.0 || ^22.13.0 || >=24.0.0", 20, true],
-  ["㉕ 워크플로에서 CI 의 Node 메이저를 읽는다", 'node-version: "20"', null, 20],
-];
-
 // 종료 코드 케이스. 앞의 넷은 전부 「못 본 것이 있다」이며 위반 0 이어도 2 로 죽어야 한다.
 const CLEAN = { canary: null, rejected: 0, scanned: 10, unreachable: 0, violations: 0 };
 
@@ -347,23 +304,6 @@ export async function selfTest() {
   for (const [label, summary, expected] of EXIT_CASES) {
     results.push([decideExit(summary).code === expected, label]);
   }
-
-  for (const [label, arg, major, expected] of ENGINES_CASES) {
-    const actual = major === null ? ciNodeMajor(arg) : rangeAllowsMajor(arg, major);
-    results.push([actual === expected, label]);
-  }
-
-  // 🔴 여기가 이 세션의 CI 실패를 로컬에서 잡는 자리다. 위 넷은 판정 규칙을 검사할 뿐이고,
-  // **실제로 설치된 jsdom** 이 CI 의 Node 에서 도는지는 이 케이스만 본다.
-  const jsdomEngines = JSON.parse(readFileSync("node_modules/jsdom/package.json", "utf8")).engines?.node;
-  const ciMajor = ciNodeMajor();
-  const enginesOk = ciMajor !== null && rangeAllowsMajor(jsdomEngines, ciMajor);
-  results.push([
-    enginesOk,
-    `㉖ 🔴 설치된 jsdom 이 CI 의 Node ${ciMajor ?? "?"} 에서도 돈다 (engines ${jsdomEngines})${
-      enginesOk ? "" : "  — npm install 은 engines 를 강제하지 않는다. 로컬에서만 도는 판이다"
-    }`,
-  ]);
 
   // 수집이 어긋난 경로를 만들어 내는 것은 위 케이스들이 잡지 못한다. core.quotePath 가
   // 한글 경로를 따옴표로 감싸면 `.md` 로 끝나지 않게 되어 대상에서 조용히 빠진다.
