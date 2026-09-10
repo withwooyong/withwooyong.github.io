@@ -106,8 +106,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
 | `npm run build-slides` | `slidev-poc/decks.json` 을 읽어 발표본 넷을 `out/slides/<슬러그>/` 로 빌드합니다. `npm run build` 로 `out/` 을 만든 뒤에 돌립니다 — `out/` 이 없으면 종료 코드 2 입니다 |
-| `npm run check-slides` | 발표본 산출물이 **배포될 자리에 있는지** 판정합니다. `slidev build` 의 성공은 「빌드가 됐다」만 말합니다. `:verify` 는 자체 검사 |
-| `npm run mutate` | 알려진 결함 **118개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 118개 기준 **약 28분**이 걸리므로 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run check-slides` | 발표본 산출물이 **배포될 자리에 있는지**, 그리고 목록의 발표본이 전부 **`routerMode: hash`** 인지 판정합니다. `slidev build` 의 성공은 「빌드가 됐다」만 말합니다. `:verify` 는 자체 검사 |
+| `npm run mutate` | 알려진 결함 **119개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 119개 기준 **약 28분**이 걸리므로 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
