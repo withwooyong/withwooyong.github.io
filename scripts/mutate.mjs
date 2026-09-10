@@ -123,6 +123,13 @@ const MUTANTS = [
     to: "const SOFT = [];\nconst SOFT_UNUSED = [\n  ",
   },
   {
+    id: "C5",
+    file: "scripts/check-forbidden.mjs",
+    desc: "🔴 발표본 소스를 수집에서 뺀다 — 발행되는 자리가 다시 사각지대가 된다",
+    from: 'if (name.isFile() && /^slides.*\\.md$/.test(name.name)) files.push(join(poc, name.name));',
+    to: 'if (name.isFile() && /^NOT_A_SLIDE.*\\.md$/.test(name.name)) files.push(join(poc, name.name));',
+  },
+  {
     id: "P1",
     file: "scripts/compose.mjs",
     desc: "규약 줄이 언제나 「실측 일치」를 낸다 (어긋남을 숨긴다)",
