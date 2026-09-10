@@ -123,6 +123,13 @@ const MUTANTS = [
     to: "const SOFT = [];\nconst SOFT_UNUSED = [\n  ",
   },
   {
+    id: "C5",
+    file: "scripts/check-forbidden.mjs",
+    desc: "🔴 발표본 소스를 수집에서 뺀다 — 발행되는 자리가 다시 사각지대가 된다",
+    from: 'if (name.isFile() && /^slides.*\\.md$/.test(name.name)) files.push(join(poc, name.name));',
+    to: 'if (name.isFile() && /^NOT_A_SLIDE.*\\.md$/.test(name.name)) files.push(join(poc, name.name));',
+  },
+  {
     id: "P1",
     file: "scripts/compose.mjs",
     desc: "규약 줄이 언제나 「실측 일치」를 낸다 (어긋남을 숨긴다)",
@@ -822,6 +829,44 @@ const MUTANTS = [
     from: '  text = maskJsonArray(text, "featuredPosts", "<FEATURED_POSTS>", file);',
     to: '  text = maskJsonArray(text, "featuredPostsNotAKey", "<FEATURED_POSTS>", file);',
   },
+  {
+    id: "B8",
+    file: "scripts/check-baseline.mjs",
+    desc: "🔴 발표본 제외를 슬래시 없이 적는다 — slidesheet.html 처럼 이름이 겹치는 것까지 빠진다",
+    from: '!norm.startsWith("slides/")',
+    to: '!norm.startsWith("slides")',
+  },
+
+  // check-slides — 산출물이 빠진 것을 못 보는 쪽으로 되살린다.
+  // slidev build 의 성공은 「빌드가 됐다」만 말한다. 배포될 자리에 있는지는 다른 질문이다.
+  {
+    id: "SL1",
+    file: "scripts/check-slides.mjs",
+    desc: "index.html 이 없어도 위반으로 세지 않는다 — 발표본이 통째로 빠져도 통과한다",
+    from: "      missingIndex.push(deck.slug);",
+    to: "      void deck.slug;",
+  },
+  {
+    id: "SL2",
+    file: "scripts/check-slides.mjs",
+    desc: "🔴 assets 가 비어도 통과한다 — 빈 껍데기가 배포된다",
+    from: "    if (seen.assets === 0) emptyAssets.push(deck.slug);",
+    to: "    if (seen.assets === -1) emptyAssets.push(deck.slug);",
+  },
+  {
+    id: "SL3",
+    file: "scripts/check-slides.mjs",
+    desc: "🔴 out/slides 가 없는 것을 통과로 센다 — 빌드를 안 돌린 것이 초록이 된다",
+    from: 'return { code: 2, reason: "no-output", missingIndex: [], emptyAssets: [] };',
+    to: 'return { code: 0, reason: "no-output", missingIndex: [], emptyAssets: [] };',
+  },
+  {
+    id: "SL4",
+    file: "scripts/check-slides.mjs",
+    desc: "🔴 빈 목록을 통과로 센다 — 아무것도 세지 않은 것이 「위반 없음」이 된다",
+    from: "  if (!Array.isArray(decks) || decks.length === 0) {",
+    to: "  if (!Array.isArray(decks) || decks.length === -1) {",
+  },
 ];
 
 const CHECKS = [
@@ -836,6 +881,7 @@ const CHECKS = [
   ["check-table", "npm run --silent check-table:verify"],
   ["build-search-index", "npm run --silent search-index:verify"],
   ["check-baseline", "npm run --silent check-baseline:verify"],
+  ["check-slides", "npm run --silent check-slides:verify"],
   ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts"],
 ];
 

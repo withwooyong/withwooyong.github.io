@@ -75,6 +75,28 @@ function walk(dir, out = [], extRe = TEXT_EXT) {
   return out;
 }
 
+/**
+ * 소스 스캔의 대상을 모은다.
+ *
+ * 발표본은 content/blog 밖에 있어 지금까지 아무도 보지 않았다. 실측으로 금칙어 18종이
+ * 0건이었으나, 그것은 지키는 사람이 있었다는 뜻이 아니라 아직 들어가지 않았다는 뜻이다.
+ * 발행되는 자리이므로 같은 정책이 적용되는 같은 대상이다.
+ */
+function sourceTargets(cwd) {
+  const files = walk(join(cwd, "content", "blog"));
+  const poc = join(cwd, "slidev-poc");
+  for (const name of readdirSync(poc, { withFileTypes: true })) {
+    if (name.isFile() && /^slides.*\.md$/.test(name.name)) files.push(join(poc, name.name));
+  }
+  const pages = join(poc, "pages");
+  try {
+    for (const name of readdirSync(pages, { withFileTypes: true })) {
+      if (name.isFile() && name.name.endsWith(".md")) files.push(join(pages, name.name));
+    }
+  } catch { /* pages/ 가 없는 것은 위반이 아니다 */ }
+  return files;
+}
+
 // 프론트매터를 제외하지 않는다 — post 객체가 통째로 props로 넘어가 __NEXT_DATA__ 에
 // 직렬화되므로, 프론트매터 값도 페이지 소스에 그대로 공개된다.
 // 라틴 낱말은 단어 경계를 요구한다 — 요구하지 않으면 "heats"가 "Cheatsheet"에 걸린다(실제로 걸렸다).
@@ -272,6 +294,26 @@ function selfTest() {
     }
     ok ? pass++ : fail++;
   }
+
+  // ── 수집 대상 ─────────────────────────────────────────────────────────
+  // 🔴 필터를 통과한 집합으로 그 필터를 검사할 수 없다. 대조할 것이 실제로 있는지를 먼저 센다.
+  const collected = sourceTargets(process.cwd()).map((f) => relative(process.cwd(), f).split(String.fromCharCode(92)).join("/"));
+  const slideSources = collected.filter((p) => p.startsWith("slidev-poc/"));
+  const extra = [
+    {
+      name: "🔴 발표본 소스가 수집 대상에 있다 — 실제로 13개다",
+      ok: slideSources.length === 13,
+    },
+    {
+      name: "🔴 발표본을 더해도 content/blog 가 빠지지 않았다",
+      ok: collected.some((p) => p.startsWith("content/blog/")),
+    },
+  ];
+  for (const e of extra) {
+    console.log(`  ${e.ok ? "✅" : "❌"} ${e.name}`);
+    e.ok ? pass++ : fail++;
+  }
+
   console.log(`\n통과 ${pass} / 실패 ${fail}`);
   return fail === 0 ? 0 : 1;
 }
@@ -330,7 +372,7 @@ if (builtMode) {
   }
 } else if (surveyOnly) files = walk(process.cwd());
 else if (argv.length > 0) files = argv.filter((a) => !a.startsWith("--"));
-else files = walk(join(process.cwd(), "content", "blog"));
+else files = sourceTargets(process.cwd());
 
 // 이 스크립트 자신은 금칙어 목록을 담고 있으므로 검사 대상에서 뺀다.
 const SELF = join(process.cwd(), "scripts", "check-forbidden.mjs");
