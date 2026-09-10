@@ -4,4 +4,8 @@ Allow: /
 # 지원 제출본 PDF. 링크로는 열리되 검색 결과에는 뜨지 않게 한다.
 Disallow: /docs/
 
+# 발표본. 링크로는 열리되 검색 결과에는 뜨지 않게 한다.
+# 본체 페이지에서 링크하지 않으므로 URL 을 아는 사람만 본다.
+Disallow: /slides/
+
 Sitemap: https://withwooyong.github.io/sitemap.xml

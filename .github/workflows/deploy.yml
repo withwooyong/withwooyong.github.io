@@ -30,10 +30,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # 🔴 20 에서 22 로 올렸다. 발표본의 **운영** 의존성 넷이 Node 22 이상을 요구한다 —
+      # commander 15(>=22.12.0) · postcss-nested 8 · unplugin-vue-markdown 32(>=22) ·
+      # vite-plugin-static-copy 4 다. --omit=dev 로 빠지지 않으므로 20 에서는 슬라이드
+      # 빌드가 CI 에서만 죽는다. 로컬은 Node 24 라 38초에 끝나 이 어긋남이 드러나지 않았다.
+      #
+      # ⚠️ 본체 빌드도 함께 22 에서 돈다. 산출물이 달라지면 GC-6 가 빨간불이 되는데,
+      #    그 판정은 PR 단계의 `Check non-blog baseline` 스텝이 한다.
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
@@ -134,8 +141,28 @@ jobs:
       - name: Prove baseline checker
         run: npm run check-baseline:verify
 
+      # 산출물이 빠져도 slidev build 는 성공한다. 「빌드가 됐다」와 「배포될 자리에 있다」는
+      # 다른 말이므로 판정하는 검사기를 따로 둔다. 증명이 스캔보다 먼저다.
+      - name: Prove slides checker
+        run: npm run check-slides:verify
+
       - name: Build
         run: npm run build
+
+      # 발표본은 out/ 이 생긴 뒤에 빌드한다 — out/slides/ 로 바로 쓰기 때문이다.
+      # playwright-chromium 은 PDF 내보내기에만 필요하므로 --omit=dev 로 뺀다.
+      # 실측으로 넷 모두 개발 의존성 없이 빌드된다.
+      - name: Install slides dependencies
+        run: npm ci --omit=dev
+        working-directory: slidev-poc
+
+      - name: Build slides into out/slides
+        run: npm run build-slides
+
+      # 🔴 여기서 실패하면 배포가 멈춘다. 그것이 의도한 동작이다 —
+      # 본체만 올리면 /slides/ 가 404 인 채로 배포가 초록으로 끝난다.
+      - name: Check slides output
+        run: npm run check-slides
 
       # 소스가 깨끗한 것은 산출물이 깨끗하다는 증거가 아니다 —
       # 템플릿이 og:image와 제목을 주입한다. Ted_yanadoo.png가 366곳에 있던 것이 그 경우다.
