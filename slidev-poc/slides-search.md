@@ -5,6 +5,11 @@ info: search-engineering 카테고리 6편을 한 덱으로 묶은 것. 파트�
 class: text-center
 transition: slide-left
 mdc: true
+# GitHub Pages 는 사이트 루트의 404.html 만 쓰므로 slidev 가 만든 디렉터리별 404.html 을
+# 무시한다. history 라우팅이면 /slides/<슬러그>/2 같은 장 번호가 서버에 없는 경로가 되어
+# 404 다 — 발표 중 새로고침과 특정 장 링크 공유가 깨진다. hash 는 요청이 언제나
+# index.html 로 가므로 정적 호스트에서 그 문제가 없다.
+routerMode: hash
 ---
 
 # 검색 엔지니어링 여섯 편

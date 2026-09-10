@@ -5,6 +5,11 @@ info: 발행본 agentic-coding/agent-team-operations 를 슬라이드로 옮긴 
 class: text-center
 transition: slide-left
 mdc: true
+# GitHub Pages 는 사이트 루트의 404.html 만 쓰므로 slidev 가 만든 디렉터리별 404.html 을
+# 무시한다. history 라우팅이면 /slides/<슬러그>/2 같은 장 번호가 서버에 없는 경로가 되어
+# 404 다 — 발표 중 새로고침과 특정 장 링크 공유가 깨진다. hash 는 요청이 언제나
+# index.html 로 가므로 정적 호스트에서 그 문제가 없다.
+routerMode: hash
 ---
 
 # 팀을 굴리면 첫날 무엇이 멈추는가
