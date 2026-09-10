@@ -156,6 +156,16 @@ jobs:
         run: npm ci --omit=dev
         working-directory: slidev-poc
 
+      # 🔴 두 트리가 모두 설치된 **뒤에** 돈다. slidev-poc 를 설치하기 전에 돌리면 그쪽
+      # 트리가 통째로 비는데, 검사기는 그것을 위반 0 이 아니라 종료 코드 2 로 다룬다.
+      # npm install 은 engines 를 강제하지 않아 로컬 Node 에서만 도는 판이 조용히 설치된다 —
+      # 실측으로 두 번 CI 를 죽였고(jsdom 30 · 발표본 의존성 넷), 둘째는 사람이 손으로 찾았다.
+      - name: Prove engines checker
+        run: npm run check-engines:verify
+
+      - name: Check dependency engines against CI Node
+        run: npm run check-engines
+
       - name: Build slides into out/slides
         run: npm run build-slides
 

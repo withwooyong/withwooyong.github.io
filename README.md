@@ -80,7 +80,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. 인자는 **`--` 뒤에** 넘긴다 — `npm run dup-scan -- --category <slug>` · `-- --min N`(기본 20자) · `-- <파일...>`. `--` 없이 쓰면 npm이 플래그를 먹어 「대상이 없다」로 종료한다 |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
-| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 63건) |
+| `npm run check-forbidden:verify` | 위 스캔의 자체 검사 (`--self-test` 65건) |
 | `npm run check-forbidden:built` | **빌드 산출물** 금칙어 스캔 (`out/blog` + 대응하는 `_next/data` JSON). 빌드 뒤에 돌립니다. 산출물이 없으면 종료 코드 2 |
 | `npm run check-markup` | 🔴 **렌더되지 않는 강조** 스캔. 판정은 정규식이 아니라 **페이지를 그리는 파서**가 하므로 코드 블록 안의 정당한 예시는 저절로 빠진다. `-- --category <slug>` 로 좁히고, `-- --files <경로...>` 로 발행본 밖의 문서도 본다 |
 | `npm run check-markup:docs` | 위 검사를 **발행본 밖의 리포 문서 전량**에 돌린다. 대상 수집은 검사기가 직접 한다 — `git ls-files` 로 뽑아 넘기면 한글 경로가 따옴표에 감싸여 조용히 빠진다 |
@@ -90,14 +90,14 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-links:verify` | 위 검사의 자체 검사 (`--self-test` 23건) |
 | `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 549개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
 | `npm run check-mermaid:docs` | 위 검사를 리포 문서 65개의 도식 132개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
-| `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 26건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
+| `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 21건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
 | `npm run check-table` | 🔴 **표의 열 수가 어긋난 행** 스캔(발행본). GFM 은 셀이 머리 행보다 많으면 **초과분을 버리고** 적으면 빈 칸으로 채운다 — 오류가 아니라 조용한 오작동이라 화면을 보기 전에는 드러나지 않는다. 판정은 정규식이 아니라 파서가 한다 |
 | `npm run check-table:docs` | 위 검사를 발행본 밖의 리포 문서 전량에 돌린다. 실측으로 리포 전체 표 3,778개 중 어긋난 행이 **4곳**이었고 넷 다 진짜였다 |
 | `npm run check-table:verify` | 위 검사의 자체 검사 (`--self-test` 22건). 판정에 **도달한** 표 수를 함께 세어 대상 수와 대조한다 |
 | `npm run fix-markup -- --category <slug>` | 위 위반의 교정. 조사를 강조 **안으로** 옮긴다. **알려진 조사일 때만** 자동이고 아니면 손볼 자리로 남긴다. `-- --dry` 로 먼저 보고, `-- --files <경로...>` 로 문서를 고친다. 대상을 주지 않으면 종료 코드 2 |
 | `npm run fix-markup:verify` | 위 교정기의 자체 검사 (`--self-test` 19건) |
 | `npm run check-baseline` | **비블로그 페이지의 빌드 산출물이 바뀌지 않았는지** 검사 (`GC-6`). 빌드 뒤에 돌립니다. 위반이면 종료 코드 1, 산출물·기준선이 없으면 2. 2026-08-18 부터 CI 에서 꺼져 있다가 **2026-09-09 에 되살렸습니다** — 환경 종속의 원인이 JS 청크 파일명 해시 하나였고, 그것을 마스킹하니 ubuntu CI 와 Windows 로컬의 산출물 15개가 전량 일치했습니다 |
-| `npm run check-baseline:verify` | 위 검사의 자체 검사 (`--self-test` 16건). 넷은 **마스킹이 넓어지지 않았는지**를 봅니다 — CSS·폰트 해시와 본문의 16진수는 지우지 않아야 하고, 본문이 바뀌면 여전히 잡혀야 합니다 |
+| `npm run check-baseline:verify` | 위 검사의 자체 검사 (`--self-test` 19건). 넷은 **마스킹이 넓어지지 않았는지**를 봅니다 — CSS·폰트 해시와 본문의 16진수는 지우지 않아야 하고, 본문이 바뀌면 여전히 잡혀야 합니다 |
 | `npm run check-baseline:update` | 위 기준선을 갱신합니다. **의도한 변경을 사람이 확인한 뒤에만** 쓰세요 — 자동으로 돌리면 이 검사는 아무것도 막지 못합니다 |
 | `npm run check-counts` | README 3자리와 CHANGELOG의 **발행본 편수**가 실제와 맞는지 검사합니다. 어긋나면 종료 코드 1. `:verify`는 자체 검사, `:print`는 실제 수치만 출력합니다 |
 | `npm run search-index` | 🔴 **검색 인덱스 생성.** 빌드 뒤에 `out/_next/data` 를 읽어 `out/blog/search-index.json` 을 만듭니다. `npm run build` 가 이미 부르므로 따로 돌릴 일은 드뭅니다. 산출물이 없거나 buildId 디렉터리가 둘 이상이거나 편 수가 소스와 다르거나 카나리 편이 빠지면 종료 코드 2 |
@@ -107,7 +107,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
 | `npm run build-slides` | `slidev-poc/decks.json` 을 읽어 발표본 넷을 `out/slides/<슬러그>/` 로 빌드합니다. `npm run build` 로 `out/` 을 만든 뒤에 돌립니다 — `out/` 이 없으면 종료 코드 2 입니다 |
 | `npm run check-slides` | 발표본 산출물이 **배포될 자리에 있는지**, 그리고 목록의 발표본이 전부 **`routerMode: hash`** 인지 판정합니다. `slidev build` 의 성공은 「빌드가 됐다」만 말합니다. `:verify` 는 자체 검사 |
-| `npm run mutate` | 알려진 결함 **119개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 119개 기준 **약 28분**이 걸리므로 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run check-engines` | 설치된 의존성의 `engines.node` 가 **CI 의 Node 에서도 도는지** 판정합니다. `npm install` 은 `engines` 를 강제하지 않아 로컬에서만 도는 판이 조용히 설치되고 CI 에서만 죽습니다. 두 트리(리포 루트 · `slidev-poc`)의 설치본 **전량**을 봅니다 — CI 를 죽인 사례가 직접 의존성이 아니라 transitive 였기 때문입니다. `:verify` 는 자체 검사 (`--self-test` 26건) |
+| `npm run mutate` | 알려진 결함 **127개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 127개 기준 **약 36분**이 걸리므로 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
@@ -144,12 +145,12 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── flow-diagram/       # 흐름 다이어그램 (2)
 │   └── ui/                 # shadcn/ui — badge · button · card · dialog
 ├── data/                   # portfolio.ts · product-lead-*.ts · diagrams/ (시스템 다이어그램 10종)
-├── scripts/                # .mjs 17개 (전량) — 검사기 열세 종: check-forbidden · check-markup ·
+├── scripts/                # .mjs 18개 (전량) — 검사기 열네 종: check-forbidden · check-markup ·
 │                           # check-links · check-mermaid · check-table · check-counts ·
-│                           # check-baseline · check-slides · dup-scan · source-overlap ·
-│                           # compose · fix-markup · build-search-index / 그 밖(판정하지 않는
-│                           # 넷): generate-sitemap · map-terms · build-slides ·
-│                           # mutate(뮤테이션 러너)
+│                           # check-baseline · check-slides · check-engines · dup-scan ·
+│                           # source-overlap · compose · fix-markup · build-search-index /
+│                           # 그 밖(판정하지 않는 넷): generate-sitemap · map-terms ·
+│                           # build-slides · mutate(뮤테이션 러너)
 ├── tests/blog/             # Vitest — frontmatter · loader · toc · tree · search · graph (+ fixtures)
 ├── slidev-poc/             # 발표본 넷 — decks.json(목록의 진실원) · slides-*.md · pages/
 │                           # 빌드하면 out/slides/<슬러그>/ 로 들어가 /slides/ 에 배포됩니다
@@ -185,7 +186,7 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 | 자리 | 언제 | 무엇 |
 |------|------|------|
 | **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | 커밋이 건드린 것에 따라 갈립니다 | `content/blog` 를 건드렸으면 **11단** — 금칙어 증명·불변식·금칙어 스캔·마크업 증명·마크업 스캔·링크 증명·링크 스캔·도식 증명·도식 스캔·표 증명·표 스캔. 그 밖의 `.md` 는 **8단**(네 검사의 증명과 `--docs` 스캔), 코드만이면 즉시 통과합니다. 하나라도 실패하면 커밋이 막힙니다 |
-| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 28스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 27스텝이 돕니다 |
+| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 34스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 33스텝이 돕니다 |
 
 훅은 `npm install` 시 `prepare` 스크립트가 자동으로 설정합니다(`git config core.hooksPath .githooks`).
 수동으로 켜려면 같은 명령을 직접 실행하세요. husky 같은 의존성은 쓰지 않습니다.
