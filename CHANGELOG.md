@@ -103,6 +103,11 @@ PR 단계 run [`34471579290`](https://github.com/withwooyong/withwooyong.github.
 `Upload artifact` 다. 새 스텝 둘(`Prove engines checker` · `Check dependency engines against
 CI Node`)이 모두 success 이므로 검사기가 ubuntu · Node 22 에서 도는 것은 실측이다.
 
+PR 은 merge 커밋 [`b94d6b7`](https://github.com/withwooyong/withwooyong.github.io/commit/b94d6b7c28d0a886a2dd309c844b3c4661745121) 으로 `main` 에 닫혔고 배포 run
+[`34479043998`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34479043998) 도 **success** 다 (전체 **207초** · `build` **38스텝 · 190초 · skipped 0** ·
+`deploy` **3스텝 · 9초**). push 이벤트라 `Upload artifact` 와 `deploy` 가 설계대로 돌았고,
+같은 스텝 29·30 이 배포 경로에서도 success 다.
+
 ---
 
 ## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 · 🔴 **그 배포의 장별 URL 이 전부 404 였다** — GitHub Pages 는 사이트 루트의 `404.html` 만 쓴다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) · [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30))
