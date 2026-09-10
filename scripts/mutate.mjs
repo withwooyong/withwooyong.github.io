@@ -867,6 +867,13 @@ const MUTANTS = [
     from: "  if (!Array.isArray(decks) || decks.length === 0) {",
     to: "  if (!Array.isArray(decks) || decks.length === -1) {",
   },
+  {
+    id: "SL5",
+    file: "scripts/check-slides.mjs",
+    desc: "🔴 routerMode 값을 보지 않고 있기만 하면 통과시킨다 — history 로 되돌려도 초록이 난다",
+    from: "    if (readRouterMode(entry.text) !== ROUTER_OK) wrongMode.push(entry.slug);",
+    to: "    if (readRouterMode(entry.text) === null) wrongMode.push(entry.slug);",
+  },
 ];
 
 const CHECKS = [

@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29))
+## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 · 🔴 **그 배포의 장별 URL 이 전부 404 였다** — GitHub Pages 는 사이트 루트의 `404.html` 만 쓴다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29))
 
 > `slidev-poc` 의 발표본 넷(`patterns` · `team-ops` · `governance` · `search`)을 같은 도메인의
 > `/slides/<슬러그>/` 에 배포한다. 본체에서 링크하지 않고 `robots.txt` 로 색인만 막으므로
@@ -117,6 +117,68 @@ GC-6 가 여기서 잡는데, 로컬에 Node 20 이 없어 미리 잴 수 없었
 `34336637777` 은 바로 위 절과 `HANDOFF.md` 에 기록되어 있었고 없던 것은 `34340890496`
 하나다. **인수인계에 적힌 「없다」도 대조 없이는 근거가 아니다** — 「푸시 완료」가 거짓이었던
 사례와 같은 부류이며, 이번에는 `grep` 한 번으로 갈렸다.
+
+### 🔴 배포된 발표본의 장별 URL 이 전부 404 였다 — 산출물은 멀쩡했다
+
+배포 직후 브라우저로 열어 보니 `/slides/<슬러그>/` 는 그려지는데 `/slides/<슬러그>/2` 처럼
+장 번호가 붙은 URL 이 **전부 본체의 Next.js 404 페이지**로 떨어졌다. 발표 중 새로고침과
+특정 장 링크 공유가 그대로 깨진다.
+
+```mermaid
+flowchart TD
+  A["slidev 기본값<br/>routerMode: history"] --> B["/slides/team-ops/2 를 요청한다"]
+  B --> C{"그 경로에 파일이 있나"}
+  C -->|없다| D["호스트가 폴백을 찾는다"]
+  D --> E["GitHub Pages<br/>사이트 루트의 404.html 만 본다"]
+  D --> F["Netlify · Vercel<br/>디렉터리별 폴백을 쓴다"]
+  E --> G["🔴 본체 404 페이지"]
+  F --> H["✅ 그 발표본의 index"]
+```
+
+기전은 둘이 맞물린 것이다. slidev 는 슬러그마다 `404.html` 을 만들어 두지만 **GitHub Pages 는
+사이트 루트의 것만 읽고 나머지를 무시한다.** 같은 산출물이 Netlify 에서는 멀쩡하므로
+「slidev 가 잘못 만들었다」로는 설명되지 않는다.
+
+| 무엇이 초록이었나 | 왜 못 봤나 |
+| --- | --- |
+| `slidev build` | 빌드는 성공한다. 라우팅은 런타임 동작이다 |
+| `check-slides` | `index.html` 과 `assets` 는 멀쩡히 있었다 |
+| `curl "…/#/2"` | 🔴 **프래그먼트는 서버로 전송되지 않는다.** 실제 요청은 `/slides/team-ops/` 라서 200 이 나오는 것이 당연하다. 근거가 되지 못한다 |
+
+고침은 발표본 다섯의 frontmatter 에 `routerMode: hash` 를 넣은 것이다. hash 라우팅이면 요청이
+언제나 `index.html` 로 가므로 정적 호스트에서 이 문제가 없다. `decks.json` 에 아직 없는
+`slides-es.md` 도 함께 고쳤다 — 목록에 더해지는 순간 같은 결함이 되살아난다.
+확인은 브라우저로 했다 (`#/2` 를 직접 열어 2장이 그려지는 것을 보았다).
+
+### 규칙을 문서가 아니라 검사기에 남겼다
+
+`check-slides` 에 순수 함수 `decideRouter` 와 `readRouterMode` 를 더해, `decks.json` 이 가리키는
+발표본이 전부 `routerMode: hash` 인지 판정한다. 자기 검사가 **9 → 17케이스**, 뮤턴트가
+**118 → 119개**(`SL5`)가 되었다.
+
+| 케이스 | 무엇을 지키나 |
+| --- | --- |
+| ⑪ history 로 적혀 있으면 위반 | 값을 보지 않고 **존재만** 보는 구현을 떨어뜨린다 (`SL5` 가 이것에 잡힌다) |
+| ⑫ 아예 없으면 위반 | 🔴 slidev 의 기본값이 history 다. **적지 않은 것이 곧 결함이다** |
+| ⑬ frontmatter 밖은 세지 않는다 | 이 규칙을 설명하는 슬라이드가 한 장만 있어도 통과해 버린다 |
+| ⑭ 주석 네 줄 아래도 읽는다 | 실제 발표본이 그 형태다 |
+| ⑮ 소스를 못 읽으면 위반 | 못 읽은 것을 「깨끗함」으로 세지 않는다 |
+| ⑰ 실제 넷이 전부 hash 다 | 대조할 것이 있는지 먼저 센다 |
+
+되돌려 확인했다. 실제 `slides-search.md` 를 history 로 바꾸니 본 검사가 종료 코드 1 을 내고
+⑰ 이 FAIL 로 떨어졌으며, `SL5` 를 격리 실행하니 ⑪ 이 FAIL 로 잡았다. **통과만 보고는 케이스가
+헛도는지 알 수 없다.**
+
+### merge 와 배포
+
+| 항목 | 값 |
+| --- | --- |
+| merge 커밋 | [`48a91c6`](https://github.com/withwooyong/withwooyong.github.io/commit/48a91c6) |
+| 배포 run | [`34438737873`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34438737873) · **success** |
+
+둘 다 문서에서 옮겨 적지 않고 `git log origin/main` 과 `gh run list --branch main` 에서 읽었다.
+배포된 실물을 브라우저로 열어 본 결과가 바로 위의 404 결함이다 — **배포 run 의 success 는
+「배포가 끝났다」만 말하고 「열린다」를 말하지 않는다.**
 
 ## 2026-09-09 — 🔴 **`check-baseline` 을 CI 에서 되살렸다** — 1년 가까이 꺼져 있던 원인은 **크기가 바이트까지 같은 파일** 안의 해시 하나였다 (PR [#28](https://github.com/withwooyong/withwooyong.github.io/pull/28))
 
