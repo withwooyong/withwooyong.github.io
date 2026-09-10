@@ -16,7 +16,7 @@
 
 ---
 
-## 2026-09-10 — 🔴 **`engines` 사각지대를 검사기로 닫았다** — 직접 의존성만 보는 판은 **이 사례를 잡지 못했고**, 그것을 드러낸 것은 자기 검사가 아니라 되돌림이었다
+## 2026-09-10 — 🔴 **`engines` 사각지대를 검사기로 닫았다** — 직접 의존성만 보는 판은 **이 사례를 잡지 못했고**, 그것을 드러낸 것은 자기 검사가 아니라 되돌림이었다 (PR [#31](https://github.com/withwooyong/withwooyong.github.io/pull/31))
 
 > `npm install` 은 의존성의 `engines` 를 강제하지 않는다. 그래서 로컬 Node 에서만 만족되는
 > 패키지가 경고 없이 설치되고 **CI 에서만 죽는다.** 이 리포는 그것을 두 번 겪었고
@@ -91,6 +91,17 @@ CR **436**, 정본이 **0** 이었고 `from` 에 개행이 든 셋만 매칭에 
 🆕 **치환 실패는 미리 셀 수 있다.** `from` 의 **런타임 값**에 개행이 있는지와 대상 파일의 CR 을
 곱하면 되고, 예측 3건이 실측 3건과 일치했다. 🔴 소스의 표기로 세면 오탐한다 — `M5` 의 `from` 은
 `"\\n"` 이라 개행처럼 보이지만 백슬래시와 n 두 글자다.
+
+또 하나, CHANGELOG 절을 월별 파일로 내리자 상대 링크 **3곳**이 깨졌다. 기준 디렉터리가 리포
+루트에서 `docs/changelog/` 로 바뀌기 때문인데, 옮기는 작업 자체는 내용을 한 글자도 바꾸지
+않으므로 「고칠 것이 없다」고 넘기기 쉽다. `check-links:docs` 가 잡았다.
+
+### CI 실측
+
+PR 단계 run [`34471579290`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34471579290) 이 **success** 다 (전체 **208초** · `build` **38스텝 · 202초** · `deploy` **skipped**).
+38 은 워크플로 정의의 **34** 에 러너가 넷을 붙인 수이며 `success 37 · skipped 1` 이고 그 하나가
+`Upload artifact` 다. 새 스텝 둘(`Prove engines checker` · `Check dependency engines against
+CI Node`)이 모두 success 이므로 검사기가 ubuntu · Node 22 에서 도는 것은 실측이다.
 
 ---
 
