@@ -78,23 +78,12 @@ function walk(dir, out = [], extRe = TEXT_EXT) {
 /**
  * 소스 스캔의 대상을 모은다.
  *
- * 발표본은 content/blog 밖에 있어 지금까지 아무도 보지 않았다. 실측으로 금칙어 18종이
- * 0건이었으나, 그것은 지키는 사람이 있었다는 뜻이 아니라 아직 들어가지 않았다는 뜻이다.
- * 발행되는 자리이므로 같은 정책이 적용되는 같은 대상이다.
+ * ⚠️ 2026-09-12 까지는 `slidev-poc/` 의 발표본 소스 13개도 함께 모았다. 발표본 갈래를
+ *    걷어내면서 그 자리를 지웠다. **발행되는 마크다운을 새로 더하면 여기에 더해라** —
+ *    `content/blog` 밖이라는 이유로 스캔에서 빠지는 자리가 다시 생기지 않게 한다.
  */
 function sourceTargets(cwd) {
-  const files = walk(join(cwd, "content", "blog"));
-  const poc = join(cwd, "slidev-poc");
-  for (const name of readdirSync(poc, { withFileTypes: true })) {
-    if (name.isFile() && /^slides.*\.md$/.test(name.name)) files.push(join(poc, name.name));
-  }
-  const pages = join(poc, "pages");
-  try {
-    for (const name of readdirSync(pages, { withFileTypes: true })) {
-      if (name.isFile() && name.name.endsWith(".md")) files.push(join(pages, name.name));
-    }
-  } catch { /* pages/ 가 없는 것은 위반이 아니다 */ }
-  return files;
+  return walk(join(cwd, "content", "blog"));
 }
 
 // 프론트매터를 제외하지 않는다 — post 객체가 통째로 props로 넘어가 __NEXT_DATA__ 에
@@ -298,15 +287,14 @@ function selfTest() {
   // ── 수집 대상 ─────────────────────────────────────────────────────────
   // 🔴 필터를 통과한 집합으로 그 필터를 검사할 수 없다. 대조할 것이 실제로 있는지를 먼저 센다.
   const collected = sourceTargets(process.cwd()).map((f) => relative(process.cwd(), f).split(String.fromCharCode(92)).join("/"));
-  const slideSources = collected.filter((p) => p.startsWith("slidev-poc/"));
   const extra = [
     {
-      name: "🔴 발표본 소스가 수집 대상에 있다 — 실제로 13개다",
-      ok: slideSources.length === 13,
+      name: "🔴 수집 대상이 비어 있지 않다 — 0개 스캔의 「위반 0」은 결론이 아니다",
+      ok: collected.length > 0,
     },
     {
-      name: "🔴 발표본을 더해도 content/blog 가 빠지지 않았다",
-      ok: collected.some((p) => p.startsWith("content/blog/")),
+      name: "🔴 수집 대상이 전부 content/blog 아래다 — 스캔 범위가 조용히 넓어지지 않았다",
+      ok: collected.every((p) => p.startsWith("content/blog/")),
     },
   ];
   for (const e of extra) {

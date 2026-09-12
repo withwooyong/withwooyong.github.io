@@ -206,7 +206,7 @@ export function decideExit({ canary, rejected, scanned, unreachable, violations 
 
 // 🔴 CI 와 로컬의 Node 가 다른 것을 판정하던 자리가 여기 있었다. `scripts/check-engines.mjs`
 //    로 옮겼다 — 도식 검사기 안에 있어서는 다음 사람이 그것을 찾지 못하고, 실제로 그 판정이
-//    보던 것은 **리포 루트의 node_modules 하나**뿐이라 slidev-poc 가 통째로 사각지대였다.
+//    보던 것은 **리포 루트의 node_modules 하나**뿐이라 둘째 트리가 통째로 사각지대였다.
 //    옮긴 곳은 설치된 트리 전량을 본다. 복사하지 않고 옮긴 이유는 두 곳에 두면 갈라지기
 //    때문이다 — 이 리포가 「검사 기준을 문서로 복사하지 마라」로 여러 번 겪은 실패다.
 
