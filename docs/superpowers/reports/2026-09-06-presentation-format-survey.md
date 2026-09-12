@@ -362,12 +362,16 @@ Marp 는 배우기 쉽지만 도식을 전부 이미지로 다시 만들어야 �
 
 ---
 
-## 부록. 리포에 남은 것
+## 부록. 리포에 남아 있던 것
+
+🗑️ **2026-09-12 에 `slidev-poc/` 를 통째로 걷어냈다.** 사용자가 발표본 넷의 삭제를
+지시했기 때문이다. 아래 경로는 지금 리포에 없으며, 되살리려면 `git revert` 한 번이면 된다.
+그래서 링크를 걷고 경로만 남긴다 — 없는 파일을 가리키는 링크는 정적 export 에서 404 다.
 
 | 경로 | 내용 |
 | --- | --- |
-| [`slidev-poc/slides.md`](../../../slidev-poc/slides.md) | 형식 검증용 7장. 기능마다 한 장 |
-| [`slidev-poc/slides-es.md`](../../../slidev-poc/slides-es.md) | 발행본 이식본 20장 |
+| `slidev-poc/slides.md` | 형식 검증용 7장. 기능마다 한 장 |
+| `slidev-poc/slides-es.md` | 발행본 이식본 20장 |
 | `slidev-poc/package.json` | `@slidev/cli` 52.19.1 · `playwright-chromium` |
 | `slidev-poc/.gitignore` | `dist` · `dist-*` · `*.pdf` 를 제외한다 |
 

@@ -105,10 +105,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run compose -- <파일...>` | 문서를 **성분별로 분해**합니다 — 절마다 산문·표·코드·도식·불릿·인용의 B와 백분율. 원본과 발행본에 각각 돌려 비율을 냅니다. `:verify`는 자체 검사 |
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
-| `npm run build-slides` | `slidev-poc/decks.json` 을 읽어 발표본 넷을 `out/slides/<슬러그>/` 로 빌드합니다. `npm run build` 로 `out/` 을 만든 뒤에 돌립니다 — `out/` 이 없으면 종료 코드 2 입니다 |
-| `npm run check-slides` | 발표본 산출물이 **배포될 자리에 있는지**, 그리고 목록의 발표본이 전부 **`routerMode: hash`** 인지 판정합니다. `slidev build` 의 성공은 「빌드가 됐다」만 말합니다. `:verify` 는 자체 검사 |
-| `npm run check-engines` | 설치된 의존성의 `engines.node` 가 **CI 의 Node 에서도 도는지** 판정합니다. `npm install` 은 `engines` 를 강제하지 않아 로컬에서만 도는 판이 조용히 설치되고 CI 에서만 죽습니다. 두 트리(리포 루트 · `slidev-poc`)의 설치본 **전량**을 봅니다 — CI 를 죽인 사례가 직접 의존성이 아니라 transitive 였기 때문입니다. `:verify` 는 자체 검사 (`--self-test` 26건) |
-| `npm run mutate` | 알려진 결함 **127개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 127개 기준 **약 36분**이 걸리므로 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run check-engines` | 설치된 의존성의 `engines.node` 가 **CI 의 Node 에서도 도는지** 판정합니다. `npm install` 은 `engines` 를 강제하지 않아 로컬에서만 도는 판이 조용히 설치되고 CI 에서만 죽습니다. 리포 루트 트리의 설치본 **전량**(372개)을 봅니다 — CI 를 죽인 사례가 직접 의존성이 아니라 transitive 였기 때문입니다. `:verify` 는 자체 검사 (`--self-test` 26건) |
+| `npm run mutate` | 알려진 결함 **121개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 121개 기준 **29분 40초**가 걸리므로(2026-09-12 실측) 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
@@ -145,16 +143,13 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── flow-diagram/       # 흐름 다이어그램 (2)
 │   └── ui/                 # shadcn/ui — badge · button · card · dialog
 ├── data/                   # portfolio.ts · product-lead-*.ts · diagrams/ (시스템 다이어그램 10종)
-├── scripts/                # .mjs 18개 (전량) — 검사기 열네 종: check-forbidden · check-markup ·
+├── scripts/                # .mjs 16개 (전량) — 검사기 열세 종: check-forbidden · check-markup ·
 │                           # check-links · check-mermaid · check-table · check-counts ·
-│                           # check-baseline · check-slides · check-engines · dup-scan ·
-│                           # source-overlap · compose · fix-markup · build-search-index /
-│                           # 그 밖(판정하지 않는 넷): generate-sitemap · map-terms ·
-│                           # build-slides · mutate(뮤테이션 러너)
+│                           # check-baseline · check-engines · dup-scan · source-overlap ·
+│                           # compose · fix-markup · build-search-index /
+│                           # 그 밖(판정하지 않는 셋): generate-sitemap · map-terms ·
+│                           # mutate(뮤테이션 러너)
 ├── tests/blog/             # Vitest — frontmatter · loader · toc · tree · search · graph (+ fixtures)
-├── slidev-poc/             # 발표본 넷 — decks.json(목록의 진실원) · slides-*.md · pages/
-│                           # 빌드하면 out/slides/<슬러그>/ 로 들어가 /slides/ 에 배포됩니다
-│                           # (robots.txt 로 색인은 막습니다). 의존성이 Node 22 이상을 요구합니다
 ├── public/                 # 이미지, favicon, robots.txt, sitemap.xml
 ├── styles/                 # 전역 CSS (테마·모션)
 └── docs/                   # 로드맵·완료 보고 · superpowers/{specs,plans,reports}

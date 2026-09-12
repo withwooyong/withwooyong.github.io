@@ -12,9 +12,12 @@
 //    이 사례를 **잡지 못한다** — 실측으로 node-version 을 20 으로 낮춰도 위반 0 이었다.
 //    ⇒ 설치된 트리 **전량**을 본다.
 //
-// ⚠️ 로컬 트리는 CI 트리의 상위집합이다. CI 는 slidev-poc 를 `--omit=dev` 로 설치하므로
-//    로컬에만 있는 devDependency 트리가 섞이는데, 그 방향의 어긋남은 **거짓 양성**일 뿐
-//    거짓 음성이 아니다. 여기서 0 이면 CI 에서도 0 이다.
+// ⚠️ ②를 낳은 발표본 갈래는 2026-09-12 에 걷어냈고 지금 보는 트리는 리포 루트 하나다.
+//    그래도 이 검사는 남긴다 — 같은 함정(`npm install` 이 engines 를 강제하지 않는다)이
+//    본체 트리에도 그대로 있고, ①은 애초에 본체의 jsdom 이었다.
+//
+// ⚠️ 로컬 트리는 CI 트리의 상위집합이다. 로컬에만 있는 판이 섞이면 그 방향의 어긋남은
+//    **거짓 양성**일 뿐 거짓 음성이 아니다. 여기서 0 이면 CI 에서도 0 이다.
 //
 // 판정(decideEngines)과 수집(collect)을 나눈다. 판정이 순수 함수라야 node_modules 없이
 // 자기 검사가 돌고, 뮤테이션이 그 자리를 되살릴 수 있다. 가드가 main 에 흩어져 있으면
@@ -32,7 +35,6 @@ const WORKFLOW = path.join(".github", "workflows", "deploy.yml");
  */
 const TARGETS = [
   { dir: ".", modules: "node_modules" },
-  { dir: "slidev-poc", modules: path.join("slidev-poc", "node_modules") },
 ];
 
 /**
@@ -271,12 +273,12 @@ function selfTest() {
       },
     },
     {
-      name: "㉑ 🔴 대상 트리 둘 다 판정할 것이 실제로 있다 — 필터를 통과한 집합으로 필터를 검사할 수 없다",
+      name: "㉑ 🔴 대상 트리에 판정할 것이 실제로 있다 — 필터를 통과한 집합으로 필터를 검사할 수 없다",
       run: () => TARGETS.every((t) => collect(t).length > 0),
     },
     {
       name: "㉒ 🔴 실제 설치본 전량이 CI 의 Node 에서 돈다 — 이 자리가 두 번 CI 를 죽였다",
-      run: () => decideEngines(TARGETS.flatMap(collect), ciNodeMajor(), DIRS).code === 0,
+      run: () => decideEngines(TARGETS.flatMap(collect), ciNodeMajor(), TARGETS.map((t) => t.dir)).code === 0,
     },
     {
       name: "㉓ 🔴 engines 를 선언한 것이 하나도 없으면 종료 코드 2 — 대조할 것이 있는지 먼저 센다",
@@ -309,12 +311,15 @@ function selfTest() {
       },
     },
     {
-      name: "㉕ 🔴 @scope 패키지도 관측된다 — @slidev/cli 처럼 한 겹 더 들어간다",
-      run: () => collect(TARGETS[1]).some((o) => o.name.startsWith("@")),
+      name: "㉕ 🔴 @scope 패키지도 관측된다 — @typescript-eslint/parser 처럼 한 겹 더 들어간다",
+      run: () => collect(TARGETS[0]).some((o) => o.name.startsWith("@")),
     },
     {
-      name: "㉖ 🔴 대조군 — Node 20 으로 재면 실제로 위반이 나온다. 0 이 검사기가 죽어서인지 아닌지를 이것이 가른다",
-      run: () => decideEngines(TARGETS.flatMap(collect), 20, DIRS).violations.length > 0,
+      // 🔴 종전에는 Node 20 으로 쟀다. 그때의 위반은 전부 발표본 트리에서 나왔으므로
+      //    그 갈래를 걷어낸 지금은 20 으로 재면 0 이 되어 대조군이 헛돈다.
+      //    본체 트리가 실제로 걸리는 값으로 낮춰 잡는다.
+      name: "㉖ 🔴 대조군 — Node 16 으로 재면 실제로 위반이 나온다. 0 이 검사기가 죽어서인지 아닌지를 이것이 가른다",
+      run: () => decideEngines(TARGETS.flatMap(collect), 16, TARGETS.map((t) => t.dir)).violations.length > 0,
     },
   );
 
