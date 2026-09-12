@@ -1,9 +1,35 @@
 # HANDOFF
 
-> 마지막 갱신 2026-09-10 · 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 발행본 **192편** ·
+> 마지막 갱신 2026-09-12 · 🧹 **미푸시 커밋을 닫고 작업 트리를 정리했다** · 발행본 **192편** ·
+> 🔴 **직전 세션의 마지막 문서 커밋이 사흘 동안 푸시되지 않은 채 남아 있었다.**
+>
+> **이번 세션(2026-09-12) —** 코드를 고치지 않았고 **남은 일을 확인해 닫은 세션**이다.
+> `git status -sb` 가 `ahead 1` 을 냈다 — 직전 세션이 PR #31 의 merge 커밋과 배포 run 을
+> 기록한 커밋 `136f7a8` 을 만들고 푸시하지 않았다. 푸시했고 배포 run
+> [`34668318584`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34668318584)
+> 이 **success** 다 (`build` **38스텝 · 실패 0 · skipped 0** · `deploy` **3스텝**).
+> 이어서 병합이 끝난 **워크트리 둘과 로컬 브랜치 열한 개**를 지웠고, 지금 이 저장소는
+> **워크트리 하나 · 브랜치 `main` 하나**만 남은 상태다.
+>
+> ✅ **`node_modules` 링크를 먼저 끊고 워크트리를 지웠다.** 두 워크트리의 `node_modules` 는
+> 루트를 가리키는 링크였으므로 `cmd /c rmdir` 로 **링크만** 제거한 뒤 `worktree remove` 했고,
+> 제거 전후로 루트의 항목 수를 세어 **575개가 그대로**임을 확인했다. 순서를 바꾸면 원본이
+> 함께 지워진다.
+>
+> 🔴 **`/handoff` 수집기의 README drift 신호 넷이 전부 오탐이었고, 그중 하나는 판정 표의
+> 수치가 낡아 있었다.** `:verify` 는 12개가 아니라 **16개**이고 **16개 전부 README 에 있다**
+> (독립 행 **9** · 본 명령 병기 **7**). `check-slides:verify` 와 `check-engines:verify` 가
+> 늘어난 몫이며 둘 다 README 109·110행에 병기되어 있다. ⇒ **판정을 이어받되 수치는 다시 세라** —
+> 오탐 판정 자체는 유효했지만 그 근거로 적힌 수는 두 검사기가 늘어난 사이에 어긋나 있었다.
+>
+> ---
+>
+> **아래 문단들은 발표본 배포 세션(2026-09-10)의 기록이다.**
+>
+> 🚀 **발표본 넷을 `/slides/` 에 배포한다** ·
 > 🔴 **로컬이 Node 24 라 CI 의 Node 20 이 슬라이드 빌드를 죽인다는 것이 드러나지 않았다.**
 >
-> **이번 세션 —** 직전 세션이 멈춘 **Task 1 Step 8** 부터 이어받아 계획서 여섯 Task 를 전부
+> **그 세션 —** 직전 세션이 멈춘 **Task 1 Step 8** 부터 이어받아 계획서 여섯 Task 를 전부
 > 닫았다. 검사기 `check-slides` 를 세우고 `check-baseline`(발표본 제외) · `check-forbidden`
 > (발표본 소스 13개 추가) 둘을 고쳤으며, CI `build` job 이 **28 에서 32스텝**이 되었다.
 > 뮤턴트는 **119개**이고 검사기는 **열세 종**이다.
@@ -354,11 +380,13 @@
 | 직전까지의 푸시 · 배포 | ✅ **PR [#18](https://github.com/withwooyong/withwooyong.github.io/pull/18) 이 merge 커밋 `0a0583d` 로 닫혔다** (부모 둘: `572a849` + `5dc1aeb`). 배포 run `34021838010` 이 **success** 였고 전체 **2분 38초** · `build` **2분 21초** · `deploy` **10초** 였다. PR 단계의 CI 는 run `34021022251` **success**(전체 **2분 35초**)이며 `Upload artifact` 스텝과 `deploy` job 이 설계대로 **skipped** 되었다. ⚠️ 그 앞 run `34020945588` 은 **실패가 아니라 취소**다 — 뒤이은 푸시가 같은 ref 의 run 을 대체했다. ⚠️ **그 배포로 화면이 달라지지는 않았다** — 변경이 문서뿐이라 `out/` 에 들어가지 않는다. 그 앞은 PR #17 의 run `34018339741`(123초), PR #16 의 run `34011795806`(130초), PR #15 의 run `34007702350`(150초), PR #14 의 run `34006877177`(150초)였다. 머지 방식은 **merge 커밋**이다: PR #11~#18 이 전부 부모가 둘이며, 이 리포는 squash 를 쓴 적이 없다 |
 | 프로덕션 실측 | ✅ **카테고리 목록과 본문이 서로 다른 그래프를 그린다는 것을 화면에서 확인했다.** `/blog/ai-agent/` 는 앵커 **13개**(중심 1 + 이웃 12) · 중심이 **링크**(`/blog/ai-agent/langgraph-state-reducer/`) · 연결선 **36개** · 캡션 **두 줄 48px** 로 잘리지 않았고, 중심거리 표준편차 **15.72** · 이웃 간 최소 간격 **23.86** 이었다. 본문 페이지는 앵커 **7개** · 중심이 링크가 **아니고** 캡션 **32px** 여서 둘의 문맥이 섞이지 않았다. 그 앞 세션의 본문 실측은 이웃 **12** · 연결선 **18** · 표준편차 **19.15** · 최소 간격 **42.05** 였다 |
 | 🆕 이번 푸시 · CI | ✅ **PR [#23](https://github.com/withwooyong/withwooyong.github.io/pull/23) 을 열었고 CI run `34223275846` 이 success 였다** (`build` **success · 30스텝 · 2분 53초** · `deploy` **skipped** — PR 이므로 설계대로다). `MERGEABLE / CLEAN` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다. ⚠️ **30스텝은 문서의 26 이 낡았다는 뜻이 아니다** — 러너가 `Set up job`·`Post Setup Node`·`Post Checkout`·`Complete job` 넷을 붙인다. ⏳ **merge 와 배포 run 은 아직 비어 있다** |
-| 🆕 브랜치 | 🆕 `content/pm-practice-part8` 다 (기점 **`2b9a987`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 편7 PR 의 merge 커밋과 배포 run 을 채운 문서 갱신이 그 커밋이며, 편8 PR 에 함께 실린다). 앞 세션은 `content/pm-practice-part7` 이었다 (기점 **`8d0b3c9`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 편6 PR 의 merge 커밋과 배포 run 을 채운 문서 갱신이 그 커밋이며, 편7 PR 에 함께 실린다). 앞 세션은 `content/pm-practice-part6` 였다 (기점 **`a5e5497`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 그래야 직전 세션의 문서 갱신이 이 PR 에 함께 실린다). ⚠️ **이 저장소는 워크트리를 셋 쓴다** — 리포 루트가 `main` 을, `…-pm-practice` 가 편6 갈래를, `…-ops` 가 `chore/baseline-and-slides` 를 잡고 있다. **브랜치를 만들기 전에 `git worktree list` 와 `git status` 를 먼저 읽고 기점을 명시하라.** 새 워크트리에는 `node_modules` 가 없으므로 루트의 것을 junction 으로 연결하고 끝나면 `cmd /c rmdir` 로 링크만 지운다 — `npm install` 은 금지다. 🔴 **junction 은 PowerShell 의 `New-Item -ItemType Junction` 으로 만들어라** — Bash 에서 `cmd /c mklink /J` 를 돌리면 **출력을 버렸을 때 실패가 성공으로 보고된다**(2026-09-08 실측: 「연결 성공」을 찍고 실제로는 만들어지지 않았다). 만든 뒤 **패키지 수를 원본과 대조하라** |
+| 🆕 브랜치 | 🆕 `content/pm-practice-part8` 다 (기점 **`2b9a987`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 편7 PR 의 merge 커밋과 배포 run 을 채운 문서 갱신이 그 커밋이며, 편8 PR 에 함께 실린다). 앞 세션은 `content/pm-practice-part7` 이었다 (기점 **`8d0b3c9`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 편6 PR 의 merge 커밋과 배포 run 을 채운 문서 갱신이 그 커밋이며, 편7 PR 에 함께 실린다). 앞 세션은 `content/pm-practice-part6` 였다 (기점 **`a5e5497`** — `origin/main` 이 아니라 **로컬 `main` 의 미푸시 커밋**이다. 그래야 직전 세션의 문서 갱신이 이 PR 에 함께 실린다). 🆕 **2026-09-12 세션이 워크트리 둘과 로컬 브랜치 열한 개를 지워 지금은 루트 하나만 남았다** — 종전에는 셋이었고 `…-pm-practice` 가 편6 갈래를, `…-ops` 가 `chore/baseline-and-slides` 를 잡고 있었다. 🔴 **워크트리를 지우기 전에 `node_modules` 링크를 `cmd /c rmdir` 로 먼저 끊어라** — 실측으로 링크를 끊고 지운 뒤 루트의 항목 수가 **575개로 보존**되었고, 순서를 바꾸면 원본이 함께 사라진다. **브랜치를 만들기 전에 `git worktree list` 와 `git status` 를 먼저 읽고 기점을 명시하라.** 새 워크트리에는 `node_modules` 가 없으므로 루트의 것을 junction 으로 연결하고 끝나면 `cmd /c rmdir` 로 링크만 지운다 — `npm install` 은 금지다. 🔴 **junction 은 PowerShell 의 `New-Item -ItemType Junction` 으로 만들어라** — Bash 에서 `cmd /c mklink /J` 를 돌리면 **출력을 버렸을 때 실패가 성공으로 보고된다**(2026-09-08 실측: 「연결 성공」을 찍고 실제로는 만들어지지 않았다). 만든 뒤 **패키지 수를 원본과 대조하라** |
 | 🆕 새 배치 | ✅ **`product-management-practice` 8편을 모두 냈다.** 발행 시점 합계 **172,120 B** · 평균 21,515 (§3-2 예측 166,206 대비 +3.6%). 🔴 지금 파일을 재면 **172,967 B** 로 커진다 — **뒤 편이 나올 때마다 앞 편이 링크를 받아 커지므로**(지도편 +489 B) §10 의 「최종 B」와 지금 잰 값을 비교하지 마라 (§10-8-f). 원본은 `pm-po` 07 · 10 · 11 · 12 이고 배정 원본 **67,741 B** · 배치 총량 **156,366 B** 다. 카테고리는 기존 `product-management` 를 쓰고 **새 카테고리도 새 태그도 만들지 않는다.** 설계서를 승인받은 뒤 편1(지도)부터 쓴다 |
 | 🆕 이번 브랜치 | 🆕 `feat/check-engines` 다 (기점 **`da83370`** — `origin/main` 과 같은 커밋이다). 커밋은 하나이고 (`84ed120` 검사기와 문서), 여기에 PR 번호와 CI 실측을 채운 커밋이 더해진다. ✅ **PR [#31](https://github.com/withwooyong/withwooyong.github.io/pull/31) 을 열었고 `mergeable` 은 `MERGEABLE` 이다.** `gh run list --branch` 로 **run 이 실제로 생성된 것**(`34471579290`)을 따로 확인했다 — 충돌하는 PR 은 빨간 것이 아니라 run 이 0개다. ✅ **그 run 이 success 다** (전체 **208초** · `build` **success · 38스텝 · 202초** · `deploy` **skipped**). 38 은 워크플로 정의의 **34** 에 러너가 넷을 붙인 수이며 `success 37 · skipped 1` 이고 그 하나가 `Upload artifact` 다 — PR 이벤트라 설계대로다. 🆕 **새 스텝 둘이 실제로 돌았다** — 29 `Prove engines checker` · 30 `Check dependency engines against CI Node` 가 모두 success 이므로, 검사기가 ubuntu · Node 22 에서도 도는 것은 추정이 아니라 실측이다. 인수인계를 채운 두 번째 커밋 `8101be6` 의 run `34472035716` 도 **success** 다 (`build` 38스텝 · success 37 · skipped 1). 🆕 **PR 은 merge 커밋 [`b94d6b7`](https://github.com/withwooyong/withwooyong.github.io/commit/b94d6b7c28d0a886a2dd309c844b3c4661745121) 으로 `main` 에 닫혔고 배포 run [`34479043998`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34479043998) 도 success 다** (전체 **207초** · `build` **success · 38스텝 · 190초 · skipped 0** · `deploy` **success · 3스텝 · 9초**). push 이벤트라 `Upload artifact` 와 `deploy` 가 설계대로 돌았고 skipped 가 하나도 없다 — 같은 스텝 29·30 이 배포 경로에서도 success 다 |
 | 앞선 브랜치 | `feat/deploy-slides` 다 (기점 **`9b1c23d`** — `origin/main` 과 같은 커밋이다). 루트 워크트리에서 잡고 있으므로 **루트가 더 이상 `main` 이 아니다.** 커밋은 여덟이다 — `58ef146` 설계서 · `bd030bc` 계획서 · `6dc5a39` Task 1 · `88827b8` 중간 인수인계 · `3438d19` Task 2 · `9118712` Task 3 · `bdc2568` Task 4 · `d5daba3` Task 5 · `2d29e5a` Task 6 문서이고, 여기에 PR 번호를 채운 커밋이 더해진다. ✅ **PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) 을 열었고 CI 가 success 다.** ⚠️ **브랜치는 이 세션 이전에 이미 origin 에 있었다** — 인수인계는 「PR 은 아직 열지 않았다」만 적었고 푸시 여부는 적지 않았는데, `git push` 가 `88827b8..2d29e5a` 범위를 냈다. ⏳ **남은 것은 `main` merge 이며 승인이 필요하다** |
 | ~~아직 기록되지 않은 배포 run~~ | ✅ **닫았다. 다만 앞 세션의 진술이 절반 틀렸다** — `34336637777` 은 이미 `CHANGELOG.md` 의 PR #28 절과 이 파일에 기록되어 있었고, 없던 것은 `34340890496`(merge 뒤 문서 커밋) 하나다. 그것을 `CHANGELOG.md` 의 이번 절에 적었다. 🔴 **인수인계에 적힌 「없다」도 대조 없이는 근거가 아니다** — 「푸시 완료」가 거짓이었던 사례와 같은 부류이고, 이번에는 `grep` 한 번으로 갈렸다 |
+| 🆕 작업 트리 (2026-09-12) | ✅ **워크트리 하나 · 로컬 브랜치 `main` 하나**다. 병합이 끝난 브랜치 열한 개를 `git branch -d` 로 지웠고, `-d` 가 미병합 브랜치를 거부하므로 그 성공 자체가 병합 검증이다. ⚠️ **원격의 같은 브랜치들은 지우지 않았다** — `origin` 에 `content/pm-practice-part3`~`part8` 등이 그대로 있으며, 지우려면 승인이 필요하다 |
+| 🆕 원격 동기화 (2026-09-12) | ✅ `main` 과 `origin/main` 이 같은 커밋(`136f7a8`)이다. 🔴 **직전 세션은 그 커밋을 만들고 푸시하지 않았다** — 문서 커밋이라 배포에 영향이 없어 아무도 알아채지 못했고, 사흘 뒤 `git status -sb` 의 `ahead 1` 로 드러났다. ⇒ **세션을 닫기 전에 `ahead` 를 읽어라** |
 | 다음 단계 | 아래 **「다음 세션의 작업」** — 우선순위 표를 먼저 보라 |
 
 ### 이번 세션이 한 일 — `engines` 사각지대를 검사기로 닫았다. 🔴 **되돌려 보지 않았으면 못 잡는 판을 만들 뻔했다**
@@ -1507,8 +1535,10 @@ slate-900 사이의 **전환 애니메이션 보간값**이었고, `scrollIntoVi
 | --- | :---: | :---: | --- |
 | ~~발표본을 GitHub Pages 에 배포 (위 11번)~~ | 낮음 | 중간 | ✅ **닫았다.** 계획서 여섯 Task 가 전부 끝났고 남은 것은 푸시와 PR 이다 |
 | ~~`slidev-poc/node_modules` 의 `engines` 를 아무도 보지 않는다~~ | 낮음 | **중간** | ✅ **검사기 `check-engines` 를 만들어 닫았다.** `check-mermaid` 의 ㉖ 과 판정 함수 둘을 **옮겼다**(복사가 아니다). 🔴 **처음 고른 「직접 의존성만」이 실측으로 반증됐다** — CI 를 죽인 넷은 전부 transitive 였고 그 판으로는 `node-version` 을 20 으로 되돌려도 위반 0 이었다. 전량(647개)으로 바꾸니 정확히 그 넷이 나왔다. 자기 검사 26케이스 · 뮤턴트 `E1`~`E10` · CI 두 스텝 |
+| 🆕 발표본 슬라이드의 **넘침 검사기** | 중간 | 중간 | 119장을 손으로 재서 6장을 찾아 고쳤으나 **판정하는 검사기는 없다.** 판정에 브라우저 렌더가 필요해 `scripts/` 의 다른 검사기와 성격이 다르므로, 어디에 둘지를 먼저 정해야 한다 |
 | 도식의 색 — 실물 대조 확장 | 높음 | 낮음 | 681개 중 브라우저로 잰 것이 10개뿐이다. 남은 종류가 문서에만 있어 발행되지 않으므로 우선순위가 낮다 |
 | `reactStrictMode` 를 켤지 | 중간 | 낮음 | 대조군 측정 뒤 되돌려 둔 상태다. 켠 상태에서 콘솔 오류는 없었으나 **다른 컴포넌트의 이중 마운트까지 확인한 것은 아니다** |
+| 🆕 원격의 병합 완료 브랜치 정리 | 매우 낮음 | 낮음 | 2026-09-12 세션이 **로컬만** 지웠다. `origin` 에는 `content/pm-practice-part3`~`part8` 등이 남아 있으며, 원격을 건드리므로 **사용자 승인이 필요하다** |
 
 ### 🆕 🔴 뮤턴트를 `git checkout --` 로 복구하면 **다음 실행이 치환 실패한다**
 
@@ -2313,19 +2343,26 @@ WCAG AA 기준 4.5 가 필요하다. 「이어진 글」·「카테고리」·�
 
 ## README/문서 갱신 필요
 
-**이번 세션도 README 를 자동 수정하지 않았다.** `/handoff` 수집기가 낸 drift 신호 셋 가운데
-**HIGH 둘은 진실원을 열어 오탐임을 다시 확인했고**, LOW 하나는 종전 판정이 부정확해 고쳐 이월했다.
+**이번 세션도 README 를 자동 수정하지 않았다.** `/handoff` 수집기가 낸 drift 신호 넷을 전부
+진실원과 대조했고 **넷 다 오탐**이었다.
 
-⚠️ **이번 세션이 아래 표의 값을 실측으로 다시 검산했고 둘 다 맞았다.** 환경변수 다섯이
-`content/blog` 의 **7편**에서 나온다는 것과(`.ts`·`.tsx`·`.mjs`·`.js`·`.json` 에서는 **0건**),
-`:verify` 여섯이 부모 행 안에 병기되어 **README 에 이미 있다**는 것이다.
-⇒ **표의 판정을 믿어도 된다. 다시 검산하느라 시간을 쓰지 마라.**
+🔴 **다만 「판정은 맞았는데 근거로 적힌 수가 낡은」 자리가 하나 있었다 (2026-09-12).**
+`:verify` 가 12개라고 적혀 있었으나 실측은 **16개**다 — `check-table`·`check-baseline`·
+`check-slides`·`check-engines` 넷이 그 사이에 늘었고, **16개 전부 README 에 있다**는 판정
+자체는 그대로 유효하다. ⇒ **오탐 판정은 이어받아도 되지만 그 근거의 수치는 다시 세라.**
+판정을 믿는 것과 수치를 믿는 것은 다른 일이며, 이 리포는 「수치를 세지 않고 이어받는」
+실패를 네 세션 연속으로 겪었다.
+
+⚠️ **환경변수 쪽은 다시 검산할 필요가 없다.** 다섯이 `content/blog` 의 **7편**에서 나오고
+`.ts`·`.tsx`·`.mjs`·`.js`·`.json` 에서는 **0건**이라는 것을 두 세션이 각각 확인했으며,
+정적 export 라 런타임 환경변수를 쓸 자리가 구조적으로 없다.
 
 | 신호 | 수집기가 센 것 | 판정 |
 | --- | ---: | --- |
-| `[HIGH] NPM_SCRIPTS_MISSING_IN_README` | `:verify` 6개 | ❌ 오탐 — 12개 전부 README 에 있다. 수집기는 **표의 독립 행만** 세고 본문 병기를 보지 못한다 |
+| `[HIGH] NPM_SCRIPTS_MISSING_IN_README` | 🆕 `:verify` **8개** (종전 6개) | ❌ 오탐 — 🆕 **16개 전부** README 에 있다. 수집기는 **표의 독립 행만** 세고 본문 병기를 보지 못한다. 신호가 6에서 8로 는 것은 `check-slides`·`check-engines` 가 늘었기 때문이며 둘 다 README 109·110행에 있다 |
 | `[HIGH] ENV_KEYS_IN_CODE_BUT_NOT_IN_README` | `OPENAI_API_KEY` 등 5개 | ❌ 오탐 — **코드·설정에는 0건**이고 **블로그 본문 7편의 코드 예시**에서 왔다 (2026-09-06 실측 · 종전 「3편」은 옛값). 정적 export 라 런타임 환경변수를 쓸 자리가 없고 `.env` 파일도 없다 |
-| `[LOW] SCRIPTS_DIR_MISSING_IN_README` | `.mjs` 파일 8개 | ⚠️ **판정을 고쳤다.** 종전에 「README 는 npm 이름으로만 문서화한다」고 적었으나 실측으로 **139행 디렉터리 트리는 파일명으로 6개를 나열한다.** 두 방식을 함께 쓰므로 오탐이 아니라 **판단이 필요한 항목**이다. 아래 이월 표를 보라 |
+| `[LOW] SCRIPTS_DIR_MISSING_IN_README` | 🆕 파일 **17개** | ❌ 🆕 **오탐으로 닫혔다 (2026-09-12).** 2026-09-09 세션이 139행 트리를 **전량 나열**로 고쳤고, 지금 실측하면 `scripts/*.mjs` 가 **18개**이며 트리도 「`.mjs` 18개 (전량)」로 열네 종과 판정하지 않는 넷을 모두 적는다. 수집기는 확장자까지 붙은 파일명을 찾으므로 트리의 표기(`check-forbidden`)와 어긋나 신호를 낸다 |
+| 🆕 `[LOW] UNRESOLVED_PATH_REFS` | `engines.node` | ❌ 오탐 — `engines.node` 는 파일 경로가 아니라 `package.json` 의 **필드 이름**이다. `check-engines` 를 설명하는 문장에서 왔다 |
 
 🔴 **셋 다 네 세션 연속으로 다시 올라온다.** 수집기는 판정을 기억하지 못하므로 매번 같은
 신호를 낸다. ⇒ **이 표를 지우지 마라.** 지우면 다음 세션이 오탐을 다시 작업으로 승격시킨다 —
@@ -2335,7 +2372,7 @@ WCAG AA 기준 4.5 가 필요하다. 「이어진 글」·「카테고리」·�
 
 | 무엇 | 왜 남겼나 | 확인할 진실원 |
 | --- | --- | --- |
-| `:verify` 스크립트의 **서술 방식이 두 가지**다 | 🔴 「README 에 없는 6개」로 적어 왔으나 **틀렸다.** 실측으로 `package.json` 의 `:verify` 는 **12개**이고 **12개 전부 README 에 있다** — 독립 행이 7개(`dup-scan`·`check-forbidden`·`check-markup`·`check-links`·`check-mermaid`·`fix-markup`·`search-index`), 본 명령 설명 안에 병기한 것이 5개(`check-counts` 98행 · `compose` 101행 · `map-terms` 102행 · `source-overlap` 103행 · `mutate` 104행)다. `check-counts:print` 도 98행에 있다. **미해결 작업이 아니라 표기 통일 여부의 판단**이며, 「일관된 의도로 보인다」는 종전 판단 자체는 실측과 맞는다 | `README.md` 81~104행 |
+| `:verify` 스크립트의 **서술 방식이 두 가지**다 | 🔴 「README 에 없는 6개」로 적어 왔으나 **틀렸다.** 🆕 **2026-09-12 실측으로 `package.json` 의 `:verify` 는 16개이고 16개 전부 README 에 있다** — 독립 행이 **9개**(`dup-scan`·`check-forbidden`·`check-markup`·`check-links`·`check-table`·`check-mermaid`·`fix-markup`·`check-baseline`·`search-index`), 본 명령 설명 안에 병기한 것이 **7개**(`check-counts` 102행 · `compose` 105행 · `map-terms` 106행 · `source-overlap` 107행 · `check-slides` 109행 · `check-engines` 110행 · `mutate` 111행)다. **미해결 작업이 아니라 표기 통일 여부의 판단**이며, 「일관된 의도로 보인다」는 종전 판단 자체는 실측과 맞는다. 🔴 **종전에 적힌 「12개 · 독립 7 · 병기 5」는 낡은 값이었다** — `check-table`·`check-baseline`·`check-slides`·`check-engines` 넷이 그 사이에 늘었다. ⇒ **오탐 판정은 이어받되 수치는 다시 세라** | `README.md` 81~111행 · `node -e` 로 `package.json` 과 대조 |
 | ~~`TOOL-TRAPS.md` 에 **셸의 백슬래시 확장분**이 없다~~ | ✅ **닫혔다.** 50번이 그 확장분이며 「셸과 `sed` 가 백슬래시를 각각 한 겹씩 먹는다」로 재현 절차와 실측을 담았다. 51번은 같은 세션이 새로 겪은 것(Git Bash 의 `--base /` 경로 변환)이다 | `docs/TOOL-TRAPS.md` 50·51번 |
 | ~~`README.md` 139행의 `scripts/` 나열이 낡았다~~ | ✅ **닫았다 (2026-09-09).** **전량 나열**로 정했다. 15개를 「검사기 열두 종」과 「그 밖 셋(`generate-sitemap`·`map-terms`·`mutate`)」으로 나눠 적었다. 대표 예시로 두지 않은 이유는 이 리포가 「검사기 종 수」로 세 세션 연속 실패했기 때문이다 — 트리가 전량이면 다음 사람이 **문서에서 읽지 않고 셀 수 있다.** 실제로 이 자리가 낡아 있던 동안 `check-baseline` 은 목록 어디에도 없었고 CI 에서 꺼져 있었다 | `ls scripts/` · `README.md` 139행 |
 

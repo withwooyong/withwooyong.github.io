@@ -108,6 +108,15 @@ PR 은 merge 커밋 [`b94d6b7`](https://github.com/withwooyong/withwooyong.githu
 `deploy` **3스텝 · 9초**). push 이벤트라 `Upload artifact` 와 `deploy` 가 설계대로 돌았고,
 같은 스텝 29·30 이 배포 경로에서도 success 다.
 
+🆕 **그 merge 를 기록한 문서 커밋 `136f7a8` 은 사흘 동안 푸시되지 않은 채 남아 있었다.**
+2026-09-12 세션이 `git status -sb` 에서 `ahead 1` 을 읽어 발견했고, 푸시한 뒤 배포 run
+[`34668318584`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34668318584)
+도 **success** 였다 (`build` **38스텝 · 실패 0 · skipped 0** · `deploy` **3스텝**).
+문서 두 파일만 바뀌었으므로 산출물은 불변이어야 하는데, 그것을 판정하는
+`Check non-blog baseline` 스텝이 통과했으므로 **불변은 추정이 아니라 실측이다.**
+🔴 **기록의 재귀는 커밋을 남기는 것만으로 닫히지 않는다** — 세션이 마지막 문서 커밋을
+만들고 푸시하지 않으면 원격에는 그 기록이 없다. ⇒ **세션을 닫기 전에 `ahead` 를 읽어라.**
+
 ---
 
 ## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 · 🔴 **그 배포의 장별 URL 이 전부 404 였다** — GitHub Pages 는 사이트 루트의 `404.html` 만 쓴다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) · [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30))
