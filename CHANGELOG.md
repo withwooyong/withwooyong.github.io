@@ -96,6 +96,33 @@ merge 커밋과 배포 run 을 어느 문서에도 적지 못해 기록이 영�
 그것이 곧 「문서 갱신만을 위한 PR」이 되어 위 규칙을 어기게 된다. `main` 은 보호 브랜치이므로
 이 푸시는 사용자 승인을 받았다.
 
+### 이 세션의 푸시와 배포
+
+| 항목 | 값 |
+| --- | --- |
+| 커밋 | `2a6351f7` — `main` 에 직접 올렸다 |
+| 배포 run | [`34727234645`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34727234645) · **success** · 전체 **3분 22초** |
+| `build` | **success · 34스텝 · 2분 29초 · skipped 0** |
+| `deploy` | **success · 3스텝 · 9초** |
+
+push 이벤트라 `Upload artifact` 스텝과 `deploy` job 이 설계대로 돌았고 skipped 가 하나도 없다.
+🔴 **`build` 의 34 는 문서의 30 이 낡았다는 뜻이 아니다** — 러너가 `Set up job` ·
+`Post Setup Node` · `Post Checkout` · `Complete job` 넷을 붙인다. 이 리포는 그 대조를
+거꾸로 읽어 멀쩡한 문서를 고칠 뻔한 적이 있으므로, 정의의 수는 **YAML 파서로** 따로 셌다.
+
+### 곁가지 — `grep` 이 NUL 한 바이트에 침묵하는 방식이 한 겹 더 있었다
+
+위 수치를 세다가 `grep -oE 'id: "[^"]+"' scripts/mutate.mjs | wc -l` 이 **0** 을 냈다.
+`scripts/mutate.mjs` 에는 런타임 조합으로 만든 NUL 바이트가 1개 있어 `grep` 이 이 파일을
+바이너리로 판정하는데, **`-o` 는 `Binary file … matches` 경고를 내지 않으므로** 화면에는
+아무 표시도 없다. `-a` 를 붙이자 같은 명령이 **121** 을 냈다.
+
+[`docs/TOOL-TRAPS.md`](docs/TOOL-TRAPS.md) 52번의 곁가지가 이미 이 파일의 NUL 을 적어
+두었으나 「`Binary file … matches` 만 낸다」까지였다. **경고가 보이는 경우만 적혀 있으면**
+**경고가 없을 때 안심하게 된다.** 그 실측을 같은 자리에 보탰고, `CLAUDE.md` 가 가리키는
+줄 수도 1,556 에서 **1,572** 로 함께 고쳤다. 함정 건수는 **53건 그대로**다 — 새 항목이
+아니라 기존 곁가지의 보강이므로 분류 표의 개수는 바뀌지 않는다.
+
 ---
 
 ## 2026-09-12 — 🗑️ **발표본 갈래를 통째로 걷어냈다** — 사용자가 삭제를 지시했고, 그 과정에서 `check-engines` 의 **대조군이 헛돌 뻔했다**
