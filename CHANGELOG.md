@@ -8,11 +8,93 @@
 
 | 월 | 절 수 | 날짜 |
 | --- | ---: | --- |
-| [`2026-09`](docs/changelog/2026-09.md) | 41 | 2026-09-09 · 2026-09-09 · 2026-09-09 · 2026-09-09 · 2026-09-09 · 2026-09-08 · 2026-09-07 · 2026-09-07 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-05 · 2026-09-05 · 2026-09-05 · 2026-09-05 · 2026-09-04 · 2026-09-04 · 2026-09-04 · 2026-09-04 · 2026-09-03 · 2026-09-03 · 2026-09-03 · 2026-09-03 · 2026-09-03 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-01 · 2026-09-01 · 2026-09-01 |
+| [`2026-09`](docs/changelog/2026-09.md) | 42 | 2026-09-10 · 2026-09-09 · 2026-09-09 · 2026-09-09 · 2026-09-09 · 2026-09-09 · 2026-09-08 · 2026-09-07 · 2026-09-07 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-06 · 2026-09-05 · 2026-09-05 · 2026-09-05 · 2026-09-05 · 2026-09-04 · 2026-09-04 · 2026-09-04 · 2026-09-04 · 2026-09-03 · 2026-09-03 · 2026-09-03 · 2026-09-03 · 2026-09-03 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-02 · 2026-09-01 · 2026-09-01 · 2026-09-01 |
 | [`2026-08`](docs/changelog/2026-08.md) | 36 | 2026-08-31 · 2026-08-31 · 2026-08-30 · 2026-08-30 · 2026-08-30 · 2026-08-30 · 2026-08-29 · 2026-08-29 · 2026-08-29 · 2026-08-19 · 2026-08-18 · 2026-08-18 · 2026-08-18 · 2026-08-18 · 2026-08-18 · 2026-08-18 · 2026-08-18 · 2026-08-17 · 2026-08-17 · 2026-08-17 · 2026-08-17 · 2026-08-16 · 2026-08-16 · 2026-08-16 · 2026-08-13 · 2026-08-13 · 2026-08-12 · 2026-08-11 · 2026-08-11 · 2026-08-09 · 2026-08-09 · 2026-08-08 · 2026-08-08 · 2026-08-08 · 2026-08-08 · 2026-08-07 |
 | [`2026-07`](docs/changelog/2026-07.md) | 5 | 2026-07-21 · 2026-07-08 · 2026-07-07 · 2026-07-06 · 2026-07-05 |
 | [`2026-06`](docs/changelog/2026-06.md) | 1 | 2026-06-02 |
 | [`2026-05`](docs/changelog/2026-05.md) | 1 | 2026-05-01 |
+
+---
+
+## 2026-09-13 — 🧹 **원격에 남아 있던 병합 완료 브랜치 열 개를 지웠다** — `--merged` 의 판정만으로는 부족해서, 「지워도 사라지는 것이 없다」를 **커밋 단위로 먼저 증명했다**
+
+> 2026-09-12 세션이 병합이 끝난 브랜치를 정리하면서 **로컬만 지우고 원격을 그대로 두었다.**
+> 그래서 `origin` 에는 열 개가 남아 있었고, 이번 세션이 사용자 승인을 받아 지웠다.
+> 원격을 건드리는 작업은 되돌릴 수 없으므로 실행 전과 실행 후에 각각 다른 것을 확인했다.
+
+### 지운 브랜치 열 개
+
+| 브랜치 | tip | `origin/main` 에 없는 커밋 | PR | 병합 시각 |
+| --- | --- | ---: | ---: | --- |
+| `chore/remove-slides` | `94a6e892` | 0 | [#32](https://github.com/withwooyong/withwooyong.github.io/pull/32) | 2026-09-12 |
+| `feat/check-engines` | `8101be65` | 0 | [#31](https://github.com/withwooyong/withwooyong.github.io/pull/31) | 2026-09-10 |
+| `fix/slides-hash-router` | `f62bb34b` | 0 | [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30) | 2026-09-10 |
+| `feat/deploy-slides` | `2c692fa9` | 0 | [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) | 2026-09-10 |
+| `content/pm-practice-part8` | `f5ef1943` | 0 | [#27](https://github.com/withwooyong/withwooyong.github.io/pull/27) | 2026-09-09 |
+| `content/pm-practice-part7` | `89108672` | 0 | [#26](https://github.com/withwooyong/withwooyong.github.io/pull/26) | 2026-09-09 |
+| `content/pm-practice-part6` | `30d20ae1` | 0 | [#25](https://github.com/withwooyong/withwooyong.github.io/pull/25) | 2026-09-09 |
+| `content/pm-practice-part5` | `21274a4e` | 0 | [#24](https://github.com/withwooyong/withwooyong.github.io/pull/24) | 2026-09-09 |
+| `content/pm-practice-part4` | `c7fdf69c` | 0 | [#23](https://github.com/withwooyong/withwooyong.github.io/pull/23) | 2026-09-08 |
+| `content/pm-practice-part3` | `72659a00` | 0 | [#22](https://github.com/withwooyong/withwooyong.github.io/pull/22) | 2026-09-08 |
+
+원격에 남은 것은 이제 `refs/heads/main` 하나뿐이다.
+
+### 🔴 `--merged` 의 판정을 결론으로 쓰지 않았다
+
+`git branch -r --merged origin/main` 은 브랜치의 **tip 이 `main` 의 조상인지**만 본다.
+그것이 참이면 브랜치의 모든 커밋이 `main` 에 있다는 결론이 따라 나오기는 하지만,
+**그 추론을 믿는 것과 직접 세는 것은 다른 일이다.** 그래서 셋을 따로 확인했다.
+
+| 무엇을 확인했나 | 명령 | 결과 |
+| --- | --- | --- |
+| 브랜치마다 `main` 에 없는 커밋이 몇 개인가 | `git rev-list --count origin/main..origin/<브랜치>` | 열 개 모두 **0** |
+| 그 브랜치를 head 로 쓰는 열린 PR 이 있는가 | `gh pr list --state open` | **하나도 없다** |
+| 삭제한 뒤에도 tip 이 `main` 에서 도달 가능한가 | `git merge-base --is-ancestor <tip> origin/main` | 열 개 모두 **포함됨** |
+
+셋째 줄이 삭제 **뒤에** 돌린 확인이다. 「지워도 된다」를 증명하는 것과 「지운 뒤에도 남아 있다」를
+증명하는 것은 시점이 다르므로 둘 다 필요하다.
+
+### 🔴 원격의 상태를 `git branch -r` 로 읽지 마라
+
+`git branch -r` 이 보여주는 것은 원격이 아니라 **로컬의 remote-tracking 캐시**다.
+`--prune` 을 붙인 `fetch` 를 돌리기 전까지는 이미 사라진 브랜치를 그대로 보여주므로,
+「지워졌는가」를 그것으로 판정하면 자기가 방금 한 삭제도 보이지 않는다.
+원격에 실제로 무엇이 있는지는 `git ls-remote --heads origin` 이 원격에 직접 묻는다.
+
+| 읽는 곳 | 무엇을 말하나 |
+| --- | --- |
+| `git branch -r` | 마지막 `fetch` 시점의 **로컬 캐시** |
+| `git ls-remote --heads origin` | **지금 원격에 있는 것** |
+
+### 병합된 PR 은 브랜치를 지워도 커밋을 계속 보여준다
+
+지운 뒤 PR [#32](https://github.com/withwooyong/withwooyong.github.io/pull/32) 를
+`gh pr view 32 --json commits` 로 다시 읽어 커밋 목록이 그대로 나오는 것을 확인했다.
+브랜치 참조가 사라져도 GitHub 이 PR 의 커밋을 따로 붙들고 있기 때문이다.
+
+### 미기록이던 두 건을 함께 채웠다
+
+앞 세션이 PR [#32](https://github.com/withwooyong/withwooyong.github.io/pull/32) 를 merge 한 뒤
+그 merge 커밋과 배포 run 을 기록에 적지 못한 채 세션을 닫았다.
+
+| 항목 | 값 |
+| --- | --- |
+| merge 커밋 | [`c3b0f9b3`](https://github.com/withwooyong/withwooyong.github.io/commit/c3b0f9b3) — `Merge pull request #32 from withwooyong/chore/remove-slides` |
+| 배포 run | [`34688560748`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34688560748) · **success** · 2분 15초 |
+
+둘 다 문서에서 옮겨 적지 않고 `gh run view 34688560748` 과 `git ls-remote` 에서 읽었다.
+
+### 🔴 이 갱신에 PR 을 열지 않은 이유
+
+`CLAUDE.md` 는 **문서 갱신만을 위한 PR 을 열지 말라**고 적어 두었다. 그런 PR 은 자기 자신의
+merge 커밋과 배포 run 을 어느 문서에도 적지 못해 기록이 영구히 한 칸 뒤처지기 때문이다.
+같은 파일은 **문서 갱신을 실질 작업의 PR 에 함께 실으라**고도 적어 두었는데,
+이번 세션의 실질 작업은 원격 참조를 지우는 것이어서 **리포의 파일을 하나도 바꾸지 않는다.**
+그래서 함께 실을 PR 이 애초에 만들어지지 않는다.
+
+⇒ **실질 작업이 리포 밖에만 있으면 기록 커밋을 `main` 에 직접 올린다.** PR 을 만들면
+그것이 곧 「문서 갱신만을 위한 PR」이 되어 위 규칙을 어기게 된다. `main` 은 보호 브랜치이므로
+이 푸시는 사용자 승인을 받았다.
 
 ---
 
@@ -174,194 +256,3 @@ PR 은 merge 커밋 [`b94d6b7`](https://github.com/withwooyong/withwooyong.githu
 `Check non-blog baseline` 스텝이 통과했으므로 **불변은 추정이 아니라 실측이다.**
 🔴 **기록의 재귀는 커밋을 남기는 것만으로 닫히지 않는다** — 세션이 마지막 문서 커밋을
 만들고 푸시하지 않으면 원격에는 그 기록이 없다. ⇒ **세션을 닫기 전에 `ahead` 를 읽어라.**
-
----
-
-## 2026-09-10 — 🚀 **발표본 넷을 `/slides/` 에 배포한다** · 🔴 **CI 의 Node 가 20 에서는 슬라이드 빌드가 죽는다** — 로컬이 Node 24 라 38초에 끝나 어긋남이 드러나지 않았다 · 🔴 **그 배포의 장별 URL 이 전부 404 였다** — GitHub Pages 는 사이트 루트의 `404.html` 만 쓴다 (PR [#29](https://github.com/withwooyong/withwooyong.github.io/pull/29) · [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30))
-
-> `slidev-poc` 의 발표본 넷(`patterns` · `team-ops` · `governance` · `search`)을 같은 도메인의
-> `/slides/<슬러그>/` 에 배포한다. 본체에서 링크하지 않고 `robots.txt` 로 색인만 막으므로
-> URL 을 아는 사람만 연다. 산출물은 커밋하지 않고 **CI 에서 매번 빌드한다** — 커밋하면
-> 627파일 19 MB 가 리포에 들어간다.
-
-### 무엇이 배포되나
-
-```mermaid
-flowchart LR
-  A["npm run build<br/>본체 정적 export"] --> B["out/"]
-  B --> C["npm run build-slides<br/>decks.json 을 읽는다"]
-  C --> D["out/slides/&lt;슬러그&gt;/"]
-  D --> E["npm run check-slides<br/>배포될 자리에 있는가"]
-  E -->|실패| F["🔴 배포가 멈춘다"]
-  E -->|통과| G["Pages 아티팩트 하나"]
-```
-
-Pages 는 아티팩트가 하나이므로 본체 산출물과 발표본이 **한 부대에 실린다.** 그래서 발표본
-빌드가 깨지면 본체 배포도 함께 멈춘다. `continue-on-error` 를 쓰지 않은 이유는, 본체만
-올라가면 `/slides/` 가 404 인 채로 배포가 **초록으로** 끝나기 때문이다.
-
-### 🔴 CI 의 Node 를 20 에서 22 로 올렸다 — 대조하지 않았으면 배포에서 죽었다
-
-발표본의 **운영** 의존성 넷이 Node 22 이상을 요구하는데 `--omit=dev` 로 빠지지 않는다.
-
-| 패키지 | `engines.node` | 구분 |
-| --- | --- | :---: |
-| `commander@15.0.0` | `>=22.12.0` | 운영 |
-| `postcss-nested@8.0.1` | `^22 \|\| ^24 \|\| >=26` | 운영 |
-| `unplugin-vue-markdown@32.1.1` | `>=22` | 운영 |
-| `vite-plugin-static-copy@4.1.1` | `^22 \|\| >=24` | 운영 |
-
-로컬이 Node 24 라 넷 모두 **38초에** 빌드되었고, 그래서 이 어긋남은 로컬에서 드러날 수
-없었다. `npm install` 이 `engines` 를 강제하지 않는다는 함정의 **두 번째 사례**다 — 첫 번째는
-`jsdom@30` 이 로컬 Node 24 에서 21/21 을 내고 CI 의 Node 20 에서 죽은 일이었다.
-
-⚠️ **대조는 `check-mermaid` 의 자기 검사에 이미 있지만 그것이 보는 것은 리포 루트의
-`node_modules` 다.** `slidev-poc/node_modules` 는 아직 아무도 보지 않는다.
-
-### 검사기 하나를 세우고 둘을 고쳤다
-
-| 검사기 | 무엇을 하나 | 자기 검사 |
-| --- | --- | ---: |
-| `check-slides` 🆕 | 발표본 산출물이 **배포될 자리에 있는지** 판정한다. `slidev build` 의 성공은 「빌드가 됐다」만 말한다 | 9/9 |
-| `check-baseline` | `slides/` 아래를 대상에서 뺀다. 빼지 않으면 발표본 여덟 파일이 **「추가」 8건**으로 잡혀 GC-6 가 즉시 빨간불이 된다 | 19/19 |
-| `check-forbidden` | 발표본 소스 13개를 스캔 대상에 더한다. 스캔 파일이 **195개에서 208개**가 되었다 | 65/0 |
-
-`check-baseline` 의 제외는 **슬래시까지 포함해** 비교한다. `slides` 로만 적으면
-`slidesheet.html` 처럼 이름이 겹칠 뿐인 것까지 함께 빠지는데, 그것은 위반을 **놓치는** 쪽의
-실수라 통과만 보고는 드러나지 않는다. 케이스 ⑱ 이 그 자리를 지킨다.
-
-### 증명 없는 통과를 남기지 않았다
-
-이 갈래의 판정은 전부 **되돌려 보고** 확인했다.
-
-| 무엇 | 어떻게 증명했나 | 결과 |
-| --- | --- | --- |
-| `build-slides` 의 `out/` 가드 | `out/` 을 잠깐 옮기고 돌렸다 | 종료 코드 **2** |
-| `check-slides` | `index.html` 하나를 지웠다 | 종료 코드 **1** · 복구 뒤 0 |
-| `check-forbidden` 의 새 대상 | 발표본에 금칙어를 심었다 | HARD **3건** · 복구 뒤 0 |
-| 뮤턴트 `SL1`~`SL4` | 전량 실행 | 넷 모두 `check-slides` 가 잡았다 |
-| 뮤턴트 `B8` · `C5` | 격리 실행 | 19/19 → **18/19** · 65/0 → **64/1** |
-| 발표본 넷의 화면 | 정적 서버를 띄우고 브라우저로 열었다 | 첫 장이 그려진다 · 요청 960건에 **404 0건** |
-
-🔴 **`grep` 이 센 뮤턴트 수와 러너의 수가 이번에는 일치했다(116).** 여러 줄 선언을 정규식이
-놓친 전례가 있어 대조했고, 그 뒤 `B8` · `C5` 를 더해 **118개**가 되었다.
-
-### 함께 고친 것
-
-| 무엇 | 내용 |
-| --- | --- |
-| `README.md` 의 뮤턴트 수 | **98개**로 적혀 있었다. `CLAUDE.md` 가 112 를 적는 동안 갈라져 있었고, 「세 문서가 갈라진다」는 경고의 현재 사례였다 |
-| 뮤턴트 id 배정 | 계획서가 지정한 `F9` 를 **`C5`** 로 바꿨다. `F` 는 `fix-markup` 계열이고 `check-forbidden` 은 `C1`~`C4` 를 쓴다 |
-| 뮤테이션 소요 | 「3~5분」이 아니라 **118개 기준 약 28분**이다. 세션 끝이 아니라 시작에 백그라운드로 건다 |
-| 배포 run `34340890496` | PR #28 이 merge 된 뒤의 문서 커밋이 낸 run 이며 `success` 다. 어느 문서에도 없어 여기 적는다 |
-
-### ✅ PR 단계의 CI 가 Node 22 를 검증했다
-
-run [`34433738192`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34433738192) 이
-**success** 다 (전체 **179초** · `build` **176초 · 36스텝** · `deploy` **skipped**). 36 은 워크플로
-정의 **32** 에 러너가 붙이는 넷(`Set up job` · `Post Setup Node` · `Post Checkout` · `Complete job`)을
-더한 값이다.
-
-| 스텝 | 결과 |
-| --- | :---: |
-| 26 `Prove slides checker` | ✅ |
-| 28 `Install slides dependencies` (Node 22 · `--omit=dev`) | ✅ |
-| 29 `Build slides into out/slides` | ✅ |
-| 30 `Check slides output` | ✅ |
-| 32 **`Check non-blog baseline`** | ✅ |
-
-🔴 **32번이 이 변경의 마지막 방어선이었다.** 본체 빌드도 Node 22 에서 돌므로 산출물이 달라지면
-GC-6 가 여기서 잡는데, 로컬에 Node 20 이 없어 미리 잴 수 없었다. **통과했으므로 Node 를 올려도
-비블로그 산출물은 불변이다** — 추정이 아니라 실측이다.
-
-⚠️ **인수인계가 「배포 run 둘이 어느 문서에도 없다」고 적었으나 하나는 이미 있었다.**
-`34336637777` 은 바로 위 절과 `HANDOFF.md` 에 기록되어 있었고 없던 것은 `34340890496`
-하나다. **인수인계에 적힌 「없다」도 대조 없이는 근거가 아니다** — 「푸시 완료」가 거짓이었던
-사례와 같은 부류이며, 이번에는 `grep` 한 번으로 갈렸다.
-
-### 🔴 배포된 발표본의 장별 URL 이 전부 404 였다 — 산출물은 멀쩡했다
-
-배포 직후 브라우저로 열어 보니 `/slides/<슬러그>/` 는 그려지는데 `/slides/<슬러그>/2` 처럼
-장 번호가 붙은 URL 이 **전부 본체의 Next.js 404 페이지**로 떨어졌다. 발표 중 새로고침과
-특정 장 링크 공유가 그대로 깨진다.
-
-```mermaid
-flowchart TD
-  A["slidev 기본값<br/>routerMode: history"] --> B["/slides/team-ops/2 를 요청한다"]
-  B --> C{"그 경로에 파일이 있나"}
-  C -->|없다| D["호스트가 폴백을 찾는다"]
-  D --> E["GitHub Pages<br/>사이트 루트의 404.html 만 본다"]
-  D --> F["Netlify · Vercel<br/>디렉터리별 폴백을 쓴다"]
-  E --> G["🔴 본체 404 페이지"]
-  F --> H["✅ 그 발표본의 index"]
-```
-
-기전은 둘이 맞물린 것이다. slidev 는 슬러그마다 `404.html` 을 만들어 두지만 **GitHub Pages 는
-사이트 루트의 것만 읽고 나머지를 무시한다.** 같은 산출물이 Netlify 에서는 멀쩡하므로
-「slidev 가 잘못 만들었다」로는 설명되지 않는다.
-
-| 무엇이 초록이었나 | 왜 못 봤나 |
-| --- | --- |
-| `slidev build` | 빌드는 성공한다. 라우팅은 런타임 동작이다 |
-| `check-slides` | `index.html` 과 `assets` 는 멀쩡히 있었다 |
-| `curl "…/#/2"` | 🔴 **프래그먼트는 서버로 전송되지 않는다.** 실제 요청은 `/slides/team-ops/` 라서 200 이 나오는 것이 당연하다. 근거가 되지 못한다 |
-
-고침은 발표본 다섯의 frontmatter 에 `routerMode: hash` 를 넣은 것이다. hash 라우팅이면 요청이
-언제나 `index.html` 로 가므로 정적 호스트에서 이 문제가 없다. `decks.json` 에 아직 없는
-`slides-es.md` 도 함께 고쳤다 — 목록에 더해지는 순간 같은 결함이 되살아난다.
-확인은 브라우저로 했다 (`#/2` 를 직접 열어 2장이 그려지는 것을 보았다).
-
-### 규칙을 문서가 아니라 검사기에 남겼다
-
-`check-slides` 에 순수 함수 `decideRouter` 와 `readRouterMode` 를 더해, `decks.json` 이 가리키는
-발표본이 전부 `routerMode: hash` 인지 판정한다. 자기 검사가 **9 → 17케이스**, 뮤턴트가
-**118 → 119개**(`SL5`)가 되었다.
-
-| 케이스 | 무엇을 지키나 |
-| --- | --- |
-| ⑪ history 로 적혀 있으면 위반 | 값을 보지 않고 **존재만** 보는 구현을 떨어뜨린다 (`SL5` 가 이것에 잡힌다) |
-| ⑫ 아예 없으면 위반 | 🔴 slidev 의 기본값이 history 다. **적지 않은 것이 곧 결함이다** |
-| ⑬ frontmatter 밖은 세지 않는다 | 이 규칙을 설명하는 슬라이드가 한 장만 있어도 통과해 버린다 |
-| ⑭ 주석 네 줄 아래도 읽는다 | 실제 발표본이 그 형태다 |
-| ⑮ 소스를 못 읽으면 위반 | 못 읽은 것을 「깨끗함」으로 세지 않는다 |
-| ⑰ 실제 넷이 전부 hash 다 | 대조할 것이 있는지 먼저 센다 |
-
-되돌려 확인했다. 실제 `slides-search.md` 를 history 로 바꾸니 본 검사가 종료 코드 1 을 내고
-⑰ 이 FAIL 로 떨어졌으며, `SL5` 를 격리 실행하니 ⑪ 이 FAIL 로 잡았다. **통과만 보고는 케이스가
-헛도는지 알 수 없다.**
-
-✅ **PR [#30](https://github.com/withwooyong/withwooyong.github.io/pull/30) 의 CI run
-[`34449385717`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34449385717)
-이 success 다** (전체 **182초** · `build` **178초 · 36스텝** · `deploy` **skipped**).
-`MERGEABLE / CLEAN` 이고 `gh run list --branch` 로 **run 이 실제로 생성된 것**을 따로 확인했다.
-
-### ✅ 배포된 실물에서 404 가 닫혔다
-
-| 항목 | 값 |
-| --- | --- |
-| merge 커밋 | [`bc35821`](https://github.com/withwooyong/withwooyong.github.io/commit/bc35821) |
-| 배포 run | [`34451040468`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34451040468) · **success** · 201초 · `build` · `deploy` 둘 다 success |
-
-확인은 브라우저로 했다. `curl` 은 프래그먼트를 서버로 보내지 않으므로 근거가 되지 못한다.
-
-| 연 주소 | 그려진 것 |
-| --- | --- |
-| `/slides/team-ops/#/2` | 2장 (「이론이 무엇이 존재하는가라면…」) |
-| `/slides/governance/#/7` | 7장 (「상한선과 한계가 같은 자리에 있습니다」) |
-| `/slides/patterns/#/4` | **`4 / 29`** — 장 표시를 텍스트로 읽었다 |
-| `/slides/search/#/11` | **`11 / 35`** · 도식도 그려진다 |
-| `governance` 에서 **F5 새로고침** | 🔴 **7장이 그대로 유지된다** — 발표 중 새로고침이 이 결함의 본체였다 |
-
-네 발표본 모두 장별 URL 로 직접 열린다. 배포 run 의 success 는 「배포가 끝났다」만 말하므로
-**실물을 열어 세는 일은 따로 한다.**
-
-### merge 와 배포
-
-| 항목 | 값 |
-| --- | --- |
-| merge 커밋 | [`48a91c6`](https://github.com/withwooyong/withwooyong.github.io/commit/48a91c6) |
-| 배포 run | [`34438737873`](https://github.com/withwooyong/withwooyong.github.io/actions/runs/34438737873) · **success** |
-
-둘 다 문서에서 옮겨 적지 않고 `git log origin/main` 과 `gh run list --branch main` 에서 읽었다.
-배포된 실물을 브라우저로 열어 본 결과가 바로 위의 404 결함이다 — **배포 run 의 success 는
-「배포가 끝났다」만 말하고 「열린다」를 말하지 않는다.**
