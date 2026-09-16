@@ -77,36 +77,7 @@ draft: false
 
 화살표마다 무엇이 실려 가는지를 고정해야 에이전트를 갈아 끼울 수 있다. 계약이 없으면 에이전트를 바꿀 때마다 앞뒤가 함께 깨진다.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor H as 나 (사람)
-    participant P as 기획
-    participant C as 코드
-    participant T as 테스트
-    participant R as 리뷰
-    participant D as 배포
-
-    H->>P: 목표와 제약을 준다
-    P->>P: 코드베이스를 조사한다
-    P-->>H: 계획서를 파일로 남긴다
-    P->>C: 계획서 경로를 넘긴다
-    C->>C: 단위 하나를 구현한다
-    C->>T: 검증을 요청한다
-    T->>T: 테스트를 돌린다
-    T-->>C: 통과 수치를 보고한다
-    C->>R: 변경분을 제출한다
-    R->>R: 위험 축별로 읽는다
-    alt 지적이 있다
-        R-->>C: 반려 사유를 넘긴다
-        C->>R: 고쳐서 다시 제출한다
-    else 지적이 없다
-        R->>H: 승인을 요청한다
-    end
-    H->>D: 승인한다
-    D->>D: 배포하고 관찰한다
-    D-->>H: 운영 신호를 보고한다
-```
+![단계별 계약 아홉의 호출 순서 — 사람이 기획에 목표를 주고 기획 · 코드 · 테스트 · 리뷰가 차례로 넘기며, 리뷰에 지적이 없을 때만 사람에게 승인을 요청해 배포로 간다](/images/blog/agent-contract-sequence.svg "시퀀스 다이어그램")
 
 각 화살표를 표로 풀면 이렇다.
 

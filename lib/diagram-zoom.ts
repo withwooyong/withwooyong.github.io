@@ -51,7 +51,7 @@ export function isDismissClick(input: {
 
 /**
  * Mermaid 선언 키워드 → 독자에게 보일 종류 이름.
- * 발행본 565개는 flowchart 542 · sequenceDiagram 15 · stateDiagram-v2 8 (2026-09-16,
+ * 발행본 564개는 flowchart 542 · sequenceDiagram 14 · stateDiagram-v2 8 (2026-09-17,
  * `check-mermaid.mjs` 의 `extractDiagrams` 로 셌다). 나머지는 쓰이면 바로 맞는 이름이 나오도록 둔다.
  */
 const MERMAID_KIND_NAMES: Record<string, string> = {
