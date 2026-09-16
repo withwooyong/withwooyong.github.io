@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { readPosts } from "@/lib/blog/loader";
-import { extractOutboundIds } from "@/lib/blog/graph";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { extractImageUrls, extractOutboundIds } from "@/lib/blog/graph";
 import { headingIds } from "@/lib/toc";
 import type { Post } from "@/lib/blog/types";
 
@@ -358,5 +360,55 @@ describe("앵커 실존", () => {
 
     const broken = brokenAnchors(docs);
     expect(broken, `닿지 않는 앵커 ${broken.length}건 / 검사 ${seen.length}건`).toEqual([]);
+  });
+});
+
+/**
+ * 도식 이미지 자산 검사.
+ *
+ * 🔴 **이 자리는 오래 비어 있었다.** `check-links` 는 `/blog/...` 경로만 보고 이미지 경로는
+ * 보지 않으며, `check-forbidden --built` 의 산출물 스캔도 `out/images/` 를 훑지 않는다.
+ * 그래서 Mermaid 로 그리지 않고 SVG 파일로 넣은 도식은 **어느 검사도 보지 않은 채** 발행됐다.
+ * 파일 이름이 바뀌거나 `public/` 에서 빠지면 본문에 깨진 이미지 아이콘만 남는데,
+ * 빌드도 배포도 통과한다 — 정적 export 는 없는 파일을 오류로 만들지 않는다.
+ */
+describe("도식 이미지 자산", () => {
+  const PUBLIC_DIR = "public";
+
+  /** 발행본 전량의 이미지 경로. 파일당 한 번만 판다 — 링크 지형과 같은 이유다. */
+  const imagesByKey = new Map<string, string[]>(posts.map((p) => [key(p), extractImageUrls(p.body)]));
+
+  const allImages = () =>
+    posts.flatMap((p) => (imagesByKey.get(key(p)) ?? []).map((url) => ({ post: key(p), url })));
+
+  it("이미지 경로를 뽑았다", () => {
+    // 0건이면 아래 둘이 공허참이 된다. 도식을 SVG 로 넣은 편이 하나라도 있어야 한다.
+    expect(allImages().length, "발행본에서 이미지를 하나도 뽑지 못했다").toBeGreaterThan(0);
+  });
+
+  it("이미지 경로가 루트 기준 절대 경로다", () => {
+    // 상대 경로는 `trailingSlash: true` 때문에 편 디렉터리 기준으로 풀려 반드시 404 가 된다.
+    const bad = allImages().filter(({ url }) => !url.startsWith("/") && !/^https?:\/\//.test(url));
+    expect(bad, `상대 경로 ${bad.length}건`).toEqual([]);
+  });
+
+  it("이미지 파일이 public/ 아래에 실재한다", () => {
+    const missing = allImages().filter(
+      ({ url }) => url.startsWith("/") && !existsSync(join(PUBLIC_DIR, url.replace(/^\//, ""))),
+    );
+    expect(missing, `없는 이미지 ${missing.length}건`).toEqual([]);
+  });
+
+  it("🔴 코드 블록 안의 이미지는 자산으로 세지 않는다", () => {
+    // 이 케이스는 추출기를 정규식으로 되돌리면 반드시 실패한다.
+    const fenced = "```md\n![예시](/images/blog/없는파일.svg)\n```\n";
+    expect(extractImageUrls(fenced)).toEqual([]);
+  });
+
+  it("🔴 없는 파일을 가리키면 잡는다 — 대조군", () => {
+    // 위 「실재한다」가 헛도는지 본다. 잡지 못하면 그 0 건은 결론이 아니다.
+    const fake = "/images/blog/이런-파일은-없다.svg";
+    expect(extractImageUrls(`![x](${fake})`)).toEqual([fake]);
+    expect(existsSync(join(PUBLIC_DIR, fake.replace(/^\//, "")))).toBe(false);
   });
 });

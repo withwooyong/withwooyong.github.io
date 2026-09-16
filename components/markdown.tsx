@@ -1,3 +1,4 @@
+import { DiagramImage } from "@/components/diagram-image";
 import { Mermaid } from "@/components/mermaid";
 import Link from "next/link";
 import { Children, isValidElement, type ReactNode } from "react";
@@ -13,6 +14,17 @@ function readCodeBlock(children: ReactNode): { lang: string | null; code: string
   const props = only.props as { className?: string; children?: ReactNode };
   const lang = /language-([\w-]+)/.exec(props.className ?? "")?.[1] ?? null;
   return { lang, code: String(props.children ?? "").replace(/\n$/, "") };
+}
+
+/** 이미지 하나만 담긴 문단인지를 마크다운 노드로 판정한다. 공백 텍스트는 세지 않는다. */
+type MarkdownNode = { type?: string; tagName?: string; value?: string; children?: MarkdownNode[] };
+
+function isLoneImageParagraph(node: unknown): boolean {
+  const kids = (node as MarkdownNode | undefined)?.children;
+  if (!kids) return false;
+
+  const meaningful = kids.filter((c) => !(c.type === "text" && !(c.value ?? "").trim()));
+  return meaningful.length === 1 && meaningful[0].type === "element" && meaningful[0].tagName === "img";
 }
 
 export function Markdown({ children }: { children: string }) {
@@ -39,7 +51,17 @@ export function Markdown({ children }: { children: string }) {
             {children}
           </h4>
         ),
-        p: ({ children }) => <p className="my-4 leading-relaxed break-keep text-slate-700 dark:text-slate-300">{children}</p>,
+        // 이미지 하나만 담은 문단은 <p>로 감싸지 않는다.
+        // <figure>는 <p> 안에 올 수 없어 HTML 파서가 문단을 먼저 닫는다. 그러면 서버가 직렬화한
+        // 트리(<p> 다음에 <figure>)와 브라우저가 파싱한 트리(<p> 안의 <figure>)가 갈려
+        // 하이드레이션이 통째로 실패한다 — 실측으로 오류 202회가 났다.
+        //
+        // 🔴 판정은 렌더된 children이 아니라 **마크다운 노드**로 한다. react-markdown은 위
+        // `img` 매핑 함수 자체를 element의 type으로 쓰므로, DiagramImage와 비교하면 언제나 거짓이다.
+        p: ({ children, node }) => {
+          if (isLoneImageParagraph(node)) return <>{children}</>;
+          return <p className="my-4 leading-relaxed break-keep text-slate-700 dark:text-slate-300">{children}</p>;
+        },
         ul: ({ children }) => <ul className="my-4 list-disc space-y-1.5 pl-5 text-slate-700 dark:text-slate-300">{children}</ul>,
         ol: ({ children }) => <ol className="my-4 list-decimal space-y-1.5 pl-5 text-slate-700 dark:text-slate-300">{children}</ol>,
         li: ({ children }) => <li className="break-keep leading-relaxed">{children}</li>,
@@ -91,6 +113,10 @@ export function Markdown({ children }: { children: string }) {
         ),
 
         hr: () => <hr className="my-10 border-slate-200 dark:border-slate-800" />,
+
+        // 도식 이미지. Mermaid로 그릴 수 없는 구조도를 SVG 파일로 넣을 때 쓴다.
+        // src가 없으면 렌더하지 않는다 — 깨진 이미지 아이콘이 본문에 남는 것보다 낫다.
+        img: ({ src, alt }) => (typeof src === "string" ? <DiagramImage src={src} alt={alt ?? ""} /> : null),
 
         // 코드블록. mermaid면 도식으로, 아니면 스크롤되는 pre로.
         pre: ({ children }) => {

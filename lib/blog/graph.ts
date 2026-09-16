@@ -73,6 +73,29 @@ export function extractOutboundIds(body: string): string[] {
 }
 
 /**
+ * 본문의 이미지 경로를 등장 순서대로 뽑는다. 중복을 제거하지 않는다.
+ *
+ * 🔴 판정을 정규식으로 하지 않는 이유는 링크와 같다 — 코드 블록 안의 `![예시](...)` 가
+ * 위반으로 올라온다. 파서로 뽑으면 그 자리가 `code` 노드라 저절로 빠진다.
+ */
+export function extractImageUrls(body: string): string[] {
+  const urls: string[] = [];
+  const tree: Root = fromMarkdown(body, {
+    extensions: [gfm()],
+    mdastExtensions: [gfmFromMarkdown()],
+  });
+
+  const walk = (node: Root | RootContent): void => {
+    // `imageReference` 의 URL 은 노드가 아니라 `definition` 에 있다. 그쪽은 링크와 같은 자리다.
+    if (node.type === "image" && node.url) urls.push(node.url);
+    const children = "children" in node ? (node.children as RootContent[]) : [];
+    for (const child of children) walk(child);
+  };
+  walk(tree);
+  return urls;
+}
+
+/**
  * 발행본 전량의 링크 지형을 만든다.
  *
  * 🔴 **빌드당 한 번만 부른다.** 184편의 본문을 파싱하는 데 실측 1,426 ms 가 들며,

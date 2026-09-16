@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 624" width="1040" height="624" role="img" aria-labelledby="mas-org-title mas-org-desc">
+<title id="mas-org-title">한 사람이 통제하는 멀티 에이전트 시스템</title>
+<desc id="mas-org-desc">사람이 목표와 최종 승인을 쥐고, 기획·코드·리뷰 에이전트가 파이프라인을 이루며, 테스트·배포 에이전트가 그 파이프라인을 되먹이는 책임 지도입니다.</desc>
+
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+</defs>
+
+<rect width="1040" height="624" fill="#2d3142"/>
+
+<!-- tier labels -->
+<text x="380" y="60" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".16em">HUMAN CONTROL</text>
+<text x="64" y="260" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".16em">AGENT PIPELINE</text>
+<text x="252" y="428" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".16em">SUPPORT AGENTS</text>
+
+<!-- connectors (drawn before nodes) -->
+<path d="M 380 108 H 192 A 8 8 0 0 0 184 116 V 272" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 520 144 V 176" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 520 212 V 272" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 304 308 H 400" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 640 308 H 736" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 856 272 V 128 A 8 8 0 0 0 848 120 H 660" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 788 476 H 1000 A 8 8 0 0 0 1008 468 V 104 A 8 8 0 0 0 1000 96 H 660" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+<path d="M 496 344 V 384 A 8 8 0 0 1 488 392 H 360 A 8 8 0 0 0 352 400 V 440" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 252 476 H 144 A 8 8 0 0 1 136 468 V 344" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+<path d="M 856 344 V 384 A 8 8 0 0 1 848 392 H 696 A 8 8 0 0 0 688 400 V 440" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+<path d="M 736 328 H 640" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+
+<!-- connector labels -->
+<rect x="92" y="184" width="80" height="16" rx="2" fill="#2d3142"/>
+<text x="132" y="196" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">목표 · 제약</text>
+
+<rect x="328" y="284" width="48" height="16" rx="2" fill="#2d3142"/>
+<text x="352" y="296" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">계획서</text>
+
+<rect x="664" y="284" width="48" height="16" rx="2" fill="#2d3142"/>
+<text x="688" y="296" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">변경분</text>
+
+<rect x="672" y="336" width="32" height="16" rx="2" fill="#2d3142"/>
+<text x="688" y="348" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">반려</text>
+
+<rect x="868" y="192" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="900" y="204" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">승인 요청</text>
+
+<rect x="392" y="368" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="424" y="380" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">검증 요청</text>
+
+<rect x="148" y="412" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="180" y="424" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">실패 보고</text>
+
+<rect x="740" y="368" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="772" y="380" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">배포 요청</text>
+
+<rect x="932" y="400" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="964" y="412" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">운영 신호</text>
+
+<!-- root : human -->
+<rect x="380" y="72" width="280" height="72" rx="6" fill="#2d3142"/>
+<rect x="380" y="72" width="280" height="72" rx="6" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width="1"/>
+<rect x="392" y="84" width="44" height="12" rx="2" fill="transparent" stroke="#f08a59" stroke-width=".8" opacity=".6"/>
+<text x="414" y="93" fill="#f08a59" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">HUMAN</text>
+<text x="520" y="116" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">나 (사람)</text>
+<text x="520" y="134" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">목표 설정 · 방향 결정 · 최종 승인</text>
+
+<!-- control contract strip -->
+<rect x="320" y="176" width="400" height="36" rx="6" fill="#2d3142"/>
+<rect x="320" y="176" width="400" height="36" rx="6" fill="rgba(240,138,89,.05)" stroke="rgba(240,138,89,.5)" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="520" y="198" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">계획 · 과업 분배 · 결과 검토 · 승인 / 거부</text>
+
+<!-- tier 1 : pipeline agents -->
+<rect x="64" y="272" width="240" height="72" rx="6" fill="#2d3142"/>
+<rect x="64" y="272" width="240" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="76" y="284" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="94" y="293" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">PLAN</text>
+<text x="184" y="316" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">기획 에이전트</text>
+<text x="184" y="334" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">요구 분석 · 계획 수립</text>
+
+<rect x="400" y="272" width="240" height="72" rx="6" fill="#2d3142"/>
+<rect x="400" y="272" width="240" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="412" y="284" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="430" y="293" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CODE</text>
+<text x="520" y="316" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">코드 에이전트</text>
+<text x="520" y="334" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">구현 · 리팩터링</text>
+
+<rect x="736" y="272" width="240" height="72" rx="6" fill="#2d3142"/>
+<rect x="736" y="272" width="240" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="748" y="284" width="48" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="772" y="293" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">REVIEW</text>
+<text x="856" y="316" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">리뷰 에이전트</text>
+<text x="856" y="334" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">코드 검토 · 품질 확인</text>
+
+<!-- tier 2 : support agents -->
+<rect x="252" y="440" width="200" height="72" rx="6" fill="#2d3142"/>
+<rect x="252" y="440" width="200" height="72" rx="6" fill="rgba(245,245,245,.05)" stroke="#bfc0c0" stroke-width=".8"/>
+<rect x="264" y="452" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".6"/>
+<text x="282" y="461" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">TEST</text>
+<text x="352" y="484" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">테스트 에이전트</text>
+<text x="352" y="502" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">테스트 설계 · 실행</text>
+
+<rect x="588" y="440" width="200" height="72" rx="6" fill="#2d3142"/>
+<rect x="588" y="440" width="200" height="72" rx="6" fill="rgba(245,245,245,.05)" stroke="#bfc0c0" stroke-width=".8"/>
+<rect x="600" y="452" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".6"/>
+<text x="618" y="461" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">SHIP</text>
+<text x="688" y="484" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">배포 에이전트</text>
+<text x="688" y="502" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">배포 준비 · 모니터링</text>
+
+<!-- legend -->
+<line x1="40" y1="560" x2="1000" y2="560" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
+<text x="40" y="584" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
+<rect x="120" y="572" width="16" height="12" rx="2" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width=".8"/>
+<text x="144" y="584" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">사람 · 통제</text>
+<rect x="248" y="572" width="16" height="12" rx="2" fill="rgba(240,138,89,.05)" stroke="rgba(240,138,89,.5)" stroke-width=".8" stroke-dasharray="4,4"/>
+<text x="272" y="584" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">통제 계약</text>
+<rect x="368" y="572" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
+<text x="392" y="584" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">핵심 에이전트</text>
+<rect x="512" y="572" width="16" height="12" rx="2" fill="rgba(245,245,245,.05)" stroke="#bfc0c0" stroke-width=".8"/>
+<text x="536" y="584" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">지원 에이전트</text>
+<line x1="668" y1="578" x2="700" y2="578" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="712" y="584" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">되먹임 경로</text>
+</svg>
