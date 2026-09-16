@@ -16,6 +16,7 @@
 | 어떤 리포지토리가 실제 작업물이고 어떤 것이 학습 스파이크인가 | §2 직접 생성 139개 |
 | 관심사가 언제 어떻게 이동했는가 | §2-1 과 §3-1 의 시기별 해석 |
 | 설명을 먼저 채워야 할 리포지토리는 무엇인가 | §4 정리 우선순위 |
+| 설명이 이미 있던 리포지토리는 어떤 상태인가 | §4-5 설명이 있던 43개 |
 | 설명과 topics 를 어떻게 채우는가 | §5 채우는 방법 |
 
 ### 재조사가 필요할 때의 명령
@@ -753,6 +754,181 @@ topics 가 붙은 리포지토리는 셋뿐이므로, **설명이 채워진 46�
 > 🔴 **여기 적힌 43개가 지금 남은 일의 정확한 크기입니다.** 등급 분류는 「설명이 비어 있는
 > 93개」만 대상으로 삼았으므로, **설명이 이미 있던 43개는 A · B · C 어디에도 들어가지
 > 않았습니다.** 등급 셋을 모두 끝내도 topics 가 0 이 되지 않는 이유가 이것입니다.
+>
+> **처리 (2026-09-16).** 이 43개는 §4-5 에서 조사해 모두 topics 를 붙였습니다.
+
+### 4-5. 설명이 있던 43개
+
+§4-4 가 가리키던 43개입니다. 조사 시점에 설명이 이미 있어서 A · B · C 등급 분류에 들어가지
+않았고, 그래서 등급 셋을 모두 끝낸 뒤에도 topics 누락이 0 이 되지 않았습니다.
+
+#### 작업 전 기준값
+
+| 지표 | 직전 기록 | 작업 전 실측 (2026-09-16) | 차이 |
+| --- | ---: | ---: | ---: |
+| 전체 저장소 | 299 | 295 | −4 |
+| 직접 생성 저장소 | 139 | 135 | −4 |
+| 설명이 없는 직접 생성 저장소 | 4 | 0 | −4 |
+| topics 가 없는 직접 생성 저장소 | 47 | 43 | −4 |
+
+**네 수가 모두 4씩 줄었고, §5-6 이 「넷이 지워지면 0 / 43」으로 예고한 값과 일치합니다.**
+소유자가 삭제 대상 넷을 웹 화면에서 지웠기 때문입니다. 따라서 설명 누락 0 은 채워서가 아니라
+지워서 도달한 값이며, 이 43개가 이번 작업의 정확한 범위입니다.
+
+#### 조사 방법
+
+| 무엇을 | 어떻게 | 어디에 썼나 |
+| --- | --- | --- |
+| 대상 추출 | `gh repo list` 에서 fork 가 아니고 topics 가 없는 것 | 43개. 삭제 대상 넷은 이미 목록에 없었습니다 |
+| 저장소별 조사 | GraphQL 한 번으로 언어 통계 · 기본 브랜치 커밋 100건 · 최상위 디렉터리 · README | 성격 요약과 도메인 topic |
+| 의존성 | Java · Kotlin 19곳의 `build.gradle` 선언 | 프레임워크 topic 을 추측이 아니라 선언에서 골랐습니다 |
+| 저장소 사이의 관계 | 생성일 대조와 설정 파일 확인 | 자리 표시 저장소 셋과 `spring-cloud-config-repository` 의 짝 |
+
+**private 저장소는 성격만 적었고 README · 코드 · 설정의 내용은 옮기지 않았습니다.**
+
+#### 「설명 상태」 열의 기준
+
+| 값 | 기준 | 개수 |
+| --- | --- | ---: |
+| 충분 | 설명만 읽고 무엇을 하는 저장소인지 알 수 있습니다 | 20 |
+| 빈약 | 저장소 이름을 되풀이하거나, 커밋 메시지 조각이거나, 낱말 몇 개뿐입니다 | 20 |
+| 어긋남 | 설명이 가리키는 것과 지금의 README · 커밋이 가리키는 것이 다릅니다 | 3 |
+
+설명은 이번 범위가 아니므로 **이 열은 판정만 하고 설명을 고치지 않았습니다.** 빈약과 어긋남
+23곳은 §5-6 에 남은 일로 올렸습니다.
+
+#### 43개 표
+
+| 리포지토리 | 공개 | 언어 | 기간 | 설명 상태 | 성격 요약 | topics 후보 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `elasticsearch-webcrawler` | public | Java | 2016-11 | 빈약 | 포털에서 방송 메타데이터를 수집하고 Elasticsearch 에 한글 형태소를 적용해 검색이 되는지 확인한 PoC (2016). | `java`, `elasticsearch`, `crawler`, `metadata`, `korean`, `search`, `prototype` |
+| `trans-manager` | public | Java | 2016-11 | 빈약 | FFmpeg 변환 작업을 ActiveMQ 와 Redis 로 나눠 주는 관리 서버. `trans-coder` 와 한 쌍입니다 (2016). | `java`, `spring-boot`, `ffmpeg`, `transcoding`, `activemq`, `redis`, `video` |
+| `trans-coder` | public | Java | 2016-11 | 빈약 | 관리 서버에서 작업을 받아 FFmpeg 로 변환하는 트랜스코더 클라이언트. `trans-manager` 와 README 를 공유합니다 (2016). | `java`, `spring-boot`, `ffmpeg`, `transcoding`, `activemq`, `redis`, `video` |
+| `DataStructureAndAlgorithmsMadeEasyInJava` | public | Java | 2016-12 | 빈약 | 같은 제목의 자료구조 · 알고리즘 책 예제를 따라 친 실습 (2016). | `java`, `algorithms`, `data-structures`, `study`, `book` |
+| `php` | public | PHP | 2018-01 | 빈약 | PHP 를 하루 동안 익힌 실습 스파이크 (2018). | `php`, `study`, `spike` |
+| `test` | private | — | 2020-06 | 빈약 | README 와 첫 커밋만 있는 자리 표시 저장소입니다. | `placeholder` |
+| `deepmeta-api` | private | Java | 2020-08 | 빈약 | Kafka · RabbitMQ · MyBatis 를 갖춘 Spring Boot API 서버의 초기 뼈대 (2020). | `java`, `spring-boot`, `kafka`, `rabbitmq`, `mybatis`, `oracle` |
+| `dev_stock` | private | Python | 2021-08 ~ 2021-12 | 충분 | 조건에 따라 주식을 사고팔고 체결 결과를 텔레그램으로 받는 개인용 자동매매 스크립트 (2021). | `python`, `stock-market`, `trading-bot`, `telegram-bot`, `automation` |
+| `dev_stock_backtesting` | private | Python | 2021-09 ~ 2025-11 | 충분 | backtrader 로 매매 전략을 백테스트하는 개인 저장소. 시세 수집과 로컬 DB 적재를 함께 둡니다 (2021 ~ 2025). | `python`, `backtesting`, `backtrader`, `stock-market`, `duckdb`, `crawler` |
+| `es-korean-plugin` | private | — | 2021-11 | 충분 | README 한 줄만 있는 자리 표시 저장소입니다. | `elasticsearch`, `korean`, `analyzer`, `placeholder` |
+| `movie-front` | public | — | 2021-12 | 충분 | `.gitignore` 와 README 한 줄만 있는 자리 표시 저장소입니다. | `react`, `placeholder` |
+| `yanadoo-corp` | private | Java | 2022-02 | 빈약 | 인가 서버 · Keycloak SSO · 게이트웨이 예제를 모아 둔 개발 참고용 저장소 (2022). | `java`, `spring-security`, `oauth2`, `authorization-server`, `keycloak`, `gateway`, `examples` |
+| `demo-payment` | private | Java | 2022-04 ~ 2022-05 | 빈약 | JPA · Querydsl · MyBatis 로 결제 API 를 구성해 본 개발 데모 (2022). | `java`, `spring-boot`, `jpa`, `querydsl`, `mybatis`, `payment`, `demo` |
+| `ddd-order` | public | Java | 2022-04 | 충분 | MSA 전환을 전제로 주문 · 상품 · 파트너 도메인에 DDD 를 적용해 본 학습 프로젝트 (2022). | `java`, `spring-boot`, `ddd`, `microservices`, `jpa`, `mapstruct`, `study` |
+| `demo-order` | private | Java | 2022-04 ~ 2022-05 | 빈약 | 결제 서비스 로직을 고치던 중간 상태를 남긴 작업 저장소 (2022). | `java`, `spring-boot`, `jpa`, `querydsl`, `payment`, `demo` |
+| `payment-v2` | private | Java | 2022-04 ~ 2022-05 | 빈약 | 결제 시스템 2차 판의 엔티티와 리포지토리를 MSSQL 기준으로 컴파일까지 확인한 작업 저장소 (2022). | `java`, `spring-boot`, `jpa`, `querydsl`, `mssql`, `payment` |
+| `spring-cloud-config-repository` | public | — | 2022-07 | 빈약 | 환경별 설정 파일 셋만 담은 설정 저장소. C등급 `spring-cloud-config-server` 의 `git.uri` 가 이곳을 가리킵니다 (2022). | `spring-cloud`, `config`, `yaml`, `study` |
+| `yanadoo-next-front` | private | TypeScript | 2023-03 | 충분 | Next.js 13 · React Query · Recoil 로 SSR 프런트엔드를 세우던 재직 중 협업 저장소 (2023). | `nextjs`, `typescript`, `react-query`, `recoil`, `emotion`, `ssr`, `frontend` |
+| `yanadoo-api` | private | Java | 2023-05 | 빈약 | 서비스 재구축을 위해 커밋 하나로 통째 올린 Spring Boot API 서버 스냅샷 (2023). | `java`, `spring-boot`, `jpa`, `querydsl`, `mybatis`, `mssql`, `internal` |
+| `yanadoo-webview` | private | HTML | 2023-05 | 빈약 | 같은 재구축에서 앱 웹뷰 화면을 Thymeleaf 로 내려 주는 서버 스냅샷 (2023). | `java`, `spring-boot`, `thymeleaf`, `webview`, `mssql`, `internal` |
+| `yafit-cycle` | private | HTML | 2023-09 | 빈약 | 운동 서비스의 웹 화면을 Spring Boot 와 Thymeleaf 로 내려 주는 재직 중 산출물 (2023). | `java`, `spring-boot`, `thymeleaf`, `html`, `fitness`, `internal` |
+| `image` | public | Java | 2023-10 | 충분 | Thumbnailator 로 이미지를 리사이즈하고 Caffeine 으로 캐시하는 스파이크. 지연 로딩 예제를 함께 둡니다 (2023). | `java`, `spring-boot`, `image-resize`, `thumbnailator`, `caffeine`, `cache`, `spike` |
+| `demo-redis` | public | Java | 2024-02 | 충분 | Redis pub/sub 을 시험한 Spring 스파이크. Slack API 클라이언트를 함께 붙였습니다 (2024). | `java`, `spring-boot`, `redis`, `pub-sub`, `slack`, `spike` |
+| `demo-event` | public | Java | 2024-02 | 충분 | Spring 이벤트 발행과 Kafka 연동, OSIV 설정을 차례로 시험한 스파이크 (2024). | `java`, `spring-boot`, `event-driven`, `kafka`, `jpa`, `spike` |
+| `commerce` | public | Java | 2024-02 ~ 2024-08 | 충분 | API · 인증 · 배치 · 푸시 · 공통 모듈로 나눈 Gradle 멀티 모듈 구성 샘플 (2024). | `java`, `spring-boot`, `multi-module`, `gradle`, `commerce`, `spike` |
+| `demo-jwt` | private | Java | 2024-03 | 빈약 | Spring Security 에 JWT 와 Redis 를 붙인 단일 기능 스파이크 (2024). | `java`, `spring-boot`, `spring-security`, `jwt`, `redis`, `spike` |
+| `grit-api` | private | Java | 2024-08 ~ 2024-09 | 빈약 | 기업 교육 서비스의 화면별 API 를 옮겨 만든 재직 중 백엔드 (2024). | `java`, `spring-boot`, `jpa`, `mssql`, `b2b`, `edtech`, `internal` |
+| `cicd` | private | Python | 2024-12 ~ 2026-04 | 충분 | AWS 의 빌드 · 배포 이벤트를 Lambda 로 이어 붙이고 결과를 알리는 사내 CI/CD 자동화 (2024 ~ 2026). | `python`, `aws-lambda`, `cicd`, `codebuild`, `codedeploy`, `devops`, `internal` |
+| `scheduler` | private | Java | 2024-12 ~ 2025-05 | 빈약 | 사내 스케줄러를 다시 개발한 Spring Boot 서버. ShedLock 으로 중복 실행을 막습니다 (2024 ~ 2025). | `java`, `spring-boot`, `scheduler`, `shedlock`, `jpa`, `mssql`, `internal` |
+| `springai` | private | Java | 2025-09 ~ 2025-10 | 충분 | Spring AI 로 OpenAI 를 붙인 학습 서비스용 API 서버 (2025). | `java`, `spring-boot`, `spring-ai`, `openai`, `redis`, `elasticsearch`, `llm` |
+| `accounting-k` | private | Kotlin | 2026-01 | 빈약 | 회계 시스템을 Kotlin 으로 옮기며 헥사고널 구조를 시험한 뒤 계층형으로 되돌린 저장소 (2026). | `kotlin`, `spring-boot`, `accounting`, `hexagonal-architecture`, `archunit`, `jpa`, `internal` |
+| `accounting` | private | Java | 2026-01 ~ 2026-05 | 빈약 | Spring Boot 와 React 로 만든 회계 · 정산 관리 시스템. 커밋이 331개로 43곳 중 둘째로 많은데 설명은 두 낱말입니다 (2026). | `java`, `spring-boot`, `react`, `accounting`, `settlement`, `mssql`, `spring-batch`, `internal` |
+| `mssql-to-postgresql` | public | Python | 2026-01 | 충분 | MSSQL 스키마를 추출해 PostgreSQL DDL 로 바꾸고 ERD 를 그리는 Python 도구 (2026). | `python`, `mssql`, `postgresql`, `schema`, `migration`, `erd`, `ddl` |
+| `devtracker` | public | TypeScript | 2026-04 ~ 2026-08 | 충분 | 이슈 · 스프린트 · 배포 이력을 한곳에서 관리하는 Jira 대안 웹앱. Vercel 에 배포되어 있습니다 (2026). | `nextjs`, `typescript`, `prisma`, `sqlite`, `issue-tracker`, `kanban`, `vercel` |
+| `ted-startup` | private | Python | 2026-04 ~ 2026-09 | 어긋남 | 설명은 멀티에이전트 SDLC 자동화 플랫폼을 말하는데, 최근 커밋과 소스 트리는 그 파이프라인으로 만드는 주식 도메인 제품을 가리킵니다 (2026). | `claude-code`, `ai-agent`, `multi-agent`, `python`, `typescript`, `stock-market`, `backtesting` |
+| `n8n-with-ai` | public | Shell | 2026-04 | 충분 | 고객 문의를 OpenAI 로 분류해 자동 답변과 담당자 검토로 나누는 n8n 워크플로 (2026). | `n8n`, `openai`, `automation`, `customer-support`, `google-sheets`, `slack`, `docker-compose` |
+| `yanadoo-aws-assessment` | private | — | 2026-04 | 충분 | 사내 AWS 인프라를 진단하고 고도화 방안을 정리한 문서 저장소 (2026). | `aws`, `infrastructure`, `assessment`, `architecture`, `documentation`, `internal` |
+| `org-chart` | private | Python | 2026-04 | 어긋남 | 그룹웨어 조직도를 매일 받아 변경분을 정리하는 사내 자동화. 설명은 Slack 연동을 말하지만 README 는 그 경로를 폐기했다고 적습니다 (2026). | `python`, `automation`, `org-chart`, `groupware`, `launchd`, `internal` |
+| `ted-skills-plugin` | private | Shell | 2026-05 ~ 2026-08 | 충분 | 작업계획서 파이프라인과 인수인계 스킬을 담은 개인 · 팀 공용 Claude Code 플러그인 (2026). | `claude-code`, `claude-code-plugin`, `agent-skills`, `workflow`, `tooling` |
+| `ted_speak` | public | TypeScript | 2026-06 ~ 2026-07 | 충분 | 레슨 · 따라 말하기 · AI 대화를 잇는 영어 스피킹 앱 TalkTed. Expo 와 Supabase 를 모노레포로 묶었습니다 (2026). | `react-native`, `expo`, `supabase`, `typescript`, `openai`, `english-learning`, `speech-recognition` |
+| `team-wiki` | private | Python | 2026-09 | 충분 | PM 팀이 근거와 산출물을 함께 쌓는 LLM 위키 저장소 (2026). | `knowledge-management`, `llm`, `obsidian`, `documentation`, `python`, `product-management` |
+| `pm-plugin` | private | Python | 2026-09 | 어긋남 | `team-wiki` 에 문서를 쓰는 PM 팀용 Claude Code 플러그인. 설명에 나열된 명령 목록이 나중에 추가된 명령을 빠뜨렸습니다 (2026). | `claude-code`, `claude-code-plugin`, `product-management`, `documentation`, `python`, `agent-skills` |
+| `k-evidence-gateway` | private | TypeScript | 2026-09 | 충분 | 영수증 증빙을 OCR 로 읽고 사람이 검수 · 승인한 뒤 회계 쪽으로 넘기는 self-hosted 게이트웨이 (2026). | `typescript`, `ocr`, `receipt`, `expense`, `self-hosted`, `workflow`, `korean` |
+
+**43곳 모두에 topics 를 붙이는 것이 이 표의 결론입니다.** 등급 분류와 달리 지울 대상을 따로
+두지 않았고, 자리 표시 저장소 셋에도 topics 를 붙였습니다. 그 이유는 아래 단락에 적었습니다.
+
+#### topics 를 고른 기준
+
+§5-5 의 네 축을 그대로 썼고, 이미 topics 가 있던 92곳에 같은 뜻의 표기가 있으면 그것을 따랐습니다.
+
+| 축 | 이번에 따른 원칙 | 예 |
+| --- | --- | --- |
+| 언어와 런타임 | 언어 통계의 1위 언어를 붙이고, 문서 저장소처럼 언어가 없으면 생략합니다 | `java` · `kotlin` · `python` · `php` |
+| 프레임워크 | `build.gradle` 이나 README 에 선언된 것만 붙입니다 | `deepmeta-api` 의 `oracle` 과 `rabbitmq` 는 의존성 선언에서 나왔습니다 |
+| 도메인 | README 와 커밋 제목에서 고릅니다. 기존 값과 뜻이 겹치면 구분되는 이름을 씁니다 | 기존 `lambda` 는 자바 람다를 가리키므로 AWS 쪽에는 `aws-lambda` 를 붙였습니다 |
+| 성격 | 기존의 `spike` · `study` · `demo` · `examples` · `prototype` 을 이어 씁니다 | `internal` 은 A등급 한 곳에만 있던 값을 재직 중 산출물 10곳으로 넓혔고, `placeholder` 와 `tooling` 은 새로 썼습니다 |
+
+이번에 쓴 값은 133종이고, 그중 67종이 기존 92곳에 없던 값입니다. 67종 가운데 언어 축은
+`kotlin` · `php` 둘, 성격 축은 `placeholder` · `tooling` 둘이며, 나머지 63종은 도메인과
+프레임워크 축입니다.
+
+#### 🔴 설명이 있다는 것은 설명이 쓸모 있다는 뜻이 아니었습니다
+
+§4 의 등급은 「설명이 비어 있는가」 하나만 보고 나눴습니다. 그래서 설명에 글자가 하나라도 있으면
+등급 밖으로 빠졌는데, 이번에 43곳을 열어 보니 **절반이 넘는 23곳의 설명이 저장소를 설명하지
+못했습니다.**
+
+| 모양 | 저장소 | 무엇이 문제인가 |
+| --- | --- | --- |
+| 이름을 되풀이합니다 | `elasticsearch-webcrawler` · `trans-manager` · `trans-coder` · `deepmeta-api` · `spring-cloud-config-repository` · `demo-jwt` | 설명 칸에 저장소 이름이 그대로 들어 있어 빈칸과 정보량이 같습니다 |
+| 커밋 메시지 조각입니다 | `grit-api` · `payment-v2` · `demo-order` · `yafit-cycle` · `scheduler` | 「init」처럼 첫 커밋 때 쓴 문구가 설명 칸에 남았습니다 |
+| 낱말 몇 개뿐입니다 | `DataStructureAndAlgorithmsMadeEasyInJava` · `php` · `test` · `yanadoo-corp` · `demo-payment` · `accounting-k` · `accounting` | `accounting` 은 커밋이 331개인데 설명이 두 낱말입니다 |
+| 두 저장소가 같은 설명을 씁니다 | `yanadoo-api` · `yanadoo-webview` | 목록에서 둘을 구분할 수 없습니다 |
+| 설명과 내용이 갈라졌습니다 | `ted-startup` · `org-chart` · `pm-plugin` | 방향을 바꾸거나 기능을 더한 뒤에도 About 칸은 처음 그대로입니다 |
+
+⇒ **「설명 누락 0」은 About 칸이 모두 찼다는 뜻일 뿐, 목록을 읽을 수 있게 되었다는 뜻이
+아닙니다.** 메타데이터 충실도를 「비어 있는가」로만 세면 이 23곳은 계속 완료로 보입니다.
+
+#### 자리 표시 저장소 셋은 지우지 않고 표시만 했습니다
+
+`test` · `es-korean-plugin` · `movie-front` 는 커밋이 `Initial commit` 하나이고, 파일이 README 와
+`.gitignore` 뿐입니다. §4-3 에서 삭제를 권한 `kakao-style` 과 같은 모양입니다.
+
+| 저장소 | 파일 | 가까이 있는 저장소 |
+| --- | --- | --- |
+| `test` | README 35 B | README 제목이 B등급 `meta_collector` 와 같고, 그 저장소는 아흐레 뒤에 만들어졌습니다 |
+| `es-korean-plugin` | README 158 B | C등급 `elasticsearch-plugin-7.15.1` 이 같은 날 만들어졌고, 두 설명이 같은 기능을 가리킵니다 |
+| `movie-front` | `.gitignore` 1,610 B · README 37 B | 일주일 뒤에 A등급 `vue-movie` 가 만들어졌습니다 |
+
+셋 모두 실제 작업이 옆 저장소에서 이어진 흔적으로 보입니다. 다만 **이것은 생성일과 이름에서 끌어낸
+추정입니다.** 삭제는 되돌릴 수 없고 판단 근거는 소유자에게 있으므로 지우지 않았습니다. 대신
+`placeholder` topic 을 붙여 두었으므로
+[`topic:placeholder` 검색](https://github.com/withwooyong?tab=repositories&q=topic%3Aplaceholder)
+한 번으로 셋을 함께 볼 수 있습니다.
+
+#### 조사 중에 드러난 것들
+
+| 무엇이 | 어디서 | 왜 문제인가 |
+| --- | --- | --- |
+| 크기와 내용이 반대 방향으로 어긋납니다 | `movie-front` | `diskUsage` 는 189 KB 인데 파일 둘을 합쳐도 2 KB 가 되지 않습니다. §4-3 의 `kakao-style` 은 크기 0 인데 파일이 있었으므로, **크기는 어느 방향으로도 내용의 근거가 되지 않습니다.** 차이가 생긴 기전은 확인하지 않았습니다 |
+| 설정 저장소가 단독으로는 읽히지 않습니다 | `spring-cloud-config-repository` | 파일이 YAML 셋뿐이라 용도를 알 수 없는데, C등급 `spring-cloud-config-server` 의 `application.yml` 이 이곳을 `git.uri` 로 가리킵니다. 설명에 이 관계를 적으면 두 저장소가 함께 읽힙니다 |
+| 설명이 최근 작업을 따라가지 못합니다 | `ted-startup` | 커밋이 612개로 43곳 중 가장 많고 지금도 푸시되는 저장소인데, 설명이 가리키는 제품과 최근 커밋이 다루는 영역이 다릅니다 |
+
+#### 반영 결과 (2026-09-16)
+
+후보를 파일 하나에 적고 그 파일에서 위 표와 `gh repo edit --add-topic` 43건을 함께 만들었으므로,
+표와 실제 반영값이 서로 갈라질 수 없습니다. 명령은 43건 모두 성공을 보고했고, A · B · C 등급
+때와 같이 **API 를 다시 읽어 대조했습니다.**
+
+| 대조 | 방법 | 결과 |
+| --- | --- | --- |
+| 전체 수 | §5-4 의 두 명령 | 설명 누락 0 · topics 누락 0 |
+| 저장소별 값 | 43곳의 topics 를 후보 파일과 집합으로 비교 | 불일치 0 |
+| 설명 보존 | 직접 생성 135곳의 설명을 작업 전후로 비교 | 달라진 곳 0 |
+| 기존 topics 보존 | 이미 topics 가 있던 92곳을 작업 전후로 비교 | 92곳을 짝지었고 달라진 곳 0 |
+
+🔴 **마지막 행의 0 은 한 번 의심해야 했습니다.** 두 목록을 `join` 으로 짝지은 뒤 값이 다른 줄을
+세는 방식이라, 짝을 하나도 찾지 못해도 0 이 나옵니다. 그래서 짝지어진 행이 92 인 것을 따로
+세었고, 한 곳의 값을 일부러 바꾸면 결과가 1 이 되는 것까지 확인했습니다.
+
+| 지표 | 작업 전 | 작업 후 | 차이 |
+| --- | ---: | ---: | ---: |
+| topics 가 없는 직접 생성 저장소 | 43 | 0 | −43 |
+| topics 가 있는 직접 생성 저장소 | 92 | 135 | +43 |
+
+**직접 생성한 135곳이 모두 설명과 topics 를 가지게 되었습니다.** 조사 시점에 93 / 136 이던 두
+수가 0 / 0 이 되었습니다.
 
 ## 5. 설명과 topics 를 채우는 방법
 
@@ -844,18 +1020,22 @@ B등급 15개와 C등급 45개를 반영한 뒤 다시 재니 두 수가 정확�
 | 조사 시점 | 93 | 136 | — |
 | A등급 반영 후 | 65 | 108 | A등급 28곳 |
 | B · C등급 반영 후 | 5 | 48 | B등급 15곳 · C등급 45곳 |
-| `quick-phrase` 반영 후 | **4** | **47** | 삭제 대상에서 빠진 1곳 |
+| `quick-phrase` 반영 후 | 4 | 47 | 삭제 대상에서 빠진 1곳 |
+| 빈 저장소 넷 삭제 후 | 0 | 43 | 소유자가 삭제 대상 넷을 지웠습니다 |
+| §4-5 반영 후 | **0** | **0** | 설명이 있던 43곳 |
 
-마지막 줄의 **설명 누락 4개는 삭제 대상 넷과 같은 집합이므로, 이 수는 채워서가 아니라
-지워서 0 이 됩니다.** topics 누락 47개에서 그 4개를 뺀 43개가 다음 작업의 대상이며, 이들은
-**설명이 이미 있어서 등급 분류에 들어가지 않았던 저장소들**입니다.
+`quick-phrase` 반영 후 줄의 **설명 누락 4개는 삭제 대상 넷과 같은 집합이었으므로, 이 수는
+채워서가 아니라 지워서 0 이 되었습니다.** topics 누락 47개에서 그 4개를 뺀 43개는
+**설명이 이미 있어서 등급 분류에 들어가지 않았던 저장소들**이었고, §4-5 에서 처리했습니다.
 
 ### 5-6. 아직 닫히지 않은 것 (2026-09-16 기준)
 
 | 남은 일 | 크기 | 누가 · 언제 |
 | --- | ---: | --- |
-| 빈 저장소 삭제 | 4 | **소유자가 직접 처리합니다** (2026-09-16 결정). 아래 스코프 문제 때문입니다 |
-| 설명이 있던 저장소에 topics 붙이기 | 43 | 다음 세션. 등급 분류 밖이라 조사가 새로 필요합니다 |
+| ~~빈 저장소 삭제~~ | ~~4~~ | **완료.** 소유자가 웹 화면에서 지웠고, 2026-09-16 에 전체 295 · 직접 생성 135 로 확인했습니다 |
+| ~~설명이 있던 저장소에 topics 붙이기~~ | ~~43~~ | **완료.** §4-5 에서 조사하고 반영했습니다 (2026-09-16) |
+| 빈약하거나 어긋난 설명 고치기 | 23 | 다음 세션. §4-5 의 「설명 상태」 열이 빈약 · 어긋남인 곳이 대상입니다. 이번 범위가 topics 여서 판정만 했습니다 |
+| 자리 표시 저장소 셋의 삭제 여부 | 3 | **소유자가 판단합니다.** 근거는 §4-5 의 「자리 표시 저장소 셋」 단락에 있습니다 |
 
 🔴 **`gh` 의 기본 토큰은 저장소를 지우지 못합니다.** `repo` 스코프는 읽기 · 쓰기 · 설정 변경을
 모두 허용하므로 `gh repo edit` 89건이 전부 통과했지만, 삭제만은 별도 스코프를 요구합니다.
@@ -869,7 +1049,8 @@ B등급 15개와 C등급 45개를 반영한 뒤 다시 재니 두 수가 정확�
 있습니다. **`quick-phrase` 는 이 목록에서 빠졌습니다** — §4-1 의 단락을 보십시오.
 
 **넷이 지워지면 설명 누락은 0 이 되고 topics 누락은 43 이 됩니다.** 다음 세션이 대조할 값이
-이것이며, 4 와 47 이 그대로라면 삭제가 아직 안 된 것입니다.
+이것이며, 4 와 47 이 그대로라면 삭제가 아직 안 된 것입니다. **2026-09-16 에 0 / 43 으로
+확인했습니다.** 그 뒤 §4-5 의 반영으로 두 수는 0 / 0 이 되었습니다.
 
 ### 5-5. topics 를 설계하는 기준
 
