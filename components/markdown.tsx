@@ -115,8 +115,10 @@ export function Markdown({ children }: { children: string }) {
         hr: () => <hr className="my-10 border-slate-200 dark:border-slate-800" />,
 
         // 도식 이미지. Mermaid로 그릴 수 없는 구조도를 SVG 파일로 넣을 때 쓴다.
+        // 이미지 제목(`![alt](src "구조도")`)은 캡션의 종류 이름이 된다. SVG 파일에는 종류를 밝히는 선언이 없다.
         // src가 없으면 렌더하지 않는다 — 깨진 이미지 아이콘이 본문에 남는 것보다 낫다.
-        img: ({ src, alt }) => (typeof src === "string" ? <DiagramImage src={src} alt={alt ?? ""} /> : null),
+        img: ({ src, alt, title }) =>
+          typeof src === "string" ? <DiagramImage src={src} alt={alt ?? ""} kind={title ?? undefined} /> : null,
 
         // 코드블록. mermaid면 도식으로, 아니면 스크롤되는 pre로.
         pre: ({ children }) => {

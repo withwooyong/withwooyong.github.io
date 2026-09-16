@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { DiagramZoomDialog } from "@/components/diagram-zoom-dialog";
+import { mermaidKindName, withObjectParticle, type Size } from "@/lib/diagram-zoom";
 import { mermaidThemeVariables, repaintHardcodedStrokes, resolveDiagramFontFamily } from "@/lib/mermaid-theme";
-import { cn } from "@/lib/utils";
-import { Maximize2, Minus, Plus, RotateCcw } from "lucide-react";
+import { Maximize2 } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 /** <html class="dark"> 변화를 구독한다. 이 저장소의 테마는 컨텍스트 없이 클래스만 토글한다. */
@@ -34,17 +34,17 @@ function namespaceSvgIds(svg: string, suffix: string): string {
   return svg.split(rootId).join(`${rootId}-${suffix}`);
 }
 
-/** scale 1 = 컨테이너 폭에 꼭 맞춤. 안쪽 폭을 `scale * 100%`로 두면 배율 계산에 실제 픽셀이 필요 없다. */
-const MIN_SCALE = 1;
-const MAX_SCALE = 12;
-const ZOOM_FACTOR = 1.5;
-
-const clamp = (n: number) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, n));
-
-/** mermaid가 useMaxWidth:false로 그린 SVG는 width 속성에 자연 폭(px)을 갖는다. */
-function naturalWidthOf(svg: string): number | null {
-  const w = /<svg[^>]*\swidth="([\d.]+)"/.exec(svg)?.[1];
-  return w ? Number(w) : null;
+/**
+ * mermaid가 useMaxWidth:false로 그린 SVG의 자연 크기(px). viewBox를 먼저 보고, 없으면 width·height 속성을 본다.
+ * 높이까지 알아야 세로로 긴 도식을 화면 안에 맞춰 열 수 있다.
+ */
+function naturalSizeOf(svg: string): Size | null {
+  const open = /<svg[^>]*>/.exec(svg)?.[0] ?? "";
+  const box = /\sviewBox="[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)"/.exec(open);
+  if (box) return { width: Number(box[1]), height: Number(box[2]) };
+  const w = /\swidth="([\d.]+)"/.exec(open)?.[1];
+  const h = /\sheight="([\d.]+)"/.exec(open)?.[1];
+  return w && h ? { width: Number(w), height: Number(h) } : null;
 }
 
 type MermaidProps = { chart: string };
@@ -65,7 +65,7 @@ export function Mermaid({ chart }: MermaidProps) {
   const [svg, setSvg] = useState("");
   const [failed, setFailed] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
-  const [scale, setScale] = useState(1);
+  const kindName = useMemo(() => mermaidKindName(chart), [chart]);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,25 +119,7 @@ export function Mermaid({ chart }: MermaidProps) {
   }, [chart, isDark, reactId]);
 
   const zoomedSvg = useMemo(() => (svg ? namespaceSvgIds(svg, "zoom") : ""), [svg]);
-  const naturalWidth = useMemo(() => (svg ? naturalWidthOf(svg) : null), [svg]);
-
-  /** 글자가 원래 크기로 보이는 배율. 좁은 화면일수록 커진다. */
-  const [naturalScale, setNaturalScale] = useState(1);
-
-  /**
-   * 뷰어의 스크롤 영역이 붙는 순간 폭을 재서, 자연 크기 배율로 열어준다.
-   * 확대를 누른 이유가 "작아서"인데 맞춤 배율로 열면 아무것도 달라지지 않는다.
-   */
-  const measureViewport = useCallback(
-    (el: HTMLDivElement | null) => {
-      if (!el || !naturalWidth) return;
-      const available = el.clientWidth - 24; // 좌우 패딩
-      const ratio = clamp(naturalWidth / Math.max(available, 1));
-      setNaturalScale(ratio);
-      setScale(ratio);
-    },
-    [naturalWidth]
-  );
+  const natural = useMemo(() => (svg ? naturalSizeOf(svg) : null), [svg]);
 
   const openZoom = useCallback(() => setZoomOpen(true), []);
 
@@ -160,7 +142,7 @@ export function Mermaid({ chart }: MermaidProps) {
         type="button"
         onClick={openZoom}
         disabled={!svg}
-        aria-label="도식 크게 보기"
+        aria-label={`${kindName} 크게 보기`}
         className="group relative block w-full cursor-zoom-in rounded-lg border border-slate-200 bg-white p-3 text-left transition-colors hover:border-blue-400 disabled:cursor-default sm:p-4 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-600"
       >
         {svg ? (
@@ -182,80 +164,15 @@ export function Mermaid({ chart }: MermaidProps) {
       </button>
 
       <figcaption className="mt-1.5 text-xs text-slate-400 dark:text-slate-500">
-        도식을 탭하면 확대해서 볼 수 있습니다
+        {withObjectParticle(kindName)} 탭하면 확대해서 볼 수 있습니다
       </figcaption>
 
-      <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
-        <DialogContent
-          aria-describedby={undefined}
-          className={cn(
-            "flex h-[100dvh] w-screen max-w-none flex-col gap-0 rounded-none border-0 p-0",
-            "sm:h-[92vh] sm:w-[96vw] sm:rounded-lg sm:border",
-            // DialogContent가 그리는 기본 닫기 버튼을 손가락으로 누를 수 있는 크기로 키운다.
-            "[&>button]:right-2 [&>button]:top-2 [&>button]:grid [&>button]:h-9 [&>button]:w-9 [&>button]:place-items-center",
-            "[&>button]:rounded-md [&>button]:border [&>button]:border-slate-200 [&>button]:bg-white [&>button]:opacity-100",
-            "dark:[&>button]:border-slate-700 dark:[&>button]:bg-slate-950"
-          )}
-        >
-          <DialogTitle className="sr-only">도식 확대 보기</DialogTitle>
-
-          <div className="flex shrink-0 items-center gap-1.5 border-b border-slate-200 bg-white px-2 py-2 pr-14 dark:border-slate-800 dark:bg-slate-950">
-            <ZoomButton onClick={() => setScale((s) => clamp(s / ZOOM_FACTOR))} disabled={scale <= MIN_SCALE} label="축소">
-              <Minus className="h-4 w-4" aria-hidden />
-            </ZoomButton>
-            <ZoomButton onClick={() => setScale((s) => clamp(s * ZOOM_FACTOR))} disabled={scale >= MAX_SCALE} label="확대">
-              <Plus className="h-4 w-4" aria-hidden />
-            </ZoomButton>
-            <ZoomButton onClick={() => setScale(MIN_SCALE)} disabled={scale === MIN_SCALE} label="화면 폭에 맞추기">
-              <RotateCcw className="h-4 w-4" aria-hidden />
-            </ZoomButton>
-            <span className="ml-1 text-xs tabular-nums text-slate-500 dark:text-slate-400">
-              {Math.round((scale / naturalScale) * 100)}%
-            </span>
-          </div>
-
-          {/* 스크롤 영역. 안쪽 폭을 scale 배수로 잡으면 1배는 항상 화면 폭에 꼭 맞는다. */}
-          <div
-            ref={measureViewport}
-            className="min-h-0 flex-1 overflow-auto bg-white p-3 sm:p-6 dark:bg-slate-900"
-            style={{ touchAction: "pan-x pan-y pinch-zoom" }}
-          >
-            <div
-              className="[&_svg]:!h-auto [&_svg]:!w-full [&_svg]:!max-w-none"
-              style={{ width: `${scale * 100}%` }}
-              dangerouslySetInnerHTML={{ __html: zoomedSvg }}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DiagramZoomDialog open={zoomOpen} onOpenChange={setZoomOpen} title={`${kindName} 확대 보기`} natural={natural}>
+        <div
+          className="[&_svg]:!h-auto [&_svg]:!w-full [&_svg]:!max-w-none"
+          dangerouslySetInnerHTML={{ __html: zoomedSvg }}
+        />
+      </DiagramZoomDialog>
     </figure>
-  );
-}
-
-function ZoomButton({
-  onClick,
-  disabled,
-  label,
-  children,
-}: {
-  onClick: () => void;
-  disabled?: boolean;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      className={cn(
-        "grid h-9 w-9 place-items-center rounded-md border border-slate-200 text-slate-600 transition-colors",
-        "hover:border-blue-400 hover:text-blue-600 disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600",
-        "dark:border-slate-700 dark:text-slate-300 dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300"
-      )}
-    >
-      {children}
-    </button>
   );
 }

@@ -246,13 +246,16 @@ describe("캔버스 색과 카드 배경의 결합", () => {
    */
   it("팔레트의 캔버스 색이 mermaid.tsx의 카드 배경 클래스와 짝이 맞는다", () => {
     const source = readFileSync(path.join(REPO, "components", "mermaid.tsx"), "utf8");
+    const zoom = readFileSync(path.join(REPO, "components", "diagram-zoom-dialog.tsx"), "utf8");
 
-    // 도식이 놓이는 면은 둘이다 — 본문 미리보기 카드와 확대 뷰어의 스크롤 영역.
-    // 「있다」가 아니라 「둘 다 있다」를 보아야 한쪽만 바뀐 경우가 드러난다.
+    // 도식이 놓이는 면은 둘이다 — 본문 미리보기 카드(mermaid.tsx)와 확대 뷰어의 스크롤 영역
+    // (이미지 도식과 함께 쓰는 diagram-zoom-dialog.tsx). 파일마다 따로 세어야 한쪽만 바뀐 경우가 드러난다.
     // 뒤의 `/95`는 「크게 보기」 배지의 반투명 배경이라 도식의 캔버스가 아니므로 제외한다.
-    const darkCanvas = source.match(/dark:bg-slate-900(?![/\d])/g) ?? [];
-    expect(darkCanvas).toHaveLength(2);
+    const darkCanvas = (text: string) => text.match(/dark:bg-slate-900(?![/\d])/g) ?? [];
+    expect(darkCanvas(source)).toHaveLength(1);
+    expect(darkCanvas(zoom)).toHaveLength(1);
     expect(source).toContain("bg-white");
+    expect(zoom).toContain("bg-white");
 
     // Tailwind 기본값 — white = #ffffff, slate-900 = #0f172a
     expect(MERMAID_THEME_COLORS.light.background).toBe("#ffffff");

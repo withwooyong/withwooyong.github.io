@@ -76,7 +76,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run build` | 정적 export → `out/` (빌드 후 `scripts/generate-sitemap.mjs` · `scripts/build-search-index.mjs` 실행) |
 | `npm run start` | 프로덕션 서버 (로컬 검증용) |
 | `npm run lint` | Next.js ESLint |
-| `npm test` | Vitest — `tests/blog/` **14파일 205케이스**. 로더·frontmatter·목차·트리·검색·그래프·도식 팔레트 단위 테스트 + `tests/blog/content/` 36케이스의 발행본 전량 불변식(**도식 이미지 자산 포함**) |
+| `npm test` | Vitest — `tests/blog/` **15파일 219케이스**. 로더·frontmatter·목차·트리·검색·그래프·도식 팔레트·확대 뷰어 단위 테스트 + `tests/blog/content/` 36케이스의 발행본 전량 불변식(**도식 이미지 자산 포함**) |
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. 인자는 **`--` 뒤에** 넘긴다 — `npm run dup-scan -- --category <slug>` · `-- --min N`(기본 20자) · `-- <파일...>`. `--` 없이 쓰면 npm이 플래그를 먹어 「대상이 없다」로 종료한다 |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
@@ -106,7 +106,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
 | `npm run check-engines` | 설치된 의존성의 `engines.node` 가 **CI 의 Node 에서도 도는지** 판정합니다. `npm install` 은 `engines` 를 강제하지 않아 로컬에서만 도는 판이 조용히 설치되고 CI 에서만 죽습니다. 리포 루트 트리의 설치본 **전량**(372개)을 봅니다 — CI 를 죽인 사례가 직접 의존성이 아니라 transitive 였기 때문입니다. `:verify` 는 자체 검사 (`--self-test` 26건) |
-| `npm run mutate` | 알려진 결함 **121개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 121개 기준 **29분 40초**가 걸리므로(2026-09-12 실측) 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run mutate` | 알려진 결함 **126개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 121개 기준 **29분 40초**가 걸리므로(2026-09-12 실측) 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
