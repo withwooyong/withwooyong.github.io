@@ -506,41 +506,65 @@ A등급 30개가 실질적인 작업 대상이고, C등급 48개는 **같은 문
 
 ### 4-1. A등급 30개
 
-| 리포지토리 | 공개 | 언어 | 크기 | 마지막 푸시 |
-| --- | --- | --- | ---: | --- |
-| `khistory-cbt-pwa` | private | Python | 326,618 KB | 2026-09 |
-| `claude-code-harness-usage` | public | Java | 93,856 KB | 2026-04 |
-| `yanadoo-exit` | private | HTML | 41,573 KB | 2026-09 |
-| `ChatGPT-Python-40` | public | Python | 27,671 KB | 2025-09 |
-| `langgraph-ai` | private | Jupyter Notebook | 23,561 KB | 2025-10 |
-| `glinda_aggregator` | private | Python | 21,547 KB | 2026-01 |
-| `openai-demo` | public | Java | 12,812 KB | 2025-09 |
-| `vue-project` | private | Vue | 11,590 KB | 2023-09 |
-| `demo-csv-to-mysql` | private | Java | 10,947 KB | 2023-02 |
-| `si-ideas` | private | JavaScript | 8,809 KB | 2026-09 |
-| `vue-movie` | private | Vue | 6,619 KB | 2021-12 |
-| `demo-member` | private | TSQL | 5,628 KB | 2023-02 |
-| `auth-example` | public | Java | 2,497 KB | 2022-03 |
-| `demo-chatgpt` | public | JavaScript | 2,062 KB | 2023-04 |
-| `ted_duolingo` | public | TypeScript | 2,019 KB | 2026-06 |
-| `pay` | private | Java | 1,453 KB | 2022-07 |
-| `ted_voca` | public | TypeScript | 1,299 KB | 2026-06 |
-| `career_searcher` | private | TypeScript | 1,146 KB | 2026-09 |
-| `bearwatch` | private | TypeScript | 1,081 KB | 2026-06 |
-| `langverse` | private | Python | 807 KB | 2026-08 |
-| `hackathon` | private | Python | 786 KB | 2026-08 |
-| `mig_mysql_to_mssql` | private | Python | 316 KB | 2026-03 |
-| `apjari-to-html` | public | JavaScript | 259 KB | 2026-03 |
-| `pg_settle` | private | Python | 193 KB | 2026-02 |
-| `dictionary` | public | JavaScript | 104 KB | 2026-06 |
-| `ted-ontology` | private | Python | 64 KB | 2026-06 |
-| `knowledge-context` | public | — | 45 KB | 2026-06 |
-| `withwooyong` | public | — | 43 KB | 2026-08 |
-| `quick-phrase` | private | — | 0 KB | 2026-09 |
-| `metabase-performance-marketing` | public | — | 0 KB | 2026-03 |
+30개를 한 곳씩 열어 README · 커밋 이력 · 디렉터리 구조를 확인하고, 설명 문안과 topics 후보를
+아래 두 열에 채웠습니다. 조사에 사용한 것은 `gh api` 의 저장소 메타 · 최상위 디렉터리 ·
+최근 커밋 20건 · 언어 통계 · README 본문 네 가지입니다. **private 저장소는 성격만 적었고
+내부 데이터와 코드 내용은 옮기지 않았습니다.**
 
-마지막 두 개는 크기가 0 이므로 **저장소가 비어 있을 가능성이 높습니다.** 설명을 채우기 전에
-내용이 있는지부터 확인해야 하며, 비어 있다면 삭제하는 편이 목록을 읽기 쉽게 만듭니다.
+| 리포지토리 | 공개 | 언어 | 크기 | 마지막 푸시 | 설명 문안 | topics 후보 |
+| --- | --- | --- | ---: | --- | --- | --- |
+| `khistory-cbt-pwa` | private | Python | 326,618 KB | 2026-09 | 한국사 기출을 회차와 시대의 흐름으로 풀고 오답 · 찜 · 풀이 시간으로 복습하는 학습 PWA. Next.js 와 Supabase 로 만들었고 문항 이미지 변환 파이프라인을 Python 으로 따로 둡니다. | `pwa`, `nextjs`, `supabase`, `typescript`, `python`, `edtech`, `korean-history` |
+| `claude-code-harness-usage` | public | Java | 93,856 KB | 2026-04 | 작업 계약서 · Hooks · Settings 로 AI 에이전트의 행동을 통제하는 하네스 엔지니어링 실습 프로젝트. Spring Boot 백엔드와 Next.js 프런트엔드로 채팅 · 하네스 실행 · 툴 호출 API 를 구현합니다. | `claude-code`, `ai-agent`, `spring-boot`, `nextjs`, `llm`, `tutorial` |
+| `yanadoo-exit` | private | HTML | 41,573 KB | 2026-09 | 채용공고 리서치와 공고별 지원 산출물을 한곳에서 관리하는 개인 문서 워크스페이스. 코드가 아니라 문서 저장소입니다. | `career`, `job-search`, `documentation`, `workspace` |
+| `ChatGPT-Python-40` | public | Python | 27,671 KB | 2025-09 | ChatGPT 로 만든 파이썬 실습 프로그램 40종 모음. 게임 · 유틸리티 · Flask 웹 · 데이터 처리 · 머신러닝까지 번호순 폴더로 나눈 입문 학습용 예제입니다. | `python`, `chatgpt`, `flask`, `tutorial`, `examples`, `study` |
+| `langgraph-ai` | private | Jupyter Notebook | 23,561 KB | 2025-10 | LangGraph 와 CrewAI 로 AI 에이전트를 만드는 교재를 따라가며 실습한 노트북과 스크립트 모음. Part1 부터 Part4 까지 챕터마다 실행법 README 를 따로 둡니다. | `langgraph`, `crewai`, `llm`, `ai-agent`, `jupyter-notebook`, `study` |
+| `glinda_aggregator` | private | Python | 21,547 KB | 2026-01 | 사내 서비스의 운영 데이터를 모아 집계하고 보정하는 파이썬 배치 서비스. 광고 리워드 · 결제 · 바우처 · 회원 지표 핸들러와 운영 SQL 스크립트를 함께 둡니다. | `python`, `batch`, `data-pipeline`, `aggregator`, `internal` |
+| `openai-demo` | public | Java | 12,812 KB | 2025-09 | Spring AI 로 OpenAI 의 채팅 · 임베딩 · 이미지 · 음성 · 모더레이션 · 툴 호출을 하나씩 확인하는 학습용 저장소. 기능별 테스트 케이스가 본체입니다. | `spring-ai`, `spring-boot`, `openai`, `java`, `llm`, `demo` |
+| `vue-project` | private | Vue | 11,590 KB | 2023-09 | Vue 3 · Vite · TypeScript 로 만든 온라인 학습 서비스 프런트엔드. 회원 · 상품 상세 · 수강신청 · 마이클래스 · 수료증 화면을 담은 재직 중 실무 산출물입니다. | `vue3`, `vite`, `typescript`, `frontend`, `lms` |
+| `demo-csv-to-mysql` | private | Java | 10,947 KB | 2023-02 | 레거시 테이블 900여 개를 CSV 에서 MySQL 로 옮기기 위해 JDBC 도메인 클래스를 대량 생성한 스키마 이관 작업 저장소. | `java`, `spring-boot`, `mysql`, `migration`, `jdbc` |
+| `si-ideas` | private | JavaScript | 8,809 KB | 2026-09 | 국내 SI 와 외주 시장에서 반복되는 문제를 오픈소스 제품 후보로 조사하고 검증하는 포트폴리오 인큐베이터. 시장 조사 문서와 인큐베이팅 제품의 초기 구현을 함께 둡니다. | `incubator`, `open-source`, `product-research`, `portfolio`, `documentation` |
+| `vue-movie` | private | Vue | 6,619 KB | 2021-12 | Vue CLI 로 만든 영화 검색 학습용 스파이크 (2021). | `vue`, `frontend`, `spike`, `study` |
+| `demo-member` | private | TSQL | 5,628 KB | 2023-02 | 회원 · 디바이스 · B2B 도메인의 레거시 테이블을 JPA 엔티티로 정리하며 스키마를 정돈한 작업 저장소. TSQL 스크립트가 본체입니다. | `java`, `jpa`, `mssql`, `tsql`, `schema`, `legacy` |
+| `auth-example` | public | Java | 2,497 KB | 2022-03 | Spring Security 로 JWT 와 OAuth2 로그인, API 필터, 권한을 실습한 학습용 예제. 필터 · 핸들러 · JWT 유틸리티를 직접 구현해 인증 흐름을 확인합니다 (2022). | `spring-security`, `jwt`, `oauth2`, `spring-boot`, `java`, `study` |
+| `demo-chatgpt` | public | JavaScript | 2,062 KB | 2023-04 | ChatGPT API 를 Express · React · Next.js 웹뷰에 각각 붙여 본 초기 실습 모음. 클라이언트 유형별 연동 방식을 나란히 비교합니다 (2023). | `chatgpt`, `openai`, `nodejs`, `react`, `nextjs`, `webview` |
+| `ted_duolingo` | public | TypeScript | 2,019 KB | 2026-06 | 듀오링고 형태의 게임화 다국어 학습 앱. Expo 모바일 앱과 Supabase 를 pnpm 모노레포로 묶고 SM-2 간격 반복 · 오프라인 큐 · 발음 따라하기를 구현합니다. | `react-native`, `expo`, `supabase`, `typescript`, `language-learning`, `gamification` |
+| `pay` | private | Java | 1,453 KB | 2022-07 | 이니시스 · 네이버페이 · 토스 결제 연동을 한 애플리케이션에서 나란히 검증한 Spring Boot 저장소 (2022). | `spring-boot`, `payment`, `java`, `integration` |
+| `ted_voca` | public | TypeScript | 1,299 KB | 2026-06 | 어휘 · 문법 · 리스닝 · 회화를 한 앱에 담은 영어 학습 풀스위트. Expo 앱과 Supabase 를 모노레포로 묶고 SRS 복습 · 주간 리그 · 음성 합성과 인식을 구현합니다. | `react-native`, `expo`, `supabase`, `typescript`, `english-learning`, `srs` |
+| `career_searcher` | private | TypeScript | 1,146 KB | 2026-09 | 국내 기업 채용공고를 자동 수집해 LLM 으로 적합도를 채점하고 고적합 공고를 텔레그램으로 알리는 개인용 모니터링 웹앱. 수집은 로컬에서, 조회는 Vercel 에서 담당하는 읽기 · 쓰기 분리 구조입니다. | `nextjs`, `typescript`, `crawler`, `llm`, `prisma`, `telegram-bot`, `job-search` |
+| `bearwatch` | private | TypeScript | 1,081 KB | 2026-06 | 대차잔고 데이터로 공매도 커버링 시그널을 탐지하는 개인 투자 보조 시스템. 수집과 분석은 GitHub Actions 위의 Python 파이프라인이 맡고 결과는 Next.js 대시보드와 텔레그램 알림으로 봅니다. | `nextjs`, `supabase`, `python`, `data-pipeline`, `github-actions`, `telegram-bot`, `stock-market` |
+| `langverse` | private | Python | 807 KB | 2026-08 | 영어로 NPC 를 심문해 사건을 해결하는 AI 추리 언어 게임의 웹 MVP. FastAPI 와 Next.js 로 구현하며 제품 · 게임 · 기술 계약 문서를 저장소 루트에 둡니다. | `ai-game`, `fastapi`, `nextjs`, `llm`, `language-learning`, `python` |
+| `hackathon` | private | Python | 786 KB | 2026-08 | 여러 AI 에이전트를 tmux 로 병렬 운영해 리서치와 리뷰 루프를 돌리는 워크플로를 단계별 가이드로 재현한 저장소. 실습 문서가 본체입니다. | `ai-agent`, `tmux`, `workflow`, `claude-code`, `documentation` |
+| `mig_mysql_to_mssql` | private | Python | 316 KB | 2026-03 | 200만 건이 넘는 대용량 테이블을 MySQL 에서 MSSQL 로 옮기는 이관 도구. 커서 스트리밍 · 체크포인트 재시작 · 외래키 의존 순서 결정을 갖췄고 Elasticsearch 클러스터 이관 스크립트도 함께 둡니다. | `python`, `migration`, `mysql`, `mssql`, `elasticsearch`, `etl` |
+| `apjari-to-html` | public | JavaScript | 259 KB | 2026-03 | 영어 교안 PDF 를 인터랙티브 모바일 학습 HTML 로 바꾸는 Node.js CLI. Claude API 로 교안 구조를 JSON 으로 뽑아 검증한 뒤 연습 · 훈련 · 미션 화면을 조립합니다. | `nodejs`, `cli`, `claude-api`, `pdf`, `html`, `edtech` |
+| `pg_settle` | private | Python | 193 KB | 2026-02 | 여러 결제 대행사의 결제 데이터를 수집해 정산 데이터를 만드는 asyncio 기반 배치 서비스. 원시 데이터를 MongoDB 에 쌓고 MySQL 로 정규화하며 MSSQL 의 정적 데이터를 동기화합니다. | `python`, `asyncio`, `payment`, `settlement`, `mongodb`, `batch` |
+| `dictionary` | public | JavaScript | 104 KB | 2026-06 | CEFR 수준을 먼저 진단한 뒤 그 수준의 영어로만 뜻을 풀어 주는 무의존성 웹 사전 LexiLevel. Gemini API 를 브라우저에서 직접 호출하므로 서버가 없습니다. | `vanilla-js`, `gemini-api`, `dictionary`, `english-learning`, `cefr` |
+| `ted-ontology` | private | Python | 64 KB | 2026-06 | 온톨로지와 AI 에이전트를 손으로 익히기 위한 3단계 학습 프로토타입. 같은 질문을 단순 덤프 방식과 온톨로지 방식으로 답하게 해 결정성 · 감사가능성 · 확장성의 차이를 비교합니다. | `ontology`, `ai-agent`, `llm`, `python`, `prototype`, `study` |
+| `knowledge-context` | public | — | 45 KB | 2026-06 | 한 디렉터리가 Git 저장소이자 Obsidian 볼트로 동작하는 LLM 지식 저장소 실험. 문서를 들일 때 한 번 요약해 연결해 두고, 개인 공간에서 공용 지식으로 올리는 승격은 PR 로만 하도록 규칙을 둡니다. | `obsidian`, `knowledge-management`, `llm`, `documentation`, `claude-code` |
+| `withwooyong` | public | — | 43 KB | 2026-08 | GitHub 프로필 README 저장소. 경력 · 역량 · 기술 스택 요약과 포트폴리오 · 기술노트 링크를 담습니다. | `profile`, `readme`, `github-profile`, `portfolio` |
+| `quick-phrase` | private | — | 0 KB | 2026-09 | (빈 저장소 — 설명 대신 삭제를 권합니다) | — |
+| `metabase-performance-marketing` | public | — | 0 KB | 2026-03 | (빈 저장소 — 설명 대신 삭제를 권합니다) | — |
+
+**28개는 설명과 topics 를 채우고 2개는 지우는 것이 이 표의 결론입니다.**
+
+#### 확인된 사실 — 빈 저장소 둘
+
+`quick-phrase` 와 `metabase-performance-marketing` 은 크기 0 에서 짐작한 대로 **커밋이 하나도
+없습니다.** 두 저장소 모두 API 가 `This repository is empty` 를 돌려주었고 언어 통계도 빈
+객체입니다. 설명을 붙일 대상이 아니므로 삭제 대상으로 옮겼습니다. 다만
+`metabase-performance-marketing` 은 public 이라 **바깥에서도 빈 저장소가 보이므로** 먼저
+지우는 편이 낫습니다.
+
+#### 조사 중에 드러난 것들
+
+| 저장소 | 무엇이 걸렸나 | 왜 문제인가 |
+| --- | --- | --- |
+| `glinda_aggregator` | README 가 GitLab 기본 템플릿 그대로입니다 | 제목 말고는 이 저장소가 무엇인지 알려 주는 문장이 하나도 없어, 성격을 디렉터리 구조와 핸들러 이름에서 역산해야 했습니다 |
+| `dictionary` | 기본 브랜치가 `main` 이 아니라 에이전트가 만든 작업 브랜치입니다 | 기본 브랜치를 `main` 으로 되돌리지 않으면 클론한 사람이 작업 브랜치에서 시작하게 됩니다 |
+| `vue-project` · `vue-movie` | README 가 Vue CLI 스캐폴딩 기본 문구입니다 | 설명 문안을 커밋 이력과 소스 구조에서만 만들 수 있었습니다 |
+| README 가 아예 없는 곳 일곱 | `auth-example` · `demo-chatgpt` · `openai-demo` · `pay` · `hackathon` · `demo-csv-to-mysql` · `demo-member` | 저장소를 열어도 첫 화면에 아무 설명이 없으므로, About 칸의 설명이 유일한 안내가 됩니다 |
+
+**설명을 채우는 것과 README 를 두는 것은 다른 일입니다.** 위 일곱 곳은 About 칸을 채운 뒤에도
+첫 화면이 파일 목록으로 시작하므로, 오래 쓸 저장소라면 README 를 따로 두는 편이 낫습니다.
 
 ### 4-2. B등급 15개
 
