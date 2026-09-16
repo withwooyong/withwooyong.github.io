@@ -46,12 +46,7 @@ draft: false
 
 큰 업무를 3~5개 단계로 쪼개 순차 지시한다. 각 단계의 결과가 다음 단계의 입력이 된다.
 
-```mermaid
-flowchart LR
-    A["Step1 경쟁사 분석"] --> B["Step2 차별화 도출"]
-    B --> C["Step3 마케팅 문구"]
-    C --> D["Step4 런칭 체크리스트"]
-```
+![패턴 A 단계별 업무 분해 — Step1 경쟁사 분석에서 Step2 차별화 도출, Step3 마케팅 문구, Step4 런칭 체크리스트로 한 단계씩 순차로 넘어간다](/images/blog/task-decomposition-flow.svg "플로우차트")
 
 | 이점 | 설명 |
 |---|---|
@@ -129,12 +124,7 @@ done
 
 마지막 행이 다음 그림의 출발점이다. 세 패턴 모두 사람이 매번 손을 대야 한다는 한계를 공유하고, 그 한계를 한 칸씩 밀어내면 아래 경로가 된다.
 
-```mermaid
-flowchart LR
-    A["프롬프트 — 수동 입력"] --> B["Commands — 저장하고 반복"]
-    B --> C["Skills — 조건 충족 시 자동 트리거"]
-    C --> D["Agent — 자율 판단"]
-```
+![프롬프트에서 Agent 까지의 진화 경로 — 수동 입력하는 프롬프트에서 저장하고 반복하는 Commands, 조건 충족 시 자동 트리거되는 Skills, 자율 판단하는 Agent 로 한 칸씩 나아간다](/images/blog/prompt-to-agent-evolution-flow.svg "플로우차트")
 
 ## 컨텍스트 윈도우와 세션 전략
 
@@ -220,17 +210,7 @@ MCP tools 비중이 크면 `/mcp`에서 불필요한 서버를 비활성화한�
 
 ### 세 가지 관리 도구
 
-```mermaid
-flowchart LR
-    A["작업 진행"] --> B{"/context 확인"}
-    B -->|"60~70%"| C["/compact 요약 압축"]
-    B -->|"업무 전환"| D["/clear 이력 삭제"]
-    C --> E["압축 후 상태 확인 질문"]
-    E --> A
-    D --> F["새 업무 시작"]
-    B -->|"85% 초과"| G["체크포인트 저장"]
-    G --> H["새 세션 시작"]
-```
+![세 가지 관리 도구의 사용 흐름 — /context 로 사용량을 확인해 60~70% 이면 /compact 로 압축하고 상태를 확인한 뒤 작업으로 돌아가며, 업무를 전환하면 /clear 로 비우고, 85% 를 넘으면 체크포인트를 저장해 새 세션을 시작한다](/images/blog/context-management-tools-flow.svg "플로우차트")
 
 | 명령 | 사용 시점 | 비유 | 유지되는 것 |
 |---|---|---|---|
@@ -287,16 +267,7 @@ Agent Teams는 여러 에이전트가 메시지로 협업하는 구조로, 전�
 
 ### 세션 연속성의 세 축
 
-```mermaid
-flowchart LR
-    A["세션 종료"] --> B["session-summary.json 저장"]
-    A --> C["MEMORY.md 최종 갱신"]
-    A --> D["plan.md 진행 상태 반영"]
-    B --> E["새 세션 시작"]
-    C --> E
-    D --> E
-    E --> F["next_steps부터 즉시 재개"]
-```
+![세션 연속성의 세 축 — 세션을 종료할 때 session-summary.json 저장 · MEMORY.md 최종 갱신 · plan.md 진행 상태 반영을 함께 하고, 셋이 새 세션 시작으로 모여 next_steps 부터 즉시 재개한다](/images/blog/session-continuity-flow.svg "플로우차트")
 
 | 축 | 파일 | 담는 것 | 수명 |
 |---|---|---|---|

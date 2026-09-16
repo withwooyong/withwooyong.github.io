@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 212" width="1040" height="212" role="img" aria-labelledby="tsd-title tsd-desc">
+<title id="tsd-title">패턴 A — 단계별 업무 분해</title>
+<desc id="tsd-desc">Step1 경쟁사 분석에서 Step2 차별화 도출, Step3 마케팅 문구, Step4 런칭 체크리스트로 한 단계씩 순차로 넘어가는 플로우차트입니다.</desc>
+
+<defs>
+<marker id="tsd-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+</defs>
+
+<rect width="1040" height="212" fill="#2d3142"/>
+
+<!-- connectors (drawn before nodes) -->
+<path d="M 208 92 H 304" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#tsd-arrow)"/>
+<path d="M 472 92 H 568" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#tsd-arrow)"/>
+<path d="M 736 92 H 832" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#tsd-arrow)"/>
+
+<!-- steps -->
+<rect x="40" y="64" width="168" height="56" rx="6" fill="#2d3142"/>
+<rect x="40" y="64" width="168" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="48" y="72" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="66" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="124" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Step1 경쟁사 분석</text>
+<rect x="304" y="64" width="168" height="56" rx="6" fill="#2d3142"/>
+<rect x="304" y="64" width="168" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="312" y="72" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="330" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="388" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Step2 차별화 도출</text>
+<rect x="568" y="64" width="168" height="56" rx="6" fill="#2d3142"/>
+<rect x="568" y="64" width="168" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="576" y="72" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="594" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="652" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Step3 마케팅 문구</text>
+<rect x="832" y="64" width="168" height="56" rx="6" fill="#2d3142"/>
+<rect x="832" y="64" width="168" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="840" y="72" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="858" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="916" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Step4 런칭 체크리스트</text>
+
+<!-- legend -->
+<line x1="40" y1="156" x2="1000" y2="156" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
+<text x="40" y="184" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
+<rect x="120" y="172" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
+<text x="144" y="184" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">단계</text>
+<line x1="200" y1="178" x2="232" y2="178" stroke="#bfc0c0" stroke-width="1"/>
+<text x="244" y="184" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">순차 지시</text>
+</svg>
