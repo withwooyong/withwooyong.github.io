@@ -62,6 +62,20 @@ const SOFT = [
 const SKIP_DIRS = new Set(["node_modules", ".next", "out", "dist", "build", ".git"]);
 const TEXT_EXT = /\.(md|mdx|ts|tsx|js|mjs|json)$/;
 const BUILT_EXT = /\.(html|json|txt|xml)$/; // 산출물은 HTML 이 본체다
+// 본문에 이미지로 들어가는 SVG 도식. 라벨 · <title> · <desc> 가 전부 글자로 들어 있어
+// 독자에게 그대로 읽히는데, 확장자가 위 둘에 없어 한 번도 스캔되지 않았다 (2026-09-16).
+const DIAGRAM_EXT = /\.svg$/;
+const DIAGRAM_DIR = ["images", "blog"];
+
+/** 디렉터리가 없으면 빈 목록 — 도식 자산이 하나도 없는 것은 오류가 아니다. */
+function walkIfDir(dir, extRe) {
+  try {
+    if (!statSync(dir).isDirectory()) return [];
+  } catch {
+    return [];
+  }
+  return walk(dir, [], extRe);
+}
 
 function walk(dir, out = [], extRe = TEXT_EXT) {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
@@ -81,9 +95,10 @@ function walk(dir, out = [], extRe = TEXT_EXT) {
  * ⚠️ 2026-09-12 까지는 `slidev-poc/` 의 발표본 소스 13개도 함께 모았다. 발표본 갈래를
  *    걷어내면서 그 자리를 지웠다. **발행되는 마크다운을 새로 더하면 여기에 더해라** —
  *    `content/blog` 밖이라는 이유로 스캔에서 빠지는 자리가 다시 생기지 않게 한다.
+ *    그 첫 사례가 `public/images/blog/*.svg` 다 — 본문이 이미지로 싣는 도식의 글자다.
  */
 function sourceTargets(cwd) {
-  return walk(join(cwd, "content", "blog"));
+  return [...walk(join(cwd, "content", "blog")), ...walkIfDir(join(cwd, "public", ...DIAGRAM_DIR), DIAGRAM_EXT)];
 }
 
 // 프론트매터를 제외하지 않는다 — post 객체가 통째로 props로 넘어가 __NEXT_DATA__ 에
@@ -168,6 +183,7 @@ function selfTest() {
     { name: "프론트매터도 검사하는가",        text: '---\nsource: "테디노트 RAG 비법노트"\n---\n본문', expect: ["테디노트"] },
     { name: "라틴이 다른 낱말에 묻히지 않는가", text: "7 커맨드 Cheatsheet를 만든다",          expect: [] },
     { name: "한글은 조사가 붙어도 잡는가",     text: "테디노트의 자료를 보면",                 expect: ["테디노트"] },
+    { name: "SVG 도식의 라벨 안에서도 잡는가",  text: '<text x="12" y="24" font-size="12">테디노트 자료</text>', expect: ["테디노트"] },
     { name: "깨끗한 문장에 오탐이 없는가",    text: "Elasticsearch 색인 파이프라인을 설계한다.",    expect: [] },
     { name: "SOFT를 HARD로 승격하지 않는가",  text: "recruiter 에이전트는 면접 질문을 만든다.",     expect: ["면접"] },
 
@@ -294,7 +310,13 @@ function selfTest() {
     },
     {
       name: "🔴 수집 대상이 전부 content/blog 아래다 — 스캔 범위가 조용히 넓어지지 않았다",
-      ok: collected.every((p) => p.startsWith("content/blog/")),
+      ok: collected.every(
+        (p) => p.startsWith("content/blog/") || (p.startsWith("public/images/blog/") && p.endsWith(".svg"))
+      ),
+    },
+    {
+      name: "🔴 본문에 이미지로 들어가는 SVG 도식도 수집 대상이다 — 도식 안의 글자가 사각지대였다",
+      ok: collected.some((p) => p.startsWith("public/images/blog/") && p.endsWith(".svg")),
     },
   ];
   for (const e of extra) {
@@ -358,6 +380,8 @@ if (builtMode) {
       if (p.includes("/blog/") || p.endsWith("/blog.json")) files.push(f);
     }
   }
+  // 본문이 이미지로 싣는 SVG 도식도 발행물이다. public/ 에서 out/images/blog 로 복사된다.
+  files.push(...walkIfDir(join(process.cwd(), "out", ...DIAGRAM_DIR), DIAGRAM_EXT));
 } else if (surveyOnly) files = walk(process.cwd());
 else if (argv.length > 0) files = argv.filter((a) => !a.startsWith("--"));
 else files = sourceTargets(process.cwd());

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 40 1040 552" width="1040" height="552" role="img" aria-labelledby="hgs-title hgs-desc">
+<title id="hgs-title">승인 지점을 하나로 모은 상태 전이</title>
+<desc id="hgs-desc">계획됨 · 구현중 · 검증중 · 리뷰중은 에이전트 사이에서 전이하고, 사람이 개입하는 상태는 사람대기 하나뿐이며 거기서 승인하면 배포중으로, 거부하면 계획됨으로 돌아가는 상태 다이어그램입니다.</desc>
+
+<defs>
+<marker id="hgs-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+</defs>
+
+<rect y="40" width="1040" height="552" fill="#2d3142"/>
+
+<!-- zone labels -->
+<text x="104" y="156" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".16em">AGENT LOOP</text>
+<text x="948" y="468" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".16em">HUMAN GATE</text>
+
+<!-- connectors (drawn before nodes) -->
+<path d="M 64 208 H 104" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 224 208 H 360" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 480 200 H 616" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 616 224 H 480" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#hgs-arrow)"/>
+<path d="M 736 208 H 872" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 932 180 V 128 A 8 8 0 0 0 924 120 H 428 A 8 8 0 0 0 420 128 V 180" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#hgs-arrow)"/>
+<path d="M 912 236 V 384" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 952 236 V 384" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 864 400 H 736" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 736 424 H 864" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#hgs-arrow)"/>
+<path d="M 616 412 H 472" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#hgs-arrow)"/>
+<path d="M 932 440 V 488 A 8 8 0 0 1 924 496 H 172 A 8 8 0 0 1 164 488 V 236" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#hgs-arrow)"/>
+
+<!-- connector labels -->
+<rect x="252" y="180" width="80" height="16" rx="2" fill="#2d3142"/>
+<text x="292" y="192" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">계획서 승인</text>
+
+<rect x="500" y="176" width="96" height="16" rx="2" fill="#2d3142"/>
+<text x="548" y="188" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">단위 하나 완료</text>
+
+<rect x="508" y="232" width="80" height="16" rx="2" fill="#2d3142"/>
+<text x="548" y="244" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">테스트 실패</text>
+
+<rect x="764" y="180" width="80" height="16" rx="2" fill="#2d3142"/>
+<text x="804" y="192" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">테스트 통과</text>
+
+<rect x="608" y="92" width="136" height="16" rx="2" fill="#2d3142"/>
+<text x="676" y="104" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">반려 (누적 3회 미만)</text>
+
+<rect x="816" y="302" width="88" height="16" rx="2" fill="#2d3142"/>
+<text x="860" y="314" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">반려 3회 누적</text>
+
+<rect x="960" y="302" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="992" y="314" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">지적 없음</text>
+
+<rect x="784" y="376" width="32" height="16" rx="2" fill="#2d3142"/>
+<text x="800" y="388" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">승인</text>
+
+<rect x="768" y="432" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="800" y="444" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">장애 감지</text>
+
+<rect x="508" y="388" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="540" y="400" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">배포 완료</text>
+
+<rect x="284" y="472" width="32" height="16" rx="2" fill="#2d3142"/>
+<text x="300" y="484" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">거부</text>
+
+<!-- start / end -->
+<circle cx="56" cy="208" r="6" fill="#f5f5f5"/>
+<circle cx="464" cy="412" r="8" fill="#2d3142" stroke="#f5f5f5" stroke-width="1"/>
+<circle cx="464" cy="412" r="5" fill="#f5f5f5"/>
+
+<!-- agent states -->
+<rect x="104" y="180" width="120" height="56" rx="6" fill="#2d3142"/>
+<rect x="104" y="180" width="120" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="112" y="188" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="134" y="197" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">AGENT</text>
+<text x="164" y="222" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">계획됨</text>
+
+<rect x="360" y="180" width="120" height="56" rx="6" fill="#2d3142"/>
+<rect x="360" y="180" width="120" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="368" y="188" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="390" y="197" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">AGENT</text>
+<text x="420" y="222" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">구현중</text>
+
+<rect x="616" y="180" width="120" height="56" rx="6" fill="#2d3142"/>
+<rect x="616" y="180" width="120" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="624" y="188" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="646" y="197" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">AGENT</text>
+<text x="676" y="222" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">검증중</text>
+
+<rect x="872" y="180" width="120" height="56" rx="6" fill="#2d3142"/>
+<rect x="872" y="180" width="120" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="880" y="188" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="902" y="197" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">AGENT</text>
+<text x="932" y="222" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">리뷰중</text>
+
+<rect x="616" y="384" width="120" height="56" rx="6" fill="#2d3142"/>
+<rect x="616" y="384" width="120" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="624" y="392" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="646" y="401" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">AGENT</text>
+<text x="676" y="426" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">배포중</text>
+
+<!-- the only human state (focal) -->
+<rect x="864" y="384" width="136" height="56" rx="6" fill="#2d3142"/>
+<rect x="864" y="384" width="136" height="56" rx="6" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width="1"/>
+<rect x="872" y="392" width="44" height="12" rx="2" fill="transparent" stroke="#f08a59" stroke-width=".8" opacity=".6"/>
+<text x="894" y="401" fill="#f08a59" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">HUMAN</text>
+<text x="932" y="426" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">사람대기</text>
+
+<!-- legend -->
+<line x1="40" y1="536" x2="1000" y2="536" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
+<text x="40" y="564" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
+<rect x="120" y="552" width="16" height="12" rx="2" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width=".8"/>
+<text x="144" y="564" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">사람이 개입하는 상태</text>
+<rect x="296" y="552" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
+<text x="320" y="564" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">에이전트 상태</text>
+<circle cx="448" cy="558" r="5" fill="#f5f5f5"/>
+<text x="460" y="564" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">시작</text>
+<circle cx="512" cy="558" r="7" fill="#2d3142" stroke="#f5f5f5" stroke-width="1"/>
+<circle cx="512" cy="558" r="4" fill="#f5f5f5"/>
+<text x="528" y="564" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">끝</text>
+<line x1="576" y1="558" x2="608" y2="558" stroke="#bfc0c0" stroke-width="1"/>
+<text x="620" y="564" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">앞으로 나아가는 전이</text>
+<line x1="780" y1="558" x2="812" y2="558" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="824" y="564" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">되돌아가는 전이</text>
+</svg>

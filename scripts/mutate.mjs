@@ -123,6 +123,13 @@ const MUTANTS = [
     to: "const SOFT = [];\nconst SOFT_UNUSED = [\n  ",
   },
   {
+    id: "C6",
+    file: "scripts/check-forbidden.mjs",
+    desc: "🔴 SVG 도식을 수집하지 않는다 — 도식 안의 라벨 · 제목이 다시 금칙어 사각지대가 된다",
+    from: '  return [...walk(join(cwd, "content", "blog")), ...walkIfDir(join(cwd, "public", ...DIAGRAM_DIR), DIAGRAM_EXT)];',
+    to: '  return walk(join(cwd, "content", "blog"));',
+  },
+  {
     id: "P1",
     file: "scripts/compose.mjs",
     desc: "규약 줄이 언제나 「실측 일치」를 낸다 (어긋남을 숨긴다)",
@@ -759,6 +766,38 @@ const MUTANTS = [
     to: "        if (!cancelled) setSvg(rendered);",
   },
 
+  // 도식 확대 뷰어 — `lib/diagram-zoom.ts`. 사용자가 「크게 보기가 엄청 크게 나온다」고 보고한
+  // 자리다. 종전 뷰어는 폭만 맞춰 세로로 긴 도식이 화면을 넘었고, 자연 크기로 열어 넓은 도식이
+  // 화면의 몇 배로 열렸다. 아래 넷은 그 판정이 케이스로 지켜지는지 본다.
+  {
+    id: "ZM1",
+    file: "lib/diagram-zoom.ts",
+    desc: "🔴 높이를 보지 않는다 — 폭만 맞춰 세로로 긴 도식이 화면을 넘는다",
+    from: "  return Math.min(1, heightFit);",
+    to: "  return 1;",
+  },
+  {
+    id: "ZM2",
+    file: "lib/diagram-zoom.ts",
+    desc: "끌어서 이동한 뒤 손을 뗀 것도 닫는다 — 확대한 도식을 옮기다 뷰어가 닫힌다",
+    from: "<= TAP_SLOP_PX;",
+    to: "<= Infinity;",
+  },
+  {
+    id: "ZM3",
+    file: "lib/diagram-zoom.ts",
+    desc: "스크롤바를 누른 것도 닫는다",
+    from: "  if (input.onScrollbar) return false;\n",
+    to: "",
+  },
+  {
+    id: "ZM4",
+    file: "lib/diagram-zoom.ts",
+    desc: "받침을 보지 않는다 — 「플로우차트을」이 캡션에 찍힌다",
+    from: '(last - 0xac00) % 28 === 0 ? "를" : "을"',
+    to: '"을"',
+  },
+
   // 표의 열 수 — `check-table`. 이 검사기가 없던 동안 어긋난 행 4곳(발행본 2 · 문서 2)이
   // 마크업 · 링크 · 도식 검사 셋을 전부 통과했다. 아래 일곱은 그 판정이 실제로 무언가를
   // 지키는지 본다.
@@ -900,7 +939,7 @@ const CHECKS = [
   ["build-search-index", "npm run --silent search-index:verify"],
   ["check-baseline", "npm run --silent check-baseline:verify"],
   ["check-engines", "npm run --silent check-engines:verify"],
-  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts"],
+  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts tests/blog/diagram-zoom.test.ts"],
 ];
 
 function run(cmd) {
