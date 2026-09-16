@@ -584,35 +584,145 @@ A등급 30개가 실질적인 작업 대상이고, C등급 48개는 **같은 문
 
 ### 4-2. B등급 15개
 
-`demo-db-sync` · `fast-ai` · `payment` · `demo-entity` · `demo-boot3` · `demo-nextjs` ·
-`yanadoo-mssql` · `klleon-record` · `spring-security-jwt-oauth2` · `demo-jpa` ·
-`demo-taskagile` · `demo-admin` · `demo-mongo` · `demo-srr` · `meta_collector`
+A등급과 달리 **README 를 기대할 수 없는 쪽이라, 판단 근거가 커밋 이력과 소스 트리입니다.**
+열다섯 중 README 가 있는 곳은 `fast-ai` · `demo-nextjs` · `klleon-record` 셋뿐이고, 그중 둘은
+스캐폴딩 기본 문구입니다.
+
+| 리포지토리 | 공개 | 언어 | 기간 | 설명 문안 | topics 후보 |
+| --- | --- | --- | --- | --- | --- |
+| `demo-db-sync` | private | Java | 2022-12 ~ 2023-01 | 두 데이터베이스 사이의 테이블을 JPA 로 맞춰 옮기는 동기화 작업 저장소. 원본과 대상 두 데이터소스 설정과 주문 · 상품 · 쿠폰 엔티티를 담습니다. | `java`, `spring-boot`, `jpa`, `querydsl`, `database-sync` |
+| `fast-ai` | private | Python | 2025-09 ~ 2025-12 | FastAPI 로 OpenAI API 를 감싼 학습 서비스 백엔드. 커리큘럼 · 음성 라우터와 pgvector · Redis 연동을 갖췄습니다. | `fastapi`, `openai`, `python`, `pgvector`, `redis`, `backend` |
+| `payment` | private | Java | 2023-08 | JWT 인증과 설정값 암호화를 갖춘 결제 API 서버. 커밋 하나로 통째 올린 실무 산출물의 스냅샷입니다. | `spring-boot`, `payment`, `jwt`, `java`, `api` |
+| `demo-entity` | private | Java | 2022-12 | 레거시 테이블을 JPA 엔티티로 옮기며 Querydsl 을 붙인 스키마 정리 작업 저장소 (2022). | `java`, `jpa`, `querydsl`, `entity`, `schema` |
+| `demo-boot3` | private | Java | 2022-12 | Spring Boot 3 과 Hibernate 6 으로 올렸을 때 기존 엔티티가 그대로 도는지 확인한 검증용 저장소 (2022). | `spring-boot`, `hibernate`, `jpa`, `java`, `migration` |
+| `demo-nextjs` | public | TypeScript | 2023-04 | Next.js Pages Router 를 처음 세워 본 학습용 스파이크 (2023). | `nextjs`, `typescript`, `react`, `spike`, `study` |
+| `yanadoo-mssql` | private | Java | 2024-09 ~ 2025-01 | MSSQL 의 주문 · 정산 · 상담 테이블을 JPA 엔티티로 옮겨 적은 스키마 정리 저장소. | `java`, `jpa`, `mssql`, `entity`, `schema` |
+| `klleon-record` | public | TypeScript | 2025-09 | KlleonChat SDK 로 아바타와 대화하는 화면을 붙여 본 React 실습. 아바타 선택과 텍스트 대화를 확인합니다. | `react`, `typescript`, `avatar`, `sdk`, `chat`, `demo` |
+| `spring-security-jwt-oauth2` | public | Java | 2022-03 | Spring Security 의 JWT · OAuth2 · 인가 서버를 모듈 열여섯 개로 나눠 하나씩 확인한 학습용 멀티 프로젝트 (2022). | `spring-security`, `jwt`, `oauth2`, `authorization-server`, `java`, `study` |
+| `demo-jpa` | public | Java | 2022-04 ~ 2023-01 | JPA 와 Querydsl 의 쿼리 작성법을 테스트 코드로 확인한 학습용 저장소. | `java`, `jpa`, `querydsl`, `spring-boot`, `study` |
+| `demo-taskagile` | public | Java | 2023-02 | 팀 · 보드 · 카드 · 활동 도메인을 갖춘 협업 보드 예제 TaskAgile 을 Spring Boot 로 옮긴 학습용 저장소 (2023). | `spring-boot`, `java`, `domain-model`, `websocket`, `study` |
+| `demo-admin` | private | Java | 2022-11 ~ 2023-01 | Spring Security 와 Querydsl 로 만든 게시판 · 회원 관리자 화면. 파일 업로드와 OAuth2 로그인을 포함합니다. | `spring-boot`, `spring-security`, `querydsl`, `admin`, `thymeleaf` |
+| `demo-mongo` | public | Java | 2023-01 ~ 2024-03 | Spring Data MongoDB 연동을 도커로 띄워 확인한 학습용 스파이크. | `spring-boot`, `mongodb`, `java`, `docker`, `study` |
+| `demo-srr` | private | TypeScript | 2023-04 | Next.js 서버 렌더링 화면과 Node API 서버를 함께 띄워 본 실습. 여럿이 나눠 작업한 협업 저장소입니다. | `nextjs`, `typescript`, `nodejs`, `ssr`, `prototype` |
+| `meta_collector` | private | Python | 2020-07 ~ 2020-08 | IPTV · OTT 서비스의 편성 · VOD · 인물 · 키워드 메타데이터를 Airflow 스케줄로 수집하는 파이썬 크롤러 묶음 (2020). | `python`, `airflow`, `crawler`, `metadata`, `iptv`, `etl` |
+
+**열다섯 중 아홉이 데이터베이스 스키마를 다루는 작업 저장소입니다** — 「학습용 예제」로 뭉뚱그리면
+실무 산출물과 연습이 섞이므로, 표에서는 둘을 문형으로 갈랐습니다.
 
 ### 4-3. C등급 48개
 
-`batch-demo` · `fastcampus-stream-study` · `acing-java-interview` · `demo-api` · `nest-ai` ·
-`ted-micro-service` · `spring-mybatis` · `demo-openfeign` · `demo-mongodb-reactive` ·
-`demo-push` · `demo-db` · `auth-demo` · `db-master` · `doit_game_python` ·
-`demo-mongodb-active` · `scheduler-demo` · `jpa-mssql` · `spring-redis` · `api.gw.pay` ·
-`api.gw.user` · `demo-next-commerce` · `api.gw.order` · `api.gw.auth` · `demo-mapstruct` ·
-`ted-cloud-service` · `demo-flyway` · `spring-cloud-gateway` · `spring-cloud-config-client` ·
-`demo-security` · `spring-cloud-config-server` · `module-payment` · `demo-swiper` ·
-`edu-next` · `sb3-up-and-run` · `demo-websocket` · `spring-jpa-shop-demo` · `demo-openai` ·
-`lambdas-in-action` · `elasticsearch-plugin-7.15.1` · `ai-dataset-video` · `qrcode` ·
-`msa-boot` · `demo-node-json-api` · `hello-streamlit` · `spring-docker` · `lecture` ·
-`check-main-master` · `kakao-style`
+**같은 문형을 이름만 바꿔 넣는다는 방침은 절반만 맞았습니다.** 마흔여덟 중 서른둘은
+「단일 기능 학습용 스파이크」로 묶이지만, 나머지 열여섯은 책 · 강의 실습이거나 여러 서비스를
+묶은 멀티 프로젝트라 문형이 다릅니다.
 
-이 중 `lecture` · `check-main-master` · `kakao-style` 셋은 크기가 0 이므로 **삭제 후보입니다.**
+| 리포지토리 | 공개 | 연도 | 설명 문안 | topics 후보 |
+| --- | --- | --- | --- | --- |
+| `batch-demo` | public | 2022 | Spring Batch 단일 기능 학습용 스파이크 (2022). | `spring-batch`, `spring-boot`, `java`, `spike`, `study` |
+| `fastcampus-stream-study` | public | 2022 | 자바 스트림과 날짜 API 를 장별로 따라간 강의 실습 저장소 (2022). | `java`, `stream-api`, `study`, `lecture` |
+| `acing-java-interview` | public | 2016 | 자바 면접 대비 알고리즘 · 자료구조 예제 실습 (2016). | `java`, `algorithms`, `interview`, `study` |
+| `demo-api` | private | 2022 | JWT 필터로 API 인증을 붙인 단일 기능 학습용 스파이크 (2022). | `spring-boot`, `jwt`, `api`, `spring-security`, `spike` |
+| `nest-ai` | public | 2025 | NestJS 에 OpenAI · Redis · pgvector 를 붙인 단일 기능 스파이크 (2025). | `nestjs`, `openai`, `pgvector`, `redis`, `typescript`, `spike` |
+| `ted-micro-service` | public | 2022 | 상품 · 리뷰 · 추천 서비스를 Kafka 로 묶은 마이크로서비스 학습용 멀티 프로젝트 (2022). | `spring-boot`, `microservices`, `kafka`, `docker`, `java`, `study` |
+| `spring-mybatis` | public | 2021 | MyBatis 에 AOP · Security · JWT 를 얹은 학습용 스파이크 (2021). | `spring-boot`, `mybatis`, `jwt`, `aop`, `java`, `study` |
+| `demo-openfeign` | private | 2022 | Spring Cloud OpenFeign 단일 기능 학습용 스파이크 (2022). | `spring-cloud`, `openfeign`, `java`, `spike`, `study` |
+| `demo-mongodb-reactive` | private | 2023 | MongoDB 리액티브 드라이버 단일 기능 학습용 스파이크 (2023). | `spring-boot`, `mongodb`, `reactive`, `webflux`, `spike` |
+| `demo-push` | private | 2022 | Firebase FCM 푸시 발송 단일 기능 학습용 스파이크 (2022). | `spring-boot`, `fcm`, `firebase`, `push-notification`, `spike` |
+| `demo-db` | private | 2022 | 멀티 데이터소스와 설정값 암호화 단일 기능 학습용 스파이크 (2022). | `spring-boot`, `jpa`, `jasypt`, `datasource`, `spike` |
+| `auth-demo` | private | 2022 | Spring Security 로그인 화면 단일 기능 학습용 스파이크 (2022). | `spring-boot`, `spring-security`, `mysql`, `docker`, `spike` |
+| `db-master` | private | 2022 | 환경별 데이터소스 분리와 요청 로깅 AOP 단일 기능 스파이크 (2022). | `spring-boot`, `datasource`, `aop`, `jasypt`, `spike` |
+| `doit_game_python` | public | 2025 | 파이썬 게임을 23단계로 나눠 만든 실습 예제 모음 (2025). | `python`, `game`, `tutorial`, `study`, `examples` |
+| `demo-mongodb-active` | private | 2023 | MongoDB 동기 드라이버 단일 기능 학습용 스파이크 (2023). | `spring-boot`, `mongodb`, `java`, `spike`, `study` |
+| `scheduler-demo` | private | 2022 | Spring 스케줄러 단일 기능 학습용 스파이크 (2022). | `spring-boot`, `scheduler`, `docker`, `java`, `spike` |
+| `jpa-mssql` | private | 2024 | MSSQL 에 JPA 와 Redis 를 붙인 인증 단일 기능 스파이크 (2024). | `spring-boot`, `jpa`, `mssql`, `redis`, `spike` |
+| `spring-redis` | public | 2022 | Spring Data Redis 단일 기능 학습용 스파이크 (2022). | `spring-boot`, `redis`, `java`, `spike`, `study` |
+| `api.gw.pay` | public | 2022 | API 게이트웨이 뒤에 두는 결제 서비스 스텁 (2022). | `spring-cloud`, `gateway`, `microservices`, `java`, `spike` |
+| `api.gw.user` | public | 2022 | API 게이트웨이 뒤에 두는 회원 서비스 스텁 (2022). | `spring-cloud`, `gateway`, `microservices`, `java`, `spike` |
+| `demo-next-commerce` | public | 2023 | Next.js 커머스 화면에 Notion 데이터베이스를 붙여 본 스파이크 (2023). | `nextjs`, `typescript`, `notion-api`, `commerce`, `spike` |
+| `api.gw.order` | public | 2022 | API 게이트웨이 뒤에 두는 주문 서비스 스텁 (2022). | `spring-cloud`, `gateway`, `microservices`, `java`, `spike` |
+| `api.gw.auth` | public | 2022 | API 게이트웨이 뒤에 두는 인증 서비스 스텁 (2022). | `spring-cloud`, `gateway`, `microservices`, `java`, `spike` |
+| `demo-mapstruct` | public | 2022 | MapStruct 객체 매핑 단일 기능 학습용 스파이크 (2022). | `java`, `mapstruct`, `spring-boot`, `spike`, `study` |
+| `ted-cloud-service` | public | 2022 | Eureka · Config · Gateway 를 함께 띄운 Spring Cloud 학습용 멀티 프로젝트 (2022). | `spring-cloud`, `eureka`, `gateway`, `microservices`, `java` |
+| `demo-flyway` | private | 2023 | Flyway 스키마 마이그레이션 단일 기능 학습용 스파이크 (2023). | `spring-boot`, `flyway`, `migration`, `java`, `spike` |
+| `spring-cloud-gateway` | public | 2022 | Spring Cloud Gateway 단일 기능 학습용 스파이크 (2022). | `spring-cloud`, `gateway`, `java`, `spike`, `study` |
+| `spring-cloud-config-client` | public | 2022 | Spring Cloud Config 클라이언트 단일 기능 학습용 스파이크 (2022). | `spring-cloud`, `config`, `java`, `spike`, `study` |
+| `demo-security` | public | 2024 | JWT 토큰 발급과 갱신을 갖춘 Spring Security 학습용 스파이크 (2024). | `spring-security`, `jwt`, `spring-boot`, `java`, `study` |
+| `spring-cloud-config-server` | public | 2022 | Spring Cloud Config 서버 단일 기능 학습용 스파이크 (2022). | `spring-cloud`, `config`, `java`, `spike`, `study` |
+| `module-payment` | private | 2022 | 결제 모듈을 갈라내려고 만든 뼈대만 있는 스파이크 (2022). | `spring-boot`, `payment`, `java`, `spike` |
+| `demo-swiper` | public | 2023 | Next.js 에 Swiper 캐러셀을 붙여 본 단일 기능 스파이크 (2023). | `nextjs`, `swiper`, `typescript`, `carousel`, `spike` |
+| `edu-next` | public | 2023 | Next.js App Router 를 여럿이 함께 세워 본 협업 스파이크 (2023). | `nextjs`, `typescript`, `app-router`, `spike` |
+| `sb3-up-and-run` | public | 2024 | Spring Boot 3 입문서를 장별로 따라간 실습 저장소 (2024). | `spring-boot`, `java`, `redis`, `study`, `book` |
+| `demo-websocket` | public | 2024 | 웹소켓 채팅 단일 기능 학습용 스파이크 (2024). | `spring-boot`, `websocket`, `java`, `chat`, `spike` |
+| `spring-jpa-shop-demo` | public | 2021 | JPA 쇼핑몰 예제를 따라 만든 실습 저장소 (2021). | `spring-boot`, `jpa`, `java`, `shop`, `study` |
+| `demo-openai` | public | 2024 | Spring AI 로 OpenAI 를 붙여 본 단일 기능 스파이크 (2024). | `spring-ai`, `openai`, `spring-boot`, `java`, `spike` |
+| `lambdas-in-action` | public | 2016 ~ 2017 | 자바 8 람다와 스트림 예제를 장별로 따라간 실습 저장소 (2016). | `java`, `lambda`, `stream-api`, `study`, `book` |
+| `elasticsearch-plugin-7.15.1` | private | 2021 | 초성 · 자모 분리와 영한 오타 보정을 지원하는 한국어 형태소 플러그인을 Elasticsearch 7.15.1 에 맞춰 올린 판 (2021). | `elasticsearch`, `korean`, `analyzer`, `plugin`, `java` |
+| `ai-dataset-video` | private | 2025 | S3 의 MP4 를 Whisper 로 받아써 자막 세 형식으로 만드는 배치 도구. 메모리 감시와 Slack 알림을 갖췄습니다 (2025). | `python`, `whisper`, `s3`, `subtitle`, `batch`, `slack` |
+| `qrcode` | public | 2021 | QR 코드 생성 단일 기능 학습용 스파이크 (2021). | `spring-boot`, `qrcode`, `java`, `spike`, `study` |
+| `msa-boot` | public | 2021 | WebFlux · JPA · MongoDB 를 섞어 도커로 띄운 마이크로서비스 멀티 프로젝트 샘플 (2021). | `spring-boot`, `microservices`, `webflux`, `docker`, `java` |
+| `demo-node-json-api` | public | 2023 | Express 로 JSON 을 내려 주는 최소 API 스파이크 (2023). | `nodejs`, `express`, `api`, `spike`, `study` |
+| `hello-streamlit` | public | 2024 | Streamlit 기본 예제를 그대로 띄운 맛보기 앱 (2024). | `streamlit`, `python`, `demo`, `study` |
+| `spring-docker` | public | 2021 | Spring Boot 를 도커 이미지로 굽는 최소 설정 스파이크 (2021). | `spring-boot`, `docker`, `java`, `spike` |
+| `lecture` | private | 2025 | (빈 저장소 — 설명 대신 삭제를 권합니다) | — |
+| `check-main-master` | public | 2021 | (빈 저장소 — 설명 대신 삭제를 권합니다) | — |
+| `kakao-style` | public | 2021 | (제목 한 줄짜리 README 뿐 — 설명 대신 삭제를 권합니다) | — |
+
+**마흔다섯을 채우고 셋을 지우는 것이 이 표의 결론입니다.**
+
+#### 🔴 「크기 0」은 「비어 있음」이 아니었습니다
+
+§4-3 에 셋이 **「크기가 0 이므로 삭제 후보」** 로 묶여 있었는데, 실제로 커밋이 하나도 없는
+것은 `lecture` 와 `check-main-master` **둘뿐**입니다. `kakao-style` 에는 커밋 하나와
+`README.md` 하나가 있고, 그 내용은 제목 한 줄입니다.
+
+| 저장소 | API 응답 | 실제 |
+| --- | --- | --- |
+| `lecture` | `This repository is empty` | 커밋 0개 |
+| `check-main-master` | `This repository is empty` | 커밋 0개 |
+| `kakao-style` | 파일 목록에 `README.md` | 커밋 1개 · 제목 한 줄 |
+
+**GitHub 의 `size` 는 KB 단위라 그보다 작은 저장소가 전부 0 으로 보입니다.** A등급에서는
+크기 0 인 둘이 실제로도 비어 있었기 때문에 이 차이가 드러나지 않았고, 그 경험이 그대로
+「크기 0 = 빈 저장소」라는 추론으로 굳을 뻔했습니다. 삭제는 되돌릴 수 없으므로 **지우기 전에
+`contents` 를 한 번 더 부르는 편이 낫습니다.**
+
+#### 조사 중에 드러난 것들
+
+| 무엇이 | 어디서 | 왜 문제인가 |
+| --- | --- | --- |
+| 🔴 자격증명이 README 본문에 | `fast-ai` · `auth-demo` | API 키와 데이터베이스 비밀번호가 예시가 아니라 실제 값으로 보이는 형태로 커밋되어 있습니다. private 저장소라 당장 노출되지는 않지만 **커밋 이력에 남으므로 공개 전환 시 그대로 드러납니다** |
+| 협업자가 섞인 저장소 | `demo-srr` · `edu-next` | 커밋 작성자가 여럿입니다. 설명에 「협업」을 밝혀 두면 나중에 혼자 만든 것으로 오해하지 않습니다 |
+| 개인 경로가 README 에 | `ted-micro-service` | 로컬 작업 디렉터리 경로가 그대로 적혀 있습니다 |
+| 이름이 뜻을 가리는 경우 | `demo-srr` · `db-master` · `module-payment` | 이름만으로는 무엇인지 알 수 없어 소스 트리를 열어야 했습니다. **설명을 채우는 값이 가장 큰 쪽이 여기입니다** |
+
+#### 반영 결과 (2026-09-16)
+
+B등급 15개와 C등급 45개, 합쳐서 60곳에 반영했고 A등급과 같은 방식으로 두 번 대조했습니다.
+
+| 지표 | A등급 직후 | B · C등급 반영 후 | 차이 |
+| --- | ---: | ---: | ---: |
+| 설명이 없는 직접 생성 저장소 | 65 | 5 | −60 |
+| topics 가 없는 직접 생성 저장소 | 108 | 48 | −60 |
+
+**남은 설명 누락 5개는 전부 비어 있거나 제목 한 줄뿐인 저장소입니다** — A등급의 둘과
+C등급의 셋이며, 채울 대상이 아니라 지울 대상입니다. 즉 **내용이 있는 직접 생성 저장소
+134개는 모두 설명을 가지게 되었습니다.**
+
+topics 쪽에 남은 48개는 위 5개와, **조사 시점에 이미 설명이 있어 등급 분류에서 빠진 43개**
+입니다. §4-4 가 가리키던 그 43개가 이번 작업의 범위 밖에 있었기 때문에 그대로 남았습니다.
 
 ### 4-4. topics 는 거의 전부가 대상입니다
 
 topics 가 붙은 리포지토리는 셋뿐이므로, **설명이 채워진 46개에도 topics 를 붙여야 합니다.**
 설명은 있으나 topics 가 없는 리포지토리가 43개입니다.
 
-> **갱신 (2026-09-16)** — A등급 28곳을 반영한 뒤 topics 누락은 136개에서 108개로,
-> 설명 누락은 93개에서 65개로 줄었습니다. 위 세 수(3 · 46 · 43)는 **조사 시점의
+> **갱신 (2026-09-16)** — A · B · C 세 등급 88곳을 반영한 뒤 topics 누락은 136개에서
+> **48개로**, 설명 누락은 93개에서 **5개로** 줄었습니다. 위 세 수(3 · 46 · 43)는 **조사 시점의
 > 기준선이므로 그대로 둡니다** — 지우면 다음 작업이 무엇과 대조할지 알 수 없게 됩니다.
-> 진행 상황은 §4-1 의 「반영 결과」 표에서 읽습니다.
+> 진행 상황은 §4-1 · §4-3 의 「반영 결과」 표와 §5-4 의 시점별 표에서 읽습니다.
+>
+> 🔴 **여기 적힌 43개가 지금 남은 일의 정확한 크기입니다.** 등급 분류는 「설명이 비어 있는
+> 93개」만 대상으로 삼았으므로, **설명이 이미 있던 43개는 A · B · C 어디에도 들어가지
+> 않았습니다.** 등급 셋을 모두 끝내도 topics 가 0 이 되지 않는 이유가 이것입니다.
 
 ## 5. 설명과 topics 를 채우는 방법
 
@@ -696,8 +806,19 @@ gh repo list withwooyong --limit 1000 --json name,repositoryTopics,isFork \
 성공을 보고했지만, 그것만으로는 **어느 저장소에 무엇이 들어갔는지 알 수 없습니다.** 위 두
 명령으로 다시 세어 65개와 108개를 얻었고, 두 수가 정확히 28씩 줄어든 것을 보고서야 반영이
 닿았다고 판단했습니다. **종료 코드는 명령이 오류 없이 끝났다는 말일 뿐, 의도한 값이
-들어갔다는 말이 아닙니다.** 현재 기준값은 **설명 누락 65개, topics 누락 108개** 이며,
-B등급 15개와 C등급 48개를 처리한 뒤 다시 대조할 값이 이것입니다.
+들어갔다는 말이 아닙니다.** A등급 직후의 기준값은 설명 누락 65개, topics 누락 108개였고,
+B등급 15개와 C등급 45개를 반영한 뒤 다시 재니 **설명 누락 5개, topics 누락 48개** 로 정확히
+60씩 줄었습니다. 이 두 수가 지금의 기준값입니다.
+
+| 시점 | 설명 누락 | topics 누락 | 그때 처리한 것 |
+| --- | ---: | ---: | --- |
+| 조사 시점 | 93 | 136 | — |
+| A등급 반영 후 | 65 | 108 | A등급 28곳 |
+| B · C등급 반영 후 | 5 | 48 | B등급 15곳 · C등급 45곳 |
+
+**남은 설명 누락 5개는 빈 저장소이므로 이 수는 0 이 되지 않습니다** — 지워야 0 이 됩니다.
+topics 누락 48개에서 그 5개를 뺀 43개가 다음 작업의 대상이며, 이들은 **설명이 이미 있어서
+등급 분류에 들어가지 않았던 저장소들**입니다.
 
 ### 5-5. topics 를 설계하는 기준
 
