@@ -4,8 +4,8 @@
 >
 > **이번 세션(2026-09-17) —** 같은 브랜치에서 **17번 판정(통과)** 을 받고 넓히기를 시작했다.
 >
-> ⏸️ **사용자 요청으로 여기서 멈췄다** (주간 토큰 부족 · 다른 프로젝트 우선). 이 세션 끝에서 브랜치를 **원격에 처음 푸시**했다 — 상태는 문서가 아니라 `git status -sb` 와 `git ls-remote origin feat/diagram-design-zoom-viewer` 로 확인하라. **PR 은 열지 않았다.** 다음은 17번 행의 순서 ② 첫 편 `context-budget-session` 이다.
-> ⚠️ **CHANGELOG 는 이 브랜치의 커밋 셋(`5d36295f` · `62206cb1` 과 기록 커밋)을 아직 담지 않았다.** PR 을 열 때 한 절로 적는다.
+> ⏸️ **사용자 요청으로 여기서 멈췄다** (주간 토큰 부족 · 다른 프로젝트 우선). 이 세션 끝에서 브랜치를 **원격에 처음 푸시**했다 — 상태는 문서가 아니라 `git status -sb` 와 `git ls-remote origin feat/diagram-design-zoom-viewer` 로 확인하라. 이어서 사용자 요청으로 **PR 을 열고 `main` 에 merge 하는 단계까지 진행했다** — 이 기록은 PR 안에 실리므로 PR 번호 · merge 커밋 · 배포 run 을 담지 못한다. `gh pr list --state all --head feat/diagram-design-zoom-viewer` 와 `gh run list --branch main` 으로 확인하라. 다음은 17번 행의 순서 ② 첫 편 `context-budget-session` 이다.
+> CHANGELOG 에 2026-09-17 절을 더하고, 본체 세 절 규칙에 따라 2026-09-13 절을 `docs/changelog/2026-09.md` 로 옮겼다 (옮긴 절의 `docs/TOOL-TRAPS.md` 링크를 `../TOOL-TRAPS.md` 로 고쳤다).
 >
 > | 항목 | 내용 |
 > | --- | --- |
