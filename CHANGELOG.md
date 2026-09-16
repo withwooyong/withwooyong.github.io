@@ -36,7 +36,14 @@
 | 세 가지 관리 도구 | `public/images/blog/context-management-tools-flow.svg` | 노드 여덟 · 간선 여덟 · 분기 라벨 셋 |
 | 세션 연속성의 세 축 | `public/images/blog/session-continuity-flow.svg` | 노드 여섯 · 간선 일곱의 라벨 |
 
-발행본 Mermaid 는 **565 → 564 → 560** 이다. 넓히는 순서는 HANDOFF 17번 행에 있다: `agentic-coding` 을 편 하나씩, 편마다 실물을 보이며 간다.
+둘째 편은 `context-budget-session` 이 가장 많이 링크하는 `claude-md-scope-layers` 다. 위아래로 층이 쌓이는 도식은 세로로, 덩어리에 단계가 딸린 도식은 세 열의 나무로 그렸다. 원문의 방향 없는 선(`---`)은 화살표 없는 선으로 옮겨 순서를 뜻하는 화살표와 구분했다.
+
+| 도식 | 파일 | 원문과 같은 것 |
+| --- | --- | --- |
+| 정보는 세 층에서 온다 | `public/images/blog/claude-md-information-layers-flow.svg` | 노드 여덟 · 간선 아홉의 라벨 (「층 — 출처」를 두 줄로 나눴다) |
+| 3덩어리 × 7단계 | `public/images/blog/claude-md-three-chunks-flow.svg` | 노드 열 · 화살표 둘 · 방향 없는 선 일곱 |
+
+발행본 Mermaid 는 **565 → 564 → 560 → 558** 이다. 넓히는 순서는 HANDOFF 17번 행에 있다: `agentic-coding` 을 편 하나씩, 편마다 실물을 보이며 간다.
 
 ### 고친 것
 
