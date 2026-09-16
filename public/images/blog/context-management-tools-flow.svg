@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 540" width="1040" height="540" role="img" aria-labelledby="cmt-title cmt-desc">
+<title id="cmt-title">세 가지 관리 도구의 사용 흐름</title>
+<desc id="cmt-desc">작업을 진행하다 /context 로 사용량을 확인해, 60~70% 이면 /compact 로 요약 압축하고 압축 후 상태를 확인하는 질문을 던진 뒤 작업으로 돌아가며, 업무를 전환할 때는 /clear 로 이력을 지우고 새 업무를 시작하고, 85% 를 넘으면 체크포인트를 저장하고 새 세션을 시작하는 플로우차트입니다.</desc>
+
+<defs>
+<marker id="cmt-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+</defs>
+
+<rect width="1040" height="540" fill="#2d3142"/>
+
+<!-- connectors (drawn before nodes) -->
+<path d="M 176 280 H 224" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 320 228 V 144 A 8 8 0 0 1 328 136 H 496" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 416 280 H 496" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 320 332 V 416 A 8 8 0 0 0 328 424 H 496" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 680 136 H 800" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 680 280 H 800" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 680 424 H 800" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#cmt-arrow)"/>
+<path d="M 892 108 V 72 A 8 8 0 0 0 884 64 H 116 A 8 8 0 0 0 108 72 V 252" fill="none" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#cmt-arrow)"/>
+
+<!-- connector labels -->
+<rect x="384" y="128" width="56" height="16" rx="2" fill="#2d3142"/>
+<text x="412" y="140" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">60~70%</text>
+<rect x="424" y="272" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="456" y="284" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">85% 초과</text>
+<rect x="380" y="416" width="64" height="16" rx="2" fill="#2d3142"/>
+<text x="412" y="428" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="500" text-anchor="middle">업무 전환</text>
+
+<!-- decision (focal) -->
+<polygon points="224,280 320,228 416,280 320,332" fill="#2d3142"/>
+<polygon points="224,280 320,228 416,280 320,332" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width="1" stroke-linejoin="round"/>
+<text x="320" y="272" fill="#f08a59" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHECK</text>
+<text x="320" y="292" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">/context 확인</text>
+
+<!-- nodes -->
+<rect x="40" y="252" width="136" height="56" rx="6" fill="#2d3142"/>
+<rect x="40" y="252" width="136" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="48" y="260" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="66" y="269" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="108" y="294" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">작업 진행</text>
+<rect x="496" y="108" width="184" height="56" rx="6" fill="#2d3142"/>
+<rect x="496" y="108" width="184" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="504" y="116" width="32" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="520" y="125" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CMD</text>
+<text x="588" y="150" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">/compact 요약 압축</text>
+<rect x="496" y="252" width="184" height="56" rx="6" fill="#2d3142"/>
+<rect x="496" y="252" width="184" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="504" y="260" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="522" y="269" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="588" y="294" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">체크포인트 저장</text>
+<rect x="496" y="396" width="184" height="56" rx="6" fill="#2d3142"/>
+<rect x="496" y="396" width="184" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="504" y="404" width="32" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="520" y="413" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CMD</text>
+<text x="588" y="438" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">/clear 이력 삭제</text>
+<rect x="800" y="108" width="184" height="56" rx="6" fill="#2d3142"/>
+<rect x="800" y="108" width="184" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="808" y="116" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="826" y="125" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="892" y="150" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">압축 후 상태 확인 질문</text>
+<rect x="800" y="252" width="184" height="56" rx="6" fill="#2d3142"/>
+<rect x="800" y="252" width="184" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="808" y="260" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="826" y="269" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="892" y="294" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">새 세션 시작</text>
+<rect x="800" y="396" width="184" height="56" rx="6" fill="#2d3142"/>
+<rect x="800" y="396" width="184" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="808" y="404" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="826" y="413" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="892" y="438" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">새 업무 시작</text>
+
+<!-- legend -->
+<line x1="40" y1="484" x2="1000" y2="484" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
+<text x="40" y="512" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
+<polygon points="120,506 128,499 136,506 128,513" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width=".8"/>
+<text x="144" y="512" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">판단 지점</text>
+<rect x="228" y="500" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
+<text x="252" y="512" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">명령</text>
+<rect x="308" y="500" width="16" height="12" rx="2" fill="#393e53" stroke="#bfc0c0" stroke-width=".8"/>
+<text x="332" y="512" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">작업</text>
+<line x1="388" y1="506" x2="420" y2="506" stroke="#bfc0c0" stroke-width="1"/>
+<text x="432" y="512" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">앞으로 나아가는 흐름</text>
+<line x1="580" y1="506" x2="612" y2="506" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="624" y="512" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">되돌아가는 흐름</text>
+</svg>

@@ -27,7 +27,16 @@
 | 4절 상태 다이어그램 | `public/images/blog/human-gate-state.svg` | 상태 여섯 · 전이 열두의 라벨 |
 | 2절 시퀀스 다이어그램 | `public/images/blog/agent-contract-sequence.svg` | 참여자 여섯 · 호출 16 · `alt` 분기의 라벨 |
 
-발행본 Mermaid 는 **565 → 564** 다. 넓히는 순서는 HANDOFF 17번 행에 있다: `agentic-coding` 을 편 하나씩, 편마다 실물을 보이며 간다.
+같은 날 넓히기 첫 편 `context-budget-session` 의 플로우차트 넷을 옮겼다. 플로우차트를 SVG 로 그린 것은 이번이 처음이다. 판단 노드는 강조색 마름모로, 작업으로 되돌아가는 간선은 점선으로 그렸다.
+
+| 도식 | 파일 | 원문과 같은 것 |
+| --- | --- | --- |
+| 패턴 A 단계별 업무 분해 | `public/images/blog/task-decomposition-flow.svg` | 노드 넷의 라벨 |
+| 3패턴의 진화 경로 | `public/images/blog/prompt-to-agent-evolution-flow.svg` | 노드 넷의 라벨 (「이름 — 설명」을 두 줄로 나눴다) |
+| 세 가지 관리 도구 | `public/images/blog/context-management-tools-flow.svg` | 노드 여덟 · 간선 여덟 · 분기 라벨 셋 |
+| 세션 연속성의 세 축 | `public/images/blog/session-continuity-flow.svg` | 노드 여섯 · 간선 일곱의 라벨 |
+
+발행본 Mermaid 는 **565 → 564 → 560** 이다. 넓히는 순서는 HANDOFF 17번 행에 있다: `agentic-coding` 을 편 하나씩, 편마다 실물을 보이며 간다.
 
 ### 고친 것
 
@@ -40,7 +49,7 @@
 
 ### 🔴 기준선과 개발 서버
 
-- 새 Tailwind 클래스가 전역 CSS 파일명을 바꿔 GC-6 이 비블로그 13건을 냈다. 변경 전 빌드와 대조해 buildId · CSS · webpack 해시 외에 바이트가 같음을 확인한 뒤 기준선을 갱신했다. 시퀀스 도식을 옮긴 커밋은 클래스를 더하지 않아 GC-6 이 그대로 통과했다.
+- 새 Tailwind 클래스가 전역 CSS 파일명을 바꿔 GC-6 이 비블로그 13건을 냈다. 변경 전 빌드와 대조해 buildId · CSS · webpack 해시 외에 바이트가 같음을 확인한 뒤 기준선을 갱신했다. 시퀀스 도식과 플로우차트 넷을 옮긴 커밋은 클래스를 더하지 않아 GC-6 이 그대로 통과했다.
 - `next dev` 가 떠 있는 동안 `npm run build` 를 돌리면 둘이 같은 `.next` 를 써서 **빌드는 청크를 못 찾아 죽고 개발 서버는 500 을 낸다.** 빌드 전에 서버를 끄고 `.next` 를 지운다.
 
 뮤턴트 **126개** · `tests/blog` **15파일 219케이스**.
