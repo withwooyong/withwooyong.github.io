@@ -106,7 +106,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run map-terms` | 발행본의 용어 표기가 갈리지 않았는지 대조합니다. `:verify` 는 자체 검사 |
 | `npm run source-overlap -- <발행본> <원본>` | **리포 밖 원본**과의 겹침 검사. `dup-scan` 은 발행본끼리만 보므로 원본 대조는 여기서만 됩니다. 공백 보존·공백 제거 두 정규화를 모두 돌립니다. `:verify` 는 자체 검사 |
 | `npm run check-engines` | 설치된 의존성의 `engines.node` 가 **CI 의 Node 에서도 도는지** 판정합니다. `npm install` 은 `engines` 를 강제하지 않아 로컬에서만 도는 판이 조용히 설치되고 CI 에서만 죽습니다. 리포 루트 트리의 설치본 **전량**(372개)을 봅니다 — CI 를 죽인 사례가 직접 의존성이 아니라 transitive 였기 때문입니다. `:verify` 는 자체 검사 (`--self-test` 26건) |
-| `npm run mutate` | 알려진 결함 **126개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 121개 기준 **29분 40초**가 걸리므로(2026-09-12 실측) 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
+| `npm run mutate` | 알려진 결함 **132개**를 하나씩 되살려 검사기의 자체 검사가 잡는지 봅니다. **생존이 하나라도 있으면 종료 코드 1.** 검사기를 고쳤으면 이것을 돌립니다. 121개 기준 **29분 40초**가 걸리므로(2026-09-12 실측) 세션 시작에 백그라운드로 겁니다. `:verify` 는 러너 자신의 자체 검사 |
 
 ## 페이지 구성
 
@@ -143,8 +143,8 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 │   ├── flow-diagram/       # 흐름 다이어그램 (2)
 │   └── ui/                 # shadcn/ui — badge · button · card · dialog
 ├── data/                   # portfolio.ts · product-lead-*.ts · diagrams/ (시스템 다이어그램 10종)
-├── scripts/                # .mjs 16개 (전량) — 검사기 열세 종: check-forbidden · check-markup ·
-│                           # check-links · check-mermaid · check-table · check-counts ·
+├── scripts/                # .mjs 17개 (전량) — 검사기 열네 종: check-forbidden · check-markup ·
+│                           # check-links · check-mermaid · check-table · check-counts · check-handoff ·
 │                           # check-baseline · check-engines · dup-scan · source-overlap ·
 │                           # compose · fix-markup · build-search-index /
 │                           # 그 밖(판정하지 않는 셋): generate-sitemap · map-terms ·
@@ -180,8 +180,8 @@ SEO·다크 모드·접근성(스킵 링크 등)은 위 컴포넌트와 `pages/i
 
 | 자리 | 언제 | 무엇 |
 |------|------|------|
-| **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | 커밋이 건드린 것에 따라 갈립니다 | `content/blog` 를 건드렸으면 **11단** — 금칙어 증명·불변식·금칙어 스캔·마크업 증명·마크업 스캔·링크 증명·링크 스캔·도식 증명·도식 스캔·표 증명·표 스캔. 그 밖의 `.md` 는 **8단**(네 검사의 증명과 `--docs` 스캔), 코드만이면 즉시 통과합니다. 하나라도 실패하면 커밋이 막힙니다 |
-| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 34스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 33스텝이 돕니다 |
+| **pre-commit 훅** ([`.githooks/pre-commit`](.githooks/pre-commit)) | 커밋이 건드린 것에 따라 갈립니다 | `content/blog` 를 건드렸으면 **11단** — 금칙어 증명·불변식·금칙어 스캔·마크업 증명·마크업 스캔·링크 증명·링크 스캔·도식 증명·도식 스캔·표 증명·표 스캔. 그 밖의 `.md` 는 **10단**(네 검사의 증명과 `--docs` 스캔 · HANDOFF 분량과 절), 코드만이면 즉시 통과합니다. 하나라도 실패하면 커밋이 막힙니다 |
+| **CI** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) | `main` 푸시 **· `main` 을 향한 PR** | 위 3개 + 타입 검사 + 빌드 + 산출물 금칙어 + 산출물 불변. 실패하면 배포가 막힙니다. `build` job 이 32스텝이고, PR 에서는 `Upload artifact` 와 `deploy` job 이 빠져 31스텝이 돕니다 |
 
 훅은 `npm install` 시 `prepare` 스크립트가 자동으로 설정합니다(`git config core.hooksPath .githooks`).
 수동으로 켜려면 같은 명령을 직접 실행하세요. husky 같은 의존성은 쓰지 않습니다.

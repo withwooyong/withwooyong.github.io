@@ -128,6 +128,14 @@ jobs:
       - name: Check documented counts
         run: npm run check-counts
 
+      # HANDOFF 는 세션마다 덮어쓴다 — 네 절 · 150줄 상한. 훅은 --no-verify 와 웹 UI 편집으로
+      # 지나갈 수 있으므로 CI 에도 둔다. 2,798줄까지 쌓인 적이 있다.
+      - name: Prove handoff checker
+        run: npm run check-handoff:verify
+
+      - name: Check handoff length and sections
+        run: npm run check-handoff
+
       # 인덱스 생성기는 빌드 안에서 돈다. 증명은 그보다 먼저다 — 증명되지 않은 「184편」은
       # 거짓 음성과 구분되지 않는다. 가드 넷이 대상 없음 · 수 어긋남 · 카나리를 본다.
       - name: Prove search index builder

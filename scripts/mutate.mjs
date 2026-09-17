@@ -24,6 +24,49 @@ import { join } from "node:path";
 const REPO = process.cwd();
 
 const MUTANTS = [
+  // HANDOFF 분량 · 절 — `check-handoff`. 세션 절이 쌓여 2,798줄이 된 뒤에 세웠다.
+  {
+    id: "HO1",
+    file: "scripts/check-handoff.mjs",
+    desc: "상한을 한 줄 늦게 잡는다 — 151줄이 통과한다",
+    from: "  if (lines.length > limit) {",
+    to: "  if (lines.length > limit + 1) {",
+  },
+  {
+    id: "HO2",
+    file: "scripts/check-handoff.mjs",
+    desc: "파일 끝 개행이 줄을 하나 더 만든다 — 150줄 파일이 걸린다",
+    from: "  if (lines.length > 0 && lines[lines.length - 1] === \"\") lines.pop();",
+    to: "  void lines;",
+  },
+  {
+    id: "HO3",
+    file: "scripts/check-handoff.mjs",
+    desc: "코드 블록을 추적하지 않는다 — 예시의 ## 가 절로 세어진다",
+    from: "    if (fence !== null) continue;",
+    to: "    void fence;",
+  },
+  {
+    id: "HO4",
+    file: "scripts/check-handoff.mjs",
+    desc: "🔴 절을 이름 집합으로만 본다 — 순서가 바뀌어도 통과한다",
+    from: "  if (JSON.stringify(h2) !== JSON.stringify(SECTIONS)) {",
+    to: "  if (JSON.stringify([...h2].sort()) !== JSON.stringify([...SECTIONS].sort())) {",
+  },
+  {
+    id: "HO5",
+    file: "scripts/check-handoff.mjs",
+    desc: "🔴 세션 기록 제목을 H2 에서만 찾는다 — H3 로 쌓으면 지나간다",
+    from: "  for (const h of headings) {",
+    to: "  for (const h of headings.filter((x) => x.level === 2)) {",
+  },
+  {
+    id: "HO6",
+    file: "scripts/check-handoff.mjs",
+    desc: "🔴 파일이 없으면 통과한다 — 대상 없음이 초록이 된다",
+    from: "    return 2;",
+    to: "    return 0;",
+  },
   {
     id: "N1",
     file: "scripts/lib/normalize.mjs",
@@ -927,6 +970,7 @@ const MUTANTS = [
 ];
 
 const CHECKS = [
+  ["check-handoff", "npm run --silent check-handoff:verify"],
   ["source-overlap", "npm run --silent source-overlap:verify"],
   ["dup-scan", "npm run --silent dup-scan:verify"],
   ["check-forbidden", "npm run --silent check-forbidden:verify"],
