@@ -16,26 +16,26 @@
 
 <!-- stages -->
 <rect x="40" y="64" width="200" height="72" rx="6" fill="#2d3142"/>
-<rect x="40" y="64" width="200" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="48" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="60" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">01</text>
+<rect x="40" y="64" width="200" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="48" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="60" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">01</text>
 <text x="140" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">프롬프트</text>
 <text x="140" y="124" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">수동 입력</text>
 <rect x="292" y="64" width="200" height="72" rx="6" fill="#2d3142"/>
-<rect x="292" y="64" width="200" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="300" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="312" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">02</text>
+<rect x="292" y="64" width="200" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="300" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="312" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">02</text>
 <text x="392" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Commands</text>
 <text x="392" y="124" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">저장하고 반복</text>
 <rect x="544" y="64" width="200" height="72" rx="6" fill="#2d3142"/>
-<rect x="544" y="64" width="200" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="552" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="564" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">03</text>
+<rect x="544" y="64" width="200" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="552" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="564" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">03</text>
 <text x="644" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Skills</text>
 <text x="644" y="124" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">조건 충족 시 자동 트리거</text>
 <rect x="796" y="64" width="200" height="72" rx="6" fill="#2d3142"/>
-<rect x="796" y="64" width="200" height="72" rx="6" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width="1"/>
-<rect x="804" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#f08a59" stroke-width=".8" opacity=".6"/>
+<rect x="796" y="64" width="200" height="72" rx="6" fill="rgba(240,138,89,.14)" stroke="#f08a59" stroke-width="1"/>
+<rect x="804" y="72" width="24" height="12" rx="2" fill="transparent" stroke="#f08a59" stroke-width=".8" opacity=".7"/>
 <text x="816" y="81" fill="#f08a59" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">04</text>
 <text x="896" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">Agent</text>
 <text x="896" y="124" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">자율 판단</text>
@@ -43,10 +43,10 @@
 <!-- legend -->
 <line x1="40" y1="172" x2="1000" y2="172" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
 <text x="40" y="200" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
-<rect x="120" y="188" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
-<text x="144" y="200" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">단계</text>
-<rect x="200" y="188" width="16" height="12" rx="2" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width=".8"/>
-<text x="224" y="200" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">경로의 끝</text>
-<line x1="308" y1="194" x2="340" y2="194" stroke="#bfc0c0" stroke-width="1"/>
-<text x="352" y="200" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">진화 경로</text>
+<rect x="120" y="186" width="22" height="16" rx="3" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1.5"/>
+<text x="150" y="200" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">단계</text>
+<rect x="206" y="186" width="22" height="16" rx="3" fill="rgba(240,138,89,.14)" stroke="#f08a59" stroke-width="1.5"/>
+<text x="236" y="200" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">경로의 끝</text>
+<line x1="320" y1="194" x2="352" y2="194" stroke="#bfc0c0" stroke-width="1"/>
+<text x="364" y="200" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">진화 경로</text>
 </svg>

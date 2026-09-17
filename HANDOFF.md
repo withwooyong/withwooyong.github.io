@@ -17,6 +17,8 @@
 >
 > 다음은 17번 순서 ② 의 셋째 편이다 — 남은 25편 · 77개를 `extractDiagrams` 로 다시 세어 고른다.
 >
+> **후속(같은 날, 브랜치 `fix/flowchart-legend-contrast`) —** 둘째 편은 PR [#35](https://github.com/withwooyong/withwooyong.github.io/pull/35) 로 merge 됐다 — merge 커밋 `5c757b99` (2026-09-17T00:04:35Z) · 배포 run `35165026991` 의 build · deploy 모두 success · 배포된 SVG 둘이 커밋본과 바이트까지 같다. 그 뒤 🎯 사용자가 「LEGEND 계층이 색상이 유사해서 flowchart 에서 구분하기 힘들어」라고 지적해, 플로우차트 SVG 여섯을 다시 생성했다. 주 노드는 **파랑**(`#7aa2f7`), 보조 노드는 **속이 빈 회청색 윤곽**(`#8e98ac`), 강조 · 판단은 **주황** 그대로이고 범례 견본을 22×16 으로 키웠다. 🔴 **셋째 편부터는 이 배색으로 만든다** — 스크래치패드 `flow-lib.mjs` 의 `KIND` 가 정본이며, 생성기 여섯이 재생성 전 커밋본과 바이트까지 같음을 먼저 확인했다. 가장 복잡한 `세 가지 관리 도구` 와 세 종류가 다 쓰인 `정보는 세 층에서 온다` 를 개발 서버에서 보고 구분됨을 확인했다.
+>
 > ---
 >
 > **직전 세션(2026-09-17, 2차) —** `main`(`82c8e7c7`)에서 브랜치 `feat/diagram-svg-agentic-coding` 을 새로 갈라, 17번 순서 ② 첫 편 `content/blog/agentic-coding/context-budget-session.md` 의 Mermaid 넷을 SVG 로 옮겼다.

@@ -22,67 +22,67 @@
 
 <!-- chunks -->
 <rect x="60" y="64" width="280" height="56" rx="6" fill="#2d3142"/>
-<rect x="60" y="64" width="280" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="68" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="90" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
+<rect x="60" y="64" width="280" height="56" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="68" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="90" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
 <text x="200" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">덩어리1 정체성</text>
 <rect x="380" y="64" width="280" height="56" rx="6" fill="#2d3142"/>
-<rect x="380" y="64" width="280" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="388" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="410" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
+<rect x="380" y="64" width="280" height="56" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="388" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="410" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
 <text x="520" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">덩어리2 규칙</text>
 <rect x="700" y="64" width="280" height="56" rx="6" fill="#2d3142"/>
-<rect x="700" y="64" width="280" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="708" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="730" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
+<rect x="700" y="64" width="280" height="56" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="708" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="730" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
 <text x="840" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">덩어리3 실용도구</text>
 
 <!-- steps -->
 <rect x="108" y="160" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="108" y="160" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="116" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="134" y="177" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="108" y="160" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="116" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="134" y="177" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="224" y="202" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">1 프로젝트 개요</text>
 <rect x="108" y="240" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="108" y="240" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="116" y="248" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="134" y="257" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="108" y="240" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="116" y="248" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="134" y="257" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="224" y="282" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">2 디렉토리 구조</text>
 <rect x="108" y="320" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="108" y="320" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="116" y="328" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="134" y="337" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="108" y="320" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="116" y="328" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="134" y="337" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="224" y="362" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">3 기술 스택</text>
 <rect x="428" y="160" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="428" y="160" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="436" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="454" y="177" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="428" y="160" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="436" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="454" y="177" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="544" y="202" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">4 코딩 규칙</text>
 <rect x="428" y="240" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="428" y="240" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="436" y="248" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="454" y="257" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="428" y="240" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="436" y="248" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="454" y="257" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="544" y="282" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">5 워크플로우</text>
 <rect x="428" y="320" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="428" y="320" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="436" y="328" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="454" y="337" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="428" y="320" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="436" y="328" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="454" y="337" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="544" y="362" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">6 금지 사항 NEVER</text>
 <rect x="748" y="160" width="232" height="56" rx="6" fill="#2d3142"/>
-<rect x="748" y="160" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="756" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="774" y="177" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<rect x="748" y="160" width="232" height="56" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="756" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="774" y="177" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
 <text x="864" y="202" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">7 커맨드 Cheatsheet</text>
 
 <!-- legend -->
 <line x1="40" y1="408" x2="1000" y2="408" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
 <text x="40" y="436" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
-<rect x="120" y="424" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
-<text x="144" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리</text>
-<rect x="212" y="424" width="16" height="12" rx="2" fill="#393e53" stroke="#bfc0c0" stroke-width=".8"/>
-<text x="236" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">단계</text>
-<line x1="292" y1="430" x2="324" y2="430" stroke="#bfc0c0" stroke-width="1" marker-end="url(#c37-arrow)"/>
-<text x="336" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리 순서</text>
-<line x1="432" y1="430" x2="464" y2="430" stroke="#bfc0c0" stroke-width="1"/>
-<text x="476" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리에 속한 단계</text>
+<rect x="120" y="422" width="22" height="16" rx="3" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1.5"/>
+<text x="150" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리</text>
+<rect x="218" y="422" width="22" height="16" rx="3" fill="#2d3142" stroke="#8e98ac" stroke-width="1.5"/>
+<text x="248" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">단계</text>
+<line x1="304" y1="430" x2="336" y2="430" stroke="#bfc0c0" stroke-width="1" marker-end="url(#c37-arrow)"/>
+<text x="348" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리 순서</text>
+<line x1="444" y1="430" x2="476" y2="430" stroke="#bfc0c0" stroke-width="1"/>
+<text x="488" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리에 속한 단계</text>
 </svg>

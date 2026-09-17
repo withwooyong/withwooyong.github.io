@@ -22,62 +22,62 @@
 
 <!-- nodes -->
 <rect x="360" y="64" width="320" height="72" rx="6" fill="#2d3142"/>
-<rect x="360" y="64" width="320" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="368" y="72" width="32" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="384" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">ORG</text>
+<rect x="360" y="64" width="320" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="368" y="72" width="32" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="384" y="81" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">ORG</text>
 <text x="520" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">조직 전역 층</text>
 <text x="520" y="124" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">Enterprise 관리형 정책</text>
 <rect x="360" y="176" width="320" height="72" rx="6" fill="#2d3142"/>
-<rect x="360" y="176" width="320" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="368" y="184" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="386" y="193" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">USER</text>
+<rect x="360" y="176" width="320" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="368" y="184" width="36" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="386" y="193" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">USER</text>
 <text x="520" y="218" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">사용자 전역 층</text>
 <text x="520" y="236" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">~/.claude/CLAUDE.md</text>
 <rect x="360" y="288" width="320" height="72" rx="6" fill="#2d3142"/>
-<rect x="360" y="288" width="320" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="368" y="296" width="56" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="396" y="305" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">PROJECT</text>
+<rect x="360" y="288" width="320" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="368" y="296" width="56" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="396" y="305" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">PROJECT</text>
 <text x="520" y="330" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">프로젝트 층</text>
 <text x="520" y="348" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">프로젝트 루트 CLAUDE.md</text>
 <rect x="60" y="400" width="280" height="72" rx="6" fill="#2d3142"/>
-<rect x="60" y="400" width="280" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="68" y="408" width="48" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="92" y="417" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">SUBDIR</text>
+<rect x="60" y="400" width="280" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="68" y="408" width="48" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="92" y="417" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">SUBDIR</text>
 <text x="200" y="442" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">서브디렉토리 층</text>
 <text x="200" y="460" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">모듈별 CLAUDE.md</text>
 <rect x="380" y="400" width="280" height="72" rx="6" fill="#2d3142"/>
-<rect x="380" y="400" width="280" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="388" y="408" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="410" y="417" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">RULES</text>
+<rect x="380" y="400" width="280" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="388" y="408" width="44" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="410" y="417" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">RULES</text>
 <text x="520" y="442" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">조건부 규정집</text>
 <text x="520" y="460" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">.claude/rules/*.md</text>
 <rect x="700" y="400" width="280" height="72" rx="6" fill="#2d3142"/>
-<rect x="700" y="400" width="280" height="72" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
-<rect x="708" y="408" width="48" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="732" y="417" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">MEMORY</text>
+<rect x="700" y="400" width="280" height="72" rx="6" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1"/>
+<rect x="708" y="408" width="48" height="12" rx="2" fill="transparent" stroke="#7aa2f7" stroke-width=".8" opacity=".7"/>
+<text x="732" y="417" fill="#7aa2f7" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">MEMORY</text>
 <text x="840" y="442" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">축적 기억</text>
 <text x="840" y="460" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">memory / MEMORY.md</text>
 <rect x="360" y="512" width="320" height="72" rx="6" fill="#2d3142"/>
-<rect x="360" y="512" width="320" height="72" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
-<rect x="368" y="520" width="56" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
-<text x="396" y="529" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">SESSION</text>
+<rect x="360" y="512" width="320" height="72" rx="6" fill="#2d3142" stroke="#8e98ac" stroke-width="1"/>
+<rect x="368" y="520" width="56" height="12" rx="2" fill="transparent" stroke="#8e98ac" stroke-width=".8" opacity=".7"/>
+<text x="396" y="529" fill="#8e98ac" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">SESSION</text>
 <text x="520" y="554" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">세션 층</text>
 <text x="520" y="572" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400" text-anchor="middle">현재 대화 이력</text>
 <rect x="400" y="624" width="240" height="56" rx="6" fill="#2d3142"/>
-<rect x="400" y="624" width="240" height="56" rx="6" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width="1"/>
-<rect x="408" y="632" width="48" height="12" rx="2" fill="transparent" stroke="#f08a59" stroke-width=".8" opacity=".6"/>
+<rect x="400" y="624" width="240" height="56" rx="6" fill="rgba(240,138,89,.14)" stroke="#f08a59" stroke-width="1"/>
+<rect x="408" y="632" width="48" height="12" rx="2" fill="transparent" stroke="#f08a59" stroke-width=".8" opacity=".7"/>
 <text x="432" y="641" fill="#f08a59" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">OUTPUT</text>
 <text x="520" y="666" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">AI의 응답</text>
 
 <!-- legend -->
 <line x1="40" y1="712" x2="1000" y2="712" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
 <text x="40" y="740" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
-<rect x="120" y="728" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
-<text x="144" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">파일로 남는 층</text>
-<rect x="256" y="728" width="16" height="12" rx="2" fill="#393e53" stroke="#bfc0c0" stroke-width=".8"/>
-<text x="280" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">세션 층</text>
-<rect x="352" y="728" width="16" height="12" rx="2" fill="rgba(240,138,89,.10)" stroke="#f08a59" stroke-width=".8"/>
-<text x="376" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">응답</text>
-<line x1="432" y1="734" x2="464" y2="734" stroke="#bfc0c0" stroke-width="1" marker-end="url(#isl-arrow)"/>
-<text x="476" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">흐름</text>
+<rect x="120" y="726" width="22" height="16" rx="3" fill="rgba(122,162,247,.16)" stroke="#7aa2f7" stroke-width="1.5"/>
+<text x="150" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">파일로 남는 층</text>
+<rect x="262" y="726" width="22" height="16" rx="3" fill="#2d3142" stroke="#8e98ac" stroke-width="1.5"/>
+<text x="292" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">세션 층</text>
+<rect x="364" y="726" width="22" height="16" rx="3" fill="rgba(240,138,89,.14)" stroke="#f08a59" stroke-width="1.5"/>
+<text x="394" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">응답</text>
+<line x1="450" y1="734" x2="482" y2="734" stroke="#bfc0c0" stroke-width="1" marker-end="url(#isl-arrow)"/>
+<text x="494" y="740" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">흐름</text>
 </svg>
