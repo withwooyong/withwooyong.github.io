@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 464" width="1040" height="464" role="img" aria-labelledby="c37-title c37-desc">
+<title id="c37-title">CLAUDE.md 작성법 — 3덩어리 × 7단계</title>
+<desc id="c37-desc">덩어리1 정체성에서 덩어리2 규칙, 덩어리3 실용도구 순서로 나아가고, 덩어리1 정체성에는 1 프로젝트 개요 · 2 디렉토리 구조 · 3 기술 스택이, 덩어리2 규칙에는 4 코딩 규칙 · 5 워크플로우 · 6 금지 사항 NEVER 가, 덩어리3 실용도구에는 7 커맨드 Cheatsheet 가 딸린 플로우차트입니다.</desc>
+
+<defs>
+<marker id="c37-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+</defs>
+
+<rect width="1040" height="464" fill="#2d3142"/>
+
+<!-- connectors (drawn before nodes) -->
+<path d="M 340 92 H 380" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#c37-arrow)"/>
+<path d="M 660 92 H 700" fill="none" stroke="#bfc0c0" stroke-width="1" marker-end="url(#c37-arrow)"/>
+<path d="M 80 120 V 180 A 8 8 0 0 0 88 188 H 108" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+<path d="M 80 120 V 260 A 8 8 0 0 0 88 268 H 108" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+<path d="M 80 120 V 340 A 8 8 0 0 0 88 348 H 108" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+<path d="M 400 120 V 180 A 8 8 0 0 0 408 188 H 428" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+<path d="M 400 120 V 260 A 8 8 0 0 0 408 268 H 428" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+<path d="M 400 120 V 340 A 8 8 0 0 0 408 348 H 428" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+<path d="M 720 120 V 180 A 8 8 0 0 0 728 188 H 748" fill="none" stroke="#bfc0c0" stroke-width="1"/>
+
+<!-- chunks -->
+<rect x="60" y="64" width="280" height="56" rx="6" fill="#2d3142"/>
+<rect x="60" y="64" width="280" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="68" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="90" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
+<text x="200" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">덩어리1 정체성</text>
+<rect x="380" y="64" width="280" height="56" rx="6" fill="#2d3142"/>
+<rect x="380" y="64" width="280" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="388" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="410" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
+<text x="520" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">덩어리2 규칙</text>
+<rect x="700" y="64" width="280" height="56" rx="6" fill="#2d3142"/>
+<rect x="700" y="64" width="280" height="56" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+<rect x="708" y="72" width="44" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="730" y="81" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">CHUNK</text>
+<text x="840" y="106" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">덩어리3 실용도구</text>
+
+<!-- steps -->
+<rect x="108" y="160" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="108" y="160" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="116" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="134" y="177" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="224" y="202" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">1 프로젝트 개요</text>
+<rect x="108" y="240" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="108" y="240" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="116" y="248" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="134" y="257" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="224" y="282" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">2 디렉토리 구조</text>
+<rect x="108" y="320" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="108" y="320" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="116" y="328" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="134" y="337" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="224" y="362" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">3 기술 스택</text>
+<rect x="428" y="160" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="428" y="160" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="436" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="454" y="177" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="544" y="202" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">4 코딩 규칙</text>
+<rect x="428" y="240" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="428" y="240" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="436" y="248" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="454" y="257" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="544" y="282" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">5 워크플로우</text>
+<rect x="428" y="320" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="428" y="320" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="436" y="328" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="454" y="337" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="544" y="362" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">6 금지 사항 NEVER</text>
+<rect x="748" y="160" width="232" height="56" rx="6" fill="#2d3142"/>
+<rect x="748" y="160" width="232" height="56" rx="6" fill="#393e53" stroke="#bfc0c0" stroke-width="1"/>
+<rect x="756" y="168" width="36" height="12" rx="2" fill="transparent" stroke="#bfc0c0" stroke-width=".8" opacity=".5"/>
+<text x="774" y="177" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" text-anchor="middle" letter-spacing=".08em">STEP</text>
+<text x="864" y="202" fill="#f5f5f5" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="600" text-anchor="middle">7 커맨드 Cheatsheet</text>
+
+<!-- legend -->
+<line x1="40" y1="408" x2="1000" y2="408" stroke="rgba(245,245,245,.14)" stroke-width=".8"/>
+<text x="40" y="436" fill="#bfc0c0" font-family="'Geist Mono',ui-monospace,'Cascadia Mono','SF Mono',Menlo,Consolas,monospace" font-size="9" letter-spacing=".14em">LEGEND</text>
+<rect x="120" y="424" width="16" height="12" rx="2" fill="#393e53" stroke="#f5f5f5" stroke-width=".8"/>
+<text x="144" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리</text>
+<rect x="212" y="424" width="16" height="12" rx="2" fill="#393e53" stroke="#bfc0c0" stroke-width=".8"/>
+<text x="236" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">단계</text>
+<line x1="292" y1="430" x2="324" y2="430" stroke="#bfc0c0" stroke-width="1" marker-end="url(#c37-arrow)"/>
+<text x="336" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리 순서</text>
+<line x1="432" y1="430" x2="464" y2="430" stroke="#bfc0c0" stroke-width="1"/>
+<text x="476" y="436" fill="#bfc0c0" font-family="'Geist','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',system-ui,sans-serif" font-size="12" font-weight="400">덩어리에 속한 단계</text>
+</svg>
