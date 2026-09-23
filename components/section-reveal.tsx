@@ -4,15 +4,18 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 type SectionRevealProps = {
   children: ReactNode;
   className?: string;
+  onReveal?: () => void;
 };
 
 /**
  * 뷰포트 진입 시 한 번만 opacity + translateY 등장.
  * prefers-reduced-motion: reduce 이면 즉시 표시.
  */
-export function SectionReveal({ children, className }: SectionRevealProps) {
+export function SectionReveal({ children, className, onReveal }: SectionRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const onRevealRef = useRef(onReveal);
+  onRevealRef.current = onReveal;
 
   useEffect(() => {
     const el = ref.current;
@@ -28,6 +31,7 @@ export function SectionReveal({ children, className }: SectionRevealProps) {
         const [entry] = entries;
         if (entry?.isIntersecting) {
           setVisible(true);
+          onRevealRef.current?.();
           observer.disconnect();
         }
       },

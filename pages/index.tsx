@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { navItems, skillCategories, diagramGroups, writingLinks } from "@/data/portfolio";
 import { getPostSummaries } from "@/lib/blog/loader";
+import { useRevealPulse } from "@/lib/reveal-pulse";
 import { absoluteUrl, NOTION_RESUME_URL } from "@/lib/site";
 import type { PostSummary } from "@/lib/blog/types";
 import { ArrowRight, Award, Bot, Code, Database, ExternalLink, Github, Mail, Users, Wrench } from "lucide-react";
@@ -43,6 +44,8 @@ export const getStaticProps: GetStaticProps<HomeProps> = () => {
 
 export default function Home({ featuredPosts }: HomeProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const productPulse = useRevealPulse<HTMLAnchorElement>();
+  const contactPulse = useRevealPulse<HTMLDivElement>();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -208,7 +211,7 @@ export default function Home({ featuredPosts }: HomeProps) {
         </section>
 
         <section id="product" className="py-16 relative z-10">
-          <SectionReveal>
+          <SectionReveal onReveal={productPulse.trigger}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="relative overflow-hidden rounded-3xl border border-blue-100/80 dark:border-slate-700/70 bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-8 md:p-12 shadow-sm">
                 <div className="max-w-3xl mx-auto text-center">
@@ -232,7 +235,7 @@ export default function Home({ featuredPosts }: HomeProps) {
                     size="lg"
                     className="bg-blue-600 hover:bg-blue-700 text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
                   >
-                    <Link href="/product-lead-v2/">
+                    <Link href="/product-lead-v2/" ref={productPulse.ref}>
                       플랫폼 프로덕트 리더로 보기
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Link>
@@ -633,12 +636,12 @@ export default function Home({ featuredPosts }: HomeProps) {
         </section>
 
         <section id="contact" className="py-16 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm relative z-10 scroll-mt-20">
-          <SectionReveal>
+          <SectionReveal onReveal={contactPulse.trigger}>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 mb-8">연락하기</h2>
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-12">함께 일하고 싶으시다면 언제든 연락해주세요!</p>
             <div className="grid md:grid-cols-2 gap-8">
-              <Card className="text-center hover:shadow-lg transition-shadow">
+              <Card ref={contactPulse.ref} className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-950 rounded-lg flex items-center justify-center">
                     <Mail className="h-8 w-8 text-blue-600 dark:text-blue-400" />
