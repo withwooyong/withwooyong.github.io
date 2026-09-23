@@ -1,5 +1,6 @@
 import { HeroStripeBackdrop } from "@/components/hero-stripe-backdrop";
 import { PortfolioNav } from "@/components/portfolio-nav";
+import { RippleBanner } from "@/components/ripple-banner";
 import { CoinFlipDeck } from "@/components/coin-flip-deck";
 import { SectionReveal } from "@/components/section-reveal";
 import { SiteHead } from "@/components/site-head";
@@ -97,6 +98,7 @@ export default function Home({ featuredPosts }: HomeProps) {
             className="pointer-events-none absolute top-8 right-[-5%] z-[1] w-[min(420px,75vw)] h-[min(420px,75vw)] rounded-full bg-purple-400/25 dark:bg-purple-500/15 blur-3xl hero-blob--alt"
             aria-hidden
           />
+          <RippleBanner />
           <div className="relative z-10 max-w-7xl mx-auto">
             <div className={cn("text-center", isLoaded && "hero-motion")}>
               <div className="mx-auto mb-6 flex justify-center hero-stagger-1">
