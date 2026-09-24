@@ -64,27 +64,35 @@ export function useRevealPulse<T extends HTMLElement>() {
       }
 
       const start = performance.now();
-      const durationMs = 1800;
-      const freq = 1.6; // Hz
-      const tau = 0.55; // s
+      const durationMs = 2000;
+      const freq = 1.1; // Hz — 물결과 템포를 맞춰 느긋하게
+      const tau = 0.7; // s — 진동수를 낮춘 만큼 늘려 출렁임 횟수(2~3회)를 유지한다
+      // 원래 그림자(카드의 shadow 등)를 링 뒤에 붙여 애니메이션 중에도 사라지지 않게 한다
+      const baseShadow = getComputedStyle(el).boxShadow;
+      const shadowTail = baseShadow && baseShadow !== "none" ? `, ${baseShadow}` : "";
+      // 클래스의 그림자 전이(150ms)가 매 프레임 값을 늦게 따라가 링이 번지지 않도록 애니메이션 동안만 끈다
+      el.style.transitionDuration = "0s";
 
       const step = (now: number) => {
         const elapsed = (now - start) / 1000;
         if (elapsed >= durationMs / 1000) {
           el.style.transform = "";
           el.style.boxShadow = "";
+          el.style.transitionDuration = "";
           rafRef.current = null;
           removeScrollListener();
           return;
         }
 
-        const y = Math.exp(-elapsed / tau) * Math.sin(2 * Math.PI * freq * elapsed);
+        const envelope = Math.exp(-elapsed / tau);
+        const y = envelope * Math.sin(2 * Math.PI * freq * elapsed);
         const scale = 1 + 0.035 * amplitude * y;
-        const ringSize = 10 * amplitude * Math.abs(y);
-        const ringAlpha = 0.35 * Math.abs(y);
+        // 링은 진동을 따르지 않고 감쇠 곡선만 따른다 — 한 번 퍼지면서 옅어진다(깜빡이지 않는다)
+        const ringSize = 10 * amplitude * (1 - envelope);
+        const ringAlpha = 0.35 * envelope;
 
         el.style.transform = `scale(${scale})`;
-        el.style.boxShadow = `0 0 0 ${ringSize}px rgba(${ringColor}, ${ringAlpha})`;
+        el.style.boxShadow = `0 0 0 ${ringSize}px rgba(${ringColor}, ${ringAlpha})${shadowTail}`;
 
         rafRef.current = requestAnimationFrame(step);
       };
