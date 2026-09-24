@@ -4,9 +4,11 @@ import { createRippleSim, type RippleSim } from "@/lib/ripple-sim";
 // 조정용 상수
 const IDLE_MS = 2500; // 마지막 입력 후 이 시간이 지나면 rAF 를 멈춘다
 const MAX_DPR = 2; // 디바이스 픽셀 비율 상한 — 고DPI 화면에서 시뮬레이션 해상도가 과도해지지 않게 한다
-const MOVE_STRENGTH_SCALE = 3.2; // 포인터 이동 거리 → 드롭 강도 배율
-const MOVE_STRENGTH_MAX = 0.9; // 포인터 이동으로 생기는 드롭 강도 상한
-const CLICK_STRENGTH = 1.4; // pointerdown(클릭/탭) 한 번의 드롭 강도
+const MOVE_STRENGTH_SCALE = 2.0; // 포인터 이동 거리 → 드롭 강도 배율
+const MOVE_STRENGTH_MAX = 0.55; // 포인터 이동으로 생기는 드롭 강도 상한
+const CLICK_STRENGTH = 1.0; // pointerdown(클릭/탭) 한 번의 드롭 강도
+const STEP_MS = 1000 / 60; // 시뮬레이션 스텝 간격 — 고주사율 화면에서도 물결 속도를 60Hz 기준으로 고정한다
+const MAX_STEPS_PER_FRAME = 3; // 탭 복귀 등으로 시간이 크게 벌어졌을 때 몰아서 돌리는 스텝 수 상한
 
 /**
  * 히어로 섹션에 마우스·터치를 따라 번지는 물결 오버레이.
@@ -30,6 +32,8 @@ export function RippleBanner() {
     let running = false; // rAF 루프가 돌고 있는지
     let isVisible = true; // IntersectionObserver 상 화면 안인지
     let lastInputAt = 0;
+    let lastFrameAt = 0;
+    let stepDebt = 0; // 아직 돌리지 않은 시뮬레이션 시간(ms)
     let lastPointerUv: { u: number; v: number } | null = null;
     let resizeObserver: ResizeObserver | null = null;
     let intersectionObserver: IntersectionObserver | null = null;
@@ -59,8 +63,14 @@ export function RippleBanner() {
         stopLoop();
         return;
       }
-      sim.step();
-      if (performance.now() - lastInputAt > IDLE_MS) {
+      const now = performance.now();
+      stepDebt = Math.min(stepDebt + now - lastFrameAt, STEP_MS * MAX_STEPS_PER_FRAME);
+      lastFrameAt = now;
+      while (stepDebt >= STEP_MS) {
+        sim.step();
+        stepDebt -= STEP_MS;
+      }
+      if (now - lastInputAt > IDLE_MS) {
         stopLoop();
         return;
       }
@@ -70,6 +80,8 @@ export function RippleBanner() {
     const startLoop = () => {
       if (running || !sim || !isVisible || isPageHidden()) return;
       running = true;
+      lastFrameAt = performance.now();
+      stepDebt = STEP_MS; // 시작 프레임에서 한 스텝은 바로 돌린다
       rafId = requestAnimationFrame(frame);
     };
 

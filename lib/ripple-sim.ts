@@ -14,13 +14,14 @@
 // 조정용 상수
 const SIM_MAX_WIDTH = 256; // 시뮬레이션 해상도(가로 텍셀 수) — 올리면 세밀해지지만 갱신 비용이 커진다
 const SIM_MIN_DIM = 48; // 가로/세로 어느 쪽도 이보다 작아지지 않는다
-const DAMPING = 0.985; // 프레임당 감쇠율 — 1에 가까울수록 물결이 오래 남는다
+const DAMPING = 0.975; // 스텝당 감쇠율 — 1에 가까울수록 물결이 오래 남는다
+const WAVE_COEFF = 0.9; // 파동 전파 계수 — 낮출수록 물결이 느리게 번진다(전파 속도 ∝ 제곱근)
 const DROP_RADIUS = 0.05; // 드롭 반경 (정규화 uv, 가로 기준)
-const SHADE_INTENSITY = 5.5; // 높이 기울기 → 알파 변환 배율
+const SHADE_INTENSITY = 4.0; // 높이 기울기 → 알파 변환 배율
 const HIGHLIGHT_COLOR: [number, number, number] = [1, 1, 1]; // 하이라이트: 흰색 계열
 const SHADOW_COLOR: [number, number, number] = [0.65, 0.78, 0.95]; // 그림자: 아주 옅은 청색 — 어둡게 하지 않고 살짝 식힌다
-const HIGHLIGHT_MAX_ALPHA_LIGHT = 0.3; // 라이트 모드 하이라이트 알파 상한
-const HIGHLIGHT_MAX_ALPHA_DARK = 0.62; // 다크 모드는 배경이 어두워 하이라이트를 더 강하게 둔다
+const HIGHLIGHT_MAX_ALPHA_LIGHT = 0.22; // 라이트 모드 하이라이트 알파 상한
+const HIGHLIGHT_MAX_ALPHA_DARK = 0.45; // 다크 모드는 배경이 어두워 하이라이트를 더 강하게 둔다
 const HIGHLIGHT_SCALE_DARK = 1.8; // 다크 모드에서 기울기 → 하이라이트 반응 배율
 const SHADOW_MAX_ALPHA = 0.08; // 그림자 알파 상한 — 낮게 유지해 회색 얼룩을 막는다
 
@@ -49,7 +50,7 @@ void main() {
     texture2D(uState, vUv + vec2(0.0, uTexel.y)).r +
     texture2D(uState, vUv - vec2(0.0, uTexel.y)).r
   ) * 0.25;
-  velocity += (neighborAvg - height) * 2.0;
+  velocity += (neighborAvg - height) * ${WAVE_COEFF.toFixed(3)};
   velocity *= uDamping;
   height += velocity;
   gl_FragColor = vec4(height, velocity, 0.0, 1.0);
