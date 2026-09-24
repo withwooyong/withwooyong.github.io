@@ -2,7 +2,8 @@ import { useEffect, useRef } from "react";
 import { createRippleSim, type RippleSim } from "@/lib/ripple-sim";
 
 // 조정용 상수
-const IDLE_MS = 2500; // 마지막 입력 후 이 시간이 지나면 rAF 를 멈춘다
+const IDLE_MS = 1500; // 마지막 입력 후 이 시간이 지나면 정리 단계(높이장을 빠르게 가라앉힘)에 들어간다
+const SETTLE_MS = 700; // 정리 단계 길이 — 끝나면 높이장과 캔버스를 비우고 rAF 를 멈춘다
 const MAX_DPR = 2; // 디바이스 픽셀 비율 상한 — 고DPI 화면에서 시뮬레이션 해상도가 과도해지지 않게 한다
 const MOVE_STRENGTH_SCALE = 2.0; // 포인터 이동 거리 → 드롭 강도 배율
 const MOVE_STRENGTH_MAX = 0.55; // 포인터 이동으로 생기는 드롭 강도 상한
@@ -60,17 +61,21 @@ export function RippleBanner() {
 
     const frame = () => {
       if (!sim || !isVisible || isPageHidden()) {
+        sim?.wipe(); // 멈춘 채 남은 마지막 프레임이 복귀 때 잔상으로 보이지 않게 한다
         stopLoop();
         return;
       }
       const now = performance.now();
+      const idleFor = now - lastInputAt;
+      sim.setSettling(idleFor > IDLE_MS);
       stepDebt = Math.min(stepDebt + now - lastFrameAt, STEP_MS * MAX_STEPS_PER_FRAME);
       lastFrameAt = now;
       while (stepDebt >= STEP_MS) {
         sim.step();
         stepDebt -= STEP_MS;
       }
-      if (now - lastInputAt > IDLE_MS) {
+      if (idleFor > IDLE_MS + SETTLE_MS) {
+        sim.wipe();
         stopLoop();
         return;
       }

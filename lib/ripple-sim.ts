@@ -15,8 +15,9 @@
 const SIM_MAX_WIDTH = 256; // 시뮬레이션 해상도(가로 텍셀 수) — 올리면 세밀해지지만 갱신 비용이 커진다
 const SIM_MIN_DIM = 48; // 가로/세로 어느 쪽도 이보다 작아지지 않는다
 const DAMPING = 0.975; // 스텝당 감쇠율 — 1에 가까울수록 물결이 오래 남는다
-const WAVE_COEFF = 0.9; // 파동 전파 계수 — 낮출수록 물결이 느리게 번진다(전파 속도 ∝ 제곱근)
-const DROP_RADIUS = 0.05; // 드롭 반경 (정규화 uv, 가로 기준)
+const WAVE_COEFF = 0.35; // 파동 전파 계수 — 낮출수록 물결이 느리게 번진다(전파 속도 ∝ 제곱근)
+const SETTLE_DECAY = 0.9; // 입력이 멎은 뒤 정리 단계에서 높이·속도에 곱하는 스텝당 감쇠 — 잔상을 남기지 않는다
+const DROP_RADIUS = 0.07; // 드롭 반경 (정규화 uv, 가로 기준) — 넓을수록 물결 주기가 길어져 느긋해 보인다
 const SHADE_INTENSITY = 4.0; // 높이 기울기 → 알파 변환 배율
 const HIGHLIGHT_COLOR: [number, number, number] = [1, 1, 1]; // 하이라이트: 흰색 계열
 const SHADOW_COLOR: [number, number, number] = [0.65, 0.78, 0.95]; // 그림자: 아주 옅은 청색 — 어둡게 하지 않고 살짝 식힌다
@@ -40,6 +41,7 @@ varying vec2 vUv;
 uniform sampler2D uState;
 uniform vec2 uTexel;
 uniform float uDamping;
+uniform float uSettle;
 void main() {
   vec4 state = texture2D(uState, vUv);
   float height = state.r;
@@ -51,8 +53,8 @@ void main() {
     texture2D(uState, vUv - vec2(0.0, uTexel.y)).r
   ) * 0.25;
   velocity += (neighborAvg - height) * ${WAVE_COEFF.toFixed(3)};
-  velocity *= uDamping;
-  height += velocity;
+  velocity *= uDamping * uSettle;
+  height = (height + velocity) * uSettle;
   gl_FragColor = vec4(height, velocity, 0.0, 1.0);
 }
 `;
@@ -144,6 +146,10 @@ export interface RippleSim {
   resizeSim(pixelWidth: number, pixelHeight: number): void;
   /** 이 사이트의 다크 판정(`html.dark`)이 바뀔 때마다 호출 — 다크에서 하이라이트를 더 강하게 낸다 */
   setDarkMode(isDark: boolean): void;
+  /** true 면 매 스텝 높이장을 빠르게 가라앉힌다 — 입력이 멎은 뒤 잔상을 지우는 정리 단계 */
+  setSettling(on: boolean): void;
+  /** 높이장과 캔버스를 0 으로 비운다 — 루프를 멈추기 직전에 불러 마지막 프레임이 남지 않게 한다 */
+  wipe(): void;
   /** GL 자원을 해제한다 */
   destroy(): void;
 }
@@ -359,6 +365,7 @@ export function createRippleSim(canvas: HTMLCanvasElement): RippleSim | null {
 
   const pendingDrops: Array<{ u: number; v: number; strength: number }> = [];
   let darkMode = false;
+  let settling = false;
 
   function addDrop(u: number, v: number, strength: number) {
     pendingDrops.push({ u, v, strength });
@@ -396,8 +403,25 @@ export function createRippleSim(canvas: HTMLCanvasElement): RippleSim | null {
     gl.uniform1i(gl.getUniformLocation(updateProgram, "uState"), 0);
     gl.uniform2f(gl.getUniformLocation(updateProgram, "uTexel"), 1 / simWidth, 1 / simHeight);
     gl.uniform1f(gl.getUniformLocation(updateProgram, "uDamping"), DAMPING);
+    gl.uniform1f(gl.getUniformLocation(updateProgram, "uSettle"), settling ? SETTLE_DECAY : 1);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     current = current === 0 ? 1 : 0;
+  }
+
+  function setSettling(on: boolean) {
+    settling = on;
+  }
+
+  function wipe() {
+    pendingDrops.length = 0;
+    gl.clearColor(0, 0, 0, 0);
+    for (const target of [targetA, targetB]) {
+      if (!target) continue;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, target.framebuffer);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.clear(gl.COLOR_BUFFER_BIT);
   }
 
   function runDisplayPass() {
@@ -452,5 +476,5 @@ export function createRippleSim(canvas: HTMLCanvasElement): RippleSim | null {
     targetB = null;
   }
 
-  return { addDrop, step, resizeSim, setDarkMode, destroy };
+  return { addDrop, step, resizeSim, setDarkMode, setSettling, wipe, destroy };
 }
