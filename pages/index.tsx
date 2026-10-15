@@ -203,7 +203,7 @@ export default function Home({ featuredPosts }: HomeProps) {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600 dark:text-slate-300">20~30명 개발팀 총괄 경험</p>
+                    <p className="text-slate-600 dark:text-slate-300">약 30명 개발팀 총괄 경험</p>
                   </CardContent>
                 </Card>
               </CoinFlipDeck>
@@ -267,7 +267,7 @@ export default function Home({ featuredPosts }: HomeProps) {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">기획, UI/UX, 프론트, 백엔드, 앱, 데브옵스 포지션의 인력(20~30명)으로 야나두 전반적인 서비스 개발 총괄</p>
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">기획, UI/UX, 프론트, 백엔드, 앱, 데브옵스 포지션의 인력(약 30명)으로 야나두 전반적인 서비스 개발 총괄</p>
                   <ul className="space-y-2 text-slate-600 dark:text-slate-300">
                     <li className="flex items-start">
                       <span className="text-blue-500 dark:text-blue-400 mr-2">•</span>

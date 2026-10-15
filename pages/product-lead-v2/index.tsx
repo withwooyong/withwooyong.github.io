@@ -36,7 +36,7 @@ const summaryCards = [
     Icon: Users,
     iconClassName: "text-purple-600 dark:text-purple-400",
     title: "조직·거버넌스",
-    body: "기획·UI/UX·프론트·백엔드·앱·데브옵스 전 직군 20~30명을 총괄한 크로스펑셔널 리딩. 확장 가능한 플랫폼 설계를 석사 논문으로 연구.",
+    body: "기획·UI/UX·프론트·백엔드·앱·데브옵스 전 직군 약 30명을 총괄한 크로스펑셔널 리딩. 확장 가능한 플랫폼 설계를 석사 논문으로 연구.",
   },
 ];
 
@@ -48,7 +48,7 @@ const journey = [
     org: "(주)야나두 a kakao company (구 카카오키즈)",
     role: "커머스개발실장",
     context: "교육·커머스 도메인에서 제품 성장과 AI 전환을 동시에 요구받는 국면.",
-    roleDetail: "기획·UI/UX·프론트·백엔드·앱·데브옵스 전 직군 20~30명을 총괄하며, 제품과 기술 의사결정을 함께 책임지는 개발 총괄.",
+    roleDetail: "기획·UI/UX·프론트·백엔드·앱·데브옵스 전 직군 약 30명을 총괄하며, 제품과 기술 의사결정을 함께 책임지는 개발 총괄.",
     approach: "교육·커머스 서비스를 제품 단위로 운영하고, 다양한 챗봇형 AI 서비스를 직접 기획·런칭.",
     impact: "콘텐츠·커머스·AI·조직을 연결해 제품을 성장시키는 프로덕트 리더십으로 확장 — 메타데이터·검색 경험을 AI 자동화로 잇는 기반.",
   },
@@ -95,7 +95,7 @@ const capabilityMap: { need: string; evidence: string; confirm?: boolean }[] = [
   { need: "OTT · 스트리밍 도메인", evidence: "KT·CJ헬로비전·SK브로드밴드에서 OTT/N-Screen/STB 20년" },
   { need: "커머스 플랫폼", evidence: "야나두 교육·커머스 플랫폼 총괄" },
   { need: "AI 기반 메타데이터 자동화", evidence: "검색·추천·딥메타 실무 + AI 챗봇 서비스 직접 개발·런칭" },
-  { need: "PM·크로스펑셔널 조직 리딩", evidence: "기획·PM 포함 전 직군 20~30명 총괄" },
+  { need: "PM·크로스펑셔널 조직 리딩", evidence: "기획·PM 포함 전 직군 약 30명 총괄" },
 ];
 
 export default function ProductLead() {
@@ -114,7 +114,7 @@ export default function ProductLead() {
     <>
       <SiteHead
         title="허우용 — 플랫폼 프로덕트 리더"
-        description="20년간 OTT·커머스 플랫폼의 코어를 설계·재구축하고 20~30인 조직을 총괄해 온 리더. 차세대 CMS(NCMS) 재구축을 발주 PM으로 완주했고, OTT CMS 도메인을 1세대부터 이해합니다. CMS 재구축·플랫폼 거버넌스·AI 메타데이터 관점의 요약 한 장."
+        description="20년간 OTT·커머스 플랫폼의 코어를 설계·재구축하고 약 30명 조직을 총괄해 온 리더. 차세대 CMS(NCMS) 재구축을 발주 PM으로 완주했고, OTT CMS 도메인을 1세대부터 이해합니다. CMS 재구축·플랫폼 거버넌스·AI 메타데이터 관점의 요약 한 장."
         path="/product-lead-v2/"
         jsonLd={personJsonLd}
       />
@@ -166,7 +166,7 @@ export default function ProductLead() {
               </h1>
               <p className="text-xl md:text-2xl font-bold tracking-tight mt-2">플랫폼 프로덕트 리더</p>
               <p className="text-lg text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
-                20년간 OTT·커머스 플랫폼의 코어를 설계·재구축하고, 20~30인 조직을 총괄해 온 리더.
+                20년간 OTT·커머스 플랫폼의 코어를 설계·재구축하고, 약 30명 조직을 총괄해 온 리더.
               </p>
               <p className="text-base text-blue-700 dark:text-blue-300 font-medium mt-2">
                 차세대 CMS 재구축을 발주 PM으로 완주하고, 커머스·AI 플랫폼까지 총괄하는 프로덕트 리더.
