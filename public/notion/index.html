@@ -13,9 +13,9 @@
     <meta property="og:image" content="https://withwooyong.github.io/images/Ted_profile.png" />
     <meta property="og:locale" content="ko_KR" />
 
-    <!-- 목적지를 바꿀 때는 아래 세 곳을 함께 수정한다: meta refresh · canonical · a[href] -->
-    <meta http-equiv="refresh" content="0; url=https://fortunate-ghost-cf6.notion.site/Ted-3a5845b3742d8113a393e327716ec4a3" />
-    <link rel="canonical" href="https://fortunate-ghost-cf6.notion.site/Ted-3a5845b3742d8113a393e327716ec4a3" />
+    <!-- 목적지를 바꿀 때는 아래 두 곳을 함께 수정한다: a[href] · 하단 script 의 location.replace -->
+    <!-- meta refresh · canonical 은 두지 않는다. 링크드인 수집기가 그것을 따라가 노션 주소를 카드에 저장해
+         리다이렉트 경로가 무력해진다(2026-10-20). 스크립트를 실행하지 않는 수집기만 이 페이지에 머문다 -->
 
     <!-- 리다이렉트 페이지는 검색 색인에서 제외한다 -->
     <meta name="robots" content="noindex, follow" />
@@ -50,7 +50,7 @@
     </main>
 
     <script>
-      // meta refresh가 막힌 환경을 위한 보조 경로.
+      // 사람이 여는 경우의 이동 경로. 스크립트가 꺼진 환경은 위 링크를 누른다.
       // replace()를 쓰면 뒤로가기 시 이 페이지로 되돌아오는 루프가 생기지 않는다.
       location.replace("https://fortunate-ghost-cf6.notion.site/Ted-3a5845b3742d8113a393e327716ec4a3");
     </script>
