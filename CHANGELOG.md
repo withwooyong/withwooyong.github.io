@@ -20,6 +20,8 @@
 
 `FlowEdge` 에 `order`·`duration`, `FlowSpec` 에 `steps` 를 더해 같은 order 는 동시에, 다음 order 는 앞 단계가 끝난 뒤 재생한다(Web Animations API, `components/flow-diagram/sequence.ts`). 도착 노드에 맥박과 처리 중·완료 배지, 캡션과 재생·이전·다음 버튼을 두고 `skb-flow-search` 에 11단계를 채웠다. order 가 없는 스펙 10개는 렌더 HTML 이 바이트까지 같고, GC-6 은 자산 해시만 바뀐 13개를 갱신했다.
 
+같은 날: `FlowDiagram` 에 `activeOrder?` 를 더하고, 스크롤로 문단이 화면 중앙에 오면 그 단계가 켜지는 `/flow/skb-search/` 를 만들었다(IntersectionObserver, 문단은 스펙의 캡션과 엣지에서 만든다). prop 이 없으면 기존 경로 그대로이며, 배포본과 대조한 기준선 15쪽은 홈에 공용 청크 `<script>` 하나가 더해진 것 말고는 마크업이 같다.
+
 ## 2026-09-23 — 🌊 **홈 히어로에 물결 효과를 넣었다**
 
 마우스 · 터치를 따라 물결 음영이 번지는 바닐라 WebGL 오버레이다(`components/ripple-banner.tsx` · `lib/ripple-sim.ts`). 부동소수 렌더 타깃이 없거나 reduced-motion 이면 그리지 않고, 화면 밖 · 숨은 탭 · 입력이 멎은 뒤에는 rAF 를 멈춘다. Tailwind 가 소스의 `resize` · `visible` 같은 식별자를 클래스로 잡아 CSS 해시를 바꾸므로 식별자 이름을 피했다. GC-6 기준선은 `index.html` 만 갱신했다.
