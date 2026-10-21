@@ -5,6 +5,7 @@ import { ArrowMarkers, EDGE_COLOR_VAR, FlowLegend, LaneBand, NodeShape, markerId
 import { toStackedSpec } from "./stacked-layout";
 import type { FlowSpec } from "./types";
 import { useFlowSequence, type FlowSequence } from "./use-flow-sequence";
+import { useFlowStep } from "./use-flow-step";
 import { useInView } from "./use-in-view";
 import { validateFlowSpec } from "./validate";
 
@@ -18,7 +19,20 @@ import { validateFlowSpec } from "./validate";
  */
 const STACK_RATIO = 0.7;
 
-export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: string }) {
+export function FlowDiagram({
+  spec,
+  className,
+  activeOrder,
+}: {
+  spec: FlowSpec;
+  className?: string;
+  /**
+   * 주어지면 자동 재생과 컨트롤 대신 바깥이 단계를 정한다(스크롤 설명 페이지 등).
+   * 이 order 보다 작은 단계는 완료, 이 order 는 한 번 재생, 큰 order 는 시작 전이다.
+   * 생략하면 기존 동작과 렌더 결과가 같다.
+   */
+  activeOrder?: number;
+}) {
   const { ref, inView } = useInView<HTMLDivElement>();
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -90,7 +104,11 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
   );
 
   // order 가 있는 스펙에서만 null 이 아니다. 훅은 이 컴포넌트 인스턴스 안에만 상태를 둔다
-  const sequence = useFlowSequence(ref, activeSpec, inView);
+  const sequence = useFlowSequence(ref, activeSpec, inView, activeOrder !== undefined);
+  // activeOrder 가 있을 때만 null 이 아니다. 이때 sequence 는 항상 null 이다
+  const stepper = useFlowStep(ref, activeSpec, activeOrder);
+  const seqDrawn = sequence !== null || stepper !== null;
+  const liveOrder = sequence ? sequence.currentOrder : stepper?.activeOrder;
 
   const isEdgeActive = (from: string, to: string) =>
     hovered === null || from === hovered || to === hovered;
@@ -99,7 +117,7 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
     <div
       ref={ref}
       data-flow-animate={inView ? "on" : "off"}
-      data-flow-seq={sequence ? sequence.mode : undefined}
+      data-flow-seq={sequence ? sequence.mode : stepper ? "step" : undefined}
       className={cn("w-full", activeSpec.minWidth ? "overflow-x-auto" : null, className)}
     >
       <svg
@@ -123,7 +141,7 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
           const active = isEdgeActive(edge.from, edge.to);
           const color = EDGE_COLOR_VAR[edge.kind];
           const animated = edge.animated !== false;
-          const live = sequence !== null && edge.order === sequence.currentOrder;
+          const live = liveOrder !== undefined && edge.order === liveOrder;
           return (
             <g key={`${edge.from}-${edge.to}-${index}`} className={cn(!active && "flow-dim")}>
               <path className="flow-edge-hit" d={d} />
@@ -136,7 +154,7 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
                   edge.bidirectional ? `url(#${markerId(idPrefix, edge.kind)})` : undefined
                 }
               />
-              {sequence ? (
+              {seqDrawn ? (
                 // 순서 모드: order 가 있는 엣지만 패킷을 그린다. 움직임은 Web Animations 가 맡는다
                 animated && edge.order !== undefined ? (
                   <circle
@@ -175,7 +193,11 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
             node={node}
             dimmed={hovered !== null && !isNodeActive(node.id, hovered, activeSpec)}
             onHoverChange={setHovered}
-            sequence={sequence ? { status: sequence.statuses[node.id] ?? "idle" } : undefined}
+            sequence={
+              seqDrawn
+                ? { status: (sequence ?? stepper)!.statuses[node.id] ?? "idle" }
+                : undefined
+            }
           />
         ))}
       </svg>

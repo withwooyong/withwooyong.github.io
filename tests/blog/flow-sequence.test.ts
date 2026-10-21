@@ -6,8 +6,10 @@ import {
   hasSequence,
   inboundWindows,
   nodeStatusAt,
+  nodeStatusesAtOrder,
   packetKeyframes,
   pulseKeyframes,
+  stepSeconds,
   stepIndexAt,
 } from "@/components/flow-diagram/sequence";
 import { toStackedSpec } from "@/components/flow-diagram/stacked-layout";
@@ -289,5 +291,74 @@ describe("홈 흐름도 스펙 · 좁은 화면 재배치", () => {
     const stacked = toStackedSpec(specWith([ab, bc]), 300);
     expect(stacked.steps).toBeUndefined();
     expect(hasSequence(stacked.edges)).toBe(false);
+  });
+});
+
+describe("nodeStatusesAtOrder · stepSeconds — 바깥이 단계를 정하는 모드", () => {
+  // a→b(1) b→c(2) c→d(3), 그리고 d 로 order 2 에서도 한 번 더 들어온다
+  const chain: Array<{ from: string; to: string; order?: number }> = [
+    { from: "a", to: "b", order: 1 },
+    { from: "b", to: "c", order: 2 },
+    { from: "c", to: "d", order: 3 },
+    { from: "b", to: "d", order: 2 },
+    { from: "x", to: "y" },
+  ];
+
+  it("activeOrder 보다 작은 order 의 도착 노드는 완료, 큰 order 는 표시하지 않는다", () => {
+    expect(nodeStatusesAtOrder(chain, 3, false)).toEqual({ b: "done", c: "done", d: "busy" });
+    expect(nodeStatusesAtOrder(chain, 2, false)).toEqual({ b: "done", c: "busy", d: "busy" });
+  });
+
+  it("활성 단계는 재생 중에는 처리 중, 끝나면 완료다", () => {
+    expect(nodeStatusesAtOrder(chain, 1, false)).toEqual({ b: "busy" });
+    expect(nodeStatusesAtOrder(chain, 1, true)).toEqual({ b: "done" });
+  });
+
+  it("들어오는 엣지가 여럿이면 전부 끝나야 완료다", () => {
+    // d 는 order 2 와 3 으로 들어온다
+    expect(nodeStatusesAtOrder(chain, 2, true)).toEqual({ b: "done", c: "done", d: "busy" });
+    expect(nodeStatusesAtOrder(chain, 3, true)).toEqual({ b: "done", c: "done", d: "done" });
+  });
+
+  it("activeOrder 가 줄면 이전 상태로 돌아간다", () => {
+    const forward = nodeStatusesAtOrder(chain, 3, true);
+    const back = nodeStatusesAtOrder(chain, 1, true);
+    expect(forward.c).toBe("done");
+    expect(back).toEqual({ b: "done" });
+    expect(nodeStatusesAtOrder(chain, 1, true)).toEqual(back);
+  });
+
+  it("시작 전(activeOrder 0)에는 모든 노드가 idle 이라 결과가 비어 있다", () => {
+    expect(nodeStatusesAtOrder(chain, 0, false)).toEqual({});
+    expect(nodeStatusesAtOrder(chain, 0, true)).toEqual({});
+  });
+
+  it("order 없는 엣지의 도착 노드는 다루지 않는다", () => {
+    expect("y" in nodeStatusesAtOrder(chain, 3, true)).toBe(false);
+    expect(nodeStatusesAtOrder([{ to: "y" }], 1, true)).toEqual({});
+  });
+
+  it("재생 모드의 상태와 같은 규칙이다 (nodeStatusAt)", () => {
+    const edges = skbFlowSearchSpec.edges;
+    const schedule = computeSchedule(edges);
+    const inbound = inboundWindows(edges, schedule);
+    for (const w of schedule.windows) {
+      // 시작 시각: 이 order 가 막 출발했다. 끝 시각: 다음 order 가 출발하기 직전의 상태를 본다
+      for (const [at, done] of [[w.start, false], [w.end - 1e-9, true]] as const) {
+        const expected: Record<string, string> = {};
+        inbound.forEach((list, id) => {
+          // 끝 시각에서는 이 order 의 엣지가 끝난 것으로 치므로 도착 시각을 한 칸 당겨 읽는다
+          const s = nodeStatusAt(done ? list.map((x) => (x.end <= w.end + 1e-9 ? { ...x, end: w.end - 1e-6 } : x)) : list, at);
+          if (s !== "idle") expected[id] = s;
+        });
+        expect(nodeStatusesAtOrder(edges, w.order, done)).toEqual(expected);
+      }
+    }
+  });
+
+  it("stepSeconds 는 그 order 엣지 중 가장 긴 duration, 없으면 0", () => {
+    expect(stepSeconds(skbFlowSearchSpec.edges, 7)).toBe(1.2);
+    expect(stepSeconds(skbFlowSearchSpec.edges, 8)).toBe(DEFAULT_EDGE_DURATION);
+    expect(stepSeconds(skbFlowSearchSpec.edges, 99)).toBe(0);
   });
 });

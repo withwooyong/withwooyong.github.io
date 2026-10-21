@@ -177,3 +177,40 @@ export function pulseKeyframes(
   frames.push({ offset: 1, scale: 1 });
   return frames;
 }
+
+/**
+ * 바깥이 단계를 정하는 모드(activeOrder)의 노드 상태.
+ * 도착 노드마다 들어오는 순서 엣지를 모아, 엣지가 시작했는지 · 끝났는지로 판정한다.
+ *  - order < activeOrder 인 엣지는 끝났다.
+ *  - order === activeOrder 인 엣지는 시작했고, activeDone 이 true 일 때만 끝났다.
+ *  - order > activeOrder 인 엣지는 아직 시작하지 않았다.
+ * 들어오는 엣지가 전부 끝났으면 done, 하나라도 시작했으면 busy, 아니면 idle 이다.
+ * idle 인 노드는 결과에 넣지 않는다. activeOrder 가 줄면 그 이전 상태가 그대로 나온다.
+ */
+export function nodeStatusesAtOrder(
+  edges: Array<SequenceEdgeInput & { to: string }>,
+  activeOrder: number,
+  activeDone: boolean,
+): Record<string, NodeStatus> {
+  const inbound = new Map<string, number[]>();
+  for (const edge of edges) {
+    if (!hasOrder(edge.order)) continue;
+    const list = inbound.get(edge.to) ?? [];
+    list.push(edge.order);
+    inbound.set(edge.to, list);
+  }
+  const result: Record<string, NodeStatus> = {};
+  inbound.forEach((orders, id) => {
+    const allEnded = orders.every((o) => o < activeOrder || (o === activeOrder && activeDone));
+    const anyStarted = orders.some((o) => o <= activeOrder);
+    if (allEnded) result[id] = "done";
+    else if (anyStarted) result[id] = "busy";
+  });
+  return result;
+}
+
+/** 한 order 단계의 길이(초): 그 order 엣지 중 가장 긴 duration. 그 order 의 엣지가 없으면 0 */
+export function stepSeconds(edges: SequenceEdgeInput[], order: number): number {
+  const durations = edges.filter((e) => e.order === order).map((e) => edgeDuration(e));
+  return durations.length === 0 ? 0 : Math.max(...durations);
+}

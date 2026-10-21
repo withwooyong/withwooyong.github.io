@@ -60,8 +60,10 @@ export function useFlowSequence(
   rootRef: RefObject<HTMLElement | null>,
   spec: FlowSpec,
   inView: boolean,
+  /** true 면 바깥이 단계를 정하는 모드(activeOrder)라 자동 재생과 컨트롤을 만들지 않는다 */
+  suspended = false,
 ): FlowSequence | null {
-  const enabled = hasSequence(spec.edges);
+  const enabled = !suspended && hasSequence(spec.edges);
   const schedule = useMemo(() => computeSchedule(spec.edges), [spec.edges]);
   const inbound = useMemo(() => inboundWindows(spec.edges, schedule), [spec.edges, schedule]);
 
