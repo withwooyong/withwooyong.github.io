@@ -42,6 +42,49 @@ export function validateFlowSpec(spec: FlowSpec): string[] {
     }
   }
 
+  errors.push(...validateSequence(spec));
+
+  return errors;
+}
+
+/** 순서 재생 필드(order · duration · steps)의 규칙 */
+function validateSequence(spec: FlowSpec): string[] {
+  const errors: string[] = [];
+  const used = new Set<number>();
+
+  for (const edge of spec.edges) {
+    const label = `${edge.from} -> ${edge.to}`;
+    if (edge.order !== undefined) {
+      if (!Number.isInteger(edge.order) || edge.order < 1) {
+        errors.push(`[${spec.id}] 엣지 "${label}"의 order(${edge.order})는 1 이상의 정수여야 합니다`);
+      } else {
+        used.add(edge.order);
+      }
+    }
+    if (edge.duration !== undefined && !(Number.isFinite(edge.duration) && edge.duration > 0)) {
+      errors.push(`[${spec.id}] 엣지 "${label}"의 duration(${edge.duration})은 양수여야 합니다`);
+    }
+  }
+
+  // 1부터 빈 번호가 없어야 한다. 빠진 번호 하나가 재생 순서를 조용히 건너뛰게 만든다
+  const max = used.size > 0 ? Math.max(...Array.from(used)) : 0;
+  for (let n = 1; n <= max; n += 1) {
+    if (!used.has(n)) {
+      errors.push(`[${spec.id}] order ${n}번이 비었습니다. 1부터 ${max}까지 빈 번호가 없어야 합니다`);
+    }
+  }
+
+  const stepSeen = new Set<number>();
+  for (const step of spec.steps ?? []) {
+    if (!used.has(step.order)) {
+      errors.push(`[${spec.id}] steps 의 order ${step.order}에 해당하는 엣지가 없습니다`);
+    }
+    if (stepSeen.has(step.order)) {
+      errors.push(`[${spec.id}] steps 의 order ${step.order}가 중복되었습니다`);
+    }
+    stepSeen.add(step.order);
+  }
+
   return errors;
 }
 

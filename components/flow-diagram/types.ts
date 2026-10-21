@@ -31,6 +31,14 @@ export type FlowEdge = {
   waypoints?: Point[];
   /** 이동 패킷 표시 여부. 기본 true */
   animated?: boolean;
+  /**
+   * 순서 재생의 단계 번호(1부터 빈 번호 없이). 같은 번호는 동시에 재생하고,
+   * 다음 번호는 앞 번호의 엣지가 모두 끝난 뒤 시작한다.
+   * 스펙에 order 가 하나라도 있으면 순서 모드가 되며, order 가 없는 엣지는 패킷을 그리지 않는다.
+   */
+  order?: number;
+  /** 순서 모드에서 패킷이 이 엣지를 지나는 시간(초). 기본 0.8 */
+  duration?: number;
 };
 
 export type FlowLane = {
@@ -59,4 +67,8 @@ export type FlowSpec = {
   nodes: FlowNode[];
   edges: FlowEdge[];
   legend?: Array<{ kind: FlowEdgeKind; label: string }>;
+  /** 순서 재생의 단계별 캡션. order 는 엣지의 order 와 맞아야 한다 */
+  steps?: FlowStep[];
 };
+
+export type FlowStep = { order: number; caption: string };

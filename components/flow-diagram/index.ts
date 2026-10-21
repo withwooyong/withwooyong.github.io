@@ -8,5 +8,6 @@ export type {
   FlowNode,
   FlowNodeShape,
   FlowSpec,
+  FlowStep,
   Point,
 } from "./types";

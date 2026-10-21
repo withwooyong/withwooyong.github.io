@@ -983,7 +983,7 @@ const CHECKS = [
   ["build-search-index", "npm run --silent search-index:verify"],
   ["check-baseline", "npm run --silent check-baseline:verify"],
   ["check-engines", "npm run --silent check-engines:verify"],
-  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts tests/blog/diagram-zoom.test.ts"],
+  ["blog-unit", "npx vitest run tests/blog/tree.test.ts tests/blog/search.test.ts tests/blog/graph.test.ts tests/blog/graph-layout.test.ts tests/blog/graph-animation.test.ts tests/blog/memo.test.ts tests/blog/loader.test.ts tests/blog/mermaid-theme.test.ts tests/blog/diagram-zoom.test.ts tests/blog/flow-sequence.test.ts"],
 ];
 
 function run(cmd) {

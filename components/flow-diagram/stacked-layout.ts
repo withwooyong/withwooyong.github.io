@@ -117,6 +117,7 @@ export function toStackedSpec(spec: FlowSpec, width: number): FlowSpec {
     nodes: newNodes,
     edges: newEdges,
     legend: spec.legend,
+    steps: spec.steps,
   };
 }
 
@@ -137,6 +138,9 @@ function buildEdge(
     kind: edge.kind,
     bidirectional: edge.bidirectional,
     animated: edge.animated,
+    // 순서 재생 정보는 재배치 뒤에도 그대로 이어져야 한다
+    order: edge.order,
+    duration: edge.duration,
   };
 
   const fromIndex = orderIndex.get(edge.from);

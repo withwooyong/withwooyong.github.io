@@ -400,6 +400,13 @@ body {
   --flow-accent-border: #3b82f6; /* blue-500 */
   --flow-lane-bg: #f1f5f9;       /* slate-100 */
   --flow-lane-fg: #475569;       /* slate-600 */
+
+  /* 순서 재생 상태 배지: 처리 중 = 점선 윤곽, 완료 = 채운 알약 */
+  --flow-badge-busy-bg: #fffbeb;     /* amber-50 */
+  --flow-badge-busy-border: #b45309; /* amber-700 */
+  --flow-badge-busy-fg: #92400e;     /* amber-800 */
+  --flow-badge-done-bg: #047857;     /* emerald-700 */
+  --flow-badge-done-fg: #ffffff;
 }
 
 .dark {
@@ -416,6 +423,12 @@ body {
   --flow-accent-border: #60a5fa; /* blue-400 */
   --flow-lane-bg: #0f172a;       /* slate-900 */
   --flow-lane-fg: #94a3b8;       /* slate-400 */
+
+  --flow-badge-busy-bg: #422006;     /* amber-950 계열 */
+  --flow-badge-busy-border: #fbbf24; /* amber-400 */
+  --flow-badge-busy-fg: #fde68a;     /* amber-200 */
+  --flow-badge-done-bg: #065f46;     /* emerald-800 */
+  --flow-badge-done-fg: #d1fae5;     /* emerald-100 */
 }
 
 .flow-edge {
@@ -468,6 +481,53 @@ body {
 
 .flow-node {
   transition: opacity 0.2s ease;
+}
+
+/* ---------- 순서 재생 (order 가 있는 스펙만) ----------
+   패킷·맥박은 Web Animations 가 움직인다. 무한 반복 CSS 애니메이션은 순서를 흐리므로 끈다. */
+
+[data-flow-animate][data-flow-seq] .flow-edge,
+[data-flow-animate][data-flow-seq] .flow-packet-seq {
+  animation: none;
+}
+
+/* WAAPI 가 켜기 전에는 보이지 않는다 */
+.flow-packet-seq {
+  opacity: 0;
+}
+
+/* 지금 단계의 엣지: 점선을 실선으로, 조금 굵게 */
+.flow-edge-live {
+  stroke-dasharray: none;
+  stroke-width: 2.75;
+}
+
+.flow-node-seq {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.flow-badge rect {
+  stroke-width: 1;
+}
+
+.flow-badge-busy rect {
+  fill: var(--flow-badge-busy-bg);
+  stroke: var(--flow-badge-busy-border);
+  stroke-dasharray: 3 2;
+}
+
+.flow-badge-busy text {
+  fill: var(--flow-badge-busy-fg);
+}
+
+.flow-badge-done rect {
+  fill: var(--flow-badge-done-bg);
+  stroke: var(--flow-badge-done-bg);
+}
+
+.flow-badge-done text {
+  fill: var(--flow-badge-done-fg);
 }
 
 /* 호버 시 관련 없는 요소를 흐리게 */

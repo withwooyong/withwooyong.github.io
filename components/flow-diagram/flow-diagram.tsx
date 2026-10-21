@@ -4,6 +4,7 @@ import { edgePath } from "./geometry";
 import { ArrowMarkers, EDGE_COLOR_VAR, FlowLegend, LaneBand, NodeShape, markerId } from "./primitives";
 import { toStackedSpec } from "./stacked-layout";
 import type { FlowSpec } from "./types";
+import { useFlowSequence, type FlowSequence } from "./use-flow-sequence";
 import { useInView } from "./use-in-view";
 import { validateFlowSpec } from "./validate";
 
@@ -78,15 +79,18 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
 
   const edges = useMemo(
     () =>
-      activeSpec.edges.flatMap((edge) => {
+      activeSpec.edges.flatMap((edge, index) => {
         const from = nodeById.get(edge.from);
         const to = nodeById.get(edge.to);
         // 검증기가 빌드 타임에 막지만 런타임 안전장치를 둔다
         if (!from || !to) return [];
-        return [{ edge, d: edgePath(from, to, edge.waypoints) }];
+        return [{ edge, d: edgePath(from, to, edge.waypoints), specIndex: index }];
       }),
     [activeSpec.edges, nodeById],
   );
+
+  // order 가 있는 스펙에서만 null 이 아니다. 훅은 이 컴포넌트 인스턴스 안에만 상태를 둔다
+  const sequence = useFlowSequence(ref, activeSpec, inView);
 
   const isEdgeActive = (from: string, to: string) =>
     hovered === null || from === hovered || to === hovered;
@@ -95,6 +99,7 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
     <div
       ref={ref}
       data-flow-animate={inView ? "on" : "off"}
+      data-flow-seq={sequence ? sequence.mode : undefined}
       className={cn("w-full", activeSpec.minWidth ? "overflow-x-auto" : null, className)}
     >
       <svg
@@ -114,15 +119,16 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
           <LaneBand key={lane.id} lane={lane} width={activeSpec.viewBox.w} />
         ))}
 
-        {edges.map(({ edge, d }, index) => {
+        {edges.map(({ edge, d, specIndex }, index) => {
           const active = isEdgeActive(edge.from, edge.to);
           const color = EDGE_COLOR_VAR[edge.kind];
           const animated = edge.animated !== false;
+          const live = sequence !== null && edge.order === sequence.currentOrder;
           return (
             <g key={`${edge.from}-${edge.to}-${index}`} className={cn(!active && "flow-dim")}>
               <path className="flow-edge-hit" d={d} />
               <path
-                className="flow-edge"
+                className={live ? "flow-edge flow-edge-live" : "flow-edge"}
                 d={d}
                 stroke={color}
                 markerEnd={`url(#${markerId(idPrefix, edge.kind)})`}
@@ -130,7 +136,17 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
                   edge.bidirectional ? `url(#${markerId(idPrefix, edge.kind)})` : undefined
                 }
               />
-              {animated ? (
+              {sequence ? (
+                // 순서 모드: order 가 있는 엣지만 패킷을 그린다. 움직임은 Web Animations 가 맡는다
+                animated && edge.order !== undefined ? (
+                  <circle
+                    className="flow-packet flow-packet-seq"
+                    data-flow-packet={specIndex}
+                    fill={color}
+                    style={{ "--flow-path": `path("${d}")` } as CSSProperties}
+                  />
+                ) : null
+              ) : animated ? (
                 <circle
                   className="flow-packet"
                   fill={color}
@@ -159,11 +175,61 @@ export function FlowDiagram({ spec, className }: { spec: FlowSpec; className?: s
             node={node}
             dimmed={hovered !== null && !isNodeActive(node.id, hovered, activeSpec)}
             onHoverChange={setHovered}
+            sequence={sequence ? { status: sequence.statuses[node.id] ?? "idle" } : undefined}
           />
         ))}
       </svg>
 
+      {sequence ? <SequenceControls sequence={sequence} /> : null}
+
       {activeSpec.legend ? <FlowLegend items={activeSpec.legend} /> : null}
+    </div>
+  );
+}
+
+const CONTROL_BUTTON =
+  "inline-flex min-h-9 items-center rounded-md border border-slate-300 bg-white px-3 text-xs font-medium " +
+  "text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 " +
+  "disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 " +
+  "dark:text-slate-100 dark:hover:bg-slate-700 dark:focus-visible:ring-blue-400";
+
+/** 순서 재생의 캡션(aria-live)과 조작 버튼. order 가 있는 스펙에서만 그린다 */
+function SequenceControls({ sequence }: { sequence: FlowSequence }) {
+  return (
+    <div className="mt-3 flex flex-col gap-2">
+      <p
+        aria-live="polite"
+        aria-atomic="true"
+        className="min-h-10 break-keep text-sm leading-5 text-slate-700 dark:text-slate-200"
+      >
+        <span className="mr-1.5 font-semibold tabular-nums text-slate-900 dark:text-slate-50">
+          {sequence.stepIndex + 1}/{sequence.stepCount}
+        </span>
+        {sequence.caption}
+      </p>
+      <div role="group" aria-label="순서 재생 조작" className="flex flex-wrap gap-2">
+        {sequence.mode === "animate" ? (
+          <button type="button" className={CONTROL_BUTTON} onClick={sequence.toggle}>
+            {sequence.playing ? "일시정지" : "재생"}
+          </button>
+        ) : null}
+        <button
+          type="button"
+          className={CONTROL_BUTTON}
+          onClick={sequence.prev}
+          disabled={!sequence.canPrev}
+        >
+          이전 단계
+        </button>
+        <button
+          type="button"
+          className={CONTROL_BUTTON}
+          onClick={sequence.next}
+          disabled={!sequence.canNext}
+        >
+          다음 단계
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import type { NodeStatus } from "./sequence";
 import type { FlowEdgeKind, FlowLane, FlowNode } from "./types";
 
 export const EDGE_COLOR_VAR: Record<FlowEdgeKind, string> = {
@@ -62,6 +63,8 @@ type NodeShapeProps = {
   node: FlowNode;
   dimmed: boolean;
   onHoverChange: (id: string | null) => void;
+  /** 순서 모드에서만 넘긴다. 없으면 기존 마크업 그대로 */
+  sequence?: { status: NodeStatus };
 };
 
 /**
@@ -77,7 +80,7 @@ function estimateTextWidth(text: string, fontSize: number): number {
   return width;
 }
 
-export function NodeShape({ node, dimmed, onHoverChange }: NodeShapeProps) {
+export function NodeShape({ node, dimmed, onHoverChange, sequence }: NodeShapeProps) {
   const fill = node.accent ? "var(--flow-accent-bg)" : "var(--flow-node-bg)";
   const stroke = node.accent ? "var(--flow-accent-border)" : "var(--flow-node-border)";
   const strokeWidth = node.accent ? 2 : 1.25;
@@ -98,7 +101,8 @@ export function NodeShape({ node, dimmed, onHoverChange }: NodeShapeProps) {
 
   return (
     <g
-      className={cn("flow-node", dimmed && "flow-dim")}
+      className={cn("flow-node", dimmed && "flow-dim", sequence && "flow-node-seq")}
+      data-flow-node={sequence ? node.id : undefined}
       onMouseEnter={() => onHoverChange(node.id)}
       onMouseLeave={() => onHoverChange(null)}
     >
@@ -128,6 +132,30 @@ export function NodeShape({ node, dimmed, onHoverChange }: NodeShapeProps) {
           {node.sub}
         </text>
       ) : null}
+      {sequence && sequence.status !== "idle" ? (
+        <StatusBadge node={node} status={sequence.status} />
+      ) : null}
+    </g>
+  );
+}
+
+const BADGE_WIDTH: Record<Exclude<NodeStatus, "idle">, number> = { busy: 50, done: 44 };
+const BADGE_HEIGHT = 14;
+
+/**
+ * 순서 재생의 상태 배지. 색에만 의존하지 않도록 글자(처리 중 / 완료)와
+ * 모양(점선 윤곽 / 채운 알약 + 체크)을 함께 바꾼다
+ */
+function StatusBadge({ node, status }: { node: FlowNode; status: Exclude<NodeStatus, "idle"> }) {
+  const width = BADGE_WIDTH[status];
+  const x = node.x + node.w - width;
+  const y = node.y - BADGE_HEIGHT / 2 - 1;
+  return (
+    <g className={`flow-badge flow-badge-${status}`} pointerEvents="none">
+      <rect x={x} y={y} width={width} height={BADGE_HEIGHT} rx={BADGE_HEIGHT / 2} />
+      <text x={x + width / 2} y={y + 10} textAnchor="middle" fontSize={9} fontWeight={600}>
+        {status === "busy" ? "… 처리 중" : "✓ 완료"}
+      </text>
     </g>
   );
 }
