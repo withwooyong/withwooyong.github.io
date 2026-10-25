@@ -1,4 +1,4 @@
-import { FlowDiagram } from "@/components/flow-diagram";
+import { FlowDiagram, toStackedSpec } from "@/components/flow-diagram";
 import { SiteHead } from "@/components/site-head";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { skbFlowSearchSpec as spec } from "@/data/diagrams/skb-flow-search";
@@ -25,6 +25,42 @@ const chapters: Chapter[] = (spec.steps ?? []).map((step) => ({
     ),
 }));
 
+/** 이 폭(Tailwind md) 이상이면 흐름도가 화면 안에 다 들어오므로 상자를 스크롤하지 않는다 */
+const DESKTOP_QUERY = "(min-width: 768px)";
+
+/**
+ * 모바일 흐름도 상자의 scrollTop 을 정한다. 그 order 의 엣지가 잇는 노드들의 세로 범위 중앙이
+ * 상자 중앙에 오게 한다. 노드 좌표는 모바일 재배치(toStackedSpec)의 viewBox 단위이고,
+ * 실제 렌더 높이 / viewBox.h 로 화면 픽셀에 환산한다. 계산할 수 없으면 null 이다.
+ */
+function mobileScrollTop(box: HTMLElement, order: number): number | null {
+  if (order === 0) return 0;
+  const svg = box.querySelector("svg");
+  if (!svg) return null;
+  const vb = svg.viewBox.baseVal;
+  // 폭을 재기 전의 원본(가로) 배치다. 노드 좌표를 환산할 수 없다
+  if (vb.height === 0 || (vb.width === spec.viewBox.w && vb.height === spec.viewBox.h)) return null;
+  const stacked = toStackedSpec(spec, vb.width);
+  const byId = new Map(stacked.nodes.map((n) => [n.id, n] as const));
+  let top = Infinity;
+  let bottom = -Infinity;
+  for (const edge of stacked.edges) {
+    if (edge.order !== order) continue;
+    for (const id of [edge.from, edge.to]) {
+      const node = byId.get(id);
+      if (!node) continue;
+      top = Math.min(top, node.y);
+      bottom = Math.max(bottom, node.y + node.h);
+    }
+  }
+  if (!Number.isFinite(top)) return null;
+  const svgRect = svg.getBoundingClientRect();
+  const scale = svgRect.height / vb.height;
+  const svgTop = svgRect.top - box.getBoundingClientRect().top + box.scrollTop;
+  const target = svgTop + ((top + bottom) / 2) * scale - box.clientHeight / 2;
+  return Math.min(Math.max(target, 0), Math.max(box.scrollHeight - box.clientHeight, 0));
+}
+
 /** 화면 가운데 가는 띠. 문단이 이 띠에 닿으면 그 단계가 켜진다 */
 const CENTER_BAND = "-45% 0px -45% 0px";
 
@@ -33,6 +69,17 @@ export default function SkbSearchFlowPage() {
   const [activeOrder, setActiveOrder] = useState(0);
   const sectionRefs = useRef(new Map<number, HTMLElement>());
   const orders = useMemo(() => chapters.map((c) => c.order), []);
+  const diagramBoxRef = useRef<HTMLDivElement>(null);
+
+  // 모바일은 흐름도가 상자보다 길어 창으로 보여 준다. 단계가 바뀌면 그 단계의 노드가 창 가운데 오게 옮긴다
+  useEffect(() => {
+    const box = diagramBoxRef.current;
+    if (!box || window.matchMedia(DESKTOP_QUERY).matches) return;
+    const top = mobileScrollTop(box, activeOrder);
+    if (top === null) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    box.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+  }, [activeOrder]);
 
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
@@ -96,13 +143,14 @@ export default function SkbSearchFlowPage() {
           </p>
 
           <div className="mt-6 md:grid md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:items-start md:gap-8">
-            {/* 모바일은 위쪽에 높이 40vh 로, 데스크톱은 왼쪽에 고정한다 */}
+            {/* 모바일은 위쪽에 높이 40vh 의 창으로(흐름도는 폭 기준으로 그리고 단계에 맞춰 스크롤), 데스크톱은 왼쪽에 고정한다 */}
             <div
+              ref={diagramBoxRef}
               className={
-                "sticky top-0 z-10 h-[40vh] border-b border-slate-200 bg-white/95 py-2 backdrop-blur " +
+                "sticky top-0 z-10 h-[40vh] overflow-hidden border-b border-slate-200 bg-white/95 py-2 backdrop-blur " +
                 "dark:border-slate-700 dark:bg-slate-950/95 " +
-                "md:top-6 md:h-auto md:rounded-lg md:border md:p-3 " +
-                "[&_svg]:max-h-[calc(40vh-1.25rem)] md:[&_svg]:max-h-[calc(100vh-6rem)] " +
+                "md:top-6 md:h-auto md:overflow-visible md:rounded-lg md:border md:p-3 " +
+                "md:[&_svg]:max-h-[calc(100vh-6rem)] " +
                 "motion-reduce:[&_.flow-edge]:transition-none motion-reduce:[&_.flow-node]:transition-none"
               }
             >
