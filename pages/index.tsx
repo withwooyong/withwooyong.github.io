@@ -360,7 +360,7 @@ export default function Home({ featuredPosts }: HomeProps) {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div>
                       <CardTitle className="text-xl">시스템 개발</CardTitle>
-                      <CardDescription className="text-orange-600 dark:text-orange-400 font-medium">쌍용정보통신 (통신연구소/뉴미디어기술팀)</CardDescription>
+                      <CardDescription className="text-orange-600 dark:text-orange-400 font-medium">쌍용정보통신 (뉴미디어기술팀)</CardDescription>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Badge variant="secondary">2005.11 - 2012.06</Badge>
