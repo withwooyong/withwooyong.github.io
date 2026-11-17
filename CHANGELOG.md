@@ -20,6 +20,8 @@
 
 CTO 필독서 열한 권을 병목 이동(코드 생산 → 리뷰·검증 → 배포·운영, 무엇을 만들지 정하는 일) 기준으로 다시 골라 판정과 읽는 순서를 적었다(`leadership-bookshelf-ai-era`). 카테고리 지도 글은 열 편에서 열한 편으로 고쳐 읽는 순서 · 묶음 · 주제 교차 참조 세 지도에 새 글을 배정했고, README 세 자리(요약표 · 디렉터리 트리 · 카테고리 내역)의 편수를 맞췄다.
 
+2026-11-17: 확인하지 않았던 서지 정보를 서점·출판사 페이지로 확인해 고쳤다(Accelerate 와 An Elegant Puzzle 의 한국어판 제목, DORA 2024 수치를 원문 표현대로). 낯선 표현 38곳을 쉬운 문장으로 바꿨다.
+
 ## 2026-10-21 — ▶️ **홈 흐름도에 순서 재생을 넣었다**
 
 `FlowEdge` 에 `order`·`duration`, `FlowSpec` 에 `steps` 를 더해 같은 order 는 동시에, 다음 order 는 앞 단계가 끝난 뒤 재생한다(Web Animations API, `components/flow-diagram/sequence.ts`). 도착 노드에 맥박과 처리 중·완료 배지, 캡션과 재생·이전·다음 버튼을 두고 `skb-flow-search` 에 11단계를 채웠다. order 가 없는 스펙 10개는 렌더 HTML 이 바이트까지 같고, GC-6 은 자산 해시만 바뀐 13개를 갱신했다.

@@ -25,7 +25,7 @@ role: "map"
 | **팀 인프라를 짓는다** | [인프라 넷과 성숙도](/blog/ai-transformation/enablement-infra-and-maturity/) → [세 레이어와 Skill 카탈로그](/blog/ai-transformation/lean-three-layer-harness/) → [여섯 게이트](/blog/ai-transformation/sdlc-human-gates/) | 살 목록을 먼저 보고, 걷어내는 쪽 아키텍처와 대조한 뒤, 강제를 어느 쪽에서 거는지로 |
 | **부서 업무를 에이전트로 옮긴다** | [공통 골격](/blog/ai-transformation/department-agent-blueprint/) → [고객 접점 네 부서](/blog/ai-transformation/department-automation-frontline/) → [백오피스 3부서](/blog/ai-transformation/department-automation-backoffice/) → [26종 정의서](/blog/ai-transformation/agent-definition-by-department/) | 골격 → 부서 각론 → 정의서 실물. 앞의 셋은 시리즈 순서 그대로이고, 넷째는 편성이 다른 세트라 부서 이름이 어긋난다 |
 | **답만 빨리 본다** | [18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/) | 열여덟 문항이 각자 판정 한 줄과 근거까지만 담고, 표와 각론은 그 물음에 맞는 편으로 넘긴다 |
-| **읽을 책을 고른다** | [개발 리더의 서가](/blog/ai-transformation/leadership-bookshelf-ai-era/) | 열한 권을 병목이 옮겨 가는 자리 기준으로 다시 골라, 판정과 읽는 순서까지 한 편에서 닫는다. 본문의 링크가 조직 설계 · 인프라 넷과 성숙도 · 여섯 게이트 편으로 이어진다 |
+| **읽을 책을 고른다** | [개발 리더의 서가](/blog/ai-transformation/leadership-bookshelf-ai-era/) | 열한 권을 병목이 옮겨 가는 단계를 기준으로 다시 골라, 등급과 읽는 순서까지 한 편에서 정리한다. 본문의 링크가 조직 설계 · 인프라 넷과 성숙도 · 여섯 게이트 편으로 이어진다 |
 
 > **여덟 줄의 배열은 이 글이 정한 것이다.** 편끼리 선후를 선언해 둔 것이 아니라, 어느 편을 먼저 읽어야 뒤따르는 편이 전제로 삼는 것이 채워지는지를 기준으로 늘어놓았다. 다만 두 자리는 각 편이 직접 밝힌 이음새를 그대로 받았다 — 세 레이어 편은 인프라 편이 비워 둔 자리를 자기가 채운다고 첫머리에 적었고, 부서 각론 두 편은 공통 골격 편과 시리즈 순서로 묶여 있다.
 
@@ -114,7 +114,7 @@ flowchart TD
 
 | 글 | 무엇이 있는가 |
 |---|---|
-| [코드가 싸지면 리더의 서가가 바뀐다](/blog/ai-transformation/leadership-bookshelf-ai-era/) | 병목이 코드를 쓰는 단계에서 읽고 확인하는 일, 내보내고 돌리는 일, 제품 결정, 조직 설계로 옮겨 간다는 틀을 도식과 표로 세우고, 열한 권을 측정·조직·제품·공학의 바닥 네 묶음에 필독 넷·추천 셋·선택 넷으로 판정한 표, 책마다 요지·핵심 개념·AI 시대에 읽으면·맞는 독자·읽는 방식, 여섯 권의 읽는 순서, 그리고 목록 밖에서 함께 볼 자료 둘 |
+| [코드가 싸지면 리더의 서가가 바뀐다](/blog/ai-transformation/leadership-bookshelf-ai-era/) | 병목이 코드를 쓰는 단계에서 읽고 확인하는 일, 내보내고 돌리는 일, 제품 결정, 조직 설계로 옮겨 간다는 틀을 도식과 표로 세우고, 열한 권을 측정·조직·제품·공학의 기본 네 묶음에 필독 넷·추천 셋·선택 넷으로 나눈 표, 책마다 요지·핵심 개념·AI 시대에 읽으면·맞는 독자·읽는 방식, 여섯 권의 읽는 순서, 그리고 목록 밖에서 함께 볼 자료 둘 |
 
 1 + 2 + 2 + 4 + 1 + 1로 합이 11이다.
 
