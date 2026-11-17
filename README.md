@@ -76,7 +76,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run build` | 정적 export → `out/` (빌드 후 `scripts/generate-sitemap.mjs` · `scripts/build-search-index.mjs` 실행) |
 | `npm run start` | 프로덕션 서버 (로컬 검증용) |
 | `npm run lint` | Next.js ESLint |
-| `npm test` | Vitest — `tests/blog/` **15파일 219케이스**. 로더·frontmatter·목차·트리·검색·그래프·도식 팔레트·확대 뷰어 단위 테스트 + `tests/blog/content/` 36케이스의 발행본 전량 불변식(**도식 이미지 자산 포함**) |
+| `npm test` | Vitest — `tests/blog/` **16파일 262케이스**. 로더·frontmatter·목차·트리·검색·그래프·도식 팔레트·확대 뷰어 단위 테스트 + `tests/blog/content/` 36케이스의 발행본 전량 불변식(**도식 이미지 자산 포함**) |
 | `npm run dup-scan` | 발행본 사이의 축자 복제 스캔. 인자는 **`--` 뒤에** 넘긴다 — `npm run dup-scan -- --category <slug>` · `-- --min N`(기본 20자) · `-- <파일...>`. `--` 없이 쓰면 npm이 플래그를 먹어 「대상이 없다」로 종료한다 |
 | `npm run dup-scan:verify` | 위 스캔의 자체 검사 (`--self-test`) |
 | `npm run check-forbidden` | 발행본 금칙어 스캔. HARD 위반이 있으면 종료 코드 1. `--all`은 리포 전체를 훑되 판정하지 않는다 |
@@ -88,7 +88,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build
 | `npm run check-links` | 🔴 **깨진 링크** 스캔(발행본). `/blog/<카테고리>/<슬러그>/` 는 실제 편을 가리켜야 하고, 상대 `.md` 는 정적 export 에서 **반드시 404** 다. 판정은 파서가 한다 — 정규식으로 세면 코드 블록 안의 예시와 앵커 때문에 **없는 위반**이 생긴다 |
 | `npm run check-links:docs` | 위 검사를 리포 문서에 돌린다. 문서의 상대 `.md` 는 그 파일이 있어야 하며 **기준은 리포 루트가 아니라 그 문서의 디렉터리**다 |
 | `npm run check-links:verify` | 위 검사의 자체 검사 (`--self-test` 23건) |
-| `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 549개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
+| `npm run check-mermaid` | 🔴 **그려지지 않는 도식** 스캔(발행본 559개). 판정은 화면을 그리는 **mermaid 파서**가 한다. 위험은 위반을 놓치는 것이 아니라 **거짓 0** 이다 — Node 에는 DOM 이 없어 파싱에 닿기도 전에 죽고, 그것을 「위반 없음」으로 세면 초록이 나온다 |
 | `npm run check-mermaid:docs` | 위 검사를 리포 문서 65개의 도식 132개에 돌린다. 설계서와 인수인계 문서가 도식을 가장 많이 쓴다 |
 | `npm run check-mermaid:verify` | 위 검사의 자체 검사 (`--self-test` 21건). 첫 항목이 **카나리**다 — 반드시 그려져야 할 도식 하나가 판정에 도달하는지 본다 |
 | `npm run check-table` | 🔴 **표의 열 수가 어긋난 행** 스캔(발행본). GFM 은 셀이 머리 행보다 많으면 **초과분을 버리고** 적으면 빈 칸으로 채운다 — 오류가 아니라 조용한 오작동이라 화면을 보기 전에는 드러나지 않는다. 판정은 정규식이 아니라 파서가 한다 |
