@@ -189,7 +189,7 @@ flowchart TD
 
 | 원칙 | 근거·수치 |
 |---|---|
-| **개인 속도 ≠ 시스템 성과** | 2024 DORA — AI 채택 25% 증가당 throughput −1.5%, stability −7.2%. throughput만 보지 말고 stability·rework·리뷰부담을 함께 측정 [출처](https://redmonk.com/rstephens/2024/11/26/dora2024/) |
+| **개인 속도 ≠ 시스템 성과** | 2024 DORA는 AI 도입이 늘면서 배포 throughput이 1.5%, 배포 stability가 7.2% 줄어든 것으로 추정했다. throughput만 보지 말고 stability·rework·리뷰부담을 함께 측정 [출처](https://cloud.google.com/blog/products/devops-sre/announcing-the-2024-dora-report) |
 | **마지막 30%가 진짜 엔지니어링** | AI가 70%는 빠르게 하고, 엣지케이스·보안·프로덕션은 사람 몫 (Addy Osmani "70% Problem") [출처](https://addyo.substack.com/p/the-70-problem-hard-truths-about) |
 | **측정하는 조직이 3~4배 가치** | McKinsey — 구조적으로 측정하는 조직이 AI 가치를 3~4배 포착. KPI 추적은 20% 미만만 한다 [출처](https://www.gend.co/blog/mckinsey-state-of-ai-2025-key-findings-what-to-do) |
 | **램프업을 예산화** | Copilot은 통제 실험 과제에서 55.8% 빠르지만 완전 생산성까지 약 11주. 초기 하락은 정상 [출처](https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-on-developer-productivity-and-happiness/) |
