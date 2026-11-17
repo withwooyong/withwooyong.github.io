@@ -24,6 +24,8 @@ CTO 필독서 열한 권을 병목 이동(코드 생산 → 리뷰·검증 → �
 
 2026-11-17: 같은 기준으로 카테고리 나머지 11편의 비유 표현을 일반 어휘로 바꿨다(「자리」 168 → 24회 · 「판정」 101 → 15회 · 「대 본다」류 0회). 남은 것은 좌석·관용 표현, 다른 편 제목, 게이트의 합격·불합격 판정, 인용문이다. 제목이 바뀐 `discovery-to-growth-tooling` 을 가리키는 링크 텍스트 한 곳(`planning-harness-map`)도 맞췄다.
 
+2026-11-17: 남겨 둔 비유 셋을 정리했다. `department-automation-frontline` 제목을 「…자동화를 멈추는 기준」으로 바꾸고 링크 텍스트 네 곳을 맞췄으며, 지도 글 두 편(`ai-transformation-knowledge-map` · `topic-map-reading-paths`)의 표 계수 「자리」를 「칸」으로, 묶음 이름 「팀이 딛는 바닥」을 「팀 공통 기반」으로 바꿨다.
+
 ## 2026-10-21 — ▶️ **홈 흐름도에 순서 재생을 넣었다**
 
 `FlowEdge` 에 `order`·`duration`, `FlowSpec` 에 `steps` 를 더해 같은 order 는 동시에, 다음 order 는 앞 단계가 끝난 뒤 재생한다(Web Animations API, `components/flow-diagram/sequence.ts`). 도착 노드에 맥박과 처리 중·완료 배지, 캡션과 재생·이전·다음 버튼을 두고 `skb-flow-search` 에 11단계를 채웠다. order 가 없는 스펙 10개는 렌더 HTML 이 바이트까지 같고, GC-6 은 자산 해시만 바뀐 13개를 갱신했다.

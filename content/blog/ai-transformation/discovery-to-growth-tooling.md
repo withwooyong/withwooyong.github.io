@@ -423,6 +423,6 @@ flowchart LR
 | 도구를 고르기 **전에** 그 기능을 만들지 말지 판정하는 절차, 그리고 그 판정을 건너뛸 수 없게 만드는 차단 장치 | [만드는 비용이 내려가면 무엇이 남는가](/blog/ai-product-planning/planning-harness-map/) |
 | n8n 워크플로 템플릿과 과금 비교, pgvector 회사 두뇌, 팀 스코프 MCP, 도입 순서와 KPI 네 분류 | [팀 공유 인프라 넷과 성숙도 0 → 1 → N](/blog/ai-transformation/enablement-infra-and-maturity/) |
 | PM·디자이너·마케터의 직무 재정의, 조직 구조, 거버넌스, 기업 사례와 실패 수치 | [빌더에서 오케스트레이터로 가는 조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/) |
-| 마케팅 5종·경쟁사 분석가를 포함한 부서별 에이전트 명세와 프롬프트 설계 | [여섯 부서 26종 에이전트 정의서](/blog/ai-transformation/agent-definition-by-department/) · [고객 접점 네 부서가 자동화를 멈추는 자리](/blog/ai-transformation/department-automation-frontline/) · [백오피스 3부서와 자동화 등급 6축](/blog/ai-transformation/department-automation-backoffice/) |
+| 마케팅 5종·경쟁사 분석가를 포함한 부서별 에이전트 명세와 프롬프트 설계 | [여섯 부서 26종 에이전트 정의서](/blog/ai-transformation/agent-definition-by-department/) · [고객 접점 네 부서가 자동화를 멈추는 기준](/blog/ai-transformation/department-automation-frontline/) · [백오피스 3부서와 자동화 등급 6축](/blog/ai-transformation/department-automation-backoffice/) |
 | 부서 단위로 업무를 에이전트에 쪼개는 공통 골격과 I/O 계약 | [7부서 30에이전트의 공통 골격](/blog/ai-transformation/department-agent-blueprint/) |
 | 벡터DB·임베딩·검색기 같은 RAG 구현 세부 | [RAG 파이프라인 (1)](/blog/rag/rag-pipeline-ingestion/) · [(2)](/blog/rag/rag-pipeline-retrieval/) |

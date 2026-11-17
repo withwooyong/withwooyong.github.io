@@ -1,6 +1,6 @@
 ---
 title: "같은 이름이 편에 따라 다른 층위를 가리킨다 — 열한 편 지도와 열네 주제 교차 참조"
-description: "이 카테고리의 열한 편을 세 번 갠다 — 목적별 읽는 순서 여덟 갈래, 다루는 범위로 여섯 묶음, 깊이 순서의 열네 주제로. 「하네스」·「오케스트레이터」·「사람 게이트」·「총계 30」처럼 편에 따라 가리키는 층위가 갈리는 이름 넷이 어디서 정의되는지 함께 놓고, 세 지도 어느 쪽에서도 빠지는 편이 없는지 자리를 세어 확인한다. 열네 주제 중 하나는 가장 깊은 칸이 비어 있고, 그 빈칸을 채우지 않고 그대로 둔다."
+description: "이 카테고리의 열한 편을 세 번 갠다 — 목적별 읽는 순서 여덟 갈래, 다루는 범위로 여섯 묶음, 깊이 순서의 열네 주제로. 「하네스」·「오케스트레이터」·「사람 게이트」·「총계 30」처럼 편에 따라 가리키는 층위가 갈리는 이름 넷이 어디서 정의되는지 함께 놓고, 세 지도 어느 쪽에서도 빠지는 편이 없는지 칸을 세어 확인한다. 열네 주제 중 하나는 가장 깊은 칸이 비어 있고, 그 빈칸을 채우지 않고 그대로 둔다."
 category: "ai-transformation"
 tags: ["org-design", "knowledge-management", "ai-automation", "human-in-the-loop"]
 date: "2026-08-17"
@@ -18,7 +18,7 @@ role: "map"
 
 | 목적 | 순서 | 왜 이 순서인가 |
 |---|---|---|
-| **조직에 처음 들인다** | [조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/) → [인프라 넷과 성숙도](/blog/ai-transformation/enablement-infra-and-maturity/) → [18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/) | 무엇을 바꾸는 일인지 정의부터 잡고, 팀이 딛는 바닥과 단계별 졸업 조건으로 내려간 뒤, 남는 물음을 문답으로 훑는다 |
+| **조직에 처음 들인다** | [조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/) → [인프라 넷과 성숙도](/blog/ai-transformation/enablement-infra-and-maturity/) → [18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/) | 무엇을 바꾸는 일인지 정의부터 잡고, 팀이 함께 쓰는 기반과 단계별 졸업 조건으로 내려간 뒤, 남는 물음을 문답으로 훑는다 |
 | **깔았는데 확산이 안 된다** | [인프라 넷과 성숙도](/blog/ai-transformation/enablement-infra-and-maturity/) → [조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/) → [세 레이어와 Skill 카탈로그](/blog/ai-transformation/lean-three-layer-harness/) | 먼저 무엇을 재는지 세우고, 확산을 멈출 조건을 확인하고, 그러고도 남는 도구 난립을 걷어내는 쪽으로 간다 |
 | **개발 파이프라인에 게이트를 건다** | [여섯 게이트](/blog/ai-transformation/sdlc-human-gates/) → [세 레이어와 Skill 카탈로그](/blog/ai-transformation/lean-three-layer-harness/) → [18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/) | 여섯 단계의 경계를 먼저 잡고, 그 경계 가운데 레포 밖에 남는 것이 무엇인지로 넘어간다 |
 | **기획·디자인·마케팅 쪽에 붙인다** | [네 영역 도구 지형](/blog/ai-transformation/discovery-to-growth-tooling/) → [여섯 게이트](/blog/ai-transformation/sdlc-human-gates/) → [조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/) | 도구 지형을 먼저 보고, 그 산출물이 걸리는 승인 지점으로, 그다음 직무가 어떻게 바뀌는지로 |
@@ -49,7 +49,7 @@ flowchart LR
 flowchart TD
     A["ai-transformation 열한 편"] --> B["조직을 무엇으로 보나 — 1편"]
     A --> C["일이 지나가는 단계 — 2편"]
-    A --> D["팀이 딛는 바닥 — 2편"]
+    A --> D["팀 공통 기반 — 2편"]
     A --> E["부서를 에이전트로 — 4편"]
     A --> F["답부터 — 1편"]
     A --> G["읽을 책을 고르는 법 — 1편"]
@@ -61,7 +61,7 @@ flowchart TD
 |---|---:|---|
 | 조직을 무엇으로 보나 | 1 | AX의 정의, 직무 재정의, 조직 구조, 거버넌스, 변화관리와 실패 수치 |
 | 일이 지나가는 단계 | 2 | 요구사항에서 운영까지의 단계 경계, 그리고 단계 번호에 일렬로 세워지지 않는 네 영역의 도구 지형 |
-| 팀이 딛는 바닥 | 2 | 팀이 함께 쓰는 인프라와 성숙도, 그 인프라를 얇게 대체하는 아키텍처 |
+| 팀 공통 기반 | 2 | 팀이 함께 쓰는 인프라와 성숙도, 그 인프라를 얇게 대체하는 아키텍처 |
 | 부서를 에이전트로 | 4 | 일곱 부서의 공통 골격, 부서 각론, 그리고 부서별 정의서 |
 | 답부터 | 1 | 반복해서 돌아오는 물음에 결론부터 |
 | 읽을 책을 고르는 법 | 1 | AI 코딩 도구 이후의 기준으로 다시 고른 개발 리더 필독서 열한 권의 등급과 읽는 순서 |
@@ -88,7 +88,7 @@ flowchart TD
 | [요구사항에서 운영까지 여섯 게이트와 개발·QA·배포 각론](/blog/ai-transformation/sdlc-human-gates/) | 여섯 단계마다 「AI가 처리하는 것 / 사람 게이트(통과 기준)」를 한 행씩 배정한 표, 모든 단계에 공통으로 거는 안전장치 넷, 생성·검증은 로컬이고 강제는 서버사이드라는 경계, 같은 여섯 단계를 원 자료가 두 번 적은 두 판본의 대조, 그리고 개발·QA·배포 세 영역의 도구와 KPI |
 | [기획·디자인·마케팅·경쟁사 분석 네 영역의 AI 도구 지형](/blog/ai-transformation/discovery-to-growth-tooling/) | 네 영역이 각각 어떤 도구를 어떤 기준으로 고르는가, 네 문서가 적은 선택 기준 네 벌의 대조, 그리고 네 영역의 2열 표에서 사람 쪽 열에 남은 항목 열셋을 사전 정의와 개별 판단 두 갈래로 나눈 배정 |
 
-### 팀이 딛는 바닥
+### 팀 공통 기반
 
 | 글 | 무엇이 있는가 |
 |---|---|
@@ -100,7 +100,7 @@ flowchart TD
 | 글 | 무엇이 있는가 |
 |---|---|
 | [7부서 30에이전트의 공통 골격](/blog/ai-transformation/department-agent-blueprint/) | 일곱 파이프라인에서 부서 이름을 지우면 남는 다섯 단계와 그 서른다섯 칸, I/O 계약, 도구 조합으로 역할을 정의하는 법, 사람 개입 A~D 네 등급, 파이프라인 복구 네 종, 규모별 구조 선택표, 그리고 총계 30인 표가 이 블로그에 세 판본이 있다는 대조 |
-| [고객 접점 네 부서가 자동화를 멈추는 자리](/blog/ai-transformation/department-automation-frontline/) | 마케팅·영업·고객지원·인사 네 부서의 에이전트 명세와 파이프라인, 고객지원의 신뢰도 세 구간, 민감 데이터를 다루는 등급과 인사부의 HARD-GATE 세 곳, 그리고 네 부서의 경계 장치를 판정 주체와 우회 가능성 두 열로 모아 놓은 표 |
+| [고객 접점 네 부서가 자동화를 멈추는 기준](/blog/ai-transformation/department-automation-frontline/) | 마케팅·영업·고객지원·인사 네 부서의 에이전트 명세와 파이프라인, 고객지원의 신뢰도 세 구간, 민감 데이터를 다루는 등급과 인사부의 HARD-GATE 세 곳, 그리고 네 부서의 경계 장치를 판정 주체와 우회 가능성 두 열로 모아 놓은 표 |
 | [백오피스 3부서와 자동화 등급 6축](/blog/ai-transformation/department-automation-backoffice/) | 재무·법무·경영지원 세 부서의 각론, 재실행해도 장부가 어긋나지 않게 하는 멱등성 설계와 네 단계 폴백, 예외를 던져 파이프라인을 멈추는 HARD-GATE의 공통 형식, 그리고 새 업무를 에이전트로 쪼개는 여섯 단계와 A~D를 가르는 판단 기준 여섯 줄 |
 | [여섯 부서 26종 에이전트 정의서](/blog/ai-transformation/agent-definition-by-department/) | 여섯 부서 스물여섯 종의 정의서와 부서마다 하나씩인 위임 흐름 도식, 그 도식의 인계 화살표 서른다섯 개 중 부서 경계를 넘는 여덟 개, 그리고 프롬프트 설계 기법 서른아홉 가지를 모델의 재량을 어디서 좁히는지로 여섯 갈래에 배정한 표 |
 
@@ -148,16 +148,16 @@ flowchart TD
 | 세어 본 것 | 값 |
 |---|---:|
 | 주제 | 14 |
-| 1차 자리 | 13 |
-| 2차 자리 | 14 |
-| 「함께 볼 것」 자리 | 20 |
-| **배정한 자리 계** | **47** |
+| 1차 칸 | 13 |
+| 2차 칸 | 14 |
+| 「함께 볼 것」 칸 | 20 |
+| **배정한 칸 계** | **47** |
 | 깊이 열(1차·2차)만 세었을 때 편 수 | 9 |
 | 중복을 걷어낸 편 수 | **11** |
 
-마흔일곱 자리를 열한 편이 나눠 갖는다. **빠진 편은 없다.** 다만 1차·2차 두 열만 놓고 세면 아홉 편이고, 남는 두 편인 [18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/)과 [개발 리더의 서가](/blog/ai-transformation/leadership-bookshelf-ai-era/)는 오른쪽 끝 열에만 등장한다. 18문답은 여덟 자리, 서가 글은 두 자리다.
+마흔일곱 칸을 열한 편이 나눠 갖는다. **빠진 편은 없다.** 다만 1차·2차 두 열만 놓고 세면 아홉 편이고, 남는 두 편인 [18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/)과 [개발 리더의 서가](/blog/ai-transformation/leadership-bookshelf-ai-era/)는 오른쪽 끝 열에만 등장한다. 18문답은 여덟 칸, 서가 글은 두 칸이다.
 
-1차 자리가 열넷이 아니라 열셋인 것은 주제 14에 1차가 없기 때문이다. 그 열세 자리를 채우는 것도 **바로 그 아홉 편**이다 — [조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/)가 세 주제(중단 기준·직무와 조직·거버넌스)의 1차를 겸하고, [인프라 넷과 성숙도](/blog/ai-transformation/enablement-infra-and-maturity/)와 [공통 골격](/blog/ai-transformation/department-agent-blueprint/)이 각각 둘씩을 겸한다.
+1차 칸이 열넷이 아니라 열셋인 것은 주제 14에 1차가 없기 때문이다. 그 열세 칸을 채우는 것도 **바로 그 아홉 편**이다 — [조직 설계](/blog/ai-transformation/builder-to-orchestrator-shift/)가 세 주제(중단 기준·직무와 조직·거버넌스)의 1차를 겸하고, [인프라 넷과 성숙도](/blog/ai-transformation/enablement-infra-and-maturity/)와 [공통 골격](/blog/ai-transformation/department-agent-blueprint/)이 각각 둘씩을 겸한다.
 
 ### 주제 14는 왜 1차가 비어 있는가 — 그 빈칸을 메우는 편들
 
@@ -190,7 +190,7 @@ flowchart TD
 
 [조직 운영과 부서 자동화 18문답](/blog/ai-transformation/ai-transformation-qna-org-operations/)은 서가 글을 뺀 나머지 아홉 편을 다시 자르지 않는다. **같은 내용을 물음 형태로 먼저 만나게 한다.** 어느 묶음부터 손댈지 아직 못 골랐다면 여기가 문이 된다.
 
-문항 수는 편 제목에 그대로 적혀 있다. 한 문항이 안고 가는 것은 결론과 그것을 받치는 근거까지이고 그 뒤의 표와 수치와 각론은 물음에 해당하는 편이 갖는다 — 그 편이 앞머리에 자기 규칙으로 적어 둔 것이다. 그래서 답이 짧게 느껴지는 문항은 그 안의 링크가 각론으로 내려가는 길이다. 어느 문항이 어느 편으로 넘어가는지는 그 편이 문항마다 답 끝에서 직접 가리키므로 여기서 다시 펼치지 않는다. 위 주제 표의 오른쪽 끝 열에 적힌 여덟 자리는 반대 방향 — 어느 주제가 그 열여덟 문항에 걸리는가 — 이다.
+문항 수는 편 제목에 그대로 적혀 있다. 한 문항이 안고 가는 것은 결론과 그것을 받치는 근거까지이고 그 뒤의 표와 수치와 각론은 물음에 해당하는 편이 갖는다 — 그 편이 앞머리에 자기 규칙으로 적어 둔 것이다. 그래서 답이 짧게 느껴지는 문항은 그 안의 링크가 각론으로 내려가는 길이다. 어느 문항이 어느 편으로 넘어가는지는 그 편이 문항마다 답 끝에서 직접 가리키므로 여기서 다시 펼치지 않는다. 위 주제 표의 오른쪽 끝 열에 적힌 여덟 칸은 반대 방향 — 어느 주제가 그 열여덟 문항에 걸리는가 — 이다.
 
 들어가기 전에 볼 것이 하나 더 있다. 그 편은 앞머리에 갈림길 여덟 개를 따로 모아 두었는데, 열여덟 문항에서 골라 배열한 것이라고 그 편이 밝힌다. 표의 요점은 어느 쪽이 정답인가가 아니라 **무엇을 보고 가르는가**다. 열여덟 문항을 다 읽을 시간이 없다면 그 여덟 줄만 봐도 이 카테고리가 무엇을 반복해서 말하는지 잡힌다.
 

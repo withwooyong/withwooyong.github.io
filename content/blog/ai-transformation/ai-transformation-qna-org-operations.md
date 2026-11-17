@@ -114,7 +114,7 @@ AI 사용량 자체를 KPI로 삼지 않는 것도 같은 이유다. 사용량�
 
 고객을 향하는 부서에서 걸리는 질문은 "얼마나 잘 판단하는가"이고, 이것은 산출물 점수나 신뢰도 구간 같은 장치로 다룰 수 있다. 백오피스에서 걸리는 질문은 성격이 다르다 — 같은 입력이 두 번 들어와도 안전한지, 위험할 때 확실히 멈추는지, 여러 결과를 어떤 순서로 조립하는지다. 셋은 정확도를 올린다고 해결되지 않는다.
 
-네 부서의 각론은 [고객 접점 네 부서가 자동화를 멈추는 자리](/blog/ai-transformation/department-automation-frontline/)에, 남은 세 부서와 새 업무를 쪼개는 체크리스트는 [백오피스 3부서와 자동화 등급 6축](/blog/ai-transformation/department-automation-backoffice/)에 있다.
+네 부서의 각론은 [고객 접점 네 부서가 자동화를 멈추는 기준](/blog/ai-transformation/department-automation-frontline/)에, 남은 세 부서와 새 업무를 쪼개는 체크리스트는 [백오피스 3부서와 자동화 등급 6축](/blog/ai-transformation/department-automation-backoffice/)에 있다.
 
 ## Q. 자동화를 멈추는 기준은 무엇인가
 
@@ -124,7 +124,7 @@ AI 사용량 자체를 KPI로 삼지 않는 것도 같은 이유다. 사용량�
 
 적지 않으면 어떻게 되는가가 이 문항의 핵심이다. 멈춤 지점이 문서에 적혀 있지 않으면 그 지점은 자동화된 것이 아니라 감시에서 빠진 것이 된다. 사고가 나기 전까지 둘은 똑같이 잘 도는 것처럼 보인다.
 
-네 부서가 각각 어떤 수치와 게이트로 멈추는지는 [고객 접점 네 부서가 자동화를 멈추는 자리](/blog/ai-transformation/department-automation-frontline/)에 있다.
+네 부서가 각각 어떤 수치와 게이트로 멈추는지는 [고객 접점 네 부서가 자동화를 멈추는 기준](/blog/ai-transformation/department-automation-frontline/)에 있다.
 
 ## Q. 에이전트는 몇 개가 적정한가
 
